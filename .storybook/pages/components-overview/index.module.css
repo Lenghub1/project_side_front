@@ -1,0 +1,49 @@
+.input {
+  padding-bottom: 4px;
+}
+
+.cardContainer {
+  width: 100%;
+  display: grid;
+  grid-row-gap: 16px;
+  grid-column-gap: 12px;
+  grid-template-columns: 1fr;
+}
+
+.group {
+  margin-top: 24px;
+}
+
+.groupTitle {
+  margin-bottom: 16px;
+}
+
+.emptySearchResult {
+  display: inline-flex;
+  margin-top: 12px;
+}
+
+@media screen and (min-width: 600px) {
+  .input {
+    padding-bottom: 8px;
+  }
+
+  .cardContainer {
+    grid-template-columns: repeat(3, 1fr);
+    grid-row-gap: 24px;
+  }
+
+  .group {
+    margin-top: 32px;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  html:has(div[id="components-overview"]) {
+    scrollbar-gutter: stable both-edges;
+  }
+
+  .cardContainer {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

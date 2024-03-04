@@ -1,0 +1,24 @@
+import { createGlobalStyle } from "styled-components";
+
+const GlobalStyles = createGlobalStyle` 
+body {
+    width : 100%;
+    height : 100vh;
+    overflow : hidden;
+
+    #root {    
+        width : inherit;
+        height : inherit;
+        overflow : hidden;
+   
+       }
+
+   h1,h2,h3,h4,h5,h6, p{
+    margin : 0px;
+   }
+
+}
+ 
+`;
+
+export default GlobalStyles;

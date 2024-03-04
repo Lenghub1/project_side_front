@@ -1,0 +1,10 @@
+import { Meta, Markdown } from "@storybook/blocks";
+import ReadMe from "../../README.md?raw";
+
+<Meta
+  title="Quick start"
+  parameters={{ previewTabs: { canvas: { hidden: true } } }}
+  id="intro"
+/>
+
+<Markdown children={ReadMe}></Markdown>

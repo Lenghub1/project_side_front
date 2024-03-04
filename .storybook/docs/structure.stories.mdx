@@ -1,0 +1,12 @@
+import { Meta, Markdown } from "@storybook/blocks";
+import ReadMe from "../../README.md?raw";
+import ProjectStructureReadMe from "../../docs/PROJECT-STRUCTORE.md?raw";
+import ProjectGuideReadMe from "../../PROJECT-GUIDE.md?raw";
+
+<Meta
+  title="Project structure"
+  parameters={{ previewTabs: { canvas: { hidden: true } } }}
+  id="structure"
+/>
+
+<Markdown children={ProjectStructureReadMe}></Markdown>
