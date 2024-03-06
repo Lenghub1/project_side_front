@@ -73,7 +73,6 @@ export const InputWrapper = styled.div`
 
   & .MuiTextField-root {
     width: 100%;
-    background: #fff;
     & .MuiInputBase-root {
       width: 100%;
       & .MuiInputBase-input {
