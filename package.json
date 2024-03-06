@@ -27,6 +27,7 @@
     "@storybook/core-events": "^7.6.8",
     "@storybook/theming": "^7.6.8",
     "@types/cli-color": "^2.0.6",
+    "@types/mapbox-gl": "^3.1.0",
     "@types/react-signature-canvas": "^1.0.5",
     "analysis": "^0.4.2",
     "axios": "^1.6.5",

@@ -6,19 +6,23 @@ import WindowProvider from "./provider/WindowProvider";
 import { AppRoutes } from "./route";
 import GlobalStyles from "./styles/globalStyle";
 import Theme from "./theme";
+import Organization from "./pages/organization/Organization";
 
 function App() {
   return (
     <RecoilRoot>
+      {/* <StylesProvider injectFirst> */}
       <GlobalStyles />
       <Theme>
-        <SnackbarProvider>
-          <HashRouter>
-            <AppRoutes />
-            <WindowProvider />
-          </HashRouter>
-        </SnackbarProvider>
+        {/* <SnackbarProvider> */}
+        {/* <HashRouter> */}
+        {/* <AppRoutes /> */}
+        <Organization />
+        {/* <WindowProvider /> */}
+        {/* </HashRouter> */}
+        {/* </SnackbarProvider> */}
       </Theme>
+      {/* </StylesProvider> */}
     </RecoilRoot>
   );
 }
