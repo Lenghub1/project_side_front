@@ -7,11 +7,11 @@ type DivProps = {
   padding?: string;
   margin?: string;
   bg?: string;
-  overflow?: "auto" | "hidden";
+  overflow?: "auto" | "hidden" | "unset" | "initial";
   direction?: "row" | "column";
   justify?: "center" | "space-between" | "flex-end" | "flex-start";
   items?: "center" | "space-between" | "flex-end" | "flex-start";
-  gap?: number;
+  gap?: string;
   flex?: number;
 };
 
@@ -24,6 +24,7 @@ export const Div = styled.div<DivProps>`
   margin: ${({ margin }) => margin && margin};
   overflow: ${({ overflow }) => (overflow ? overflow : "hidden")};
   flex: ${({ flex }) => flex && flex};
+  gap: ${({ gap }) => gap && gap};
 `;
 
 export const Wrapper = styled(Div)`
@@ -37,7 +38,6 @@ export const Flex = styled(Div)`
   display: flex;
   flex: ${({ flex }) => flex && flex};
   flex-direction: ${({ direction }) => (direction ? direction : "row")};
-  gap: ${({ gap }) => gap && `${gap}px`};
   align-items: ${({ items }) => (items ? items : "center")};
   justify-content: ${({ justify }) => (justify ? justify : "center")};
 `;
@@ -73,7 +73,6 @@ export const InputWrapper = styled.div`
 
   & .MuiTextField-root {
     width: 100%;
-    background: #fff;
     & .MuiInputBase-root {
       width: 100%;
       & .MuiInputBase-input {
@@ -83,16 +82,8 @@ export const InputWrapper = styled.div`
   }
 `;
 
-export const ButtonWrapper = styled(Div)`
-  .MuiButtonBase-root {
-    &:focus {
-      outline: 0px;
-    }
-  }
-`;
-
 export const RadioWrapper = styled.div`
-  width: 100%;
+  width: auto;
   & .MuiFormGroup-root {
     display: flex;
     width: 100%;
@@ -103,6 +94,7 @@ export const RadioWrapper = styled.div`
 
     & label {
       display: flex;
+      align-items: center;
     }
   }
 `;

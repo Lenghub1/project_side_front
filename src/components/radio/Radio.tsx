@@ -5,10 +5,15 @@ import {
   RadioGroup
 } from "@mui/material";
 import CP from "..";
+import { ColorPalette } from "@/@type/common";
 
+/**
+ * * Ignore the interface warning below as we extended another color palette
+ */
 export interface RadioProps extends MuiRadioProps {
   list: { label?: string; value: any }[];
   onChange?: (e: any) => void;
+  color?: ColorPalette;
 }
 
 const Radio = ({ list, value, onChange, ...props }: RadioProps) => {
@@ -24,8 +29,8 @@ const Radio = ({ list, value, onChange, ...props }: RadioProps) => {
         {list?.map((item) => {
           return (
             <label>
+              <MuiRadio value={item.value} {...props} />
               <p>{item.label}</p>
-              <MuiRadio value={item.value} />
             </label>
           );
         })}

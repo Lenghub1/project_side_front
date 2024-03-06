@@ -9,7 +9,7 @@ import {
 const Input = ({ ...props }: MuiInputProps) => {
   return (
     <CP.Styled.InputWrapper>
-      <MuiInput {...props} />
+      <MuiInput color="info" {...props} />
     </CP.Styled.InputWrapper>
   );
 };
