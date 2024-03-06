@@ -1,108 +1,110 @@
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-
-import Store from "@/store";
-import { uuid } from "@/utils/commonUtil";
-
-import CP from "@/components";
-import BeforeLoginTemplate from "@/components/template/BeforeLogin";
-import useInput from "@/hooks/useInput";
 import useWindow from "@/hooks/useWindow";
-import { Flex } from "@/styles/styled";
+import useInput from "@/hooks/useInput";
+import CP from "@/components";
+import Divider from "@material-ui/core/Divider";
+import styled from "styled-components";
+
+const Flex = styled(CP.Styled.Flex)`
+  overflow: unset;
+`;
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const { snackbar, alert } = useWindow();
-  const [_, setLoginUser] = useRecoilState(Store.User.loginUserState);
-  const [__, setCampuse] = useRecoilState(Store.User.campusState);
 
   const email = useInput("");
   const password = useInput("");
 
-  const submitLogin = async () => {
-    if (email.value.length === 0 || password.value.length === 0) {
-      return alert("Put your email or password!");
-    }
-
-    try {
-      if (email && password) {
-        // Like Login Auth flow (randomId is fake token value)
-        const randomId = uuid();
-        setLoginUser(randomId);
-        snackbar("Success Login...");
-        setTimeout(() => {
-          navigate("/");
-        }, 2000);
-      }
-    } catch (error) {
-      console.log("LOGIN ERROR", error);
-    }
-  };
-
   return (
-    <BeforeLoginTemplate>
-      <CP.Styled.Wrapper>
-        <Flex height="100%">
-          <CP.Styled.Flex
-            direction="row"
-            height="100%"
-            gap={15}
-            justify="center"
-            align-items="center"
-          >
-            <CP.Styled.Flex
-              direction="column"
-              height="100%"
-              gap={32}
-              justify="center"
-              align-items="start"
+    <CP.Styled.Wrapper>
+      <Flex height="100%">
+        <CP.Styled.Div padding="0 1rem">
+          <Flex items="flex-start" padding="0 3rem" direction="column">
+            <CP.Typography
+              variant="h5"
+              style={{
+                marginBottom: "1rem"
+              }}
             >
-              {/* Heading div */}
-              <CP.Styled.Div>
-                <CP.Typography variant="h5" style={{ paddingBottom: "20px" }}>
-                  Login
-                </CP.Typography>
-                <CP.Typography variant="h4" style={{ paddingBottom: "20px" }}>
-                  Login
-                </CP.Typography>
-              </CP.Styled.Div>
-
-              <CP.Input
-                value={email.value}
-                onChange={(e) => email.onChange(e)}
-                placeholder="Email"
-              />
-              <CP.Input
-                value={password.value}
-                type="password"
-                onChange={(e) => password.onChange(e)}
-                placeholder="Password"
-              />
-              <CP.Button fullWidth onClick={submitLogin}>
-                Login
-              </CP.Button>
-
+              welcome back
+            </CP.Typography>
+            <CP.Typography
+              variant="h4"
+              style={{
+                marginBottom: "2rem",
+                fontWeight: "semibold",
+                textAlign: "start"
+              }}
+            >
+              Login
+            </CP.Typography>
+            <Flex direction="column" gap="24px">
+              <CP.Input label="Email or Phone number" />
+              <CP.Input label="Password" type="password" />
+              <CP.Input label="Confirm password" type="password" />
               <div style={{ width: "100%" }}>
-                <CP.Checkbox label="remember info" />
+                <CP.Checkbox label="Remember me" />
               </div>
+              <CP.Button style={{ width: "100%" }}>Login</CP.Button>
+            </Flex>
+            <CP.Typography
+              variant="subtitle1"
+              color="primary"
+              style={{
+                margin: "1rem 0"
+              }}
+            >
+              Forget password?
+            </CP.Typography>
 
-              <CP.Button
-                style={{ width: "auto" }}
-                variant="text"
-                onClick={() => alert("Not yet...")}
+            <Flex direction="column">
+              <CP.Typography
+                variant="subtitle1"
+                style={{
+                  margin: "1rem 0"
+                }}
               >
-                Signup
+                OR
+              </CP.Typography>
+              <Flex direction="row" gap="40px">
+                <img
+                  style={{ width: "36px", height: "36px" }}
+                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/2023_Facebook_icon.svg/2048px-2023_Facebook_icon.svg.png"
+                  alt=""
+                />
+                <img
+                  style={{ width: "36px", height: "36px" }}
+                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/2048px-Telegram_logo.svg.png"
+                  alt=""
+                />
+                <img
+                  style={{ width: "36px", height: "36px" }}
+                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/2048px-Google_%22G%22_logo.svg.png"
+                  alt=""
+                />
+              </Flex>
+              <CP.Button
+                style={{
+                  width: "auto",
+                  marginTop: "2rem",
+                  display: "flex",
+                  justifyContent: "center"
+                }}
+                variant="text"
+              >
+                Login Using Face Recognition
               </CP.Button>
-
-              {/* Flext  */}
-            </CP.Styled.Flex>
-            {/* Flext Image */}
-            <CP.Styled.Flex>HAHA</CP.Styled.Flex>
-          </CP.Styled.Flex>
-        </Flex>
-      </CP.Styled.Wrapper>
-    </BeforeLoginTemplate>
+            </Flex>
+          </Flex>
+        </CP.Styled.Div>
+        <CP.Styled.Div height="100%">
+          <Flex>Hello</Flex>
+        </CP.Styled.Div>
+      </Flex>
+    </CP.Styled.Wrapper>
   );
 };
 
