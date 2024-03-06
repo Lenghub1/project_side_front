@@ -1,9 +1,10 @@
 import MuiTypography, {
   TypographyProps as MuiTypographyProps
 } from "@mui/material/Typography";
+import { ReactNode } from "react";
 
 export interface TypographyProps extends MuiTypographyProps {
-  children?: string;
+  children?: ReactNode;
 }
 
 const Typography = ({ children, ...props }: TypographyProps) => {
