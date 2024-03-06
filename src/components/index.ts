@@ -6,7 +6,6 @@ import Card from "./card";
 import Checkbox from "./checkbox";
 import Modal from "./modal";
 import Typography from "./typography";
-import TextField from "./textField";
 
 import * as Layout from "./layout";
 import * as Styled from "../styles/styled";
@@ -20,8 +19,7 @@ const CP = {
   Checkbox,
   Modal,
   Input,
-  Typography,
-  TextField
+  Typography
 };
 
 export type { ButtonProps };
