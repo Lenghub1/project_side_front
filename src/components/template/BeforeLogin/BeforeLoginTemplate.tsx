@@ -11,7 +11,7 @@ const Template = ({ children }: ReactNodeProps) => {
 };
 
 const Container = styled.div`
-  max-width: 600px;
+  max-width: 100%;
   margin-left: auto;
   margin-right: auto;
 `;

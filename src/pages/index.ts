@@ -13,3 +13,4 @@ export * from "@/pages/informationInput";
 export * as Branch from "@/pages/branch";
 export * from "@/pages/organization";
 export * as choose from "@/pages/chooseOrganization";
+export * from "@/pages/login copy";
