@@ -9,7 +9,7 @@ interface ThemeProps extends ReactNodeProps {}
 const Theme = ({ children }: ThemeProps) => {
   // TODO: Create light-mode & dark-mode toggle
   return (
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider theme={lightTheme}>
       <Box
         sx={{
           backgroundColor: "background.default",
