@@ -13,7 +13,7 @@ import { ColorPalette } from "@/@type/common";
 export interface RadioProps extends MuiRadioProps {
   list: { label?: string; value: any }[];
   onChange?: (e: any) => void;
-  color: ColorPalette;
+  color?: ColorPalette;
 }
 
 const Radio = ({ list, value, onChange, ...props }: RadioProps) => {

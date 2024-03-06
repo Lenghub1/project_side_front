@@ -16,8 +16,8 @@ export interface CheckboxProps extends MuiCheckboxProps {
 const Checkbox = ({ label, ...props }: CheckboxProps) => {
   return (
     <CP.Styled.CheckboxWrapper>
-      {label && <CP.Typography color="text.secondary">{label}</CP.Typography>}
       <MuiCheckbox {...props} />
+      {label && <CP.Typography color="text.secondary">{label}</CP.Typography>}
     </CP.Styled.CheckboxWrapper>
   );
 };
