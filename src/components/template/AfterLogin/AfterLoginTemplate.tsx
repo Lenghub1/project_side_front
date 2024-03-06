@@ -15,6 +15,7 @@ const BodyWrapper = styled.div`
 `;
 const Body = styled.div`
   border: 1px solid rgba(0, 0, 0, 0.1);
+  flex-grow: 1;
 `;
 
 const Template = ({ children }: ReactNodeProps) => {
