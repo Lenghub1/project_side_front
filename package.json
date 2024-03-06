@@ -14,11 +14,6 @@
     "commit": "git-cz",
     "postinstall": "husky install"
   },
-  "config": {
-    "commitizen": {
-      "path": "cz-conventional-changelog"
-    }
-  },
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
@@ -38,9 +33,11 @@
     "cli-color": "^2.0.3",
     "dayjs": "^1.11.10",
     "eslint-config-prettier": "^9.1.0",
+    "mapbox-gl": "^3.2.0",
     "notistack": "^3.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-map-gl": "^7.1.7",
     "react-router-dom": "^6.21.2",
     "react-signature-canvas": "^1.0.6",
     "recoil": "^0.7.7",
@@ -84,5 +81,57 @@
     "standard-version": "^9.5.0",
     "typescript": "^5.2.2",
     "vite": "^5.0.8"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog",
+      "types": {
+        "feat": {
+          "description": "a new feature is introduced with the changes"
+        },
+        "initial": {
+          "description": "start working on a component / functionality"
+        },
+        "add": {
+          "description": "add new functionality to already existing codebase"
+        },
+        "change": {
+          "description": "modify feature or test files"
+        },
+        "fix": {
+          "description": "a bug fix has occurred"
+        },
+        "chore": {
+          "description": "changes that do not relate to a fix or feature and don't modify src or test files"
+        },
+        "refactor": {
+          "description": "refactored code that neither fixes a bug nor adds a feature"
+        },
+        "docs": {
+          "description": "updates to documentation such as the README or other markdown files"
+        },
+        "style": {
+          "description": "changes that do not affect the meaning of the code"
+        },
+        "test": {
+          "description": "including new or correcting previous tests"
+        },
+        "perf": {
+          "description": "performance improvements"
+        },
+        "ci": {
+          "description": "continuous integration related"
+        },
+        "build": {
+          "description": "changes that affect the build system or external dependencies"
+        },
+        "revert": {
+          "description": "reverts a previous commit"
+        },
+        "reset": {
+          "description": "resets to a previous commit"
+        }
+      }
+    }
   }
 }
