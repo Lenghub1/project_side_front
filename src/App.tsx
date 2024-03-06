@@ -6,18 +6,21 @@ import { SnackbarProvider } from "notistack";
 import WindowProvider from "./provider/WindowProvider";
 import { AppRoutes } from "./route";
 import GlobalStyles from "./styles/globalStyle";
+import Theme from "./theme";
 
 function App() {
   return (
     <RecoilRoot>
       <StylesProvider injectFirst>
         <GlobalStyles />
-        <SnackbarProvider>
-          <HashRouter>
-            <AppRoutes />
-            <WindowProvider />
-          </HashRouter>
-        </SnackbarProvider>
+        <Theme>
+          <SnackbarProvider>
+            <HashRouter>
+              <AppRoutes />
+              <WindowProvider />
+            </HashRouter>
+          </SnackbarProvider>
+        </Theme>
       </StylesProvider>
     </RecoilRoot>
   );

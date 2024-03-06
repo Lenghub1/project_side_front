@@ -1,17 +1,21 @@
-import CP from "@/components";
-import {
-  ButtonProps as ButtonCompProps,
-  Button as MuiButton
-} from "@mui/material";
+import MuiButton, { ButtonProps as MuiButtonProps } from "@mui/material/Button";
+import { ReactNode } from "react";
 
-export interface ButtonProps extends ButtonCompProps {
-  children?: string;
+import CP from "..";
+import { ColorPalette } from "@/@type/common";
+
+/**
+ * * Ignore the interface warning below as we extended another color palette
+ */
+export interface ButtonProps extends MuiButtonProps {
+  children: ReactNode;
+  color?: ColorPalette;
 }
 
-const Button = ({ children, variant = "contained", ...props }: ButtonProps) => {
+const Button = ({ children, ...props }: ButtonProps) => {
   return (
     <CP.Styled.ButtonWrapper>
-      <MuiButton variant={variant} {...props}>
+      <MuiButton variant="contained" {...props}>
         {children}
       </MuiButton>
     </CP.Styled.ButtonWrapper>

@@ -1,6 +1,5 @@
 import Dialog from "@mui/material/Dialog";
 import styled, { css } from "styled-components";
-import { TypographyProps } from "@/components/typography/Typography";
 
 type DivProps = {
   width?: string;
@@ -22,6 +21,7 @@ export const Div = styled.div<DivProps>`
   background: ${({ bg }) => (bg ? bg : "transparent")};
   height: ${({ height }) => (height ? height : "auto")};
   padding: ${({ padding }) => padding && padding};
+  margin: ${({ margin }) => margin && margin};
   overflow: ${({ overflow }) => (overflow ? overflow : "hidden")};
   flex: ${({ flex }) => flex && flex};
 `;
@@ -30,7 +30,6 @@ export const Wrapper = styled(Div)`
   width: ${({ width }) => (width ? width : "100%")};
   height: ${({ height }) => (height ? height : "100%")};
   overflow: hidden;
-  color: #000;
   padding: ${({ padding }) => (padding ? padding : "16px")};
 `;
 
@@ -42,6 +41,7 @@ export const Flex = styled(Div)`
   align-items: ${({ items }) => (items ? items : "center")};
   justify-content: ${({ justify }) => (justify ? justify : "center")};
 `;
+
 export const Top = styled(Flex)`
   position: absolute;
   top: 0;
@@ -60,13 +60,14 @@ export const Bottom = styled(Flex)`
   display: flex;
   justify-content: ${({ justify }) => (justify ? justify : "space-between")};
 `;
+
 export const Form = styled.form<DivProps>`
   width: ${({ width }) => (width ? width : "100%")};
   height: ${({ height }) => (height ? height : "100%")};
   overflow: hidden;
-  color: #000;
   padding: ${({ padding }) => (padding ? padding : "16px")};
 `;
+
 export const InputWrapper = styled.div`
   width: 100%;
 
@@ -87,25 +88,6 @@ export const ButtonWrapper = styled(Div)`
     &:focus {
       outline: 0px;
     }
-  }
-
-  .MuiButton-contained {
-    background: #000;
-    border: 1px solid #000;
-    color: #fff;
-    font-weight: 700;
-    font-size: 18px;
-    padding: 10px;
-
-    &:hover {
-      background-color: #000;
-      border-color: #000;
-    }
-  }
-
-  .MuiButton-text {
-    color: #000;
-    width: auto;
   }
 `;
 
@@ -179,6 +161,7 @@ export const CardWrapper = styled.div<{
       color: #666;
     `};
 `;
+
 export const Tag = styled.div<{
   color?: string;
   bg?: string;
@@ -195,32 +178,6 @@ export const Tag = styled.div<{
   font-size: ${({ size }) => (size ? size : "12px")};
   text-align: center;
   cursor: ${({ cursor }) => (cursor ? cursor : "default")};
-`;
-
-export const Typography = styled.h1<
-  Omit<TypographyProps, "style" | "children">
->`
-  color: #000;
-  font-weight: 400;
-  font-size: 12px;
-  white-space: ${({ wrap }) => (wrap ? wrap : "nowrap")};
-
-  ${({ variant }) =>
-    variant === "header" &&
-    css`
-      font-weight: 700;
-      font-size: 35px;
-    `}
-  ${({ variant }) =>
-    variant === "title" &&
-    css`
-      font-weight: 600;
-      font-size: 28px;
-    `}
-
-  color: ${({ color }) => color && color};
-  font-weight: ${({ weight }) => weight && weight};
-  font-size: ${({ size }) => size && size};
 `;
 
 export const CheckboxWrapper = styled.label`
