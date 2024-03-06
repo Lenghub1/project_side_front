@@ -22,6 +22,7 @@ export const Div = styled.div<DivProps>`
   background: ${({ bg }) => (bg ? bg : "transparent")};
   height: ${({ height }) => (height ? height : "auto")};
   padding: ${({ padding }) => padding && padding};
+  margin: ${({ margin }) => margin && margin};
   overflow: ${({ overflow }) => (overflow ? overflow : "hidden")};
   flex: ${({ flex }) => flex && flex};
 `;
@@ -30,7 +31,6 @@ export const Wrapper = styled(Div)`
   width: ${({ width }) => (width ? width : "100%")};
   height: ${({ height }) => (height ? height : "100%")};
   overflow: hidden;
-  color: #000;
   padding: ${({ padding }) => (padding ? padding : "16px")};
 `;
 
@@ -42,6 +42,7 @@ export const Flex = styled(Div)`
   align-items: ${({ items }) => (items ? items : "center")};
   justify-content: ${({ justify }) => (justify ? justify : "center")};
 `;
+
 export const Top = styled(Flex)`
   position: absolute;
   top: 0;
@@ -60,13 +61,14 @@ export const Bottom = styled(Flex)`
   display: flex;
   justify-content: ${({ justify }) => (justify ? justify : "space-between")};
 `;
+
 export const Form = styled.form<DivProps>`
   width: ${({ width }) => (width ? width : "100%")};
   height: ${({ height }) => (height ? height : "100%")};
   overflow: hidden;
-  color: #000;
   padding: ${({ padding }) => (padding ? padding : "16px")};
 `;
+
 export const InputWrapper = styled.div`
   width: 100%;
 
@@ -179,6 +181,7 @@ export const CardWrapper = styled.div<{
       color: #666;
     `};
 `;
+
 export const Tag = styled.div<{
   color?: string;
   bg?: string;
