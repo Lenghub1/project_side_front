@@ -1,6 +1,7 @@
 import React from "react";
 // import "../public/global.css";
 import alfaTheme from "./theme";
+import Theme, { lightTheme, darkTheme } from "../src/theme";
 
 // import guidelinesStyles from "!css-loader!!postcss-loader!../public/guidelines.css";
 
@@ -43,9 +44,11 @@ export const decorators = [
   (Story) => {
     return (
       // <ThemeProvider value={customTheme}>
-      <div className="sb-unstyled">
-        <Story />
-      </div>
+      <Theme>
+        <div className="sb-unstyled">
+          <Story />
+        </div>
+      </Theme>
       // </ThemeProvider>
     );
   }
