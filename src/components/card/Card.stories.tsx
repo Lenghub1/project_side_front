@@ -16,7 +16,6 @@ export const Card: Story = {
   args: {
     children: <>Hello</>,
     height: "100px",
-    width: "300px",
-    bg: "#faa"
+    width: "300px"
   }
 };
