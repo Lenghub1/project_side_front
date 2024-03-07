@@ -1,12 +1,13 @@
 import { User } from "./User";
 export interface Employement {
   id: string;
-  user: User;
+  name: string;
   position: string;
   description: string;
   startDate: string;
   endDate: string;
-  organizationId: string;
+  profilePicture: string;
   status: string;
-  priviledge: string;
+  privilege: string;
+  workLocation: string;
 }

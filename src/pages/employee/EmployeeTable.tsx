@@ -20,48 +20,137 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 import { alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import { Container } from "@mui/material";
-interface Data {
-  id: number;
-  calories: number;
-  carbs: number;
-  fat: number;
-  name: string;
-  protein: number;
-}
+import { Avatar, Container } from "@mui/material";
+import { Employement } from "@/utils/interfaces/Employment";
 
-function createData(
-  id: number,
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number
-): Data {
-  return {
-    id,
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
-  };
+interface Data extends Employement {}
+
+function createData(data: Data): Data {
+  return data;
 }
 
 const rows = [
-  createData(1, "Cupcake", 305, 3.7, 67, 4.3),
-  createData(2, "Donut", 452, 25.0, 51, 4.9),
-  createData(3, "Eclair", 262, 16.0, 24, 6.0),
-  createData(4, "Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData(5, "Gingerbread", 356, 16.0, 49, 3.9),
-  createData(6, "Honeycomb", 408, 3.2, 87, 6.5),
-  createData(7, "Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData(8, "Jelly Bean", 375, 0.0, 94, 0.0),
-  createData(9, "KitKat", 518, 26.0, 65, 7.0),
-  createData(10, "Lollipop", 392, 0.2, 98, 0.0),
-  createData(11, "Marshmallow", 318, 0, 81, 2.0),
-  createData(12, "Nougat", 360, 19.0, 9, 37.0),
-  createData(13, "Oreo", 437, 18.0, 63, 4.0),
+  createData({
+    id: "1",
+    name: "John Doe",
+    position: "Software Engineer",
+    description: "Worked on web development projects.",
+    startDate: "2022-01-01",
+    endDate: "2023-01-01",
+    profilePicture: "john_doe.jpg",
+    status: "Active",
+    privilege: "Full Access",
+    workLocation: "Remote",
+  }),
+  createData({
+    id: "2",
+    name: "Jane Smith",
+    position: "UX Designer",
+    description: "Designed user interfaces for mobile applications.",
+    startDate: "2022-02-01",
+    endDate: "2023-02-01",
+    profilePicture: "jane_smith.jpg",
+    status: "Inactive",
+    privilege: "Limited Access",
+    workLocation: "Office",
+  }),
+  createData({
+    id: "3",
+    name: "Bob Johnson",
+    position: "Project Manager",
+    description: "Managed multiple software development projects.",
+    startDate: "2022-03-01",
+    endDate: "2023-03-01",
+    profilePicture: "bob_johnson.jpg",
+    status: "Active",
+    privilege: "Full Access",
+    workLocation: "Office",
+  }),
+  createData({
+    id: "4",
+    name: "Emily Davis",
+    position: "Data Analyst",
+    description: "Analyzed and interpreted data for business insights.",
+    startDate: "2022-04-01",
+    endDate: "2023-04-01",
+    profilePicture: "emily_davis.jpg",
+    status: "Active",
+    privilege: "Limited Access",
+    workLocation: "Remote",
+  }),
+  createData({
+    id: "5",
+    name: "Alex Turner",
+    position: "Frontend Developer",
+    description: "Developed user interfaces for web applications.",
+    startDate: "2022-05-01",
+    endDate: "2023-05-01",
+    profilePicture: "alex_turner.jpg",
+    status: "Active",
+    privilege: "Full Access",
+    workLocation: "Office",
+  }),
+  createData({
+    id: "6",
+    name: "Mia Rodriguez",
+    position: "Marketing Specialist",
+    description: "Executed marketing strategies for product promotion.",
+    startDate: "2022-06-01",
+    endDate: "2023-06-01",
+    profilePicture: "mia_rodriguez.jpg",
+    status: "Inactive",
+    privilege: "Limited Access",
+    workLocation: "Remote",
+  }),
+  createData({
+    id: "7",
+    name: "Chris Evans",
+    position: "Backend Developer",
+    description: "Implemented server-side logic for web applications.",
+    startDate: "2022-07-01",
+    endDate: "2023-07-01",
+    profilePicture: "chris_evans.jpg",
+    status: "Active",
+    privilege: "Full Access",
+    workLocation: "Office",
+  }),
+  createData({
+    id: "8",
+    name: "Olivia Moore",
+    position: "HR Coordinator",
+    description:
+      "Coordinated human resources activities within the organization.",
+    startDate: "2022-08-01",
+    endDate: "2023-08-01",
+    profilePicture: "olivia_moore.jpg",
+    status: "Active",
+    privilege: "Limited Access",
+    workLocation: "Office",
+  }),
+  createData({
+    id: "9",
+    name: "Ryan Carter",
+    position: "Financial Analyst",
+    description: "Conducted financial analysis for budget planning.",
+    startDate: "2022-09-01",
+    endDate: "2023-09-01",
+    profilePicture: "ryan_carter.jpg",
+    status: "Inactive",
+    privilege: "Full Access",
+    workLocation: "Remote",
+  }),
+  createData({
+    id: "10",
+    name: "Sophia Adams",
+    position: "Customer Support Representative",
+    description: "Provided assistance to customers with product inquiries.",
+    startDate: "2022-10-01",
+    endDate: "2023-10-01",
+    profilePicture: "sophia_adams.jpg",
+    status: "Active",
+    privilege: "Limited Access",
+    workLocation: "Remote",
+  }),
 ];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -79,10 +168,7 @@ type Order = "asc" | "desc";
 function getComparator<Key extends keyof any>(
   order: Order,
   orderBy: Key
-): (
-  a: { [key in Key]: number | string },
-  b: { [key in Key]: number | string }
-) => number {
+): (a: { [key in Key]: string }, b: { [key in Key]: string }) => number {
   return order === "desc"
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
@@ -92,10 +178,7 @@ function getComparator<Key extends keyof any>(
 // stableSort() brings sort stability to non-modern browsers (notably IE11). If you
 // only support modern browsers you can replace stableSort(exampleArray, exampleComparator)
 // with exampleArray.slice().sort(exampleComparator)
-function stableSort<T>(
-  array: readonly T[],
-  comparator: (a: T, b: T) => number
-) {
+function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
   const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
@@ -119,31 +202,25 @@ const headCells: readonly HeadCell[] = [
     id: "name",
     numeric: false,
     disablePadding: true,
-    label: "Dessert (100g serving)",
+    label: "Emplyee Information",
   },
   {
-    id: "calories",
-    numeric: true,
+    id: "position",
+    numeric: false,
     disablePadding: false,
-    label: "Calories",
+    label: "Position",
   },
   {
-    id: "fat",
-    numeric: true,
+    id: "workLocation",
+    numeric: false,
     disablePadding: false,
-    label: "Fat (g)",
+    label: "Working Loaction",
   },
   {
-    id: "carbs",
-    numeric: true,
+    id: "status",
+    numeric: false,
     disablePadding: false,
-    label: "Carbs (g)",
-  },
-  {
-    id: "protein",
-    numeric: true,
-    disablePadding: false,
-    label: "Protein (g)",
+    label: "Status",
   },
 ];
 
@@ -250,7 +327,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           id="tableTitle"
           component="div"
         >
-          Nutrition
+          Employee
         </Typography>
       )}
       {numSelected > 0 ? (
@@ -271,8 +348,8 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 }
 export default function EnhancedTable() {
   const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<keyof Data>("calories");
-  const [selected, setSelected] = React.useState<readonly number[]>([]);
+  const [orderBy, setOrderBy] = React.useState<keyof Data>("name");
+  const [selected, setSelected] = React.useState<string[]>([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -295,9 +372,9 @@ export default function EnhancedTable() {
     setSelected([]);
   };
 
-  const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
+  const handleClick = (event: React.MouseEvent<unknown>, id: string) => {
     const selectedIndex = selected.indexOf(id);
-    let newSelected: readonly number[] = [];
+    let newSelected: string[] = [];
 
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, id);
@@ -329,7 +406,7 @@ export default function EnhancedTable() {
     setDense(event.target.checked);
   };
 
-  const isSelected = (id: number) => selected.indexOf(id) !== -1;
+  const isSelected = (id: string) => selected.indexOf(id) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -350,7 +427,7 @@ export default function EnhancedTable() {
         <EnhancedTableToolbar numSelected={selected.length} />
         <TableContainer>
           <Table
-            sx={{ minWidth: 750 }}
+            sx={{ minWidth: 750, textAlign: "start" }}
             aria-labelledby="tableTitle"
             size={dense ? "small" : "medium"}
           >
@@ -376,7 +453,9 @@ export default function EnhancedTable() {
                     tabIndex={-1}
                     key={row.id}
                     selected={isItemSelected}
-                    sx={{ cursor: "pointer" }}
+                    sx={{
+                      cursor: "pointer",
+                    }}
                   >
                     <TableCell padding="checkbox">
                       <Checkbox
@@ -393,12 +472,16 @@ export default function EnhancedTable() {
                       scope="row"
                       padding="none"
                     >
-                      {row.name}
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
+                        <Avatar />
+                        {row.name}
+                      </Box>
                     </TableCell>
-                    <TableCell align="right">{row.calories}</TableCell>
-                    <TableCell align="right">{row.fat}</TableCell>
-                    <TableCell align="right">{row.carbs}</TableCell>
-                    <TableCell align="right">{row.protein}</TableCell>
+                    <TableCell align="left">{row.position}</TableCell>
+                    <TableCell align="left">{row.workLocation}</TableCell>
+                    <TableCell align="left">{row.status}</TableCell>
                   </TableRow>
                 );
               })}

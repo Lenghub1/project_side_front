@@ -10,7 +10,7 @@ import Box from "@mui/material/Box";
 const Organization = () => {
   return (
     <Container sx={{ paddingTop: 6 }}>
-      <CreateOrgStepper />
+      {/* <CreateOrgStepper />
 
       <MapComponent />
 
@@ -28,7 +28,7 @@ const Organization = () => {
         <Box>
           <CP.Input label="Currency " />
         </Box>
-      </Stack>
+      </Stack> */}
 
       <EmployeeTable />
     </Container>
