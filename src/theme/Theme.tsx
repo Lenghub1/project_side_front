@@ -1,4 +1,4 @@
-import ThemeProvider from "@mui/material/styles/ThemeProvider";
+import { ThemeProvider } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 
 import { lightTheme, darkTheme } from ".";
@@ -13,7 +13,7 @@ const Theme = ({ children }: ThemeProps) => {
       <Box
         sx={{
           backgroundColor: "background.default",
-          minHeight: "100vh"
+          minHeight: "100vh",
         }}
       >
         {children}

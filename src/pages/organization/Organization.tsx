@@ -1,10 +1,11 @@
 import CP from "@/components";
 import Typography from "@/components/typography";
 import { Container } from "@mui/material";
-import Box from "@mui/material/Box";
 import CreateOrgStepper from "@/components/stepper/CreateOrgStepper";
 import MapComponent from "@/components/map/Map";
 import Stack from "@mui/material/Stack";
+import EmployeeTable from "@/pages/employee/EmployeeTable";
+import Box from "@mui/material/Box";
 
 const Organization = () => {
   return (
@@ -28,6 +29,8 @@ const Organization = () => {
           <CP.Input label="Currency " />
         </Box>
       </Stack>
+
+      <EmployeeTable />
     </Container>
   );
 };
