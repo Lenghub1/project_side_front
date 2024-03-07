@@ -13,7 +13,7 @@ const Theme = ({ children }: ThemeProps) => {
       <Box
         sx={{
           backgroundColor: "background.default",
-          height: "100vh"
+          minHeight: "100vh"
         }}
       >
         {children}
