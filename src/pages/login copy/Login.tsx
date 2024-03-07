@@ -37,29 +37,25 @@ const LoginPage = () => {
     <CP.Styled.Wrapper>
       <Flex height="100%">
         <CP.Styled.Div
+          padding={!isMobile ? "0 1rem" : "0 16px"}
           style={{
             minWidth: isMobile ? "396px" : "565px",
-            padding: !isMobile ? "0 1rem" : "0 16px"
+            maxWidth: "900px",
           }}
         >
-          <Flex
-            items="flex-start"
-            direction="column"
-            style={{
-              padding: !isMobile ? "0 3rem" : "0px"
-            }}
-          >
+          <Flex direction="column" padding={!isMobile ? "0 3rem" : "0px"}>
             <CP.Typography
               variant="h5"
-              style={{
-                marginBottom: "1rem"
-              }}
+              width={"100%"}
+              marginBottom={"1rem"}
+              textAlign={"start"}
             >
               welcome back
             </CP.Typography>
             <CP.Typography
               variant="h4"
               margin="0 0 2rem"
+              width={"100%"}
               fontWeight="semibold"
               textAlign={isMobile ? "center" : "start"}
             >
@@ -140,7 +136,7 @@ const LoginPage = () => {
                 <CP.Typography
                   variant="subtitle1"
                   style={{
-                    margin: "1rem 0"
+                    margin: "1rem 0",
                   }}
                 >
                   OR
@@ -193,7 +189,7 @@ const LoginPage = () => {
                   height: "auto",
                   objectFit: "cover",
                   maxWidth: "100%",
-                  maxHeight: "100%"
+                  maxHeight: "100%",
                 }}
               />
             </Flex>
