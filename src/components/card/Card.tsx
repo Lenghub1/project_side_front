@@ -6,23 +6,24 @@ export interface CardProps extends PaperProps {
   children?: string | ReactNode;
   height?: string;
   width?: string;
+  padding?: string;
 }
 
 const Card = ({
   children,
   height,
-  width = "fit-content",
+  width,
+  padding = "1rem",
   sx,
   ...props
 }: CardProps) => {
   return (
-    <CP.Styled.CardWrapper>
+    <CP.Styled.CardWrapper width={width}>
       <Paper
         sx={{
-          width,
+          padding,
           height,
           minWidth: "48px",
-          padding: "1rem",
           ...sx
         }}
         {...props}

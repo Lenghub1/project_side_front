@@ -115,10 +115,11 @@ export const DatepickerWrapper = styled.div`
   }
 `;
 
-export const CardWrapper = styled.div`
+export const CardWrapper = styled.div<{ width?: string }>`
   box-sizing: border-box;
   cursor: pointer;
   position: relative;
+  width: ${({ width }) => (width ? width : "fit-content")};
 `;
 
 export const Tag = styled.div<{
