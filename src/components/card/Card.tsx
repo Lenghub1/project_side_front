@@ -1,35 +1,35 @@
 import CP from "@/components";
+import Paper, { PaperProps } from "@mui/material/Paper";
 import { ReactNode } from "react";
 
-export interface CardProps {
+export interface CardProps extends PaperProps {
   children?: string | ReactNode;
-  onClick?: (e: any) => void;
-  isActive?: boolean;
-  disabled?: boolean;
   height?: string;
   width?: string;
-  bg?: string;
+  padding?: string;
 }
 
 const Card = ({
   children,
-  onClick,
-  isActive,
-  disabled,
   height,
   width,
-  bg
+  padding = "1rem",
+  sx,
+  ...props
 }: CardProps) => {
   return (
-    <CP.Styled.CardWrapper
-      height={height}
-      width={width}
-      bg={bg}
-      isActive={isActive}
-      disabled={disabled}
-      onClick={onClick ? onClick : () => {}}
-    >
-      {children}
+    <CP.Styled.CardWrapper width={width}>
+      <Paper
+        sx={{
+          padding,
+          height,
+          minWidth: "48px",
+          ...sx
+        }}
+        {...props}
+      >
+        {children}
+      </Paper>
     </CP.Styled.CardWrapper>
   );
 };

@@ -44,7 +44,7 @@ const Modal = ({
         <DialogActions>
           {type === "confirm" ? (
             <>
-              <CP.Button onClick={onCancel ? onCancel : onClose}>
+              <CP.Button variant="text" onClick={onCancel ? onCancel : onClose}>
                 {cancelText ? cancelText : "Cancel"}
               </CP.Button>
               <CP.Button onClick={onOk ? onOk : onClose}>

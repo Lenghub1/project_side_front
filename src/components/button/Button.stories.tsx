@@ -10,19 +10,20 @@ const meta: Meta<typeof Component> = {
     children: {
       control: "text",
       defaultValue: "Button",
-      description: "Button Description"
+      description:
+        "Buttons allow users to take actions, and make choices, with a single tap."
     },
     variant: {
       control: "select",
-      options: ["filled", "gradient", "outlined", "text"],
-      defaultValue: "filled",
+      options: ["contained", "outlined", "text"],
+      defaultValue: "contained",
       description:
         "The Button component comes with 4 different variants that you can change it using the variant prop."
     },
     size: {
       control: "select",
-      options: ["sm", "md", "lg"],
-      defaultValue: "md",
+      options: ["small", "medium", "large"],
+      defaultValue: "medium",
       description:
         "The Button component comes with 3 different sizes that you can change it using the size prop."
     },
@@ -35,8 +36,16 @@ const meta: Meta<typeof Component> = {
 
     color: {
       control: { type: "select" },
-      defaultValue: "blue",
-      options: ["blue", "red", "green", "amber"]
+      defaultValue: "primary",
+      options: [
+        "primary",
+        "secondary",
+        "accent",
+        "success",
+        "info",
+        "warning",
+        "error"
+      ]
     }
   }
 };

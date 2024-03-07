@@ -21,7 +21,7 @@ const theme = createTheme({
       secondary: "#374868"
     },
     background: {
-      default: "#fff",
+      default: "#fafafa",
       paper: "#fff"
     }
   }
