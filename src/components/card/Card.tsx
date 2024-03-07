@@ -24,7 +24,7 @@ const Card = ({
           padding,
           height,
           minWidth: "48px",
-          ...sx
+          ...sx,
         }}
         {...props}
       >

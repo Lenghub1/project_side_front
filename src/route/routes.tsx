@@ -23,9 +23,14 @@ const routes: RouteProps[] = [
     element: Pg.Campus.default.SetCampusPage
   },
   {
-    name: "signup",
-    path: "/signup",
+    name: "createAccount",
+    path: "/create-account",
     element: Pg.SignupPage
+  },
+  {
+    name: "Signup",
+    path: "/signup",
+    element: Pg.GetStarted
   }
 ];
 
