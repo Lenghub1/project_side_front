@@ -7,6 +7,7 @@ import Checkbox from "./checkbox";
 import Modal from "./modal";
 import Typography from "./typography";
 import PhonePrefix from "./phonePrefix";
+import InputBox from "./inputbox/Inputbox";
 
 import * as Layout from "./layout";
 import * as Styled from "../styles/styled";
@@ -21,7 +22,8 @@ const CP = {
   Modal,
   Input,
   Typography,
-  PhonePrefix,
+  PhonePrefix,,
+  InputBox
 };
 
 export type { ButtonProps };

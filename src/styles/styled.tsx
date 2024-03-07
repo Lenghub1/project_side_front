@@ -13,6 +13,8 @@ type DivProps = {
   items?: "center" | "space-between" | "flex-end" | "flex-start";
   gap?: string;
   flex?: number;
+  minwidth?: string;
+  maxWidth?: string;
 };
 
 export const Div = styled.div<DivProps>`
@@ -25,6 +27,8 @@ export const Div = styled.div<DivProps>`
   overflow: ${({ overflow }) => (overflow ? overflow : "hidden")};
   flex: ${({ flex }) => flex && flex};
   gap: ${({ gap }) => gap && gap};
+  min-width: ${({ minwidth }) => minwidth && minwidth};
+  max-width: ${({ maxWidth }) => maxWidth && maxWidth};
 `;
 
 export const Wrapper = styled(Div)`
@@ -151,6 +155,22 @@ export const StyleDialog = styled(Dialog)`
       width: auto !important;
       & button {
         height: 40px;
+      }
+    }
+  }
+`;
+
+export const InputBoxWrapper = styled.div`
+  width: auto;
+
+  & .MuiTextField-root {
+    width: 44px;
+    height: 44px;
+    & .MuiInputBase-root {
+      width: auto;
+      & .MuiInputBase-input {
+        padding: 12px 8px;
+        maxlength: 1;
       }
     }
   }

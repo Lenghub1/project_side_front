@@ -14,3 +14,4 @@ export * as Branch from "@/pages/branch";
 export * from "@/pages/organization";
 export * as choose from "@/pages/chooseOrganization";
 export * from "@/pages/login copy";
+export * as ForgetPassword from "@/pages/forgetpassword";
