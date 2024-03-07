@@ -73,12 +73,12 @@ export const InputWrapper = styled.div`
 
   & .MuiTextField-root {
     width: 100%;
-    & .MuiInputBase-root {
-      width: 100%;
-      & .MuiInputBase-input {
-        padding: 12px 8px;
-      }
-    }
+    // & .MuiInputBase-root {
+    //   width: 100%;
+    //   & .MuiInputBase-input {
+    //     padding: 12px 8px;
+    //   }
+    // }
   }
 `;
 
