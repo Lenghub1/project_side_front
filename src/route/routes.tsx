@@ -11,8 +11,9 @@ export interface RouteProps {
 }
 
 const routes: RouteProps[] = [
-  { name: "home", path: "/", element: Pg.HomePage },
+  // { name: "home", path: "/", element: Pg.HomePage },
   // { name: "login", path: "/login", element: Pg.LoginPage },
+
   // {
   //   name: "campusSelect",
   //   path: "/campus",
@@ -83,7 +84,11 @@ const routes: RouteProps[] = [
     element: Pg.TestLoginPage,
     protected: false,
   },
-
+  {
+    name: "overviewOrganization",
+    path: "/overview",
+    element: Pg.overviewOrganization,
+  },
   {
     name: "group",
     path: "group",

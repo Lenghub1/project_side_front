@@ -30,7 +30,7 @@ export const Div = styled.div<DivProps>`
 export const Wrapper = styled(Div)`
   width: ${({ width }) => (width ? width : "100%")};
   height: ${({ height }) => (height ? height : "100%")};
-  overflow: hidden;
+  overflow: ${({ overflow }) => (overflow ? overflow : "hidden")};
   padding: ${({ padding }) => (padding ? padding : "16px")};
 `;
 
