@@ -32,8 +32,8 @@ const ResetPassword = () => {
   }, []);
 
   return (
-    <CP.Styled.Wrapper>
-      <Flex height="100%">
+    <CP.Styled.Wrapper height="100vh">
+      <Flex height="inherit">
         <CP.Styled.Div padding={!isMobile ? "0 1rem" : "0 16px"} width="600px">
           <Flex direction="column" padding={!isMobile ? "0 3rem" : "0px"}>
             <CP.Typography
@@ -67,7 +67,7 @@ const ResetPassword = () => {
                 <CP.Input label="Confirm password" />
               </Flex>
 
-              <Flex justify="end" gap="20px">
+              <Flex justify="flex-end" gap="20px">
                 <CP.Button variant="text">Cancel</CP.Button>
                 <CP.Button>SAVE</CP.Button>
               </Flex>

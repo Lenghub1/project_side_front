@@ -34,8 +34,8 @@ const LoginPage = () => {
   }, []);
 
   return (
-    <CP.Styled.Wrapper>
-      <Flex height="100%">
+    <CP.Styled.Wrapper height="100vh">
+      <Flex height="inherit">
         <CP.Styled.Div
           padding={!isMobile ? "0 1rem" : "0 16px"}
           style={{

@@ -31,8 +31,8 @@ const OTP = () => {
   }, []);
 
   return (
-    <CP.Styled.Wrapper>
-      <Flex height="100%" justify="center" align-items="center">
+    <CP.Styled.Wrapper height="100vh">
+      <Flex height="inherit">
         <CP.Styled.Div padding={!isMobile ? "0 1rem" : "0 16px"} width="600px">
           <Flex
             items="flex-start"
