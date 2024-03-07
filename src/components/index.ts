@@ -7,6 +7,7 @@ import Checkbox from "./checkbox";
 import Modal from "./modal";
 import Typography from "./typography";
 import PhonePrefix from "./phonePrefix";
+import InputBox from "./inputbox/Inputbox";
 import Container from "./container";
 import SnackbarMessage from "./showMessage";
 
@@ -24,6 +25,7 @@ const CP = {
   Input,
   Typography,
   PhonePrefix,
+  InputBox,
   Container,
   SnackbarMessage,
 };
