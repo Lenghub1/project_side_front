@@ -1,5 +1,5 @@
 import Dialog from "@mui/material/Dialog";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
 type DivProps = {
   width?: string;
@@ -115,43 +115,10 @@ export const DatepickerWrapper = styled.div`
   }
 `;
 
-export const CardWrapper = styled.div<{
-  bg?: string;
-  height?: string;
-  width?: string;
-  isActive?: boolean;
-  disabled?: boolean;
-}>`
-  width: ${({ width }) => (width ? width : "100%")};
+export const CardWrapper = styled.div`
   box-sizing: border-box;
-  min-height: ${({ height }) => (height ? height : "47px")};
-  height: ${({ height }) => (height ? height : "auto")};
-  border-radius: 5px;
-  background: ${({ bg }) => (bg ? bg : "#FFF")};
-  color: #000;
-  border: 1px solid #ccc;
   cursor: pointer;
-  padding: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: 700;
-  font-size: 20px;
   position: relative;
-  ${({ isActive }) =>
-    isActive &&
-    css`
-      border: 0px;
-      background: #000;
-      color: #fff;
-    `}
-  ${({ disabled }) =>
-    disabled &&
-    css`
-      cursor: default;
-      background: #ccc;
-      color: #666;
-    `};
 `;
 
 export const Tag = styled.div<{
