@@ -30,7 +30,7 @@ const Radio = ({ list, value, onChange, ...props }: RadioProps) => {
           return (
             <label>
               <MuiRadio value={item.value} {...props} />
-              <p>{item.label}</p>
+              <CP.Typography color="text.secondary">{item.label}</CP.Typography>
             </label>
           );
         })}
