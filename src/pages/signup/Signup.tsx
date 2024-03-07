@@ -3,6 +3,7 @@ import CP from "@/components";
 import MuiDivider from "@material-ui/core/Divider";
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
+import { signupApi } from "@/api/auth";
 
 export const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -17,11 +18,25 @@ interface SignupProps {
 }
 
 const SignupPage = ({ accountType = "employer" }: SignupProps) => {
+  async function signup(): Promise<void> {
+    try {
+      const randomData = {
+        firstName: "Test",
+        lastName: "User",
+        email: "test@example.com",
+        password: "SecurePassword123",
+      };
+      signupApi.signup(randomData);
+    } catch (error) {
+      console.log("Something went wrong: ", error);
+    }
+  }
+
   const email = useInput("");
   const password = useInput("");
 
   return (
-    <CP.Styled.Wrapper>
+    <CP.Styled.Wrapper height="100vh">
       <Flex height="100%">
         <CP.Styled.Div padding="0 1rem">
           <CP.Styled.Form>
@@ -31,7 +46,7 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
                 style={{
                   marginBottom: "2rem",
                   fontWeight: "semibold",
-                  textAlign: "start"
+                  textAlign: "start",
                 }}
               >
                 Create a new account
@@ -50,7 +65,9 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
                 <Divider></Divider>
                 <Flex gap="1rem">
                   <CP.Button variant="text">Cancel</CP.Button>
-                  <CP.Button type="submit">Signup</CP.Button>
+                  <CP.Button type="submit" onClick={signup}>
+                    Signup
+                  </CP.Button>
                 </Flex>
                 <CP.Typography variant="subtitle2">
                   By signing up, you agree to our{" "}

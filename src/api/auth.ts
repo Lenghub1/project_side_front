@@ -5,7 +5,17 @@ const login = async () => {
 };
 
 const loginApi = {
-  login
+  login,
+};
+
+const signup = async (data: any) => {
+  return api.post("/auth/signup", data);
+};
+
+const signupApi = {
+  signup,
 };
 
 export default loginApi;
+
+export { signupApi };
