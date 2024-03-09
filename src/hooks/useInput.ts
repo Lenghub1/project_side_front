@@ -7,7 +7,7 @@ export default (defaultValue: string | number | boolean) => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const {
-      target: { value }
+      target: { value },
     } = e;
     setValue(value);
   };

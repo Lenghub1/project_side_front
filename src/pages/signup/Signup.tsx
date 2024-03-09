@@ -1,9 +1,10 @@
-import useInput from "@/hooks/useInput";
 import CP from "@/components";
-import MuiDivider from "@material-ui/core/Divider";
+import MuiDivider from "@mui/material/Divider";
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 import { signupApi } from "@/api/auth";
+import useValidatedInput from "@/hooks/useValidatedInput";
+import { useCriteriaValidator } from "@/hooks/useCriteriaInput";
 
 export const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -17,24 +18,27 @@ interface SignupProps {
   accountType: "employee" | "employer";
 }
 
-const SignupPage = ({ accountType = "employer" }: SignupProps) => {
-  async function signup(): Promise<void> {
-    try {
-      const randomData = {
-        firstName: "Test",
-        lastName: "User",
-        email: "test@example.com",
-        password: "SecurePassword123",
-      };
-      signupApi.signup(randomData);
-    } catch (error) {
-      console.log("Something went wrong: ", error);
-    }
+const validateEmail = (email: string): string => {
+  const emailRegex = /^\S+@\S+\.\S+$/;
+  if (!emailRegex.test(email)) {
+    return "Please enter a valid email address.";
   }
+  return "";
+};
 
-  const email = useInput("");
-  const password = useInput("");
+const SignupPage = ({ accountType = "employer" }: SignupProps) => {
+  const email = useValidatedInput("", validateEmail, "Email");
+  const criteria = {
+    length: { min: 8, max: 25 },
+    containsNumber: true,
+    containsCapitalLetter: true,
+    containsLowercaseLetter: true,
+    containsSpecialCharacter: true,
+  };
 
+  const hasError = (errorType) => password.errors.includes(errorType);
+
+  const password = useCriteriaValidator("", criteria, "Password");
   return (
     <CP.Styled.Wrapper height="100vh">
       <Flex height="100%">
@@ -52,14 +56,106 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
                 Create a new account
               </CP.Typography>
               <Flex direction="column" gap="24px">
+                <CP.Input
+                  label="Email or Phone number"
+                  value={email.value}
+                  onChange={email.onChange}
+                  placeholder="Email"
+                  onBlur={email.onBlur}
+                  error={!!email.error}
+                  helperText={email.error}
+                  required
+                />
+
+                <CP.Input
+                  label="Password"
+                  type="password"
+                  value={password.value}
+                  onChange={password.onChange}
+                  onBlur={password.onBlur}
+                  error={password.errors.length > 0}
+                  helperText={
+                    password.touched && (
+                      <ul>
+                        <li
+                          style={{
+                            color: hasError("From 8 to 25 characters")
+                              ? "red"
+                              : "green",
+                          }}
+                        >
+                          {hasError("From 8 to 25 characters") ? "✖" : "✔"}{" "}
+                          From 8 to 25 characters
+                        </li>
+                        <li
+                          style={{
+                            color: hasError("At least one number")
+                              ? "red"
+                              : "green",
+                          }}
+                        >
+                          {hasError("At least one number") ? "✖" : "✔"} At
+                          least one number
+                        </li>
+                        <li
+                          style={{
+                            color: hasError("At least one capital letter")
+                              ? "red"
+                              : "green",
+                          }}
+                        >
+                          {hasError("At least one capital letter")
+                            ? "✖"
+                            : "✔"}{" "}
+                          At least one capital letter
+                        </li>
+                        <li
+                          style={{
+                            color: hasError("At least one lowercase letter")
+                              ? "red"
+                              : "green",
+                          }}
+                        >
+                          {hasError("At least one lowercase letter")
+                            ? "✖"
+                            : "✔"}{" "}
+                          At least one lowercase letter
+                        </li>
+                        <li
+                          style={{
+                            color: hasError(
+                              "At least one special character such as exclamation point or comma"
+                            )
+                              ? "red"
+                              : "green",
+                          }}
+                        >
+                          {hasError(
+                            "At least one special character such as exclamation point or comma"
+                          )
+                            ? "✖"
+                            : "✔"}{" "}
+                          At least one special character such as exclamation
+                          point or comma
+                        </li>
+                      </ul>
+                    )
+                  }
+                  required
+                />
+                {/* <div className="errors">
+                  {password.errors.map((error, index) => (
+                    <p key={index}>{error}</p>
+                  ))}
+                </div> */}
+
                 {accountType === "employer" && (
                   <>
                     <CP.Input label="First name" required />
                     <CP.Input label="Last name" required />
                   </>
                 )}
-                <CP.Input label="Email or Phone number" required />
-                <CP.Input label="Password" type="password" required />
+
                 <CP.Input label="Confirm password" type="password" required />
 
                 <Divider></Divider>
@@ -95,3 +191,17 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
 };
 
 export default SignupPage;
+
+async function signup(): Promise<void> {
+  try {
+    const randomData = {
+      firstName: "Test",
+      lastName: "User",
+      email: "test@example.com",
+      password: "SecurePassword123",
+    };
+    signupApi.signup(randomData);
+  } catch (error) {
+    console.log("Something went wrong: ", error);
+  }
+}
