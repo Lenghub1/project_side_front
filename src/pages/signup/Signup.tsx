@@ -4,7 +4,15 @@ import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 import { signupApi } from "@/api/auth";
 import useValidatedInput from "@/hooks/useValidatedInput";
-import { useCriteriaValidator } from "@/hooks/useCriteriaInput";
+import useCriteriaValidator from "@/hooks/useCriteriaInput.tsx";
+import { SyntheticEvent, useState } from "react";
+import useMatchInput from "@/hooks/useMatchInput";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import IconButton from "@mui/material/IconButton";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
+import countries from "@/components/phonePrefix/countries.json";
 
 export const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -14,9 +22,11 @@ const Divider = styled(MuiDivider)`
   width: 100%;
 `;
 
-interface SignupProps {
+type SignupProps = {
   accountType: "employee" | "employer";
-}
+};
+
+type SignupMethod = "email" | "phone";
 
 const validateEmail = (email: string): string => {
   const emailRegex = /^\S+@\S+\.\S+$/;
@@ -26,19 +36,48 @@ const validateEmail = (email: string): string => {
   return "";
 };
 
+const passwordCriteria = {
+  length: { min: 8, max: 25 },
+  containsNumber: true,
+  containsCapitalLetter: true,
+  containsLowercaseLetter: true,
+  // containsSpecialCharacter: true,
+};
+
 const SignupPage = ({ accountType = "employer" }: SignupProps) => {
-  const email = useValidatedInput("", validateEmail, "Email");
-  const criteria = {
-    length: { min: 8, max: 25 },
-    containsNumber: true,
-    containsCapitalLetter: true,
-    containsLowercaseLetter: true,
-    containsSpecialCharacter: true,
+  const firstName = useValidatedInput("", "First Name");
+  const lastName = useValidatedInput("", "Last Name");
+  const [signupMethod, setSignupMethod] = useState<SignupMethod>("email");
+  const email = useValidatedInput("", "Email", validateEmail);
+  const phone = useValidatedInput("", "Phone");
+  const password = useCriteriaValidator("", passwordCriteria);
+  const confirmPassword = useMatchInput(password.value, "", "Confirm Password");
+  const [passwordIsVisible, setPasswordIsVisible] = useState(false);
+  const [confirmPasswordIsVisible, setConfirmPasswordIsVisible] =
+    useState(false);
+  const [selectedCountry, setSelectedCountry] = useState<{
+    name: string;
+    dialCode: string;
+    flag: string;
+  }>(countries[0]);
+
+  const handleSignupMethodChange = (
+    event: SyntheticEvent,
+    newValue: number
+  ) => {
+    const method = newValue === 0 ? "email" : "phone";
+    if (method === "phone" && email.touched) {
+      email.setTouched(false);
+      if (email.value) email.setValue("");
+    } else if (method === "email" && phone.touched) {
+      phone.setTouched(false);
+      if (phone.value) phone.setValue("");
+    }
+    setSignupMethod(method);
   };
 
-  const hasError = (errorType) => password.errors.includes(errorType);
+  const activeTabIndex = signupMethod === "email" ? 0 : 1;
 
-  const password = useCriteriaValidator("", criteria, "Password");
   return (
     <CP.Styled.Wrapper height="100vh">
       <Flex height="100%">
@@ -55,108 +94,115 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
               >
                 Create a new account
               </CP.Typography>
-              <Flex direction="column" gap="24px">
-                <CP.Input
-                  label="Email or Phone number"
-                  value={email.value}
-                  onChange={email.onChange}
-                  placeholder="Email"
-                  onBlur={email.onBlur}
-                  error={!!email.error}
-                  helperText={email.error}
-                  required
-                />
+
+              <Flex direction="column" gap="1.5rem">
+                {accountType === "employer" && (
+                  <Flex gap=".5rem" items="flex-start">
+                    <CP.Input
+                      label="First name"
+                      value={firstName.value}
+                      onChange={firstName.onChange}
+                      onBlur={firstName.onBlur}
+                      error={!!firstName.error}
+                      helperText={<firstName.HelperText />}
+                      required
+                    />
+                    <CP.Input
+                      label="Last name"
+                      value={lastName.value}
+                      onChange={lastName.onChange}
+                      onBlur={lastName.onBlur}
+                      error={!!lastName.error}
+                      helperText={<lastName.HelperText />}
+                      required
+                    />
+                  </Flex>
+                )}
+                <Tabs
+                  sx={{ alignSelf: "flex-start" }}
+                  value={activeTabIndex}
+                  onChange={(e, value) => handleSignupMethodChange(e, value)}
+                  aria-label="signup options"
+                >
+                  <Tab label="With Email" />
+                  <Tab label="With Phone" />
+                </Tabs>
+                {signupMethod === "email" ? (
+                  <CP.Input
+                    label="Email"
+                    value={email.value}
+                    onChange={email.onChange}
+                    placeholder="Email"
+                    onBlur={email.onBlur}
+                    error={!!email.error}
+                    helperText={<email.HelperText />}
+                    required
+                  />
+                ) : (
+                  <Flex gap="0.5rem" items="flex-start">
+                    <CP.PhonePrefix
+                      selectedCountry={selectedCountry}
+                      setSelectedCountry={setSelectedCountry}
+                    />
+                    <CP.Input
+                      label="Phone number"
+                      value={phone.value}
+                      type="number"
+                      onChange={phone.onChange}
+                      placeholder="Phone"
+                      onBlur={phone.onBlur}
+                      error={!!phone.error}
+                      helperText={<phone.HelperText />}
+                      required
+                    />
+                  </Flex>
+                )}
 
                 <CP.Input
                   label="Password"
-                  type="password"
+                  type={passwordIsVisible ? "text" : "password"}
                   value={password.value}
                   onChange={password.onChange}
                   onBlur={password.onBlur}
                   error={password.errors.length > 0}
-                  helperText={
-                    password.touched && (
-                      <ul>
-                        <li
-                          style={{
-                            color: hasError("From 8 to 25 characters")
-                              ? "red"
-                              : "green",
-                          }}
-                        >
-                          {hasError("From 8 to 25 characters") ? "✖" : "✔"}{" "}
-                          From 8 to 25 characters
-                        </li>
-                        <li
-                          style={{
-                            color: hasError("At least one number")
-                              ? "red"
-                              : "green",
-                          }}
-                        >
-                          {hasError("At least one number") ? "✖" : "✔"} At
-                          least one number
-                        </li>
-                        <li
-                          style={{
-                            color: hasError("At least one capital letter")
-                              ? "red"
-                              : "green",
-                          }}
-                        >
-                          {hasError("At least one capital letter")
-                            ? "✖"
-                            : "✔"}{" "}
-                          At least one capital letter
-                        </li>
-                        <li
-                          style={{
-                            color: hasError("At least one lowercase letter")
-                              ? "red"
-                              : "green",
-                          }}
-                        >
-                          {hasError("At least one lowercase letter")
-                            ? "✖"
-                            : "✔"}{" "}
-                          At least one lowercase letter
-                        </li>
-                        <li
-                          style={{
-                            color: hasError(
-                              "At least one special character such as exclamation point or comma"
-                            )
-                              ? "red"
-                              : "green",
-                          }}
-                        >
-                          {hasError(
-                            "At least one special character such as exclamation point or comma"
-                          )
-                            ? "✖"
-                            : "✔"}{" "}
-                          At least one special character such as exclamation
-                          point or comma
-                        </li>
-                      </ul>
-                    )
-                  }
+                  helperText={<password.HelperText />}
                   required
+                  InputProps={{
+                    endAdornment: (
+                      <IconButton
+                        onClick={() => setPasswordIsVisible((prev) => !prev)}
+                      >
+                        {passwordIsVisible ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    ),
+                  }}
                 />
-                {/* <div className="errors">
-                  {password.errors.map((error, index) => (
-                    <p key={index}>{error}</p>
-                  ))}
-                </div> */}
 
-                {accountType === "employer" && (
-                  <>
-                    <CP.Input label="First name" required />
-                    <CP.Input label="Last name" required />
-                  </>
-                )}
-
-                <CP.Input label="Confirm password" type="password" required />
+                <CP.Input
+                  label="Confirm password"
+                  type="password"
+                  value={confirmPassword.value}
+                  onChange={confirmPassword.onChange}
+                  onBlur={confirmPassword.onBlur}
+                  error={!!confirmPassword.error}
+                  helperText={<confirmPassword.HelperText />}
+                  required
+                  InputProps={{
+                    endAdornment: (
+                      <IconButton
+                        onClick={() =>
+                          setConfirmPasswordIsVisible((prev) => !prev)
+                        }
+                      >
+                        {confirmPasswordIsVisible ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
+                      </IconButton>
+                    ),
+                  }}
+                />
 
                 <Divider></Divider>
                 <Flex gap="1rem">
