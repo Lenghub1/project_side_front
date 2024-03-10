@@ -71,6 +71,7 @@ export default function useValidatedInput(
     onChange,
     setValue,
     error,
+    setError,
     onBlur,
     HelperText,
     touched,

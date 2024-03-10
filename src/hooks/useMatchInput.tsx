@@ -57,5 +57,5 @@ export default function useMatchInput(
     ) : null;
   };
 
-  return { value, onChange, setValue, onBlur, error, HelperText };
+  return { value, onChange, setValue, onBlur, error, setError, HelperText };
 }

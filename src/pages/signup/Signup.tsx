@@ -2,7 +2,7 @@ import CP from "@/components";
 import MuiDivider from "@mui/material/Divider";
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
-import { signupApi } from "@/api/auth";
+import { authApi } from "@/api/auth";
 import useValidatedInput from "@/hooks/useValidatedInput";
 import useCriteriaValidator from "@/hooks/useCriteriaInput.tsx";
 import { SyntheticEvent, useState } from "react";
@@ -14,6 +14,8 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import countries from "@/components/phonePrefix/countries.json";
 import Box from "@mui/material/Box";
+import { handleApiRequest } from "@/api";
+import { useSnackbar } from "notistack";
 
 export const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -46,6 +48,7 @@ const passwordCriteria = {
 };
 
 const SignupPage = ({ accountType = "employer" }: SignupProps) => {
+  const { enqueueSnackbar } = useSnackbar();
   const firstName = useValidatedInput("", "First Name");
   const lastName = useValidatedInput("", "Last Name");
   const [signupMethod, setSignupMethod] = useState<SignupMethod>("email");
@@ -61,6 +64,7 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
     dialCode: string;
     flag: string;
   }>(countries[0]);
+  const activeTabIndex = signupMethod === "email" ? 0 : 1;
 
   const handleSignupMethodChange = (
     event: SyntheticEvent,
@@ -77,16 +81,6 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
     setSignupMethod(method);
   };
 
-  console.log(
-    !firstName.value ||
-      !!firstName.error ||
-      !lastName.value ||
-      !!lastName.error ||
-      (signupMethod === "phone"
-        ? !phone.value || !!phone.error
-        : !email.value || !!email.error)
-  );
-
   const isFormInvalid =
     !firstName.value ||
     !!firstName.error ||
@@ -100,7 +94,69 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
     !confirmPassword.value ||
     !!confirmPassword.error;
 
-  const activeTabIndex = signupMethod === "email" ? 0 : 1;
+  function showError(message: string) {
+    enqueueSnackbar(message, {
+      variant: "error",
+      anchorOrigin: {
+        vertical: "bottom", // or 'bottom'
+        horizontal: "left", // or 'left', 'center'
+      },
+    });
+  }
+
+  async function signup(method: string, data: any): Promise<void> {
+    const [response, error] = await handleApiRequest(() =>
+      authApi.signup(method, data)
+    );
+
+    if (error) {
+      if (error?.response?.status === 409) {
+        if (signupMethod === "email") {
+          showError(
+            "Email already exists. Please use a different email or log in."
+          );
+          email.setError("Email already exists.");
+        } else {
+          showError(
+            "Phone number already exists. Please use a different number or log in."
+          );
+          phone.setError("Phone number already exists.");
+        }
+      } else {
+        showError("Something went wrong. Please try again.");
+      }
+    }
+  }
+
+  const handleSubmit = async (event: SyntheticEvent) => {
+    event.preventDefault();
+
+    if (isFormInvalid) {
+      console.log("Form is invalid");
+      return;
+    }
+
+    let formData: any = {
+      firstName: firstName.value,
+      lastName: lastName.value,
+      password: password.value,
+      accountType,
+    };
+
+    if (signupMethod === "email") {
+      formData = { ...formData, email: email.value };
+    } else if (signupMethod === "phone") {
+      // remove leading 0 from phone number (E.164 format)
+      const phoneWithoutLeadingZero = phone.value.replace(/^0+/, "");
+
+      formData = {
+        ...formData,
+        phoneNumber: selectedCountry.dialCode + phoneWithoutLeadingZero,
+      };
+    }
+
+    await signup(signupMethod, formData);
+  };
 
   return (
     <CP.Styled.Wrapper height="100vh" padding="0">
@@ -235,7 +291,7 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
                   <CP.Button
                     disabled={isFormInvalid}
                     type="submit"
-                    onClick={signup}
+                    onClick={handleSubmit}
                   >
                     Signup
                   </CP.Button>
@@ -275,21 +331,3 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
 };
 
 export default SignupPage;
-
-async function signup(
-  accountType: string,
-  method: string,
-  data: any
-): Promise<void> {
-  try {
-    const randomData = {
-      firstName: "Test",
-      lastName: "User",
-      email: "test@example.com",
-      password: "SecurePassword123",
-    };
-    signupApi.signup(method, randomData);
-  } catch (error) {
-    console.log("Something went wrong: ", error);
-  }
-}

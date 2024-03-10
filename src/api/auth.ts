@@ -12,10 +12,11 @@ const signup = async (method: string, data: any) => {
   return api.post(`/auth/signup/${method}`, data);
 };
 
-const signupApi = {
+const authApi = {
+  login,
   signup,
 };
 
 export default loginApi;
 
-export { signupApi };
+export { authApi };

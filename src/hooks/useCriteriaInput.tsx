@@ -127,5 +127,5 @@ export default function useCriteriaValidator(
     ) : null;
   };
 
-  return { value, onChange, setValue, errors, onBlur, HelperText };
+  return { value, onChange, setValue, errors, setErrors, onBlur, HelperText };
 }
