@@ -1,9 +1,9 @@
 // import axios from "axios";
 
-// axios.defaults.baseURL = process.env.VITE_BASE_URL_DEV;
-// axios.defaults.headers.common["Authorization"] = "AUTH_TOKEN";
-// axios.defaults.headers.post["Content-Type"] =
-//   "application/x-www-form-urlencoded";
+axios.defaults.baseURL = process.env.VITE_BASE_URL_DEV;
+axios.defaults.headers.common["Authorization"] = "AUTH_TOKEN";
+axios.defaults.headers.post["Content-Type"] =
+  "application/x-www-form-urlencoded";
 
 // export const api = axios.create({
 //   baseURL: "BASE_URL", // Change real server url
@@ -27,6 +27,9 @@ export const api = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL_DEV || "http://localhost:3000/api/v1",
   timeout: 3000,
   withCredentials: true, // include cookies in the request
+  headers: {
+    "Content-Type": "application/x-www-form-urlencoded"
+  }
 });
 
 // function to automatically set the Authorization header if an access token is present

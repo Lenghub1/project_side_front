@@ -8,8 +8,8 @@ const loginApi = {
   login,
 };
 
-const signup = async (data: any) => {
-  return api.post("/auth/signup", data);
+const signup = async (method: string, data: any) => {
+  return api.post(`/auth/signup/${method}`, data);
 };
 
 const signupApi = {

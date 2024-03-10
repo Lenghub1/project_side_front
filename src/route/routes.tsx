@@ -15,23 +15,23 @@ const routes: RouteProps[] = [
   {
     name: "campusSelect",
     path: "/campus",
-    element: Pg.Campus.default.CampusPage
+    element: Pg.Campus.default.CampusPage,
   },
   {
     name: "campusSetting",
     path: "/campus/set",
-    element: Pg.Campus.default.SetCampusPage
+    element: Pg.Campus.default.SetCampusPage,
+  },
+  {
+    name: "getStarted",
+    path: "/get-started",
+    element: Pg.GetStarted,
   },
   {
     name: "createAccount",
-    path: "/create-account",
-    element: Pg.SignupPage
+    path: "create-account",
+    element: Pg.SignupPage,
   },
-  {
-    name: "Signup",
-    path: "/signup",
-    element: Pg.GetStarted
-  }
 ];
 
 export default routes;

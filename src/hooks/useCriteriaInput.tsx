@@ -65,6 +65,9 @@ export default function useCriteriaValidator(
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
+    if (!touched) {
+      setTouched(true);
+    }
   };
 
   const onBlur = () => {

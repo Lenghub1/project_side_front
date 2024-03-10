@@ -13,6 +13,7 @@ import IconButton from "@mui/material/IconButton";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import countries from "@/components/phonePrefix/countries.json";
+import Box from "@mui/material/Box";
 
 export const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -76,10 +77,33 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
     setSignupMethod(method);
   };
 
+  console.log(
+    !firstName.value ||
+      !!firstName.error ||
+      !lastName.value ||
+      !!lastName.error ||
+      (signupMethod === "phone"
+        ? !phone.value || !!phone.error
+        : !email.value || !!email.error)
+  );
+
+  const isFormInvalid =
+    !firstName.value ||
+    !!firstName.error ||
+    !lastName.value ||
+    !!lastName.error ||
+    (signupMethod === "phone"
+      ? !phone.value || !!phone.error
+      : !email.value || !!email.error) ||
+    !password.value ||
+    password.errors.length !== 0 ||
+    !confirmPassword.value ||
+    !!confirmPassword.error;
+
   const activeTabIndex = signupMethod === "email" ? 0 : 1;
 
   return (
-    <CP.Styled.Wrapper height="100vh">
+    <CP.Styled.Wrapper height="100vh" padding="0">
       <Flex height="100%">
         <CP.Styled.Div padding="0 1rem">
           <CP.Styled.Form>
@@ -133,6 +157,7 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
                     value={email.value}
                     onChange={email.onChange}
                     placeholder="Email"
+                    type="email"
                     onBlur={email.onBlur}
                     error={!!email.error}
                     helperText={<email.HelperText />}
@@ -172,7 +197,7 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
                       <IconButton
                         onClick={() => setPasswordIsVisible((prev) => !prev)}
                       >
-                        {passwordIsVisible ? <VisibilityOff /> : <Visibility />}
+                        {passwordIsVisible ? <Visibility /> : <VisibilityOff />}
                       </IconButton>
                     ),
                   }}
@@ -180,7 +205,7 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
 
                 <CP.Input
                   label="Confirm password"
-                  type="password"
+                  type={confirmPasswordIsVisible ? "text" : "password"}
                   value={confirmPassword.value}
                   onChange={confirmPassword.onChange}
                   onBlur={confirmPassword.onBlur}
@@ -195,9 +220,9 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
                         }
                       >
                         {confirmPasswordIsVisible ? (
-                          <VisibilityOff />
-                        ) : (
                           <Visibility />
+                        ) : (
+                          <VisibilityOff />
                         )}
                       </IconButton>
                     ),
@@ -207,7 +232,11 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
                 <Divider></Divider>
                 <Flex gap="1rem">
                   <CP.Button variant="text">Cancel</CP.Button>
-                  <CP.Button type="submit" onClick={signup}>
+                  <CP.Button
+                    disabled={isFormInvalid}
+                    type="submit"
+                    onClick={signup}
+                  >
                     Signup
                   </CP.Button>
                 </Flex>
@@ -228,7 +257,16 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
         </CP.Styled.Div>
         <CP.Styled.Div height="100%">
           <Flex>
-            <CP.Typography variant="subtitle1">Image</CP.Typography>
+            <Box
+              component="img"
+              src="/random-unsplash.jpg"
+              alt="Random image"
+              sx={{
+                width: 1,
+                height: "100vh",
+                objectFit: "cover",
+              }}
+            />
           </Flex>
         </CP.Styled.Div>
       </Flex>
@@ -238,7 +276,11 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
 
 export default SignupPage;
 
-async function signup(): Promise<void> {
+async function signup(
+  accountType: string,
+  method: string,
+  data: any
+): Promise<void> {
   try {
     const randomData = {
       firstName: "Test",
@@ -246,7 +288,7 @@ async function signup(): Promise<void> {
       email: "test@example.com",
       password: "SecurePassword123",
     };
-    signupApi.signup(randomData);
+    signupApi.signup(method, randomData);
   } catch (error) {
     console.log("Something went wrong: ", error);
   }

@@ -29,6 +29,9 @@ export default function useValidatedInput(
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
+    if (!touched) {
+      setTouched(true);
+    }
   };
 
   const onBlur = () => {
