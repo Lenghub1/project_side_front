@@ -32,8 +32,8 @@ const routes: RouteProps[] = [
     element: Pg.SignupPage,
   },
   {
-    name: "organization",
-    path: "organization",
+    name: "create-new-organization",
+    path: "organization/new",
     element: Pg.Organization.default.Organization,
   },
   {
@@ -44,7 +44,7 @@ const routes: RouteProps[] = [
   {
     name: "employeeRegistrations",
     path: "organization/employee/registrations",
-    element: Pg.Employee.default.EmployeeTable,
+    element: Pg.Employee.default.EmployeeRegistration,
   },
 ];
 
