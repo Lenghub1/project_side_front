@@ -4,9 +4,7 @@ import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 import { authApi } from "@/api/auth";
 import useValidatedInput from "@/hooks/useValidatedInput";
-import useCriteriaValidator from "@/hooks/useCriteriaInput.tsx";
 import { SyntheticEvent, useState } from "react";
-import useMatchInput from "@/hooks/useMatchInput";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import IconButton from "@mui/material/IconButton";
@@ -16,6 +14,9 @@ import countries from "@/components/phonePrefix/countries.json";
 import Box from "@mui/material/Box";
 import { handleApiRequest } from "@/api";
 import { useSnackbar } from "notistack";
+import { useRecoilState } from "recoil";
+import { accessTokenState } from "@/store/userStore";
+import { useNavigate } from "react-router-dom";
 
 export const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -25,11 +26,7 @@ const Divider = styled(MuiDivider)`
   width: 100%;
 `;
 
-type SignupProps = {
-  accountType: "employee" | "employer";
-};
-
-type SignupMethod = "email" | "phone";
+type LoginMethod = "email" | "phone";
 
 const validateEmail = (email: string): string => {
   const emailRegex = /^\S+@\S+\.\S+$/;
@@ -39,38 +36,24 @@ const validateEmail = (email: string): string => {
   return "";
 };
 
-const passwordCriteria = {
-  length: { min: 8, max: 25 },
-  containsNumber: true,
-  containsCapitalLetter: true,
-  containsLowercaseLetter: true,
-  // containsSpecialCharacter: true,
-};
-
-const SignupPage = ({ accountType = "employer" }: SignupProps) => {
+const TestLoginPage = () => {
+  const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const firstName = useValidatedInput("", "First Name");
-  const lastName = useValidatedInput("", "Last Name");
-  const [signupMethod, setSignupMethod] = useState<SignupMethod>("email");
+  const [loginMethod, setLoginMethod] = useState<LoginMethod>("email");
   const email = useValidatedInput("", "Email", validateEmail);
-
   const phone = useValidatedInput("", "Phone");
-  const password = useCriteriaValidator("", passwordCriteria);
-  const confirmPassword = useMatchInput(password.value, "", "Confirm Password");
+  const password = useValidatedInput("", "Password");
   const [passwordIsVisible, setPasswordIsVisible] = useState(false);
-  const [confirmPasswordIsVisible, setConfirmPasswordIsVisible] =
-    useState(false);
   const [selectedCountry, setSelectedCountry] = useState<{
     name: string;
     dialCode: string;
     flag: string;
   }>(countries[0]);
-  const activeTabIndex = signupMethod === "email" ? 0 : 1;
+  const activeTabIndex = loginMethod === "email" ? 0 : 1;
 
-  const handleSignupMethodChange = (
-    event: SyntheticEvent,
-    newValue: number
-  ) => {
+  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
+
+  const handleLoginMethodChange = (event: SyntheticEvent, newValue: number) => {
     const method = newValue === 0 ? "email" : "phone";
     if (method === "phone" && email.touched) {
       email.setTouched(false);
@@ -79,21 +62,8 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
       phone.setTouched(false);
       if (phone.value) phone.setValue("");
     }
-    setSignupMethod(method);
+    setLoginMethod(method);
   };
-
-  const isFormInvalid =
-    !firstName.value ||
-    !!firstName.error ||
-    !lastName.value ||
-    !!lastName.error ||
-    (signupMethod === "phone"
-      ? !phone.value || !!phone.error
-      : !email.value || !!email.error) ||
-    !password.value ||
-    password.errors.length !== 0 ||
-    !confirmPassword.value ||
-    !!confirmPassword.error;
 
   function showError(message: string) {
     enqueueSnackbar(message, {
@@ -105,31 +75,30 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
     });
   }
 
-  async function signup(method: string, data: any): Promise<void> {
+  async function login(method: string, data: any): Promise<void> {
     const [response, error] = await handleApiRequest(() =>
-      authApi.signup(method, data)
+      authApi.testLogin(method, data)
     );
 
-    if (response) {
+    if (response && response.data && response.data.user) {
       console.log(response);
+      setAccessToken(response.data.user.accessToken);
+      navigate("/campus");
     } else if (error) {
-      if (error?.response?.status === 409) {
-        if (signupMethod === "email") {
-          showError(
-            "Email already exists. Please use a different email or log in."
-          );
-          email.setError("Email already exists.");
-        } else {
-          showError(
-            "Phone number already exists. Please use a different number or log in."
-          );
-          phone.setError("Phone number already exists.");
-        }
+      if (error?.response?.status === 400) {
+        showError(
+          `${loginMethod === "email" ? "Email" : "Phone number"} or password is incorrect`
+        );
       } else {
         showError("Something went wrong. Please try again.");
       }
     }
   }
+
+  const isFormInvalid: boolean =
+    loginMethod === "email"
+      ? !email.value || !!email.error
+      : !phone.value || !!phone.error;
 
   const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
@@ -140,15 +109,12 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
     }
 
     let formData: any = {
-      firstName: firstName.value,
-      lastName: lastName.value,
       password: password.value,
-      accountType,
     };
 
-    if (signupMethod === "email") {
+    if (loginMethod === "email") {
       formData = { ...formData, email: email.value };
-    } else if (signupMethod === "phone") {
+    } else if (loginMethod === "phone") {
       // remove leading 0 from phone number (E.164 format)
       const phoneWithoutLeadingZero = phone.value.replace(/^0+/, "");
 
@@ -158,8 +124,9 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
       };
     }
 
-    await signup(signupMethod, formData);
+    await login(loginMethod, formData);
   };
+  console.log("MY ACCESS TOKEN", accessToken);
 
   return (
     <CP.Styled.Wrapper height="100vh" padding="0">
@@ -175,42 +142,20 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
                   textAlign: "start",
                 }}
               >
-                Create a new account
+                Login
               </CP.Typography>
 
               <Flex direction="column" gap="1.5rem">
-                {accountType === "employer" && (
-                  <Flex gap=".5rem" items="flex-start">
-                    <CP.Input
-                      label="First name"
-                      value={firstName.value}
-                      onChange={firstName.onChange}
-                      onBlur={firstName.onBlur}
-                      error={!!firstName.error}
-                      helperText={<firstName.HelperText />}
-                      required
-                    />
-                    <CP.Input
-                      label="Last name"
-                      value={lastName.value}
-                      onChange={lastName.onChange}
-                      onBlur={lastName.onBlur}
-                      error={!!lastName.error}
-                      helperText={<lastName.HelperText />}
-                      required
-                    />
-                  </Flex>
-                )}
                 <Tabs
                   sx={{ alignSelf: "flex-start" }}
                   value={activeTabIndex}
-                  onChange={(e, value) => handleSignupMethodChange(e, value)}
-                  aria-label="signup options"
+                  onChange={(e, value) => handleLoginMethodChange(e, value)}
+                  aria-label="login options"
                 >
                   <Tab label="With Email" />
                   <Tab label="With Phone" />
                 </Tabs>
-                {signupMethod === "email" ? (
+                {loginMethod === "email" ? (
                   <CP.Input
                     label="Email"
                     value={email.value}
@@ -248,7 +193,7 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
                   value={password.value}
                   onChange={password.onChange}
                   onBlur={password.onBlur}
-                  error={password.errors.length > 0}
+                  error={!!password.error}
                   helperText={<password.HelperText />}
                   required
                   InputProps={{
@@ -263,41 +208,10 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
                   }}
                 />
 
-                <CP.Input
-                  label="Confirm password"
-                  type={confirmPasswordIsVisible ? "text" : "password"}
-                  value={confirmPassword.value}
-                  onChange={confirmPassword.onChange}
-                  onBlur={confirmPassword.onBlur}
-                  error={!!confirmPassword.error}
-                  helperText={<confirmPassword.HelperText />}
-                  required
-                  InputProps={{
-                    endAdornment: (
-                      <IconButton
-                        onClick={() =>
-                          setConfirmPasswordIsVisible((prev) => !prev)
-                        }
-                      >
-                        {confirmPasswordIsVisible ? (
-                          <Visibility />
-                        ) : (
-                          <VisibilityOff />
-                        )}
-                      </IconButton>
-                    ),
-                  }}
-                />
-
                 <Divider></Divider>
                 <Flex gap="1rem">
-                  <CP.Button variant="text">Cancel</CP.Button>
-                  <CP.Button
-                    disabled={isFormInvalid}
-                    type="submit"
-                    onClick={handleSubmit}
-                  >
-                    Signup
+                  <CP.Button type="submit" onClick={handleSubmit} fullWidth>
+                    Login
                   </CP.Button>
                 </Flex>
                 <CP.Typography variant="subtitle2">
@@ -334,4 +248,4 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
   );
 };
 
-export default SignupPage;
+export default TestLoginPage;

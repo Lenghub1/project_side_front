@@ -12,11 +12,33 @@ const signup = async (method: string, data: any) => {
   return api.post(`/auth/signup/${method}`, data);
 };
 
+const testLogin = async (method: string, data: any) => {
+  return api.post(`/auth/login/${method}`, data);
+};
+
+const refresh = async () => {
+  return api.get("/auth/refresh");
+};
+
+const logout = async () => {
+  return api.post("/auth/logout");
+};
+
 const authApi = {
-  login,
+  testLogin,
   signup,
+  refresh,
+  logout,
+};
+
+const getGroup = async () => {
+  return api.get(`/groups`);
+};
+
+const testApi = {
+  getGroup,
 };
 
 export default loginApi;
 
-export { authApi };
+export { authApi, testApi };

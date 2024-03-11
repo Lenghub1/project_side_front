@@ -1,7 +1,9 @@
 import { Route, Routes } from "react-router-dom";
 import routes from "./routes";
+import useUpdateAxiosInterceptor from "@/hooks/useUpdateAxiosInterceptor";
 
 const AppRoutes = () => {
+  useUpdateAxiosInterceptor();
   return (
     <Routes>
       {routes.map((route) => {
