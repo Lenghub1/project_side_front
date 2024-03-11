@@ -4,13 +4,12 @@ import { Container } from "@mui/material";
 import CreateOrgStepper from "@/components/stepper/CreateOrgStepper";
 import MapComponent from "@/components/map/Map";
 import Stack from "@mui/material/Stack";
-import EmployeeTable from "@/pages/employee/EmployeeTable";
 import Box from "@mui/material/Box";
 
 const Organization = () => {
   return (
     <Container sx={{ paddingTop: 6 }}>
-      {/* <CreateOrgStepper />
+      <CreateOrgStepper />
 
       <MapComponent />
 
@@ -28,9 +27,7 @@ const Organization = () => {
         <Box>
           <CP.Input label="Currency " />
         </Box>
-      </Stack> */}
-
-      <EmployeeTable />
+      </Stack>
     </Container>
   );
 };

@@ -8,7 +8,6 @@ export interface RouteProps {
   children?: RouteProps[];
 }
 
-console.log(Pg);
 const routes: RouteProps[] = [
   { name: "home", path: "/", element: Pg.HomePage },
   { name: "login", path: "/login", element: Pg.LoginPage },
@@ -33,8 +32,18 @@ const routes: RouteProps[] = [
     element: Pg.SignupPage,
   },
   {
+    name: "organization",
+    path: "organization",
+    element: Pg.Organization.default.Organization,
+  },
+  {
+    name: "employeeManagement",
+    path: "organization/employee/management",
+    element: Pg.Employee.default.EmployeeTable,
+  },
+  {
     name: "employeeRegistrations",
-    path: "employee/registrations",
+    path: "organization/employee/registrations",
     element: Pg.Employee.default.EmployeeTable,
   },
 ];
