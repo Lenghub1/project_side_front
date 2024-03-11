@@ -40,7 +40,6 @@
     "react-map-gl": "^7.1.7",
     "react-router-dom": "^6.21.2",
     "react-signature-canvas": "^1.0.6",
-    "react-spring": "^9.7.3",
     "recoil": "^0.7.7",
     "recoil-persist": "^5.1.0",
     "shelljs": "^0.8.5",
