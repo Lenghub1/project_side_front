@@ -22,8 +22,8 @@ const CP = {
   Modal,
   Input,
   Typography,
-  PhonePrefix,,
-  InputBox
+  PhonePrefix,
+  InputBox,
 };
 
 export type { ButtonProps };

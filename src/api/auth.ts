@@ -1,7 +1,8 @@
 import { api } from "./index";
 
-const login = async () => {
-  return api.get("/API_URL");
+const login = async (method: string, data: any) => {
+  console.log("My data", data);
+  return api.post(`/auth/login/${method}`, data);
 };
 
 const loginApi = {
