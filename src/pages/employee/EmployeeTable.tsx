@@ -22,7 +22,6 @@ import { alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import { Avatar, Container } from "@mui/material";
 import { Employement } from "@/utils/interfaces/Employment";
-
 interface Data extends Employement {}
 
 function createData(data: Data): Data {
