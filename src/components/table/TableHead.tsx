@@ -4,7 +4,6 @@ import {
   Box,
   TableHead,
   TableRow,
-  Checkbox,
 } from "@mui/material";
 import { visuallyHidden } from "@mui/utils";
 
@@ -69,7 +68,6 @@ const EnhancedTableHead = <T,>({
   headCells,
   order,
   orderBy,
-  rowCount,
   onRequestSort,
 }: EnhancedTableHeadProps<T>) => {
   return (
