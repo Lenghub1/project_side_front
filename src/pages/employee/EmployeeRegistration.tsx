@@ -26,7 +26,6 @@ const EmployeeRegistration = () => {
   return (
     <Container>
       <EnhancedTable
-        numSelected={0}
         onRequestSort={(_, property) => console.log(property)}
         order="asc"
         rows={data}
