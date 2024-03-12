@@ -13,7 +13,7 @@ const EmployeeRegistration = () => {
 
   const newPendingEmployees = async () => {
     const [response, error] = await handleApiRequest(() =>
-      getAllPendingEmployees("30ed163a-f86f-4b6d-8a9e-eb4263e5a9de")
+      getAllPendingEmployees("1ca2a528-72c9-4cb8-8823-4d26cfcdd598")
     );
     if (response) {
       console.log(response);

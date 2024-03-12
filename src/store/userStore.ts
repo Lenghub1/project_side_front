@@ -8,6 +8,7 @@ interface EmploymentDetailState {
   phoneNumber: string;
   email: string;
   position: string;
+  length: Number;
 }
 // select campus
 export const campusState = atom<string | null>({
@@ -49,6 +50,6 @@ export const isUserFetchedState = atom({
 });
 export const employementDetail = atom<EmploymentDetailState>({
   key: `employementDetail`,
-  default: null,
+
   effects_UNSTABLE: [persistAtom],
 });

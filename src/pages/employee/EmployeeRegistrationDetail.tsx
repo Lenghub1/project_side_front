@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { handleApiRequest } from "@/api";
-import { patchEmployeeById } from "@/api/employee";
+import { patchEmployeeById, getEmployeeById } from "@/api/employee";
 import { useNavigate } from "react-router-dom";
 import { employementDetail } from "@/store/userStore";
 import { useSnackbar } from "notistack";
@@ -19,9 +19,24 @@ const EmployeeRegistrationDetail = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = React.useState(false); // Added loading state
   const isMobile = useIsMobile();
-  const employee = useRecoilState(employementDetail);
+  let employee = useRecoilState(employementDetail);
+  const [dataEmployee, setDataEmployee] = useState([]) as any;
 
   let body = { status: "active" };
+  const getEmployeeId = async () => {
+    const [response, error] = await handleApiRequest(() =>
+      getEmployeeById("1ca2a528-72c9-4cb8-8823-4d26cfcdd598", employee[0].id)
+    );
+    if (error) {
+      console.log(error);
+      enqueueSnackbar("Failed to get information of employee", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
+
+    setDataEmployee(response);
+  };
 
   const acceptEmployee = async () => {
     setLoading(true); // Set loading state to true
@@ -57,6 +72,9 @@ const EmployeeRegistrationDetail = () => {
       }, 1000); // Delay navigation by 1 second
     }, 3000); // Delay the whole process by 3 seconds
   };
+  React.useEffect(() => {
+    getEmployeeId();
+  }, []);
 
   return (
     <Container>
@@ -96,7 +114,7 @@ const EmployeeRegistrationDetail = () => {
           justify={isMobile ? "center" : "flex-end"}
           padding="20px"
         >
-          {!loading && employee[0].status !== "active" && (
+          {!loading && dataEmployee.status !== "active" && (
             <>
               <CP.Button variant="outlined">REJECT</CP.Button>
               <CP.Button onClick={acceptEmployee}>ACCEPT</CP.Button>
@@ -108,17 +126,17 @@ const EmployeeRegistrationDetail = () => {
           <InformationSection title="PERSONAL INFORMATION">
             <InformationItem
               label="Phone Number"
-              value={employee[0].phoneNumber}
+              value={dataEmployee.phoneNumber}
             />
             <InformationItem label="Birthday" value="21-Feb-1999" />
-            <InformationItem label="Email" value={employee[0].email} />
+            <InformationItem label="Email" value={dataEmployee.email} />
             <InformationItem
               label="Address"
               value="unknown, 123, Phnom Penh, Cambodia"
             />
           </InformationSection>
           <InformationSection title="WORK INFORMATION">
-            <InformationItem label="Role" value={employee[0].position} />
+            <InformationItem label="Role" value={dataEmployee.position} />
             <InformationItem label="Team" value="software" />
             <InformationItem label="Contract Type" value="Part-Time" />
             <InformationItem label="Working Shift" value="8:00am - 5:00 pm" />

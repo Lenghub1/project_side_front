@@ -31,7 +31,7 @@ socket.on("update", (r) => {
 interface Data extends Employement {
   action: string;
 }
-interface EmploymentWithAction extends Employement {
+export interface EmploymentWithAction extends Employement {
   action: string;
 }
 
@@ -225,7 +225,7 @@ const EnhancedTable: React.FC<EnhancedTableProps<EmploymentWithAction>> = ({
                         <CP.Button variant="contained" color="accent">
                           Reject
                         </CP.Button>
-                      </CP.Styled.Flex>
+                      </CP.Styled.Div>
                     </TableCell>
                   </TableRow>
                 );

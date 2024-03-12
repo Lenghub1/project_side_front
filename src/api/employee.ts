@@ -119,5 +119,6 @@ export {
   createEmployee,
   updateEmployee,
   deleteEmployee,
+  patchEmployeeById,
   getAllPendingEmployees,
 };
