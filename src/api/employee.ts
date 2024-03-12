@@ -3,11 +3,17 @@ import { AxiosResponse } from "axios";
 import { Employement } from "@/utils/interfaces/Employment";
 
 const transformEmployeeData = (
-  data: any
+  response: any
 ): Partial<Employement> | Partial<Employement>[] => {
-  const parsedData = JSON.parse(data);
-  if (Array.isArray(parsedData)) {
-    return parsedData.map((responseData: any) => ({
+  const { data, status_code } = JSON.parse(response);
+
+  if (status_code !== 200) {
+    console.error("Received non-OK status:", status_code);
+    return [];
+  }
+  console.log(data);
+  if (Array.isArray(data.data)) {
+    return data.data.map((responseData: any) => ({
       id: responseData.id,
       name: `${responseData.user.firstName} ${responseData.user.lastName}`,
       position: responseData.position,
@@ -16,11 +22,11 @@ const transformEmployeeData = (
     }));
   } else {
     return {
-      id: parsedData.data.id,
-      name: `${parsedData.data.user.firstName} ${parsedData.data.user.lastName}`,
-      position: parsedData.data.position,
-      status: parsedData.data.status,
-      privilege: parsedData.data.privilege,
+      id: data.id,
+      name: `${data.user.firstName} ${data.data.user.lastName}`,
+      position: data.position,
+      status: data.status,
+      privilege: data.privilege,
     };
   }
 };
@@ -32,13 +38,14 @@ const allEmployees = async (
     const response = await api.get(
       `/organizations/${organizationId}/employments`,
       {
-        transformResponse: [(response) => transformEmployeeData(response.data)],
+        transformResponse: [(response) => transformEmployeeData(response)],
       }
     );
-    return response as AxiosResponse<Partial<Employement>[]>;
+    console.log("API Response:", response);
+    return response.data as AxiosResponse<Partial<Employement>[]>;
   } catch (error) {
     console.error("Error in allEmployees:", error);
-    return {} as AxiosResponse<Partial<Employement>[]>;
+    throw error; // Rethrow the error or handle it more gracefully
   }
 };
 
@@ -50,7 +57,7 @@ const getEmployeeById = async (
     const response = await api.get(
       `/organizations/${organizationId}/employments/${employmentId}`,
       {
-        transformResponse: [(response) => transformEmployeeData(response.data)],
+        transformResponse: [(response) => transformEmployeeData(response)],
       }
     );
     return response as AxiosResponse<Partial<Employement>>;
@@ -68,7 +75,7 @@ const createEmployee = async (
       `/organizations/${organizationId}/employments`,
       {},
       {
-        transformResponse: [(response) => transformEmployeeData(response.data)],
+        transformResponse: [(response) => transformEmployeeData(response)],
       }
     );
     return response as AxiosResponse<Partial<Employement>>;
@@ -88,7 +95,7 @@ const updateOrganization = async (
       `/organizations/${organizationId}/employments/${employmentId}`,
       { data },
       {
-        transformResponse: [(response) => transformEmployeeData(response.data)],
+        transformResponse: [(response) => transformEmployeeData(response)],
       }
     );
     return response as AxiosResponse<Partial<Employement>>;
