@@ -94,6 +94,11 @@ const routes: RouteProps[] = [
     path: "organization/employee/registrations/details",
     element: Pg.Employee.default.EmployeeRegistrationDetail,
   },
+  {
+    name: "createBranch",
+    path: "organization/createBranch",
+    element: Pg.Branch.CreateBranch,
+  },
 ];
 
 export default routes;
