@@ -12,15 +12,16 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
-import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
-import { alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import { Avatar, Container } from "@mui/material";
 import { Employement } from "@/utils/interfaces/Employment";
 import CP from "..";
 import EnhancedTableHead, { HeadCell } from "./TableHead";
 import { socket } from "src/socket";
+import { updateEmployee } from "@/api/employee";
+
+const orgId = "30ed163a-f86f-4b6d-8a9e-eb4263e5a9de";
 
 socket.emit("join", `org-30ed163a-f86f-4b6d-8a9e-eb4263e5a9de`);
 socket.on("update", (r) => {
@@ -68,67 +69,34 @@ function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
 
 interface EnhancedTableProps<T> {
   rows: T[];
-  numSelected: number;
   onRequestSort: (property: keyof T, event: React.MouseEvent<unknown>) => void;
-  onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
   order: Order;
   orderBy: keyof T;
   rowCount: number;
 }
 
-interface EnhancedTableToolbarProps {
-  numSelected: number;
-}
-
-function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-  const { numSelected } = props;
-
+function EnhancedTableToolbar() {
   return (
     <Toolbar
       sx={{
         pl: { sm: 2 },
         pr: { xs: 1, sm: 1 },
-        ...(numSelected > 0 && {
-          bgcolor: (theme) =>
-            alpha(
-              theme.palette.primary.main,
-              theme.palette.action.activatedOpacity
-            ),
-        }),
       }}
     >
-      {numSelected > 0 ? (
-        <Typography
-          sx={{ flex: "1 1 100%" }}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <Typography
-          sx={{ flex: "1 1 100%" }}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-          Employee Registrations
-        </Typography>
-      )}
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
+      <Typography
+        sx={{ flex: "1 1 100%" }}
+        variant="h6"
+        id="tableTitle"
+        component="div"
+      >
+        Employee Registrations
+      </Typography>
+
+      <Tooltip title="Filter list">
+        <IconButton>
+          <FilterListIcon />
+        </IconButton>
+      </Tooltip>
     </Toolbar>
   );
 }
@@ -166,6 +134,15 @@ const EnhancedTable: React.FC<EnhancedTableProps<EmploymentWithAction>> = ({
     setDense(event.target.checked);
   };
 
+  const handleAcceptEmployee = (employeeId: string) => {
+    console.log(employeeId);
+    const newRecord = updateEmployee(orgId, employeeId, {
+      status: "active",
+    });
+
+    console.log(newRecord);
+  };
+
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
@@ -182,7 +159,7 @@ const EnhancedTable: React.FC<EnhancedTableProps<EmploymentWithAction>> = ({
   return (
     <Container sx={{ width: "100%", padding: 2 }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar numSelected={0} />
+        <EnhancedTableToolbar />
         <TableContainer>
           <Table
             sx={{ minWidth: 750, textAlign: "start" }}
@@ -207,7 +184,6 @@ const EnhancedTable: React.FC<EnhancedTableProps<EmploymentWithAction>> = ({
                     role="checkbox"
                     tabIndex={-1}
                     key={row.id}
-                    selected={false}
                     sx={{
                       cursor: "default",
                     }}
@@ -226,7 +202,9 @@ const EnhancedTable: React.FC<EnhancedTableProps<EmploymentWithAction>> = ({
                     <TableCell align="left">{row?.status}</TableCell>
                     <TableCell align="left">
                       <CP.Styled.Div>
-                        <CP.Button>Accept</CP.Button>
+                        <CP.Button onClick={() => handleAcceptEmployee(row.id)}>
+                          Accept
+                        </CP.Button>
                         <CP.Button variant="contained" color="accent">
                           Reject
                         </CP.Button>
@@ -238,7 +216,7 @@ const EnhancedTable: React.FC<EnhancedTableProps<EmploymentWithAction>> = ({
               {emptyRows > 0 && (
                 <TableRow
                   style={{
-                    height: (dense ? 33 : 53) * emptyRows,
+                    height: (dense ? 32 : 54) * emptyRows,
                   }}
                 >
                   <TableCell colSpan={6} />
