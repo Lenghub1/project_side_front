@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import CP from "@/components";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
@@ -12,10 +12,12 @@ import Tabs from "@mui/material/Tabs";
 import countries from "@/components/phonePrefix/countries.json";
 import { useSnackbar } from "notistack";
 import { IconButton } from "@mui/material";
-import { Telegram, Visibility, VisibilityOff } from "@mui/icons-material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import FacebookLoginButton from "./FacebookLoginButton";
 import GoogleLoginButton from "./GoogleLoginButton";
 import TelegramLoginButton from "./TelegramLoginButton";
+import { Box } from "@mui/material";
+import Store from "@/store";
 
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -45,6 +47,8 @@ const LoginPage = () => {
     dialCode: string;
     flag: string;
   }>(countries[0]);
+  const { token, id } = useRecoilValue(Store.User.userState);
+  const [_, setLoginUser] = useRecoilState(Store.User.userState);
   const activeTabIndex = signupMethod === "email" ? 0 : 1;
   console.log("Window asdasd", window.screen.width);
 
@@ -75,6 +79,8 @@ const LoginPage = () => {
     setSignupMethod(method);
     console.log("Method", signupMethod);
   };
+  console.log("Token", token);
+  console.log("ID", id);
 
   const isFormInvalid =
     (signupMethod === "phone"
@@ -99,7 +105,6 @@ const LoginPage = () => {
     const [response, error] = await handleApiRequest(() =>
       authApi.login(method, data)
     );
-    console.log("Response", response);
 
     console.log("error", error);
 
@@ -118,7 +123,12 @@ const LoginPage = () => {
         showError("Something went wrong. Please try again.");
       }
     }
-
+    console.log("Response", response.data.user);
+    setLoginUser({
+      token: response.data.user.accessToken,
+      userId: response.data.user.id,
+    });
+    return;
     if (response?.status_code === 202) {
       navigate("/verifyOTP");
     }
@@ -181,6 +191,7 @@ const LoginPage = () => {
             >
               Login
             </CP.Typography>
+            <TelegramLoginButton />
             <Flex direction="column" gap="24px">
               {!isMobile && (
                 <CP.Typography width="100%">
@@ -231,7 +242,6 @@ const LoginPage = () => {
                   />
                 </Flex>
               )}
-
               <CP.Input
                 label="Password"
                 type={isPassword ? "text" : "password"}
@@ -256,7 +266,18 @@ const LoginPage = () => {
                 <Flex direction="row" gap="40px" margin="1rem 0 0">
                   <FacebookLoginButton />
                   <GoogleLoginButton />
-                  <TelegramLoginButton />
+                  <Box
+                    component="img"
+                    sx={{
+                      height: 36,
+                      width: 36,
+                      maxHeight: { xs: 233, md: 167 },
+                      maxWidth: { xs: 350, md: 250 },
+                      cursor: "pointer",
+                    }}
+                    alt="Image for telegram"
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/1200px-Telegram_logo.svg.png"
+                  />
                 </Flex>
               )}
               {isMobile && (
@@ -317,7 +338,17 @@ const LoginPage = () => {
                 <Flex direction="row" gap="40px" margin="1rem">
                   <FacebookLoginButton />
                   <GoogleLoginButton />
-                  <TelegramLoginButton />
+                  <Box
+                    component="img"
+                    sx={{
+                      height: 36,
+                      width: 36,
+                      maxHeight: { xs: 233, md: 167 },
+                      maxWidth: { xs: 350, md: 250 },
+                    }}
+                    alt="Image for telegram"
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/1200px-Telegram_logo.svg.png"
+                  />
                 </Flex>
               )}
 

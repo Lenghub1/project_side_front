@@ -1,5 +1,6 @@
 import { authApi } from "@/api/auth";
 import axios from "axios";
+import { Box } from "@mui/material";
 
 export default function GoogleLoginButton() {
   const handleGoogleOauth = async () => {
@@ -7,11 +8,18 @@ export default function GoogleLoginButton() {
     window.location.href = `${import.meta.env.VITE_BASE_URL_DEV}/auth/google`;
   };
   return (
-    <img
+    <Box
       onClick={handleGoogleOauth}
-      style={{ width: "36px", height: "36px" }}
+      component="img"
+      sx={{
+        height: 36,
+        width: 36,
+        maxHeight: { xs: 233, md: 167 },
+        maxWidth: { xs: 350, md: 250 },
+        cursor: "pointer",
+      }}
+      alt="Image for telegram"
       src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/2048px-Google_%22G%22_logo.svg.png"
-      alt=""
     />
   );
 }
