@@ -3,9 +3,7 @@ import React from "react";
 
 export default function FacebookLoginButton() {
   const handleFacebookOauth = async () => {
-    window.location.href = "http://localhost:3000/api/v1/auth/facebook";
-    const res = await authApi.facebookOauthSuccess();
-    console.log("Res %%%% ", res);
+    window.location.href = `${import.meta.env.VITE_BASE_URL_DEV}/auth/facebook`;
   };
   return (
     <img
