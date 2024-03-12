@@ -23,10 +23,6 @@ import { updateEmployee } from "@/api/employee";
 
 const orgId = "30ed163a-f86f-4b6d-8a9e-eb4263e5a9de";
 
-socket.emit("join", `org-30ed163a-f86f-4b6d-8a9e-eb4263e5a9de`);
-socket.on("update", (r) => {
-  console.log(r);
-});
 interface Data extends Employement {
   action: string;
 }
@@ -134,13 +130,16 @@ const EnhancedTable: React.FC<EnhancedTableProps<EmploymentWithAction>> = ({
     setDense(event.target.checked);
   };
 
-  const handleAcceptEmployee = (employeeId: string) => {
+  const handleAcceptEmployee = async (employeeId: string) => {
     console.log(employeeId);
-    const newRecord = updateEmployee(orgId, employeeId, {
+    const newRecord = await updateEmployee(orgId, employeeId, {
       status: "active",
     });
 
-    console.log(newRecord);
+    if (newRecord) {
+      console.log(newRecord);
+      socket.emit("acceptEmployee", newRecord);
+    }
   };
 
   // Avoid a layout jump when reaching the last page with empty rows.
