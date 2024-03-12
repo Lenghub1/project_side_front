@@ -20,7 +20,12 @@ import { Avatar, Container } from "@mui/material";
 import { Employement } from "@/utils/interfaces/Employment";
 import CP from "..";
 import EnhancedTableHead, { HeadCell } from "./TableHead";
+import { socket } from "src/socket";
 
+socket.emit("join", `org-30ed163a-f86f-4b6d-8a9e-eb4263e5a9de`);
+socket.on("update", (r) => {
+  console.log(r);
+});
 interface Data extends Employement {
   action: string;
 }
