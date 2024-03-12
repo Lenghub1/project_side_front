@@ -17,6 +17,7 @@ import { useSnackbar } from "notistack";
 import { useRecoilState } from "recoil";
 import { accessTokenState } from "@/store/userStore";
 import { useNavigate } from "react-router-dom";
+import usePersist from "@/hooks/usePersist";
 
 export const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -52,6 +53,11 @@ const TestLoginPage = () => {
   const activeTabIndex = loginMethod === "email" ? 0 : 1;
 
   const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
+  const [persist, setPersist] = usePersist();
+
+  const handlePersistChange = () => {
+    setPersist((prev) => !prev);
+  };
 
   const handleLoginMethodChange = (event: SyntheticEvent, newValue: number) => {
     const method = newValue === 0 ? "email" : "phone";
@@ -214,6 +220,11 @@ const TestLoginPage = () => {
                     Login
                   </CP.Button>
                 </Flex>
+                <CP.Checkbox
+                  label="Persist"
+                  onChange={handlePersistChange}
+                  checked={persist}
+                />
                 <CP.Typography variant="subtitle2">
                   By signing up, you agree to our{" "}
                   <NavLink to="#">Terms of Service</NavLink> &{" "}
