@@ -130,6 +130,11 @@ const routes: RouteProps[] = [
     path: "organization/modifyBranch",
     element: Pg.Branch.ModifyBranch,
   },
+  {
+    name: "test-redirect",
+    path: "/test-redirect",
+    element: Pg.Login.default.RedirectingPage,
+  },
 ];
 
 export default routes;

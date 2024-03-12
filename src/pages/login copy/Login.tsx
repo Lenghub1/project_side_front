@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import useInput from "@/hooks/useInput";
 import CP from "@/components";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
@@ -13,10 +12,10 @@ import Tabs from "@mui/material/Tabs";
 import countries from "@/components/phonePrefix/countries.json";
 import { useSnackbar } from "notistack";
 import { IconButton } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import axios from "axios";
+import { Telegram, Visibility, VisibilityOff } from "@mui/icons-material";
 import FacebookLoginButton from "./FacebookLoginButton";
 import GoogleLoginButton from "./GoogleLoginButton";
+import TelegramLoginButton from "./TelegramLoginButton";
 
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -154,11 +153,6 @@ const LoginPage = () => {
     await login(signupMethod, formData);
   };
 
-  const handleFacebookOauth = async () => {
-    const response = await authApi.googleOauth();
-    console.log("## ", response);
-  };
-
   return (
     <CP.Styled.Wrapper height="100vh">
       <Flex height="inherit">
@@ -262,11 +256,7 @@ const LoginPage = () => {
                 <Flex direction="row" gap="40px" margin="1rem 0 0">
                   <FacebookLoginButton />
                   <GoogleLoginButton />
-                  <img
-                    style={{ width: "36px", height: "36px" }}
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/2048px-Telegram_logo.svg.png"
-                    alt=""
-                  />
+                  <TelegramLoginButton />
                 </Flex>
               )}
               {isMobile && (
@@ -282,7 +272,12 @@ const LoginPage = () => {
                   Forget password?
                 </CP.Typography>
               )}
-              <CP.Button fullWidth type="submit" onClick={handleSubmit}>
+              <CP.Button
+                fullWidth
+                type="submit"
+                onClick={handleSubmit}
+                disabled={isFormInvalid}
+              >
                 Login
               </CP.Button>
               {/* Mobile responsive */}
@@ -320,22 +315,9 @@ const LoginPage = () => {
 
               {!isMobile && (
                 <Flex direction="row" gap="40px" margin="1rem">
-                  <img
-                    onClick={handleFacebookOauth}
-                    style={{ width: "36px", height: "36px" }}
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/2023_Facebook_icon.svg/2048px-2023_Facebook_icon.svg.png"
-                    alt=""
-                  />
-                  <img
-                    style={{ width: "36px", height: "36px" }}
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/2048px-Telegram_logo.svg.png"
-                    alt=""
-                  />
-                  <img
-                    style={{ width: "36px", height: "36px" }}
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/2048px-Google_%22G%22_logo.svg.png"
-                    alt=""
-                  />
+                  <FacebookLoginButton />
+                  <GoogleLoginButton />
+                  <TelegramLoginButton />
                 </Flex>
               )}
 
