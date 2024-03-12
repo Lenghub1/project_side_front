@@ -1,6 +1,7 @@
 import { api } from ".";
 import { AxiosResponse } from "axios";
 import { Employement } from "@/utils/interfaces/Employment";
+import employee from "@/pages/employee";
 
 const currentOrganizationId = "30ed163a-f86f-4b6d-8a9e-eb4263e5a9de";
 const transformEmployeeData = (
@@ -55,7 +56,22 @@ const getEmployeeById = async (
     }
   );
 };
-
+const patchEmployeeById = async (
+  organizationId: string,
+  employmentId: string,
+  body: {}
+): Promise<AxiosResponse<Partial<Employement>>> => {
+  try {
+    const response = await api.patch(
+      `/organizations/${organizationId}/employments/${employmentId}`,
+      body
+    );
+    return response;
+  } catch (error) {
+    console.error("Error in getEmployeeById:", error);
+    return {} as AxiosResponse<Partial<Employement>>;
+  }
+};
 const createEmployee = async (
   data: Object,
   organizationId: string = currentOrganizationId
