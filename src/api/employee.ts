@@ -1,7 +1,6 @@
 import { api } from ".";
 import { AxiosResponse } from "axios";
 import { Employement } from "@/utils/interfaces/Employment";
-import employee from "@/pages/employee";
 
 const currentOrganizationId = "30ed163a-f86f-4b6d-8a9e-eb4263e5a9de";
 const transformEmployeeData = (
@@ -23,16 +22,19 @@ const transformEmployeeData = (
       name: `${responseData.user.firstName} ${responseData.user.lastName}`,
       position: responseData.position,
       status: responseData.status,
-      privilege: responseData.privilege,
+      privilege: responseData.priviledge,
+      email: responseData.users.email,
+      phoneNumber: responseData.users.phoneNumber,
     }));
   } else {
     return {
       id: data.id,
-      userId: data.user.id,
-      name: `${data.user.firstName} ${data.user.lastName}`,
+      name: `${data.users.firstName} ${data.users.lastName}`,
       position: data.position,
       status: data.status,
-      privilege: data.privilege,
+      privilege: data.priviledge,
+      email: data.users.email,
+      phoneNumber: data.users.phoneNumber,
     };
   }
 };

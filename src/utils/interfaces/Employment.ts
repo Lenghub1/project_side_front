@@ -10,4 +10,7 @@ export interface Employement {
   privilege: string;
   workLocation: string;
   userId: string;
+  email: string;
+  phoneNumber: string;
+  users: any;
 }

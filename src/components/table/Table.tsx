@@ -4,6 +4,7 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
+import { useNavigate } from "react-router-dom";
 import TableRow from "@mui/material/TableRow";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -18,13 +19,15 @@ import { Avatar, Container } from "@mui/material";
 import { Employement } from "@/utils/interfaces/Employment";
 import CP from "..";
 import EnhancedTableHead, { HeadCell } from "./TableHead";
-import {
-  handleAcceptEmployee,
-  handleRejectEmployee,
-} from "@/utils/employee.util";
-import Badge from "@mui/material/Badge";
-import NotificationsIcon from "@mui/icons-material/Notifications";
+import { socket } from "src/socket";
+import { updateEmployee } from "@/api/employee";
 
+const orgId = "30ed163a-f86f-4b6d-8a9e-eb4263e5a9de";
+
+socket.emit("join", `org-30ed163a-f86f-4b6d-8a9e-eb4263e5a9de`);
+socket.on("update", (r) => {
+  console.log(r);
+});
 interface Data extends Employement {
   action: string;
 }
@@ -108,14 +111,20 @@ const EnhancedTable: React.FC<EnhancedTableProps<EmploymentWithAction>> = ({
   const [orderBy, setOrderBy] = React.useState<keyof Data>("name");
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
+  const [employeeDetail, setEmployeeDetail] = useRecoilState(employementDetail);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [notifiactionCount, setNotifiactionCount] = React.useState<number>(0);
 
   console.log(rows);
   const handleRequestSort = (property: keyof Data) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
+  };
+  const handleRowClick = (clickedRow: any) => {
+    console.log(clickedRow);
+    setEmployeeDetail(clickedRow);
+
+    navigate(`/organization/employee/registrations/details`);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -179,6 +188,7 @@ const EnhancedTable: React.FC<EnhancedTableProps<EmploymentWithAction>> = ({
             <TableBody>
               {visibleRows.map((row, index) => {
                 const labelId = `enhanced-table-checkbox-${index}`;
+                console.log(labelId);
 
                 return (
                   <TableRow
@@ -191,7 +201,12 @@ const EnhancedTable: React.FC<EnhancedTableProps<EmploymentWithAction>> = ({
                     }}
                   >
                     {/* <TableCell padding="checkbox" /> */}
-                    <TableCell component="th" id={labelId} scope="row">
+                    <TableCell
+                      component="th"
+                      id={labelId}
+                      scope="row"
+                      onClick={() => handleRowClick(row)}
+                    >
                       <Box
                         sx={{ display: "flex", alignItems: "center", gap: 1 }}
                       >
@@ -207,14 +222,10 @@ const EnhancedTable: React.FC<EnhancedTableProps<EmploymentWithAction>> = ({
                         <CP.Button onClick={() => handleAcceptEmployee(row.id)}>
                           Accept
                         </CP.Button>
-                        <CP.Button
-                          variant="contained"
-                          color="accent"
-                          onClick={() => handleRejectEmployee(row.id)}
-                        >
+                        <CP.Button variant="contained" color="accent">
                           Reject
                         </CP.Button>
-                      </CP.Styled.Div>
+                      </CP.Styled.Flex>
                     </TableCell>
                   </TableRow>
                 );

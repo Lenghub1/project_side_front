@@ -2,7 +2,13 @@ import { atom } from "recoil";
 import { recoilPersist } from "recoil-persist";
 
 const { persistAtom } = recoilPersist();
-
+interface EmploymentDetailState {
+  status: string;
+  id: string;
+  phoneNumber: string;
+  email: string;
+  position: string;
+}
 // select campus
 export const campusState = atom<string | null>({
   key: `campusState`,
@@ -40,4 +46,9 @@ export const isAccessTokenFetchedState = atom({
 export const isUserFetchedState = atom({
   key: "isUserFetchedState",
   default: false,
+});
+export const employementDetail = atom<EmploymentDetailState>({
+  key: `employementDetail`,
+  default: null,
+  effects_UNSTABLE: [persistAtom],
 });
