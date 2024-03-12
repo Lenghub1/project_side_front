@@ -129,6 +129,11 @@ const routes: RouteProps[] = [
       },
     ],
   },
+  {
+    name: "test-redirect",
+    path: "/test-redirect",
+    element: Pg.Login.default.RedirectingPage,
+  },
 ];
 
 export default routes;

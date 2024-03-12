@@ -3,11 +3,8 @@ import axios from "axios";
 
 export default function GoogleLoginButton() {
   const handleGoogleOauth = async () => {
-    window.location.href =
-      "https://e251-167-179-40-121.ngrok-free.app/api/v1/auth/google";
-    const res = await authApi.googleOauth();
-
-    console.log("this", res);
+    console.log(`${import.meta.env.VITE_BASE_URL_DEV}/auth/google`);
+    window.location.href = `${import.meta.env.VITE_BASE_URL_DEV}/auth/google`;
   };
   return (
     <img
