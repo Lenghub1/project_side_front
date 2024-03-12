@@ -8,8 +8,8 @@ const EmployeeRegistration = () => {
   const [data, setData] = React.useState<any>([]);
 
   const newPendingEmployees = async () => {
-    const [response, error] = handleApiRequest(
-      getAllPendingEmployees("30ed163a-f86f-4b6d-8a9e-eb4263e5a9de") as any
+    const [response, error] = await handleApiRequest(() =>
+      getAllPendingEmployees("30ed163a-f86f-4b6d-8a9e-eb4263e5a9de")
     );
     if (response) {
       console.log(response);
