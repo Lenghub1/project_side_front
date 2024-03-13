@@ -169,7 +169,6 @@ export const InputBoxWrapper = styled.div`
     & .MuiInputBase-root {
       width: auto;
       & .MuiInputBase-input {
-        padding: 12px 8px;
         maxlength: 1;
       }
     }

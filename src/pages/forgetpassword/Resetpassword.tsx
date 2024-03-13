@@ -1,24 +1,46 @@
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import useInput from "@/hooks/useInput";
 import CP from "@/components";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import { Div } from "@/styles/styled";
+import useCriteriaValidator from "@/hooks/useCriteriaInput.tsx";
+import useMatchInput from "@/hooks/useMatchInput";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import IconButton from "@mui/material/IconButton";
+import { SyntheticEvent } from "react";
+import { authApi } from "@/api/auth";
+import { handleApiRequest } from "@/api";
 
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
 `;
 
+const passwordCriteria = {
+  length: { min: 8, max: 25 },
+  containsNumber: true,
+  containsCapitalLetter: true,
+  containsLowercaseLetter: true,
+  // containsSpecialCharacter: true,
+};
+
 const ResetPassword = () => {
   const navigate = useNavigate();
 
-  const email = useInput("");
-  const password = useInput("");
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 428);
 
   console.log("Window asdasd", window.screen.width);
+  const password = useCriteriaValidator("", passwordCriteria);
+  const confirmPassword = useMatchInput(password.value, "", "Confirm Password");
+  const [passwordIsVisible, setPasswordIsVisible] = useState(false);
+  const [confirmPasswordIsVisible, setConfirmPasswordIsVisible] =
+    useState(false);
 
+  const isFormInvalid =
+    !password.value ||
+    password.errors.length !== 0 ||
+    !confirmPassword.value ||
+    !!confirmPassword.error;
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 428);
@@ -30,6 +52,25 @@ const ResetPassword = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  async function resetPassword(newPassword: string) {
+    const [response, error] = await handleApiRequest(() =>
+      authApi.resetPassword(newPassword)
+    );
+
+    if (error) {
+      console.log("errrro");
+    }
+
+    console.log("Respone", response);
+    return;
+  }
+
+  const handleSubmit = async (event: SyntheticEvent) => {
+    event.preventDefault();
+
+    await resetPassword(password.value);
+  };
 
   return (
     <CP.Styled.Wrapper height="100vh">
@@ -63,13 +104,62 @@ const ResetPassword = () => {
             </Flex>
             <Flex direction="column" gap="24px" overflow="unset">
               <Flex gap={"16px"} direction="column">
-                <CP.Input label="New assword" />
-                <CP.Input label="Confirm password" />
+                <CP.Input
+                  label="Password"
+                  type={passwordIsVisible ? "text" : "password"}
+                  value={password.value}
+                  onChange={password.onChange}
+                  onBlur={password.onBlur}
+                  error={password.errors.length > 0}
+                  helperText={<password.HelperText />}
+                  required
+                  InputProps={{
+                    endAdornment: (
+                      <IconButton
+                        onClick={() => setPasswordIsVisible((prev) => !prev)}
+                      >
+                        {passwordIsVisible ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    ),
+                  }}
+                />
+
+                <CP.Input
+                  label="Confirm password"
+                  type={confirmPasswordIsVisible ? "text" : "password"}
+                  value={confirmPassword.value}
+                  onChange={confirmPassword.onChange}
+                  onBlur={confirmPassword.onBlur}
+                  error={!!confirmPassword.error}
+                  helperText={<confirmPassword.HelperText />}
+                  required
+                  InputProps={{
+                    endAdornment: (
+                      <IconButton
+                        onClick={() =>
+                          setConfirmPasswordIsVisible((prev) => !prev)
+                        }
+                      >
+                        {confirmPasswordIsVisible ? (
+                          <Visibility />
+                        ) : (
+                          <VisibilityOff />
+                        )}
+                      </IconButton>
+                    ),
+                  }}
+                />
               </Flex>
 
               <Flex justify="flex-end" gap="20px">
                 <CP.Button variant="text">Cancel</CP.Button>
-                <CP.Button>SAVE</CP.Button>
+                <CP.Button
+                  disabled={isFormInvalid}
+                  type="submit"
+                  onClick={handleSubmit}
+                >
+                  SAVE
+                </CP.Button>
               </Flex>
             </Flex>
           </Flex>

@@ -314,6 +314,9 @@ const LoginPage = () => {
                 <CP.Typography
                   width="100%"
                   sx={{ cursor: "pointer", color: "red" }}
+                  onClick={() => {
+                    navigate("/forgetpassword");
+                  }}
                 >
                   Forget password?
                 </CP.Typography>

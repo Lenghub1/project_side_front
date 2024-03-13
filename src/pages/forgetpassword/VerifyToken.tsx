@@ -24,7 +24,9 @@ const VerifyToken = () => {
       }
 
       console.log("Token", response.data.user);
-      return;
+      if (response?.data?.user) {
+        naviagate("/resetpassword");
+      }
     },
     []
   );

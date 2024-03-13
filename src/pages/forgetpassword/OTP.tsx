@@ -1,35 +1,159 @@
-import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import useInput from "@/hooks/useInput";
-import CP from "@/components";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  KeyboardEvent,
+  BaseSyntheticEvent,
+  ClipboardEvent,
+  SyntheticEvent,
+} from "react";
 import styled from "styled-components";
-import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import CP from "@/components";
+import { authApi } from "@/api/auth";
+import { handleApiRequest } from "@/api";
 
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
 `;
 
+const OTPContainer = CP.Styled.Flex;
+
+const OTPInput = styled.input`
+  width: 40px;
+  height: 40px;
+  margin: 0 5px;
+  text-align: center;
+  font-size: 1.2rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+`;
+
 const OTP = () => {
   const navigate = useNavigate();
 
-  const email = useInput("");
-  const password = useInput("");
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 428);
+  const [arrayValue, setArrayValue] = useState<(string | number)[]>([
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+  ]);
+  const [maskedValue, setMaskedValue] = useState<(string | number)[]>([
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+  ]);
 
-  console.log("Window asdasd", window.screen.width);
-
+  const inputs = useRef<(HTMLInputElement | null)[]>([]);
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 428);
-    };
-    console.log("Window size", window.innerWidth);
-
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+    inputs.current[0]?.focus();
   }, []);
 
+  // handle pasting OTP code
+  const handleOnPaste = (e: ClipboardEvent, index: number) => {
+    e.preventDefault();
+    const paste = e.clipboardData.getData("text").split("");
+    if (paste.every((item) => !isNaN(Number(item)))) {
+      let newInputValue = [...arrayValue];
+      let newMaskedValue = [...maskedValue];
+      for (let i = 0; i < paste.length; i++) {
+        if (index + i < arrayValue.length) {
+          newInputValue[index + i] = paste[i];
+          newMaskedValue[index + i] = "*";
+        }
+      }
+      setArrayValue(newInputValue);
+      setMaskedValue(newMaskedValue);
+    }
+  };
+  // handle clicking keyboard event
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    const keyCode = parseInt(e.key);
+    if (
+      e.key !== "Backspace" &&
+      e.key !== "Delete" &&
+      e.key !== "Tab" &&
+      !(e.metaKey && e.key === "v") &&
+      !(keyCode >= 0 && keyCode <= 9)
+    ) {
+      e.preventDefault();
+    }
+  };
+
+  // on change
+  const handleChange = (e: BaseSyntheticEvent, index: number) => {
+    const input = e.target.value;
+    console.log("INPUT index ", index, "=", input);
+    if (!isNaN(input)) {
+      setArrayValue((preValue: (string | number)[]) => {
+        const newArray = [...preValue];
+        newArray[index] = input;
+        return newArray;
+      });
+
+      setMaskedValue((prevValue: (string | number)[]) => {
+        const newArray = [...prevValue];
+        newArray[index] = "*";
+        return newArray;
+      });
+
+      if (input !== "" && index < arrayValue.length - 1) {
+        inputs.current[index + 1]?.focus();
+      }
+
+      // if the 6 input field, has value, then auto submit to OTP verify
+      console.log("Lenght of array", arrayValue);
+      if (arrayValue.every((value) => value !== "")) {
+        arrayValue.every((value) => {
+          console.log;
+        });
+      }
+    }
+  };
+
+  //handle on key up
+  const handleKeyUp = (e: KeyboardEvent<HTMLInputElement>, index: number) => {
+    if (e.key === "Backspace" || e.key === "Delete") {
+      setArrayValue((prevValue: (string | number)[]) => {
+        const newArray = [...prevValue];
+        newArray[index] = "";
+        return newArray;
+      });
+
+      setMaskedValue((prevValue: (string | number)[]) => {
+        const newArray = [...prevValue];
+        newArray[index] = "";
+        return newArray;
+      });
+
+      if (index > 0) {
+        inputs.current[index - 1]?.focus();
+      }
+    }
+  };
+
+  async function verifyOTP(otp: string): Promise<void> {
+    const [response, error] = await handleApiRequest(() =>
+      authApi.verifyForgetPasswordToken(otp)
+    );
+    if (error) {
+      console.log("error");
+      return;
+    }
+  }
+
+  const handleSubmit = (event: SyntheticEvent) => {
+    event.preventDefault();
+    console.log("array", typeof arrayValue.join(""));
+  };
+
+  // handle key up delet value from inpu
   return (
     <CP.Styled.Wrapper height="100vh">
       <Flex height="inherit">
@@ -55,15 +179,22 @@ const OTP = () => {
                 number {"+855 ********* 10"}
               </CP.Typography>
             </Flex>
-            <Flex direction="column" gap="24px" overflow="unset">
-              <Flex gap={"16px"}>
-                <CP.InputBox />
-                <CP.InputBox />
-                <CP.InputBox />
-                <CP.InputBox />
-                <CP.InputBox />
-                <CP.InputBox />
-              </Flex>
+            <OTPContainer>
+              {maskedValue.map((value: string | number, index: number) => (
+                <OTPInput
+                  key={`index-${index}`}
+                  ref={(el) => (inputs.current[index] = el)}
+                  onChange={(e) => handleChange(e, index)}
+                  onKeyUp={(e) => handleKeyUp(e, index)}
+                  onKeyDown={(e) => handleKeyDown(e)}
+                  onPaste={(e) => handleOnPaste(e, index)}
+                  maxLength={1}
+                  autoComplete="off"
+                  accessKey={String(index)}
+                />
+              ))}
+            </OTPContainer>
+            <Flex direction="column" gap="24px" overflow="unset" margin="16px">
               <Flex>
                 <CP.Typography marginRight={1}>
                   Didn't receive code?{" "}
@@ -77,7 +208,9 @@ const OTP = () => {
                   Resend
                 </CP.Typography>
               </Flex>
-              <CP.Button>Verify</CP.Button>
+              <CP.Button type="submit" onClick={handleSubmit}>
+                Verify
+              </CP.Button>
               <CP.Typography
                 fontWeight="semibold"
                 sx={{ cursor: "pointer" }}

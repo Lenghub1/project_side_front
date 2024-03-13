@@ -45,10 +45,6 @@ const telegramOauth = async (user: any) => {
   return api.post("/auth/telegram/callback", { user });
 };
 
-const resetPassword = async (newPassword: string) => {
-  return api.patch(`auth/reset/password`, { newPassword });
-};
-
 const findForgotAccount = async (data: any) => {
   return api.post(`/users/name`, data);
 };
@@ -77,6 +73,10 @@ const verifyForgetPasswordToken = async (resetToken: string) => {
   const data = { resetToken };
   console.log("data", data);
   return api.post(`auth/verify/reset/password`, data);
+};
+
+const resetPassword = async (newPassword: string) => {
+  return api.patch(`auth/reset/password`, { newPassword });
 };
 
 const authApi = {
