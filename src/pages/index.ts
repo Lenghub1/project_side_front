@@ -6,3 +6,4 @@ export * from "@/pages/accountType";
 export * as Employee from "@/pages/employee";
 export * as Organization from "@/pages/organization";
 export * from "@/pages/testLogin";
+export * from "@/pages/CompanyLookup";

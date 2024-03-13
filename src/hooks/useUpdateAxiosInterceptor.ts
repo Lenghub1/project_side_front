@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { accessTokenState } from "@/store/userStore";
-import { api, handleApiRequest } from "@/api";
-import { authApi } from "@/api/auth";
+import { api } from "@/api";
 import { refreshAccessToken } from "@/utils/authUtils";
 import {
   AxiosError,
@@ -31,25 +30,6 @@ const useUpdateAxiosInterceptor = () => {
   const [accessToken, setAccessToken] = useRecoilState<string | null>(
     accessTokenState
   );
-
-  // async function refreshAccessToken(): Promise<string | null> {
-  //   const [response, error] = await handleApiRequest(() => authApi.refresh());
-  //   if (response) {
-  //     const { accessToken: newAccessToken } = response.data.user;
-  //     setAccessToken(newAccessToken);
-  //     return newAccessToken;
-  //   } else {
-  //     setAccessToken(null);
-  //     if (
-  //       error?.response?.data?.message !==
-  //       "Unauthorized: Access is denied due to invalid credential. Please login again"
-  //     ) {
-  //       await handleApiRequest(() => authApi.logout());
-  //     }
-  //     // window.location.href = "/create-account";
-  //     return null;
-  //   }
-  // }
 
   useEffect(() => {
     const requestInterceptor = api.interceptors.request.use(

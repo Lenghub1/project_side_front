@@ -1,5 +1,5 @@
-import { Outlet, Link } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { Outlet } from "react-router-dom";
+import { useEffect, useRef } from "react";
 import usePersist from "@/hooks/usePersist";
 import { useRecoilState } from "recoil";
 import { accessTokenState } from "@/store/userStore";

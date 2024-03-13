@@ -53,6 +53,11 @@ const routes: RouteProps[] = [
     path: "test-login",
     element: Pg.TestLoginPage,
   },
+  {
+    name: "companyLookup",
+    path: "company-lookup",
+    element: Pg.CompanyLookup,
+  },
 ];
 
 export default routes;

@@ -21,3 +21,8 @@ export const accessTokenState = atom<string | null>({
   key: "accessTokenState",
   default: null,
 });
+
+export const userState = atom<Object | null>({
+  key: "userState",
+  default: {},
+});

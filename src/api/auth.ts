@@ -24,11 +24,16 @@ const logout = async () => {
   return api.post("/auth/logout");
 };
 
+const getUser = async (id: string) => {
+  return api.get(`/users/me/${id}`);
+};
+
 const authApi = {
   testLogin,
   signup,
   refresh,
   logout,
+  getUser,
 };
 
 const getGroup = async () => {

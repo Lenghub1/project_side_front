@@ -1,7 +1,8 @@
 import { Route, Routes } from "react-router-dom";
 import routes, { RouteProps } from "./routes";
 import useUpdateAxiosInterceptor from "@/hooks/useUpdateAxiosInterceptor";
-import PersistLogin from "@/components/auth/PersistLogin";
+import { PersistLogin } from "@/components/auth";
+import useAuth from "@/hooks/useAuth";
 
 const renderRoutes = (routes: RouteProps[]) => {
   return routes.map((route: RouteProps) => {
@@ -29,6 +30,7 @@ const renderRoutes = (routes: RouteProps[]) => {
 
 const AppRoutes = () => {
   useUpdateAxiosInterceptor();
+  useAuth();
   return (
     <Routes>
       <Route element={<PersistLogin />}>{renderRoutes(routes)}</Route>

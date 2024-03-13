@@ -22,13 +22,13 @@ const useWindow = () => {
     message: string,
     { type, hideDuration }: SnackbarProps = {
       type: "default",
-      hideDuration: 1000
+      hideDuration: 1000,
     }
   ) => {
     enqueueSnackbar(message, {
       variant: type,
       autoHideDuration: hideDuration,
-      anchorOrigin: { vertical: "bottom", horizontal: "center" }
+      anchorOrigin: { vertical: "bottom", horizontal: "center" },
     });
   };
 
@@ -38,7 +38,7 @@ const useWindow = () => {
     setModal({
       open: false,
       onClose: () => {},
-      children: ""
+      children: "",
     });
   }, [open]);
 
@@ -62,7 +62,7 @@ const useWindow = () => {
       onClose: () => setOpen(false),
       onOk: () => onOkSubmit(onOk),
       children: message,
-      ...prop
+      ...prop,
     });
   };
 
@@ -77,14 +77,14 @@ const useWindow = () => {
       children: message,
       onOk: () => onOkSubmit(onOk),
       onCancel: () => onCancelSubmit(onCancel),
-      ...prop
+      ...prop,
     });
   };
 
   return {
     snackbar,
     alert,
-    confirm
+    confirm,
   };
 };
 

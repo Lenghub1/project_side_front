@@ -8,7 +8,7 @@ import BeforeLoginTemplate from "@/components/template/BeforeLogin";
 import Store from "@/store";
 import campusApi from "@/api/campus";
 import { styled } from "styled-components";
-import { accessTokenState } from "@/store/userStore";
+import { accessTokenState, userState } from "@/store/userStore";
 import { testApi } from "@/api/auth";
 import { handleApiRequest } from "@/api";
 
@@ -23,7 +23,9 @@ const CampusPage = () => {
   }, []);
 
   const accessToken = useRecoilValue(accessTokenState);
+  const user = useRecoilValue(userState);
   console.log("MY ACCESS TOKEN IN APP: ", accessToken);
+  console.log("USER INFORMATION: ", user);
 
   const getCampusList = async () => {
     setLoading(true);
