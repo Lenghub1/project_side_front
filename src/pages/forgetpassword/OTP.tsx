@@ -148,9 +148,11 @@ const OTP = () => {
     }
   }
 
-  const handleSubmit = (event: SyntheticEvent) => {
+  const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
-    console.log("array", typeof arrayValue.join(""));
+    console.log("Value", arrayValue.join(""));
+    return;
+    await verifyOTP(arrayValue.join(""));
   };
 
   // handle key up delet value from inpu
@@ -215,6 +217,7 @@ const OTP = () => {
                 fontWeight="semibold"
                 sx={{ cursor: "pointer" }}
                 margin={1}
+                onClick={() => navigate("/forgetPassword")}
               >
                 CHANGE PHONE NUMBER
               </CP.Typography>
