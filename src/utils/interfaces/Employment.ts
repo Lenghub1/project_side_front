@@ -10,4 +10,5 @@ export interface Employement {
   status: string;
   privilege: string;
   workLocation: string;
+  userId: string;
 }
