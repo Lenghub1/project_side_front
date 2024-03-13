@@ -2,30 +2,32 @@ import { api } from ".";
 import { AxiosResponse } from "axios";
 import { Employement } from "@/utils/interfaces/Employment";
 
+const currentOrganizationId = "30ed163a-f86f-4b6d-8a9e-eb4263e5a9de";
 const transformEmployeeData = (
   response: any
 ): Partial<Employement> | Partial<Employement>[] => {
-  const { data, status_code } = JSON.parse(response);
+  const parsedResponse = JSON.parse(response);
+  const { data, status_code } = parsedResponse;
 
   console.log(data);
-  if (status_code !== 200) {
+  if (!String(status_code).startsWith("2")) {
     console.error("Received non-OK status:", status_code);
-    return [];
+    return parsedResponse;
   }
-  console.log(data);
+
   if (Array.isArray(data.data)) {
-    console.log(data.data);
     return data.data.map((responseData: any) => ({
       id: responseData.id,
+      userId: responseData.user.id,
       name: `${responseData.user.firstName} ${responseData.user.lastName}`,
       position: responseData.position,
       status: responseData.status,
       privilege: responseData.privilege,
     }));
   } else {
-    console.log(data);
     return {
       id: data.id,
+      userId: data.user.id,
       name: `${data.user.firstName} ${data.user.lastName}`,
       position: data.position,
       status: data.status,
@@ -35,98 +37,62 @@ const transformEmployeeData = (
 };
 
 const allEmployees = async (
-  organizationId: string
+  organizationId: string = currentOrganizationId
 ): Promise<AxiosResponse<Partial<Employement>[]>> => {
-  try {
-    const response = await api.get(
-      `/organizations/${organizationId}/employments`,
-      {
-        transformResponse: [(response) => transformEmployeeData(response)],
-      }
-    );
-    console.log("API Response:", response);
-    return response.data as AxiosResponse<Partial<Employement>[]>;
-  } catch (error) {
-    console.error("Error in allEmployees:", error);
-    throw error;
-  }
+  return api.get(`/organizations/${organizationId}/employments`, {
+    transformResponse: [(response) => transformEmployeeData(response)],
+  });
 };
 
 const getEmployeeById = async (
-  organizationId: string,
-  employmentId: string
+  employmentId: string,
+  organizationId: string = currentOrganizationId
 ): Promise<AxiosResponse<Partial<Employement>>> => {
-  try {
-    const response = await api.get(
-      `/organizations/${organizationId}/employments/${employmentId}`,
-      {
-        transformResponse: [(response) => transformEmployeeData(response)],
-      }
-    );
-    return response as AxiosResponse<Partial<Employement>>;
-  } catch (error) {
-    console.error("Error in getEmployeeById:", error);
-    return {} as AxiosResponse<Partial<Employement>>;
-  }
+  return api.get(
+    `/organizations/${organizationId}/employments/${employmentId}`,
+    {
+      transformResponse: [(response) => transformEmployeeData(response)],
+    }
+  );
 };
 
 const createEmployee = async (
-  organizationId: string
+  data: Object,
+  organizationId: string = currentOrganizationId
 ): Promise<AxiosResponse<Partial<Employement>>> => {
-  try {
-    const response = await api.post(
-      `/organizations/${organizationId}/employments`,
-      {},
-      {
-        transformResponse: [(response) => transformEmployeeData(response)],
-      }
-    );
-    return response as AxiosResponse<Partial<Employement>>;
-  } catch (error) {
-    console.error("Error in createEmployee:", error);
-    return {} as AxiosResponse<Partial<Employement>>;
-  }
+  return api.post(`/organizations/${organizationId}/employments`, data, {
+    transformResponse: [(response) => transformEmployeeData(response)],
+  });
 };
 
 const updateEmployee = async (
-  organizationId: string,
+  data: Object,
   employmentId: string,
-  data: any
+  organizationId: string = currentOrganizationId
 ): Promise<AxiosResponse<Partial<Employement>>> => {
-  try {
-    const response = await api.patch(
-      `/organizations/${organizationId}/employments/${employmentId}`,
-      data,
-      {
-        transformResponse: [(response) => transformEmployeeData(response)],
-      }
-    );
-    return response as AxiosResponse<Partial<Employement>>;
-  } catch (error) {
-    console.error("Error in update Employee Record:", error);
-    return {} as AxiosResponse<Partial<Employement>>;
-  }
+  return api.patch(
+    `/organizations/${organizationId}/employments/${employmentId}`,
+    data,
+    {
+      transformResponse: [(response) => transformEmployeeData(response)],
+    }
+  );
 };
 
-const deleteEmployee = async (organizationId: string, employmentId: string) =>
-  api.delete(`/organizations/${organizationId}/employments/${employmentId}`);
+const deleteEmployee = async (
+  employmentId: string,
+  organizationId: string = currentOrganizationId
+) => api.delete(`/organizations/${organizationId}/employments/${employmentId}`);
 
 const getAllPendingEmployees = async (
-  organizationId: string
+  organizationId: string = currentOrganizationId
 ): Promise<AxiosResponse<Partial<Employement>>> => {
-  try {
-    const response = await api.get(
-      `/organizations/${organizationId}/employments?status_eq=pending`,
-      {
-        transformResponse: [(response) => transformEmployeeData(response)],
-      }
-    );
-    console.log(response);
-    return response as AxiosResponse<Partial<Employement>>;
-  } catch (error) {
-    console.error("Error in getAllPendingEmployees:", error);
-    return {} as AxiosResponse<Partial<Employement>>;
-  }
+  return api.get(
+    `/organizations/${organizationId}/employments?status_eq=pending`,
+    {
+      transformResponse: [(response) => transformEmployeeData(response)],
+    }
+  );
 };
 
 export {
