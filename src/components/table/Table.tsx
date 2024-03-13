@@ -18,11 +18,12 @@ import { Avatar, Container } from "@mui/material";
 import { Employement } from "@/utils/interfaces/Employment";
 import CP from "..";
 import EnhancedTableHead, { HeadCell } from "./TableHead";
-import { socket } from "src/socket";
-import { deleteEmployee, updateEmployee } from "@/api/employee";
-import { handleApiRequest } from "@/api";
-
-const orgId = "30ed163a-f86f-4b6d-8a9e-eb4263e5a9de";
+import {
+  handleAcceptEmployee,
+  handleRejectEmployee,
+} from "@/utils/employee.util";
+import Badge from "@mui/material/Badge";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 
 interface Data extends Employement {
   action: string;
@@ -108,6 +109,7 @@ const EnhancedTable: React.FC<EnhancedTableProps<EmploymentWithAction>> = ({
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [notifiactionCount, setNotifiactionCount] = React.useState<number>(0);
 
   console.log(rows);
   const handleRequestSort = (property: keyof Data) => {
@@ -131,31 +133,6 @@ const EnhancedTable: React.FC<EnhancedTableProps<EmploymentWithAction>> = ({
     setDense(event.target.checked);
   };
 
-  const handleAcceptEmployee = async (employeeId: string) => {
-    console.log(employeeId);
-    const newRecord = await updateEmployee(orgId, employeeId, {
-      status: "active",
-    });
-
-    if (newRecord) {
-      console.log(newRecord);
-      socket.emit("acceptEmployee", newRecord);
-    }
-  };
-
-  const handleRejectEmployee = async (employeeId: string) => {
-    console.log(employeeId);
-    const [response, error] = await handleApiRequest(() =>
-      deleteEmployee(orgId, employeeId)
-    );
-    if (error) {
-      alert(error.message);
-    } else {
-      console.log(response);
-      socket.emit("rejectEmployee", { employeeId });
-    }
-  };
-
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
@@ -171,6 +148,18 @@ const EnhancedTable: React.FC<EnhancedTableProps<EmploymentWithAction>> = ({
 
   return (
     <Container sx={{ width: "100%", padding: 2 }}>
+      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+        <Badge
+          badgeContent={notifiactionCount}
+          sx={{
+            color: (theme) => {
+              return theme.palette.text.primary;
+            },
+          }}
+        >
+          <NotificationsIcon />
+        </Badge>
+      </Box>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar />
         <TableContainer>
