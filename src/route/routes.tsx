@@ -140,6 +140,16 @@ const routes: RouteProps[] = [
     path: "/verifytoken",
     element: Pg.ForgetPassword.default.VerifyToken,
   },
+  {
+    name: "forgotaccount",
+    path: "/forgotaccount",
+    element: Pg.ForgetAccount.default.ForgotAccount,
+  },
+  {
+    name: "codesendingoption",
+    path: "/receiveoption",
+    element: Pg.ForgetAccount.default.CodeSendingOption,
+  },
 ];
 
 export default routes;
