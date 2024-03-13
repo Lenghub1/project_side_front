@@ -8,3 +8,8 @@ export const employees = atom<EmploymentWithAction[]>({
 
   effects_UNSTABLE: [persistAtom],
 });
+export const selectMembers = atom<string[] | null>({
+  key: `selectMembers`,
+  default: [],
+  effects_UNSTABLE: [persistAtom],
+});

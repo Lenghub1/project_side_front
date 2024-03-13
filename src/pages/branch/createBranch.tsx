@@ -1,34 +1,72 @@
-import React, { useState } from "react";
-import MapComponent from "@/components/map/Map";
-import {
-  Button,
-  Container,
-  Step,
-  StepLabel,
-  Stepper,
-  TextField,
-} from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Button, Container, Step, StepLabel, Stepper } from "@mui/material";
 import CP from "@/components";
-
-interface branchData {
+import InformationBranch from "./informationFormBranch";
+import ConfirmationCreateBranch from "./confirmationCreateBranch";
+import AddMember from "./addMember";
+import { useSnackbar } from "notistack";
+import { ResetRecoilState, useRecoilState } from "recoil";
+import { selectMembers } from "@/store/employee";
+interface BranchData {
   name: string;
   manager: string;
   location: string;
-  geoFancing: number;
-  member: [];
+  geoFencing: number;
+  member: any[];
+}
+
+export interface AddMemberProps {
+  branchData: BranchData;
+  setBranchData: React.Dispatch<React.SetStateAction<BranchData>>;
 }
 
 const CreateBranch: React.FC = () => {
+  const { enqueueSnackbar } = useSnackbar();
+  const [selected, setSelected] = useRecoilState(selectMembers);
   const [step, setStep] = useState<number>(0);
-  const [branchData, setBranchData] = useState<branchData>({
+  const [branchData, setBranchData] = useState<BranchData>({
     name: "",
     manager: "",
     location: "",
-    geoFancing: 0,
+    geoFencing: 10,
     member: [],
   });
+  const [errors, setErrors] = useState<string[]>([]);
 
   const handleNext = () => {
+    // Validate fields before proceeding to the next step
+    if (step === 0) {
+      const newErrors: string[] = [];
+      if (!branchData.name.trim()) {
+        newErrors.push("Name is required");
+      }
+      if (!branchData.manager.trim()) {
+        newErrors.push("Manager is required");
+      }
+      if (!branchData.location.trim()) {
+        newErrors.push("Location is required");
+      }
+      if (!branchData.geoFencing) {
+        newErrors.push("GeoFencing is required");
+      }
+      if (newErrors.length > 0) {
+        newErrors.forEach((error) => {
+          enqueueSnackbar(error, { variant: "error" });
+        });
+        return; // Do not proceed if there are errors
+      }
+    } else if (step === 1) {
+      const newErrors: string[] = [];
+      if (branchData.member.length === 0) {
+        newErrors.push("Please add at least one member");
+      }
+      if (newErrors.length > 0) {
+        newErrors.forEach((error) => {
+          enqueueSnackbar(error, { variant: "error" });
+        });
+        return; // Do not proceed if there are errors
+      }
+    }
     setStep(step + 1);
   };
 
@@ -45,10 +83,15 @@ const CreateBranch: React.FC = () => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-  };
-  const fetchData = () => {
     console.log(branchData);
   };
+  const clearSelection = () => {
+    setSelected([]); // Clear the selected state
+  };
+
+  useEffect(() => {
+    clearSelection();
+  }, []);
   return (
     <Container>
       <form onSubmit={handleSubmit} style={{ padding: "20px" }}>
@@ -63,69 +106,33 @@ const CreateBranch: React.FC = () => {
             <StepLabel>Confirmation</StepLabel>
           </Step>
         </Stepper>
-        {step === 0 && (
-          <CP.Styled.Div style={{ marginTop: "20px" }}>
-            <MapComponent />
-            <TextField
-              label="Name"
-              type="text"
-              name="name"
-              value={branchData.name}
-              onChange={handleInputChange}
-              fullWidth
-              margin="normal"
-              variant="outlined"
-            />
-            <TextField
-              label="manager"
-              type="text"
-              name="manager"
-              value={branchData.manager}
-              onChange={handleInputChange}
-              fullWidth
-              margin="normal"
-              variant="outlined"
-            />
-            <TextField
-              label="Location"
-              type="text"
-              name="location"
-              value={branchData.location}
-              onChange={handleInputChange}
-              fullWidth
-              margin="normal"
-              variant="outlined"
-            />
-            <TextField
-              label="GeoFancing"
-              type="text"
-              name="geoFancing"
-              value={branchData.geoFancing}
-              onChange={handleInputChange}
-              fullWidth
-              margin="normal"
-              variant="outlined"
-            />
+        {errors.length > 0 && (
+          <CP.Styled.Div style={{ color: "red" }}>
+            {errors.map((error, index) => (
+              <div key={index}>{error}</div>
+            ))}
           </CP.Styled.Div>
         )}
-        {step === 1 && (
-          <TextField
-            label="Member"
-            type="text"
-            name="member"
-            value={branchData.member}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-            variant="outlined"
+        {step === 0 && (
+          <InformationBranch
+            branchData={branchData}
+            setBranchData={setBranchData}
+            handleInputChange={handleInputChange}
           />
         )}
-        {step === 2 && (
-          <CP.Styled.Div>
-            <CP.Card width="100%"> Detail</CP.Card>
-          </CP.Styled.Div>
+        {step === 1 && (
+          <AddMember branchData={branchData} setBranchData={setBranchData} />
         )}
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
+        {step === 2 && <ConfirmationCreateBranch branchData={branchData} />}
+        <CP.Styled.Div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "flex-end",
+            gap: "20px",
+            marginTop: "20px",
+          }}
+        >
           {step > 0 && (
             <Button variant="outlined" onClick={handlePrevious}>
               Previous
@@ -136,11 +143,11 @@ const CreateBranch: React.FC = () => {
               Next
             </Button>
           ) : (
-            <Button variant="contained" type="submit" onClick={fetchData}>
+            <Button variant="contained" type="submit">
               Submit
             </Button>
           )}
-        </div>
+        </CP.Styled.Div>
       </form>
     </Container>
   );
