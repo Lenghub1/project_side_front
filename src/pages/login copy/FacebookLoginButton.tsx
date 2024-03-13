@@ -4,7 +4,6 @@ import { Box } from "@mui/material";
 import { useState } from "react";
 
 export default function FacebookLoginButton() {
-
   const handleFacebookOauth = async () => {
     window.location.href = `${import.meta.env.VITE_BASE_URL_DEV}/auth/facebook`;
   };

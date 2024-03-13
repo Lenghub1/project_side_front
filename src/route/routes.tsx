@@ -135,6 +135,11 @@ const routes: RouteProps[] = [
     path: "/test-redirect",
     element: Pg.Login.default.RedirectingPage,
   },
+  {
+    name: "verifytoken",
+    path: "/verifytoken",
+    element: Pg.ForgetPassword.default.VerifyToken,
+  },
 ];
 
 export default routes;

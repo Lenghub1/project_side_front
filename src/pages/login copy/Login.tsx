@@ -15,7 +15,6 @@ import { IconButton } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import FacebookLoginButton from "./FacebookLoginButton";
 import GoogleLoginButton from "./GoogleLoginButton";
-import TelegramLoginButton from "./TelegramLoginButton";
 import { Box } from "@mui/material";
 import Store from "@/store";
 
@@ -191,7 +190,7 @@ const LoginPage = () => {
             >
               Login
             </CP.Typography>
-            <TelegramLoginButton />
+
             <Flex direction="column" gap="24px">
               {!isMobile && (
                 <CP.Typography width="100%">
