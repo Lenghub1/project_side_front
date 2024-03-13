@@ -1,29 +1,37 @@
 import { Route, Routes } from "react-router-dom";
-import routes from "./routes";
+import routes, { RouteProps } from "./routes";
 import useUpdateAxiosInterceptor from "@/hooks/useUpdateAxiosInterceptor";
 import PersistLogin from "@/components/auth/PersistLogin";
+
+const renderRoutes = (routes: RouteProps[]) => {
+  return routes.map((route: RouteProps) => {
+    if (route.children && route.children.length > 0) {
+      return (
+        <Route
+          key={route.name}
+          path={route.path}
+          element={route.element ? <route.element /> : undefined}
+        >
+          {renderRoutes(route.children)} {/* recursive call */}
+        </Route>
+      );
+    } else {
+      return (
+        <Route
+          key={route.name}
+          path={route.path}
+          element={route.element ? <route.element /> : undefined}
+        />
+      );
+    }
+  });
+};
 
 const AppRoutes = () => {
   useUpdateAxiosInterceptor();
   return (
     <Routes>
-      <Route element={<PersistLogin />}>
-        {routes.map((route) => {
-          return (
-            <Route
-              path={route.path}
-              element={<route.element />}
-              key={route.name}
-            >
-              {route.children?.map((r) => {
-                return (
-                  <Route path={r.path} element={<r.element />} key={r.name} />
-                );
-              })}
-            </Route>
-          );
-        })}
-      </Route>
+      <Route element={<PersistLogin />}>{renderRoutes(routes)}</Route>
     </Routes>
   );
 };

@@ -5,7 +5,7 @@ import { NavLink } from "react-router-dom";
 import { authApi } from "@/api/auth";
 import useValidatedInput from "@/hooks/useValidatedInput";
 import useCriteriaValidator from "@/hooks/useCriteriaInput.tsx";
-import { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import useMatchInput from "@/hooks/useMatchInput";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -14,8 +14,8 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import countries from "@/components/phonePrefix/countries.json";
 import Box from "@mui/material/Box";
-import { handleApiRequest } from "@/api";
 import { useSnackbar } from "notistack";
+import useApi from "@/hooks/useApi";
 
 export const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -105,6 +105,8 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
     });
   }
 
+  const { handleApiRequest, isLoading } = useApi();
+
   async function signup(method: string, data: any): Promise<void> {
     const [response, error] = await handleApiRequest(() =>
       authApi.signup(method, data)
@@ -113,7 +115,8 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
     if (response) {
       console.log(response);
     } else if (error) {
-      if (error?.response?.status === 409) {
+      console.log(error.message);
+      if (error.statusCode === 409) {
         if (signupMethod === "email") {
           showError(
             "Email already exists. Please use a different email or log in."
@@ -160,6 +163,10 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
 
     await signup(signupMethod, formData);
   };
+
+  if (isLoading) {
+    return <h1>Loading</h1>;
+  }
 
   return (
     <CP.Styled.Wrapper height="100vh" padding="0">

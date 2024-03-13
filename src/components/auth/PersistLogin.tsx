@@ -10,7 +10,7 @@ function PersistLogin() {
   const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
   const effectRan = useRef(false);
 
-  const [trueSuccess, setTrueSuccess] = useState(false);
+  // const [trueSuccess, setTrueSuccess] = useState(false);
 
   useEffect(() => {
     if (
@@ -19,25 +19,22 @@ function PersistLogin() {
     ) {
       const verifyRefreshToken = async () => {
         await refreshAccessToken(setAccessToken);
-        setTrueSuccess(true);
+        // setTrueSuccess(true);
       };
 
       if (!accessToken && persist) verifyRefreshToken();
     }
-    return () => (effectRan.current = true);
+    return () => {
+      effectRan.current = true;
+      return;
+    };
   }, []);
 
-  let content;
   if (!persist) {
-    console.log("No persist!");
-    content = <Outlet />;
-  } else if (trueSuccess) {
-    console.log("success");
-    content = <Outlet />;
-  } else if (accessToken) {
-    content = <Outlet />;
+    return <Outlet />;
   }
-  return content;
+
+  return <Outlet />;
 }
 
 export default PersistLogin;

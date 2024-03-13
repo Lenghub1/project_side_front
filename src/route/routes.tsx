@@ -25,11 +25,13 @@ const routes: RouteProps[] = [
     name: "getStarted",
     path: "/get-started",
     element: Pg.GetStarted,
-  },
-  {
-    name: "createAccount",
-    path: "create-account",
-    element: Pg.SignupPage,
+    children: [
+      {
+        name: "createAccount",
+        path: "create-account",
+        element: Pg.SignupPage,
+      },
+    ],
   },
   {
     name: "create-new-organization",
