@@ -19,7 +19,8 @@ import { Employement } from "@/utils/interfaces/Employment";
 import CP from "..";
 import EnhancedTableHead, { HeadCell } from "./TableHead";
 import { socket } from "src/socket";
-import { updateEmployee } from "@/api/employee";
+import { deleteEmployee, updateEmployee } from "@/api/employee";
+import { handleApiRequest } from "@/api";
 
 const orgId = "30ed163a-f86f-4b6d-8a9e-eb4263e5a9de";
 
@@ -142,6 +143,19 @@ const EnhancedTable: React.FC<EnhancedTableProps<EmploymentWithAction>> = ({
     }
   };
 
+  const handleRejectEmployee = async (employeeId: string) => {
+    console.log(employeeId);
+    const [response, error] = await handleApiRequest(() =>
+      deleteEmployee(orgId, employeeId)
+    );
+    if (error) {
+      alert(error.message);
+    } else {
+      console.log(response);
+      socket.emit("rejectEmployee", { employeeId });
+    }
+  };
+
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
@@ -204,7 +218,11 @@ const EnhancedTable: React.FC<EnhancedTableProps<EmploymentWithAction>> = ({
                         <CP.Button onClick={() => handleAcceptEmployee(row.id)}>
                           Accept
                         </CP.Button>
-                        <CP.Button variant="contained" color="accent">
+                        <CP.Button
+                          variant="contained"
+                          color="accent"
+                          onClick={() => handleRejectEmployee(row.id)}
+                        >
                           Reject
                         </CP.Button>
                       </CP.Styled.Div>
