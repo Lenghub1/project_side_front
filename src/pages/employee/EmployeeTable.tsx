@@ -1,29 +1,12 @@
 import { Container } from "@mui/material";
-import { Employement } from "@/utils/interfaces/Employment";
-import { handleApiRequest } from "@/api";
+import useFetch from "@/hooks/useFetch";
 import { allEmployees } from "@/api/employee";
 import EnhancedTable from "@/components/table/Table";
 import { HeadCell } from "@/components/table/TableHead";
-import { useState, useEffect } from "react";
+import { Employement } from "@/utils/interfaces/Employment";
 
 const EmployeeTable = () => {
-  const [data, setData] = useState<any>([]);
-  const [error, setError] = useState<any>([]);
-  const fetchData = async () => {
-    const [response, error] = await handleApiRequest(() => allEmployees());
-    if (response) {
-      console.log(response);
-      setData(response);
-      setError(undefined);
-    } else {
-      console.log(error);
-      setError(error);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const { data, error } = useFetch(allEmployees);
   if (error) {
     if (error.response?.status === 404) {
       return (
@@ -45,8 +28,8 @@ const EmployeeTable = () => {
         orderBy="name"
         order="asc"
         headCells={headCells}
-        rows={data}
-        rowCount={data?.length}
+        rows={data || []}
+        rowCount={data?.length || 0}
         tableName="Employee"
       />
     </Container>

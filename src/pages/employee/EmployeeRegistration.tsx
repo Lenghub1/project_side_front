@@ -7,7 +7,6 @@ import Badge from "@mui/material/Badge";
 import Box from "@mui/material/Box";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { getAllPendingEmployees } from "@/api/employee";
-import { handleApiRequest } from "@/api";
 import { socket } from "@/socket";
 import { HeadCell } from "@/components/table/TableHead";
 import { Employement } from "@/utils/interfaces/Employment";
@@ -15,6 +14,7 @@ import {
   handleAcceptEmployee,
   handleRejectEmployee,
 } from "@/utils/employee.util";
+import useFetch from "@/hooks/useFetch";
 
 const userId = "d5e2b24b-7c77-480f-ad24-c79c786179cc";
 
@@ -29,26 +29,10 @@ const RenderActionCell = (row: Employement) => {
 };
 
 const EmployeeRegistration = () => {
-  const [data, setData] = React.useState<Object | any>([]);
-  const [error, setError] = React.useState<Object | any>([]);
+  const { data, error } = useFetch(getAllPendingEmployees);
   const [notifiactionCount, setNotifiactionCount] = React.useState<number>(0);
 
-  const newPendingEmployees = async () => {
-    const [response, error] = await handleApiRequest(() =>
-      getAllPendingEmployees("1ca2a528-72c9-4cb8-8823-4d26cfcdd598")
-    );
-    if (response) {
-      console.log(response);
-      setData(response);
-      setError(undefined);
-    } else {
-      console.log(error);
-      setError(error);
-    }
-  };
-
   React.useEffect(() => {
-    newPendingEmployees();
     console.log(userId);
   }, []);
 
@@ -84,9 +68,9 @@ const EmployeeRegistration = () => {
         <EnhancedTable<Employement>
           headCells={headCells}
           order="asc"
-          rows={data}
+          rows={data || []}
           orderBy="name"
-          rowCount={data.length}
+          rowCount={data?.length || 0}
           tableName="Employee Registrations"
           actionCell={RenderActionCell}
         />
