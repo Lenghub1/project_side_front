@@ -3,13 +3,12 @@ import { createGlobalStyle } from "styled-components";
 const GlobalStyles = createGlobalStyle` 
 body {
     width : 100%;
-    height : 100vh;
-    overflow : hidden;
+    min-height : 100vh;
+    overflow-x : hidden;
 
     #root {    
         width : inherit;
         height : inherit;
-        overflow : hidden;
    
        }
 

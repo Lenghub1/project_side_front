@@ -1,4 +1,4 @@
-import ThemeProvider from "@mui/material/styles/ThemeProvider";
+import { ThemeProvider } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 
 import { lightTheme, darkTheme } from ".";
@@ -9,11 +9,11 @@ interface ThemeProps extends ReactNodeProps {}
 const Theme = ({ children }: ThemeProps) => {
   // TODO: Create light-mode & dark-mode toggle
   return (
-    <ThemeProvider theme={lightTheme}>
+    <ThemeProvider theme={darkTheme}>
       <Box
         sx={{
           backgroundColor: "background.default",
-          minHeight: "100vh"
+          minHeight: "100vh",
         }}
       >
         {children}
