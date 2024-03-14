@@ -1,34 +1,55 @@
-import CP from "@/components";
-import useFetch from "@/hooks/useFetch";
+import { Container } from "@mui/material";
+import { Employement } from "@/utils/interfaces/Employment";
+import { handleApiRequest } from "@/api";
 import { allEmployees } from "@/api/employee";
 import EnhancedTable from "@/components/table/Table";
 import { HeadCell } from "@/components/table/TableHead";
-import { Employement } from "@/utils/interfaces/Employment";
-import Error from "../error/Error";
-import { allEmployeesData } from "@/store/employee";
-import { useRecoilState } from "recoil";
+import { useState, useEffect } from "react";
 
 const EmployeeTable = () => {
-  const [allEmployee, setAllEmployee] = useRecoilState(allEmployeesData);
-  const { data, error } = useFetch(allEmployees);
-  if (error) {
-    console.log(error);
-    return <Error status={error.status_code} />;
-  }
-  setAllEmployee(data);
-  console.log(allEmployee);
+  const [data, setData] = useState<any>([]);
+  const [error, setError] = useState<any>([]);
+  const fetchData = async () => {
+    const [response, error] = await handleApiRequest(() => allEmployees());
+    if (response) {
+      console.log(response);
+      setData(response);
+      setError(undefined);
+    } else {
+      console.log(error);
+      setError(error);
+    }
+  };
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+  if (error) {
+    if (error.response?.status === 404) {
+      return (
+        <Container sx={{ color: (theme) => theme.palette.text.primary }}>
+          <h1>There's no pending request</h1>
+        </Container>
+      );
+    } else {
+      return (
+        <Container sx={{ color: (theme) => theme.palette.text.primary }}>
+          <h1>Something went wrong</h1>
+        </Container>
+      );
+    }
+  }
   return (
-    <CP.Container>
+    <Container>
       <EnhancedTable<Employement>
         orderBy="name"
         order="asc"
         headCells={headCells}
-        rows={data || []}
-        rowCount={data?.length || 0}
+        rows={data}
+        rowCount={data?.length}
         tableName="Employee"
       />
-    </CP.Container>
+    </Container>
   );
 };
 
@@ -38,6 +59,7 @@ const headCells: HeadCell<Employement>[] = [
   {
     id: "name",
     numeric: false,
+    disablePadding: false,
     disablePadding: false,
     label: "Emplyee Information",
     filterable: true,
@@ -51,16 +73,15 @@ const headCells: HeadCell<Employement>[] = [
   },
   {
     id: "privilege",
+    id: "privilege",
     numeric: false,
     disablePadding: false,
     label: "privilege",
-    filterable: true,
   },
   {
     id: "status",
     numeric: false,
     disablePadding: false,
     label: "Status",
-    filterable: true,
   },
 ];
