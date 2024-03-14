@@ -60,7 +60,6 @@ interface EnhancedTableHeadProps<T> {
   headCells: HeadCell<T>[];
   order: Order;
   orderBy: keyof T;
-  rowCount: number;
   onRequestSort: (property: keyof T) => void;
 }
 
