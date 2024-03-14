@@ -1,15 +1,37 @@
 import React from "react";
+import CP from "@/components";
 import EnhancedTable from "@/components/table/Table";
-import { Container } from "@mui/material";
+import Container from "@mui/material/Container";
+import Button from "@/components/button";
+import Badge from "@mui/material/Badge";
+import Box from "@mui/material/Box";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 import { getAllPendingEmployees } from "@/api/employee";
 import { handleApiRequest } from "@/api";
-// import { socket } from "@/socket";
+import { socket } from "@/socket";
+import { HeadCell } from "@/components/table/TableHead";
+import { Employement } from "@/utils/interfaces/Employment";
+import {
+  handleAcceptEmployee,
+  handleRejectEmployee,
+} from "@/utils/employee.util";
 
 const userId = "d5e2b24b-7c77-480f-ad24-c79c786179cc";
+
+const RenderActionCell = (row: Employement) => {
+  const { id } = row;
+  return (
+    <CP.Styled.Flex>
+      <Button onClick={() => handleAcceptEmployee(id)}>Accept</Button>
+      <Button onClick={() => handleRejectEmployee(id)}>Reject</Button>
+    </CP.Styled.Flex>
+  );
+};
 
 const EmployeeRegistration = () => {
   const [data, setData] = React.useState<Object | any>([]);
   const [error, setError] = React.useState<Object | any>([]);
+  const [notifiactionCount, setNotifiactionCount] = React.useState<number>(0);
 
   const newPendingEmployees = async () => {
     const [response, error] = await handleApiRequest(() =>
@@ -47,12 +69,26 @@ const EmployeeRegistration = () => {
   } else {
     return (
       <Container>
-        <EnhancedTable
-          onRequestSort={(_, property) => console.log(property)}
+        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          <Badge
+            badgeContent={notifiactionCount}
+            sx={{
+              color: (theme) => {
+                return theme.palette.text.primary;
+              },
+            }}
+          >
+            <NotificationsIcon />
+          </Badge>
+        </Box>
+        <EnhancedTable<Employement>
+          headCells={headCells}
           order="asc"
           rows={data}
           orderBy="name"
           rowCount={data.length}
+          tableName="Employee Registrations"
+          actionCell={RenderActionCell}
         />
       </Container>
     );
@@ -60,3 +96,30 @@ const EmployeeRegistration = () => {
 };
 
 export default EmployeeRegistration;
+
+const headCells: HeadCell<Employement>[] = [
+  {
+    id: "name",
+    numeric: false,
+    disablePadding: false,
+    label: "Emplyee Information",
+  },
+  {
+    id: "position",
+    numeric: false,
+    disablePadding: false,
+    label: "Position",
+  },
+  {
+    id: "privilege",
+    numeric: false,
+    disablePadding: false,
+    label: "Priviledges",
+  },
+  {
+    id: "status",
+    numeric: false,
+    disablePadding: false,
+    label: "Status",
+  },
+];
