@@ -1,8 +1,5 @@
 import EmployeeTable from "./EmployeeTable";
 import EmployeeRegistration from "./EmployeeRegistration";
-import EmployeeRegistrationDetail from "./EmployeeRegistrationDetail";
-export default {
-  EmployeeTable,
-  EmployeeRegistration,
-  EmployeeRegistrationDetail,
-};
+import CreateEmployee from "./CreateEmployee";
+
+export default { EmployeeTable, EmployeeRegistration, CreateEmployee };

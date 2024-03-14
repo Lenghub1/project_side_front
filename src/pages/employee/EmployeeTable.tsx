@@ -1,4 +1,4 @@
-import { Container } from "@mui/material";
+import CP from "@/components";
 import useFetch from "@/hooks/useFetch";
 import { allEmployees } from "@/api/employee";
 import EnhancedTable from "@/components/table/Table";
@@ -10,20 +10,20 @@ const EmployeeTable = () => {
   if (error) {
     if (error.response?.status === 404) {
       return (
-        <Container sx={{ color: (theme) => theme.palette.text.primary }}>
+        <CP.Container>
           <h1>There's no pending request</h1>
-        </Container>
+        </CP.Container>
       );
     } else {
       return (
-        <Container sx={{ color: (theme) => theme.palette.text.primary }}>
+        <CP.Container>
           <h1>Something went wrong</h1>
-        </Container>
+        </CP.Container>
       );
     }
   }
   return (
-    <Container>
+    <CP.Container>
       <EnhancedTable<Employement>
         orderBy="name"
         order="asc"
@@ -32,7 +32,7 @@ const EmployeeTable = () => {
         rowCount={data?.length || 0}
         tableName="Employee"
       />
-    </Container>
+    </CP.Container>
   );
 };
 
