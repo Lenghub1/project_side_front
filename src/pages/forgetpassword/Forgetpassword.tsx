@@ -95,7 +95,8 @@ const ForgetPassword = () => {
       );
       return;
     }
-    console.log("Result", response);
+
+    //navigate to information screen
     return;
   }
 
@@ -212,7 +213,7 @@ const ForgetPassword = () => {
                   color="red"
                   sx={{ cursor: "pointer" }}
                   onClick={() => {
-                    navigate("/forgotaccount");
+                    navigate("/forgot-account");
                   }}
                 >
                   Forget account?

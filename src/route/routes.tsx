@@ -137,17 +137,17 @@ const routes: RouteProps[] = [
   },
   {
     name: "verifytoken",
-    path: "/verifytoken",
+    path: "/verify-token",
     element: Pg.ForgetPassword.default.VerifyToken,
   },
   {
     name: "forgotaccount",
-    path: "/forgotaccount",
+    path: "/forgot-account",
     element: Pg.ForgetAccount.default.ForgotAccount,
   },
   {
     name: "codesendingoption",
-    path: "/receiveoption",
+    path: "/receive-option",
     element: Pg.ForgetAccount.default.CodeSendingOption,
   },
 ];

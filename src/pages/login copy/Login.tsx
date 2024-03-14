@@ -299,7 +299,7 @@ const LoginPage = () => {
                   color="red"
                   sx={{ cursor: "pointer" }}
                   onClick={() => {
-                    navigate("/forgetpassword");
+                    navigate("/forget-password");
                   }}
                 >
                   Forget password?
@@ -330,7 +330,7 @@ const LoginPage = () => {
                     color="red"
                     sx={{ cursor: "pointer" }}
                     onClick={() => {
-                      navigate("/forgetpassword");
+                      navigate("/forget-password");
                     }}
                   >
                     Forget password?
