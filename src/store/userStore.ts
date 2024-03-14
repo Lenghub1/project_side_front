@@ -26,3 +26,8 @@ export const userState = atom<Object | null>({
   key: "userState",
   default: {},
 });
+
+export const axiosInterceptorState = atom({
+  key: "axiosInterceptorState",
+  default: false,
+});

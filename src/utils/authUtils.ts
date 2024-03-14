@@ -1,4 +1,3 @@
-// authUtils.js
 import { authApi } from "@/api/auth";
 import { handleApiRequest } from "@/api";
 

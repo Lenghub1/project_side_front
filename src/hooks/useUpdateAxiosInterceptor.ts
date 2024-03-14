@@ -1,6 +1,6 @@
-import { useEffect } from "react";
-import { useRecoilState } from "recoil";
-import { accessTokenState } from "@/store/userStore";
+import { useEffect, useState } from "react";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { accessTokenState, axiosInterceptorState } from "@/store/userStore";
 import { api } from "@/api";
 import { refreshAccessToken } from "@/utils/authUtils";
 import {
@@ -30,6 +30,9 @@ const useUpdateAxiosInterceptor = () => {
   const [accessToken, setAccessToken] = useRecoilState<string | null>(
     accessTokenState
   );
+  const setInterceptorInitialized = useSetRecoilState(axiosInterceptorState);
+
+  console.log("Setting axios");
 
   useEffect(() => {
     const requestInterceptor = api.interceptors.request.use(
@@ -80,12 +83,15 @@ const useUpdateAxiosInterceptor = () => {
       }
     );
 
+    setInterceptorInitialized(true);
+
     return () => {
       api.interceptors.request.eject(requestInterceptor);
       api.interceptors.response.eject(responseInterceptor);
     };
   }, [accessToken]);
 
+  console.log("Setting up axios completed");
   return null;
 };
 
