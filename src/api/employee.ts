@@ -44,20 +44,15 @@ const allWorkplace = async (
 ): Promise<AxiosResponse<Partial<Employement>[]>> => {
   return api.get(`/organizations/self-workplace/${userId}`);
 };
-
 const allEmployees = async (
-  organizationId: string
-): Promise<AxiosResponse<Partial<Employement>>> => {
-  try {
-    const response = await api.get(
-      `/organizations/${organizationId}/employments`
-    );
-    console.log(response);
-    return response as AxiosResponse<Partial<Employement>>;
-  } catch (error) {
-    console.error("Error in getAllPendingEmployees:", error);
-    return {} as AxiosResponse<Partial<Employement>>;
-  }
+  organizationId: string = currentOrganizationId
+): Promise<AxiosResponse<Partial<Employement>[]>> => {
+  return api.get(
+    `/organizations/${organizationId}/employments?status_ne=pending`,
+    {
+      transformResponse: [(response) => transformEmployeeData(response)],
+    }
+  );
 };
 const getEmployeeById = async (
   employmentId: string,
