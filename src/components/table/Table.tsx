@@ -9,17 +9,50 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
+import Container from "@mui/material/Container";
 import EnhancedTableToolbar from "./Toolbar";
 import EnhancedTableHead, { HeadCell } from "./TableHead";
 import { getComparator, stableSort } from "@/utils/table.util";
+
 type Order = "asc" | "desc";
 
 interface EnhancedTableProps<T> {
+  headCells: HeadCell<T>[];
   headCells: HeadCell<T>[];
   rows: T[];
   order: Order;
   orderBy: keyof T;
   rowCount: number;
+  tableName: string;
+  actionCell?: (row: T) => React.ReactNode;
+}
+
+/**
+ * EnhancedTable Component
+ *
+ * This component displays an enhanced table with sorting, pagination, dense padding, and optional action cells.
+ *
+ * Props:
+ *   - headCells: An array of objects defining the table header cells.
+ *   - rows: An array of data objects to be displayed in the table rows.
+ *   - order: The current sorting order ('asc' for ascending, 'desc' for descending).
+ *   - orderBy: The currently sorted column key.
+ *   - rowCount: The total number of rows.
+ *   - tableName: The name of the table.
+ *   - actionCell: An optional function that returns ReactNode to be rendered in an additional action cell for each row.
+ *
+ * @param {Array} headCells - An array of objects defining the table header cells.
+ * @param {Array} rows - An array of data objects to be displayed in the table rows.
+ * @param {string} order - The current sorting order ('asc' for ascending, 'desc' for descending).
+ * @param {string} orderBy - The currently sorted column key.
+ * @param {number} rowCount - The total number of rows.
+ * @param {string} tableName - The name of the table.
+ * @param {Function} [actionCell] - An optional function that returns ReactNode to be rendered in an additional action cell for each row.
+ *
+ * @returns {JSX.Element} React component
+ */
+function EnhancedTable<T>({
+  headCells,
   tableName: string;
   actionCell?: (row: T) => React.ReactNode;
 }
@@ -57,19 +90,28 @@ function EnhancedTable<T>({
   tableName,
   actionCell,
 }: EnhancedTableProps<T>) {
+  order,
+  orderBy,
+  rowCount,
+  tableName,
+  actionCell,
+}: EnhancedTableProps<T>) {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [currentOrder, setCurrentOrder] = React.useState<Order>(order);
   const [currentOrderBy, setCurrentOrderBy] = React.useState<keyof T>(orderBy);
-  const [filters, setFilters] = React.useState<{ [key: string]: string }>(
-    Object.fromEntries(headCells.map((cell) => [cell.id, ""]))
-  );
 
   const handleRequestSort = (property: keyof T) => {
     const isAsc = currentOrderBy === property && currentOrder === "asc";
     setCurrentOrder(isAsc ? "desc" : "asc");
     setCurrentOrderBy(property);
+  };
+  const handleRowClick = (clickedRow: any) => {
+    console.log(clickedRow);
+    setEmployeeDetail(clickedRow);
+
+    navigate(`/organization/employee/registrations/details`);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -100,21 +142,17 @@ function EnhancedTable<T>({
   const visibleRows = React.useMemo(
     () =>
       stableSort(rows, getComparator(currentOrder, currentOrderBy)).slice(
+      stableSort(rows, getComparator(currentOrder, currentOrderBy)).slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
       ),
-    [currentOrder, currentOrderBy, page, rowsPerPage, rows, filters]
+    [currentOrder, currentOrderBy, page, rowsPerPage, rows]
   );
 
   return (
-    <CP.Container>
-      <Paper sx={{ mb: 2, padding: "1rem 0" }}>
-        <EnhancedTableToolbar
-          data={rows}
-          name={tableName}
-          headCells={headCells}
-          onFilterChange={() => handleFilterChange}
-        />
+    <Container sx={{ width: "100%", padding: 2 }}>
+      <Paper sx={{ width: "100%", mb: 2 }}>
+        <EnhancedTableToolbar name={tableName} />
         <TableContainer>
           <Table
             sx={{ minWidth: 750, textAlign: "start" }}
@@ -125,16 +163,24 @@ function EnhancedTable<T>({
               order={currentOrder}
               orderBy={currentOrderBy}
               rowCount={rowCount}
-              headCells={headCells.map((headCell) => ({
-                ...headCell,
-                onFilterChange: headCell.filterable
-                  ? handleFilterChange.bind(null, headCell.id)
-                  : undefined,
-              }))}
+              headCells={
+                actionCell
+                  ? [
+                      ...headCells,
+                      {
+                        disablePadding: false,
+                        id: "action",
+                        label: "Action",
+                        numeric: false,
+                      },
+                    ]
+                  : headCells
+              }
               onRequestSort={handleRequestSort}
             />
 
             <TableBody>
+              {visibleRows.map((row) => {
               {visibleRows.map((row) => {
                 return (
                   <TableRow
@@ -146,14 +192,14 @@ function EnhancedTable<T>({
                       cursor: "default",
                     }}
                   >
-                    {headCells?.map((cell) => (
-                      <TableCell key={cell.id as string} align="left">
+                    {headCells.map((cell) => (
+                      <TableCell key={cell.id} align="left">
                         {row[cell.id]}
                       </TableCell>
                     ))}
 
                     {actionCell && (
-                      <TableCell align="left">{actionCell(row as T)}</TableCell>
+                      <TableCell align="left">{actionCell(row)}</TableCell>
                     )}
                   </TableRow>
                 );
@@ -165,6 +211,7 @@ function EnhancedTable<T>({
                   }}
                 >
                   <TableCell colSpan={headCells.length} />
+                  <TableCell colSpan={headCells.length} />
                 </TableRow>
               )}
             </TableBody>
@@ -173,6 +220,7 @@ function EnhancedTable<T>({
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
+          count={rowCount}
           count={rowCount}
           rowsPerPage={rowsPerPage}
           page={page}
