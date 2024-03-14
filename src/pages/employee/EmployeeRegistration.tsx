@@ -1,10 +1,8 @@
 import React from "react";
 import CP from "@/components";
 import EnhancedTable from "@/components/table/Table";
-import Container from "@mui/material/Container";
 import Button from "@/components/button";
 import Badge from "@mui/material/Badge";
-import Box from "@mui/material/Box";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { getAllPendingEmployees } from "@/api/employee";
 import { socket } from "@/socket";
@@ -21,9 +19,11 @@ const userId = "d5e2b24b-7c77-480f-ad24-c79c786179cc";
 const RenderActionCell = (row: Employement) => {
   const { id } = row;
   return (
-    <CP.Styled.Flex>
+    <CP.Styled.Flex gap="8px" justify="flex-start">
       <Button onClick={() => handleAcceptEmployee(id)}>Accept</Button>
-      <Button onClick={() => handleRejectEmployee(id)}>Reject</Button>
+      <Button color="accent" onClick={() => handleRejectEmployee(id)}>
+        Reject
+      </Button>
     </CP.Styled.Flex>
   );
 };
@@ -42,21 +42,21 @@ const EmployeeRegistration = () => {
   if (error) {
     if (error.response?.status === 404) {
       return (
-        <Container sx={{ color: (theme) => theme.palette.text.primary }}>
+        <CP.Container>
           <h1>There's no pending request</h1>
-        </Container>
+        </CP.Container>
       );
     } else {
       return (
-        <Container sx={{ color: (theme) => theme.palette.text.primary }}>
+        <CP.Container>
           <h1>Something went wrong</h1>
-        </Container>
+        </CP.Container>
       );
     }
   } else {
     return (
-      <Container>
-        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+      <CP.Container>
+        <CP.Styled.Flex justify="flex-end">
           <Badge
             badgeContent={notifiactionCount}
             sx={{
@@ -67,7 +67,7 @@ const EmployeeRegistration = () => {
           >
             <NotificationsIcon />
           </Badge>
-        </Box>
+        </CP.Styled.Flex>
         <EnhancedTable<Employement>
           headCells={headCells}
           order="asc"
@@ -77,7 +77,7 @@ const EmployeeRegistration = () => {
           tableName="Employee Registrations"
           actionCell={RenderActionCell}
         />
-      </Container>
+      </CP.Container>
     );
   }
 };
