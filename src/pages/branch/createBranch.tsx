@@ -5,14 +5,19 @@ import InformationBranch from "./informationFormBranch";
 import ConfirmationCreateBranch from "./confirmationCreateBranch";
 import AddMember from "./addMember";
 import { useSnackbar } from "notistack";
-import { ResetRecoilState, useRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import { selectMembers } from "@/store/employee";
-interface BranchData {
+import { allEmployees } from "@/api/employee";
+import { create_branch } from "@/api/branch";
+import { handleApiRequest } from "@/api";
+export interface BranchData {
   name: string;
-  manager: string;
-  location: string;
+  managerId: string;
+  locationName: string;
+  pinPoint:{};
   geoFencing: number;
   member: any[];
+  addressLine:string;
 }
 
 export interface AddMemberProps {
@@ -26,13 +31,50 @@ const CreateBranch: React.FC = () => {
   const [step, setStep] = useState<number>(0);
   const [branchData, setBranchData] = useState<BranchData>({
     name: "",
-    manager: "",
-    location: "",
+    managerId: "",
+    locationName: "",
+    addressLine:"",
+    pinPoint:{},
     geoFencing: 10,
     member: [],
+    
   });
   const [errors, setErrors] = useState<string[]>([]);
+  const [managers, setManagers] =React.useState<string[]>([]);
+  const newPendingEmployees = async () => {
+    const [response, error] = await handleApiRequest(() =>
+    allEmployees("d5a86690-7488-4a3b-aa5e-383ea4e01878")
+    );
+    console.log(response);
+    if(response){
+      setManagers(response as any)
+    }
+    if(error){
+      console.log(error);
+      
+    }
 
+  };
+  const requestCreateBranch = async () => {
+    const [response, error] = await handleApiRequest(() =>
+      create_branch("d5a86690-7488-4a3b-aa5e-383ea4e01878", branchData)
+    );
+    if (error) {
+      throw error;
+    } else {
+      setBranchData({
+        name: "",
+        managerId: "",
+        locationName: "",
+        addressLine: "",
+        pinPoint: {},
+        geoFencing: 10,
+        member: [],
+      });
+      setStep(0); // Set step back to 1
+    }
+  };
+  
   const handleNext = () => {
     // Validate fields before proceeding to the next step
     if (step === 0) {
@@ -40,10 +82,10 @@ const CreateBranch: React.FC = () => {
       if (!branchData.name.trim()) {
         newErrors.push("Name is required");
       }
-      if (!branchData.manager.trim()) {
+      if (!branchData.managerId) {
         newErrors.push("Manager is required");
       }
-      if (!branchData.location.trim()) {
+      if (!branchData.locationName.trim()) {
         newErrors.push("Location is required");
       }
       if (!branchData.geoFencing) {
@@ -81,20 +123,24 @@ const CreateBranch: React.FC = () => {
     setBranchData({ ...branchData, [name]: value });
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleSubmit = async () => {
+
     console.log(branchData);
+    requestCreateBranch()
   };
+  
   const clearSelection = () => {
     setSelected([]); // Clear the selected state
   };
+  
 
   useEffect(() => {
+    newPendingEmployees();
     clearSelection();
   }, []);
   return (
-    <Container>
-      <form onSubmit={handleSubmit} style={{ padding: "20px" }}>
+    <Container style={{padding:"20px"}}>
+  
         <Stepper activeStep={step} alternativeLabel>
           <Step key={0}>
             <StepLabel>Information</StepLabel>
@@ -118,12 +164,13 @@ const CreateBranch: React.FC = () => {
             branchData={branchData}
             setBranchData={setBranchData}
             handleInputChange={handleInputChange}
+            managers={managers}
           />
         )}
         {step === 1 && (
           <AddMember branchData={branchData} setBranchData={setBranchData} />
         )}
-        {step === 2 && <ConfirmationCreateBranch branchData={branchData} />}
+        {step === 2 && <ConfirmationCreateBranch branchData={branchData} manager={managers} />}
         <CP.Styled.Div
           style={{
             display: "flex",
@@ -143,12 +190,12 @@ const CreateBranch: React.FC = () => {
               Next
             </Button>
           ) : (
-            <Button variant="contained" type="submit">
-              Submit
-            </Button>
+           <Button variant="contained" onClick={handleSubmit}>
+            submit
+           </Button>
           )}
         </CP.Styled.Div>
-      </form>
+
     </Container>
   );
 };

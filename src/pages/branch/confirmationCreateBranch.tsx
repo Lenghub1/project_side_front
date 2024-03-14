@@ -2,9 +2,16 @@ import CP from "@/components";
 import MapComponent from "@/components/map/Map";
 import { Avatar } from "@mui/material";
 
-const ConfirmationCreateBranch = ({ branchData }) => {
+const ConfirmationCreateBranch = ({ branchData , manager}) => {
   // Assuming branchData.members is an array of member objects
   const { member } = branchData;
+  console.log("asdasd",manager);
+  
+  console.log(branchData.managerId);
+  const managersName = manager
+  .filter(item => item.userId === branchData.managerId)
+  .map(item => item.name);
+console.log(managersName);
 
   return (
     <CP.Styled.Flex
@@ -43,9 +50,9 @@ const ConfirmationCreateBranch = ({ branchData }) => {
               </CP.Typography>
             </CP.Styled.Div>
             <CP.Styled.Div>
-              <CP.Typography>{branchData.manager}</CP.Typography>
+              <CP.Typography>{managersName[0]}</CP.Typography>
               <CP.Typography marginTop={"20px"}>
-                {branchData.location}
+                {branchData.locationName}
               </CP.Typography>
               <CP.Typography marginTop={"20px"}>
                 {branchData.geoFencing}m

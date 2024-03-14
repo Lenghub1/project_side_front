@@ -1,5 +1,6 @@
 export interface Employement {
   id: string;
+  userId:string
   name: string;
   position: string;
   description: string;

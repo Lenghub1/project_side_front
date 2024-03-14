@@ -1,50 +1,35 @@
 import React from "react";
-
+import { handleApiRequest } from "@/api";
 import { AddMemberProps } from "./createBranch";
 import { Container } from "@mui/material";
 import EnhancedTable from "./addMemberTable";
+import { allEmployees } from "@/api/employee";
 import CP from "@/components";
 
 const AddMember: React.FC<AddMemberProps> = ({ branchData, setBranchData }) => {
   const [selected, setSelected] = React.useState<string[]>([]);
-  const fakeMembers = [
-    {
-      id: "1",
-      name: "Leangsour Kim",
-      position: "Co-leader",
-      workLocation: "Kean svay",
-      status: "Active",
-    },
-    {
-      id: "2",
-      name: "Ra-tou Korea",
-      position: "Co-leader",
-      workLocation: "Kean svay",
-      status: "Inactive",
-    },
-    {
-      id: "3",
-      name: "Ra-seth asey kao",
-      position: "Member",
-      workLocation: "Kean svay",
-      status: "Active",
-    },
-    {
-      id: "4",
-      name: "Leng-sonthormuk",
-      position: "member",
-      workLocation: "sonthormuk",
-      status: "Active",
-    },
-    {
-      id: "5",
-      name: "Vipoo-somnong12",
-      position: "member",
-      workLocation: "somnong12",
-      status: "Inactive",
-    },
-  ];
+  const [fakeMembers, setFakeMembers] =React.useState<string[]>([]);
+  const newPendingEmployees = async () => {
+    const [response, error] = await handleApiRequest(() =>
+    allEmployees("d5a86690-7488-4a3b-aa5e-383ea4e01878")
+    );
+    console.log(response);
+    if(response){
+      setFakeMembers(response as any)
+    }
+    if(error){
+      console.log(error);
+      
+    }
 
+  };
+
+  
+  React.useEffect(() => {
+    newPendingEmployees();
+ 
+    
+  }, []);
   return (
     <Container style={{ marginTop: "20px" }}>
       <CP.Typography variant="h5" fontFamily={"bold"}>

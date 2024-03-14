@@ -1,24 +1,29 @@
 import CP from "@/components";
 import MapComponent from "@/components/map/Map";
-import { Slider, TextField } from "@mui/material";
-import React from "react";
-import { useState } from "react";
+import { Slider, TextField, MenuItem } from "@mui/material";
+import React, { useState } from "react";
 
 const InformationBranch = ({
   branchData,
   handleInputChange,
   setBranchData,
+  managers
 }: any) => {
   const [sliderValue, setSliderValue] = useState(branchData.geoFencing);
+  const pinPoint = { "type": "Point", "coordinates": [40, 60] };
 
   const handleSliderChange = (
-    event: React.ChangeEvent<{}>,
-    value: number | number[]
+    event: Event,
+    value: number | number[],
+    activeThumb: number
   ) => {
     setSliderValue(value);
-    const updatedBranchData = { ...branchData, geoFencing: value };
+    const updatedBranchData = { ...branchData, geoFencing: value, pinPoint: pinPoint };
     setBranchData(updatedBranchData);
   };
+  
+
+
   return (
     <CP.Styled.Div style={{ marginTop: "20px" }}>
       <MapComponent />
@@ -46,11 +51,32 @@ const InformationBranch = ({
         </CP.Styled.Flex>
         <CP.Styled.Flex>
           <CP.Typography width={"25%"}>Manager Name</CP.Typography>
+          {/* Replace TextField with a select dropdown */}
           <TextField
+            select
             label="Manager"
+            name="managerId"
+            value={branchData.managerId}
+            onChange={handleInputChange}
+            fullWidth
+            margin="normal"
+            variant="outlined"
+          >
+            {/* Assuming managers are stored in an array */}
+            {managers.map((manager:any) => (
+            <MenuItem key={manager.id} value={manager.userId}>
+              {manager.name}
+            </MenuItem>
+          ))}
+          </TextField>
+        </CP.Styled.Flex>
+        <CP.Styled.Flex>
+          <CP.Typography width={"25%"}>Address Line</CP.Typography>
+          <TextField
+            label="Address Line"
             type="text"
-            name="manager"
-            value={branchData.manager}
+            name="addressLine"
+            value={branchData.addressLine}
             onChange={handleInputChange}
             fullWidth
             margin="normal"
@@ -62,14 +88,15 @@ const InformationBranch = ({
           <TextField
             label="Location"
             type="text"
-            name="location"
-            value={branchData.location}
+            name="locationName"
+            value={branchData.locationName}
             onChange={handleInputChange}
             fullWidth
             margin="normal"
             variant="outlined"
           />
         </CP.Styled.Flex>
+        
 
         <CP.Typography width={"25%"} marginTop={"20px"}>
           GeoFencing Range:
