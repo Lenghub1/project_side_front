@@ -1,28 +1,41 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { authApi } from "@/api/auth";
+import { handleApiRequest } from "@/api";
+import createTelegramScript from "./CreateTelegramScript";
+import CP from "@/components";
 
-const TelegramLoginButton = () => {
+const TelegramLoginButton = (props: any) => {
   const telegramOauthRef = useRef<HTMLDivElement>(null);
+  const scriptRef = useRef<HTMLScriptElement>(null);
+  const [loginHtml, setLoginHtml] = useState<any>("");
 
   useEffect(() => {
-    const script = document.createElement("script");
-    script.async = true;
-    script.src = "https://telegram.org/js/telegram-widget.js?22";
-    script.setAttribute("data-telegram-login", "riem_app_bot");
-    script.setAttribute("data-size", "large");
-    script.setAttribute("data-request-access", "write");
-    script.setAttribute("data-lang", "en");
-    script.setAttribute(
-      "data-auth-url",
-      "https://02a7-167-179-40-121.ngrok-free.app/api/v1/auth/telegram/callback"
-    );
+    //distroy the script ref
+    scriptRef.current?.remove();
 
-    telegramOauthRef.current?.appendChild(script);
+    scriptRef.current = createTelegramScript(props);
+    telegramOauthRef.current?.after(scriptRef.current);
   }, []);
 
   return (
-    <div>
-      <div ref={telegramOauthRef}> </div>
-    </div>
+    <CP.Styled.Div
+      width="36px"
+      height="36px"
+      overflow="hidden"
+      padding="0 30px 0 0"
+      style={{ borderRadius: "100%" }}
+      margin="0 20px 0 0"
+    >
+      <div
+        style={{
+          margin: "0 0 0 10px",
+          display: "flex",
+          justifyContent: "center",
+        }}
+        ref={telegramOauthRef}
+      />
+      ;
+    </CP.Styled.Div>
   );
 };
 

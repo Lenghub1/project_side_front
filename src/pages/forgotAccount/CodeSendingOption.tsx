@@ -78,8 +78,8 @@ const CodeSendingOption = () => {
     // await forgetPassword(resetPasswordBy, formData);
   };
   const radioList = [
-    { label: "Email", value: "option1" },
-    { label: "Phone", value: "option2" },
+    { label: "By PhoneNumber", value: "option1" },
+    { label: "By Email", value: "option2" },
   ];
 
   return (
@@ -87,6 +87,7 @@ const CodeSendingOption = () => {
       <Flex height="inherit">
         <CP.Styled.Div
           style={{
+            maxWidth: !isMobile ? "565px" : "auto",
             minWidth: isMobile ? "396px" : "565px",
             padding: !isMobile ? "0 1rem" : "0 16px",
           }}
@@ -118,19 +119,35 @@ const CodeSendingOption = () => {
                 width: "100%",
               }}
             >
-              Select how to receive th code to find your count.
+              Select how to receive th code to find your account.
             </CP.Typography>
             <Flex direction="column" gap="24px" overflow="unset">
-              <CP.Radio list={radioList} sx={{ width: "100%" }} />
+              <CP.Radio list={radioList} />
               <Flex width="100%" justify="end" gap="20px">
                 <CP.Button variant="text">Cancel</CP.Button>
                 <CP.Button type="submit" onClick={handleSubmit}>
-                  Receive
+                  Receive Code
                 </CP.Button>
               </Flex>
             </Flex>
           </Flex>
         </CP.Styled.Div>
+        {!isMobile && (
+          <CP.Styled.Div height="100%" flex={1}>
+            <Flex style={{ height: "100%" }}>
+              <Box
+                component="img"
+                src="/random-unsplash.jpg"
+                alt="Random image"
+                sx={{
+                  width: 1,
+                  height: "100vh",
+                  objectFit: "cover",
+                }}
+              />
+            </Flex>
+          </CP.Styled.Div>
+        )}
       </Flex>
     </CP.Styled.Wrapper>
   );

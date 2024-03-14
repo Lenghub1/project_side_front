@@ -17,6 +17,7 @@ import FacebookLoginButton from "./FacebookLoginButton";
 import GoogleLoginButton from "./GoogleLoginButton";
 import { Box } from "@mui/material";
 import Store from "@/store";
+import TelegramLoginButton from "./TelegramLoginButton";
 
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -162,6 +163,10 @@ const LoginPage = () => {
     await login(signupMethod, formData);
   };
 
+  const handleTelegramData = async (user: any) => {
+    await authApi.telegramOauth(user);
+  };
+
   return (
     <CP.Styled.Wrapper height="100vh">
       <Flex height="inherit">
@@ -181,6 +186,7 @@ const LoginPage = () => {
             >
               welcome back
             </CP.Typography>
+
             <CP.Typography
               variant="h4"
               margin="0 0 2rem"
@@ -265,7 +271,7 @@ const LoginPage = () => {
                 <Flex direction="row" gap="40px" margin="1rem 0 0">
                   <FacebookLoginButton />
                   <GoogleLoginButton />
-                  <Box
+                  {/* <Box
                     component="img"
                     sx={{
                       height: 36,
@@ -274,8 +280,16 @@ const LoginPage = () => {
                       maxWidth: { xs: 350, md: 250 },
                       cursor: "pointer",
                     }}
+                    onClick={() =>
+                      (window.location.href =
+                        "https://oauth.telegram.org/auth?bot_id=7091265126&origin=https%3A%2F%2Ff643-167-179-40-121.ngrok-free.app&embed=1&request_access=write&lang=en&return_to=https%3A%2F%2Ff643-167-179-40-121.ngrok-free.app%2Fapi%2Fv1%2Fauth%2Ftelegram%2Ftest")
+                    }
                     alt="Image for telegram"
                     src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/1200px-Telegram_logo.svg.png"
+                  /> */}
+                  <TelegramLoginButton
+                    onAuthCallback={handleTelegramData}
+                    botUsername="riem_app_bot"
                   />
                 </Flex>
               )}
@@ -340,7 +354,7 @@ const LoginPage = () => {
                 <Flex direction="row" gap="40px" margin="1rem">
                   <FacebookLoginButton />
                   <GoogleLoginButton />
-                  <Box
+                  {/* <Box
                     component="img"
                     sx={{
                       height: 36,
@@ -348,8 +362,16 @@ const LoginPage = () => {
                       maxHeight: { xs: 233, md: 167 },
                       maxWidth: { xs: 350, md: 250 },
                     }}
+                    onClick={() =>
+                      (window.location.href =
+                        "https://oauth.telegram.org/auth?bot_id=7091265126&origin=https%3A%2F%2Ff643-167-179-40-121.ngrok-free.app&embed=1&request_access=write&lang=en&return_to=https%3A%2F%2Ff643-167-179-40-121.ngrok-free.app%2Fapi%2Fv1%2Fauth%2Ftelegram%2Ftest")
+                    }
                     alt="Image for telegram"
                     src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/1200px-Telegram_logo.svg.png"
+                  /> */}
+                  <TelegramLoginButton
+                    onAuthCallback={handleTelegramData}
+                    botUsername="riem_app_bot"
                   />
                 </Flex>
               )}

@@ -86,14 +86,14 @@ export const InputWrapper = styled.div`
   }
 `;
 
-export const RadioWrapper = styled.div`
-  width: auto;
+export const RadioWrapper = styled.div<DivProps>`
+  width: 100%;
   & .MuiFormGroup-root {
     display: flex;
     width: 100%;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
     flex-wrap: wrap;
 
     & label {

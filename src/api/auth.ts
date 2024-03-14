@@ -29,18 +29,6 @@ const getUser = async (id: string) => {
   return api.get(`/users/me/${id}`);
 };
 
-const facebookOauth = async () => {
-  return api.get("/auth/facebook");
-};
-
-const facebookOauthSuccess = async () => {
-  return api.get("/auth/facebook/success");
-};
-
-const googleOauth = async () => {
-  return api.get("/auth/google/callback");
-};
-
 const telegramOauth = async (user: any) => {
   return api.post("/auth/telegram/callback", { user });
 };
@@ -85,9 +73,6 @@ const authApi = {
   refresh,
   logout,
   getUser,
-  facebookOauth,
-  googleOauth,
-  facebookOauthSuccess,
   telegramOauth,
   forgotPassword,
   verifyForgetPasswordToken,
