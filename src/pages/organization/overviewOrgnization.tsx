@@ -2,20 +2,26 @@ import { useState, useEffect } from "react";
 import CP from "@/components";
 import theme from "@/theme/ligthTheme";
 import { handleApiRequest } from "@/api";
-import { getAllPendingEmployees } from "@/api/employee";
-import { BranchDetailCard } from "./branchDetail"; // Importing the BranchDetailCard component
-import Container from "@mui/material/Container"; // Import Container from Material-UI
+import { my_branch } from "@/api/branch";
+import Container from "@mui/material/Container";
 import styled from "styled-components";
 import { Divider } from "@mui/material";
 import { my_organization } from "@/api/organization";
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { BranchDetailCard } from "./branchDetail";
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
 `;
 
 const OverviewOrganization = () => {
+  const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 456);
   const [organizationData, setOrganizationData] = useState({}) as any;
+  const [organizationBranchData, setOrganizationBranchData] = useState(
+    []
+  ) as any;
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 456);
@@ -26,8 +32,10 @@ const OverviewOrganization = () => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []); // Empty dependency array ensures this effect runs only once
-
+  }, []);
+  const createBranch = () => {
+    navigate("/organization/createBranch");
+  };
   const my_organization_data = async () => {
     const [response, error] = await handleApiRequest(() =>
       my_organization("1ca2a528-72c9-4cb8-8823-4d26cfcdd598")
@@ -39,9 +47,24 @@ const OverviewOrganization = () => {
     }
   };
 
+  const my_organization_branch_data = async () => {
+    const [response, error] = await handleApiRequest(() =>
+      my_branch("1ca2a528-72c9-4cb8-8823-4d26cfcdd598")
+    );
+    console.log(response);
+
+    if (response) {
+      setOrganizationBranchData(response.data.data);
+    } else {
+      console.log(error);
+    }
+  };
+
   React.useEffect(() => {
     my_organization_data();
+    my_organization_branch_data();
   }, []);
+
   return (
     <Container maxWidth="lg">
       <CP.Styled.Wrapper padding="20px" overflow="auto" width="auto">
@@ -127,14 +150,16 @@ const OverviewOrganization = () => {
               margin="10px 0"
             >
               <CP.Typography sx={{ textAlign: "center" }} variant="h6">
-                BRANCHES(2)
+                BRANCHES({organizationBranchData.length})
               </CP.Typography>
-              <CP.Button>Create</CP.Button>
+              <CP.Button onClick={createBranch}>Create</CP.Button>
             </CP.Styled.Flex>
 
             <Flex direction="column" gap="20px">
-              <BranchDetailCard branchName="Branch1" />
-              <BranchDetailCard branchName="Branch2" />
+              {Array.isArray(organizationBranchData) &&
+                organizationBranchData.map((branch: any, index: number) => (
+                  <BranchDetailCard key={index} branchData={branch} />
+                ))}
             </Flex>
           </Flex>
         </Flex>

@@ -7,7 +7,7 @@ interface BranchDetailCardProps {
 }
 
 export const BranchDetailCard: React.FC<BranchDetailCardProps> = ({
-  branchName,
+  branchData,
 }) => {
   const [expanded, setExpanded] = useState<boolean>(false);
   const [iconHovered, setIconHovered] = useState<boolean>(false);
@@ -31,7 +31,7 @@ export const BranchDetailCard: React.FC<BranchDetailCardProps> = ({
         <CP.Styled.Div>
           <CP.Styled.Flex justify="space-between">
             <CP.Typography variant="subtitle1" fontWeight={500}>
-              {branchName}
+              {branchData.name}
             </CP.Typography>
             <ExpandMoreIcon
               onMouseDown={handleIconHover}
@@ -64,7 +64,7 @@ export const BranchDetailCard: React.FC<BranchDetailCardProps> = ({
                   John Doe 4 Feb 2022
                 </CP.Typography>
                 <CP.Typography variant="h5">
-                  abc, 123, Phnom penh, Cambodia
+                  {branchData.locationId}
                 </CP.Typography>
                 <CP.Typography color={"gray"}> 6 Employee</CP.Typography>
               </CP.Styled.Flex>
