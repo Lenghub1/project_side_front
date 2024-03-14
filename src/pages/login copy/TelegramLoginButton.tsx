@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 
 const TelegramLoginButton: React.FC = () => {
+  const telegramOauthRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const script = document.createElement("script");
     script.src = "https://telegram.org/js/telegram-widget.js?22";
