@@ -9,7 +9,6 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
-import Container from "@mui/material/Container";
 import EnhancedTableToolbar from "./Toolbar";
 import EnhancedTableHead, { HeadCell } from "./TableHead";
 import { getComparator, stableSort } from "@/utils/table.util";
@@ -150,8 +149,8 @@ function EnhancedTable<T>({
   );
 
   return (
-    <Container sx={{ width: "100%", padding: 2 }}>
-      <Paper sx={{ width: "100%", mb: 2 }}>
+    <CP.Container>
+      <Paper sx={{ mb: 2 }}>
         <EnhancedTableToolbar name={tableName} />
         <TableContainer>
           <Table
