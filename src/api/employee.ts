@@ -39,9 +39,12 @@ const transformEmployeeData = (
 const allEmployees = async (
   organizationId: string = currentOrganizationId
 ): Promise<AxiosResponse<Partial<Employement>[]>> => {
-  return api.get(`/organizations/${organizationId}/employments`, {
-    transformResponse: [(response) => transformEmployeeData(response)],
-  });
+  return api.get(
+    `/organizations/${organizationId}/employments?status_ne=pending`,
+    {
+      transformResponse: [(response) => transformEmployeeData(response)],
+    }
+  );
 };
 
 const getEmployeeById = async (
