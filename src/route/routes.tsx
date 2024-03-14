@@ -89,6 +89,11 @@ const routes: RouteProps[] = [
     path: "group",
     element: Pg.GroupPage,
   },
+  {
+    name: "createEmployee",
+    path: "organization/employee/create",
+    element: Pg.Employee.default.CreateEmployee,
+  },
 ];
 
 export default routes;
