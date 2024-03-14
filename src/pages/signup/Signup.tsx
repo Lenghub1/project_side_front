@@ -5,7 +5,7 @@ import { NavLink } from "react-router-dom";
 import { authApi } from "@/api/auth";
 import useValidatedInput from "@/hooks/useValidatedInput";
 import useCriteriaValidator from "@/hooks/useCriteriaInput.tsx";
-import { SyntheticEvent, useEffect, useState } from "react";
+import { SyntheticEvent, useState } from "react";
 import useMatchInput from "@/hooks/useMatchInput";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -13,13 +13,10 @@ import IconButton from "@mui/material/IconButton";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import countries from "@/components/phonePrefix/countries.json";
-import Box from "@mui/material/Box";
 import { useSnackbar } from "notistack";
 import useApi from "@/hooks/useApi";
-
-export const Flex = styled(CP.Styled.Flex)`
-  overflow: unset;
-`;
+import { Flex } from "../getStarted/GetStarted";
+import { Title, FormContainer } from "../companyLookup/CompanyLookup";
 
 const Divider = styled(MuiDivider)`
   width: 100%;
@@ -169,175 +166,146 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
   }
 
   return (
-    <CP.Styled.Wrapper height="100vh" padding="0">
-      <Flex height="100%">
-        <CP.Styled.Div padding="0 1rem">
-          <CP.Styled.Form>
-            <Flex items="flex-start" padding="0 3rem" direction="column">
-              <CP.Typography
-                variant="h4"
-                style={{
-                  marginBottom: "2rem",
-                  fontWeight: "semibold",
-                  textAlign: "start",
-                }}
-              >
-                Create a new account
-              </CP.Typography>
+    <CP.Styled.Form>
+      {/* <Flex items="flex-start" padding="0 3rem" direction="column"> */}
+      <FormContainer>
+        <Title>Create a new account</Title>
 
-              <Flex direction="column" gap="1.5rem">
-                {accountType === "employer" && (
-                  <Flex gap=".5rem" items="flex-start">
-                    <CP.Input
-                      label="First name"
-                      value={firstName.value}
-                      onChange={firstName.onChange}
-                      onBlur={firstName.onBlur}
-                      error={!!firstName.error}
-                      helperText={<firstName.HelperText />}
-                      required
-                    />
-                    <CP.Input
-                      label="Last name"
-                      value={lastName.value}
-                      onChange={lastName.onChange}
-                      onBlur={lastName.onBlur}
-                      error={!!lastName.error}
-                      helperText={<lastName.HelperText />}
-                      required
-                    />
-                  </Flex>
-                )}
-                <Tabs
-                  sx={{ alignSelf: "flex-start" }}
-                  value={activeTabIndex}
-                  onChange={(e, value) => handleSignupMethodChange(e, value)}
-                  aria-label="signup options"
-                >
-                  <Tab label="With Email" />
-                  <Tab label="With Phone" />
-                </Tabs>
-                {signupMethod === "email" ? (
-                  <CP.Input
-                    label="Email"
-                    value={email.value}
-                    onChange={email.onChange}
-                    placeholder="Email"
-                    type="email"
-                    onBlur={email.onBlur}
-                    error={!!email.error}
-                    helperText={<email.HelperText />}
-                    required
-                  />
-                ) : (
-                  <Flex gap="0.5rem" items="flex-start">
-                    <CP.PhonePrefix
-                      selectedCountry={selectedCountry}
-                      setSelectedCountry={setSelectedCountry}
-                    />
-                    <CP.Input
-                      label="Phone number"
-                      value={phone.value}
-                      type="number"
-                      onChange={phone.onChange}
-                      placeholder="Phone"
-                      onBlur={phone.onBlur}
-                      error={!!phone.error}
-                      helperText={<phone.HelperText />}
-                      required
-                    />
-                  </Flex>
-                )}
-
-                <CP.Input
-                  label="Password"
-                  type={passwordIsVisible ? "text" : "password"}
-                  value={password.value}
-                  onChange={password.onChange}
-                  onBlur={password.onBlur}
-                  error={password.errors.length > 0}
-                  helperText={<password.HelperText />}
-                  required
-                  InputProps={{
-                    autoComplete: "new-password",
-                    endAdornment: (
-                      <IconButton
-                        onClick={() => setPasswordIsVisible((prev) => !prev)}
-                      >
-                        {passwordIsVisible ? <Visibility /> : <VisibilityOff />}
-                      </IconButton>
-                    ),
-                  }}
-                />
-
-                <CP.Input
-                  label="Confirm password"
-                  type={confirmPasswordIsVisible ? "text" : "password"}
-                  value={confirmPassword.value}
-                  onChange={confirmPassword.onChange}
-                  onBlur={confirmPassword.onBlur}
-                  error={!!confirmPassword.error}
-                  helperText={<confirmPassword.HelperText />}
-                  required
-                  InputProps={{
-                    endAdornment: (
-                      <IconButton
-                        onClick={() =>
-                          setConfirmPasswordIsVisible((prev) => !prev)
-                        }
-                      >
-                        {confirmPasswordIsVisible ? (
-                          <Visibility />
-                        ) : (
-                          <VisibilityOff />
-                        )}
-                      </IconButton>
-                    ),
-                  }}
-                />
-
-                <Divider></Divider>
-                <Flex gap="1rem">
-                  <CP.Button variant="text">Cancel</CP.Button>
-                  <CP.Button
-                    disabled={isFormInvalid}
-                    type="submit"
-                    onClick={handleSubmit}
-                  >
-                    Signup
-                  </CP.Button>
-                </Flex>
-                <CP.Typography variant="subtitle2">
-                  By signing up, you agree to our{" "}
-                  <NavLink to="#">Terms of Service</NavLink> &{" "}
-                  <NavLink to="#">Privacy Policy</NavLink>
-                </CP.Typography>
-              </Flex>
+        <Flex direction="column" gap="1.5rem">
+          {accountType === "employer" && (
+            <Flex gap=".5rem" items="flex-start">
+              <CP.Input
+                label="First name"
+                value={firstName.value}
+                onChange={firstName.onChange}
+                onBlur={firstName.onBlur}
+                error={!!firstName.error}
+                helperText={<firstName.HelperText />}
+                required
+              />
+              <CP.Input
+                label="Last name"
+                value={lastName.value}
+                onChange={lastName.onChange}
+                onBlur={lastName.onBlur}
+                error={!!lastName.error}
+                helperText={<lastName.HelperText />}
+                required
+              />
             </Flex>
-            <Flex direction="column" margin="1rem 0 0" gap="1rem">
-              <Divider></Divider>
-              <CP.Typography>
-                Already have an account? <NavLink to="#">Login here</NavLink>
-              </CP.Typography>
-            </Flex>
-          </CP.Styled.Form>
-        </CP.Styled.Div>
-        <CP.Styled.Div height="100%">
-          <Flex>
-            <Box
-              component="img"
-              src="/random-unsplash.jpg"
-              alt="Random image"
-              sx={{
-                width: 1,
-                height: "100vh",
-                objectFit: "cover",
-              }}
+          )}
+          <Tabs
+            sx={{ alignSelf: "flex-start" }}
+            value={activeTabIndex}
+            onChange={(e, value) => handleSignupMethodChange(e, value)}
+            aria-label="signup options"
+          >
+            <Tab label="With Email" />
+            <Tab label="With Phone" />
+          </Tabs>
+          {signupMethod === "email" ? (
+            <CP.Input
+              label="Email"
+              value={email.value}
+              onChange={email.onChange}
+              placeholder="Email"
+              type="email"
+              onBlur={email.onBlur}
+              error={!!email.error}
+              helperText={<email.HelperText />}
+              required
             />
+          ) : (
+            <Flex gap="0.5rem" items="flex-start">
+              <CP.PhonePrefix
+                selectedCountry={selectedCountry}
+                setSelectedCountry={setSelectedCountry}
+              />
+              <CP.Input
+                label="Phone number"
+                value={phone.value}
+                type="number"
+                onChange={phone.onChange}
+                placeholder="Phone"
+                onBlur={phone.onBlur}
+                error={!!phone.error}
+                helperText={<phone.HelperText />}
+                required
+              />
+            </Flex>
+          )}
+
+          <CP.Input
+            label="Password"
+            type={passwordIsVisible ? "text" : "password"}
+            value={password.value}
+            onChange={password.onChange}
+            onBlur={password.onBlur}
+            error={password.errors.length > 0}
+            helperText={<password.HelperText />}
+            required
+            InputProps={{
+              autoComplete: "new-password",
+              endAdornment: (
+                <IconButton
+                  onClick={() => setPasswordIsVisible((prev) => !prev)}
+                >
+                  {passwordIsVisible ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              ),
+            }}
+          />
+
+          <CP.Input
+            label="Confirm password"
+            type={confirmPasswordIsVisible ? "text" : "password"}
+            value={confirmPassword.value}
+            onChange={confirmPassword.onChange}
+            onBlur={confirmPassword.onBlur}
+            error={!!confirmPassword.error}
+            helperText={<confirmPassword.HelperText />}
+            required
+            InputProps={{
+              endAdornment: (
+                <IconButton
+                  onClick={() => setConfirmPasswordIsVisible((prev) => !prev)}
+                >
+                  {confirmPasswordIsVisible ? (
+                    <Visibility />
+                  ) : (
+                    <VisibilityOff />
+                  )}
+                </IconButton>
+              ),
+            }}
+          />
+
+          <Divider></Divider>
+          <Flex gap="1rem">
+            <CP.Button variant="text">Cancel</CP.Button>
+            <CP.Button
+              disabled={isFormInvalid}
+              type="submit"
+              onClick={handleSubmit}
+            >
+              Signup
+            </CP.Button>
           </Flex>
-        </CP.Styled.Div>
+          <CP.Typography variant="subtitle2">
+            By signing up, you agree to our{" "}
+            <NavLink to="#">Terms of Service</NavLink> &{" "}
+            <NavLink to="#">Privacy Policy</NavLink>
+          </CP.Typography>
+        </Flex>
+        {/* </Flex> */}
+      </FormContainer>
+      <Flex direction="column" margin="1rem 0 0" gap="1rem">
+        <Divider></Divider>
+        <CP.Typography>
+          Already have an account? <NavLink to="#">Login here</NavLink>
+        </CP.Typography>
       </Flex>
-    </CP.Styled.Wrapper>
+    </CP.Styled.Form>
   );
 };
 

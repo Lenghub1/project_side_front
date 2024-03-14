@@ -27,6 +27,11 @@ const routes: RouteProps[] = [
     element: Pg.GetStarted,
     children: [
       {
+        name: "companyLookup",
+        path: "company-lookup",
+        element: Pg.CompanyLookup,
+      },
+      {
         name: "createAccount",
         path: "create-account",
         element: Pg.SignupPage,
@@ -53,11 +58,7 @@ const routes: RouteProps[] = [
     path: "test-login",
     element: Pg.TestLoginPage,
   },
-  {
-    name: "companyLookup",
-    path: "company-lookup",
-    element: Pg.CompanyLookup,
-  },
+
   {
     name: "group",
     path: "group",

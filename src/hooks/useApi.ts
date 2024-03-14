@@ -1,35 +1,52 @@
 import { useState } from "react";
-import axios, { AxiosError, AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 import ApiError from "@/utils/apiError";
 
-function useApi() {
-  const [isLoading, setIsLoading] = useState(false);
+type UseApiReturnType<T> = {
+  response: T | null;
+  isLoading: boolean;
+  isSuccess: boolean;
+  isError: boolean;
+  error: ApiError | null;
+  handleApiRequest: (request: () => Promise<AxiosResponse<T>>) => Promise<void>;
+};
 
-  async function handleApiRequest<T>(
+function useApi<T>(): UseApiReturnType<T> {
+  const [response, setResponse] = useState<T | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
+  const [error, setError] = useState<ApiError | null>(null);
+
+  async function handleApiRequest(
     request: () => Promise<AxiosResponse<T>>
-  ): Promise<[T | null, ApiError | null]> {
+  ): Promise<void> {
     setIsLoading(true);
+    setIsError(false);
+    setError(null);
     try {
       const response = await request();
-      setIsLoading(false);
-      return [response.data, null];
+      setIsSuccess(true);
+      setResponse(response.data);
     } catch (error) {
-      setIsLoading(false);
+      setIsError(true);
       if (axios.isAxiosError(error)) {
         console.log("Something went wrong: ", error.response?.data);
         const apiError = new ApiError(
-          error.message,
+          error.response?.data?.message,
           error.response?.status,
           error.response?.data
         );
-        return [null, apiError];
+        setError(apiError);
       } else {
-        console.log("An unexpected error occured: ", error);
-        return [null, null];
+        console.log("An unexpected error occurred: ", error);
       }
+    } finally {
+      setIsLoading(false);
     }
   }
-  return { handleApiRequest, isLoading };
+
+  return { response, isLoading, isSuccess, isError, error, handleApiRequest };
 }
 
 export default useApi;

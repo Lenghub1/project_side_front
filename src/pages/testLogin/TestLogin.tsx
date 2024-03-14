@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 import { authApi } from "@/api/auth";
 import useValidatedInput from "@/hooks/useValidatedInput";
-import { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import IconButton from "@mui/material/IconButton";
@@ -18,6 +18,7 @@ import { useRecoilState } from "recoil";
 import { accessTokenState } from "@/store/userStore";
 import { useNavigate } from "react-router-dom";
 import usePersist from "@/hooks/usePersist";
+import useApi from "@/hooks/useApi";
 
 export const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -36,6 +37,12 @@ const validateEmail = (email: string): string => {
   }
   return "";
 };
+
+interface LoginResponse {
+  user: {
+    accessToken: string;
+  };
+}
 
 const TestLoginPage = () => {
   const navigate = useNavigate();
@@ -81,17 +88,39 @@ const TestLoginPage = () => {
     });
   }
 
-  async function login(method: string, data: any): Promise<void> {
-    const [response, error] = await handleApiRequest(() =>
-      authApi.testLogin(method, data)
-    );
+  const { response, isError, error, handleApiRequest } = useApi();
 
-    if (response && response.data && response.data.user) {
-      console.log(response);
-      setAccessToken(response.data.user.accessToken);
+  async function login(method: string, data: any): Promise<void> {
+    await handleApiRequest(() => authApi.testLogin(method, data));
+
+    // if (response && response.data && response.data.user) {
+    //   console.log(response);
+    //   setAccessToken(response.data.user.accessToken);
+    //   navigate("/campus");
+    // } else if (error) {
+    //   if (error?.response?.status === 400) {
+    //     showError(
+    //       `${loginMethod === "email" ? "Email" : "Phone number"} or password is incorrect`
+    //     );
+    //   } else {
+    //     showError("Something went wrong. Please try again.");
+    //   }
+    // }
+  }
+
+  useEffect(() => {
+    const userData = response?.data as LoginResponse;
+    if (userData?.user) {
+      console.log(userData.user);
+      setAccessToken(userData.user?.accessToken);
       navigate("/campus");
-    } else if (error) {
-      if (error?.response?.status === 400) {
+    }
+  }, [response]);
+
+  useEffect(() => {
+    if (error) {
+      console.log(error.message);
+      if (error.statusCode === 422) {
         showError(
           `${loginMethod === "email" ? "Email" : "Phone number"} or password is incorrect`
         );
@@ -99,7 +128,7 @@ const TestLoginPage = () => {
         showError("Something went wrong. Please try again.");
       }
     }
-  }
+  }, [error]);
 
   const isFormInvalid: boolean =
     loginMethod === "email"
