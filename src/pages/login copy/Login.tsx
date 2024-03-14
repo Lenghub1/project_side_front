@@ -165,6 +165,10 @@ const LoginPage = () => {
     await login(singInMethod, formData);
   };
 
+  const handleTelegramData = async (user: any) => {
+    await authApi.telegramOauth(user);
+  };
+
   return (
     <CP.Styled.Wrapper height="100vh">
       <Flex height="inherit">

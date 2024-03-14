@@ -15,7 +15,6 @@ const RedirectingPage = () => {
 
     const paramsElement = Object.fromEntries(params.entries());
 
-    console.log("$$$", paramsElement.id);
     localStorage.setItem("token", paramsElement.token);
     localStorage.setItem("id", paramsElement.id);
     setLoginUser({ token: paramsElement.token, userId: paramsElement.id });
