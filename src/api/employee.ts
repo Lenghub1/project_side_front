@@ -84,6 +84,11 @@ const patchEmployeeById = async (
     return {} as AxiosResponse<Partial<Employement>>;
   }
 };
+const allWorkplace = async (
+  userId: string
+): Promise<AxiosResponse<Partial<Employement>[]>> => {
+  return api.get(`/organizations/self-workplace/${userId}`);
+};
 const createEmployee = async (
   data: Object,
   organizationId: string = currentOrganizationId
@@ -131,4 +136,5 @@ export {
   deleteEmployee,
   patchEmployeeById,
   getAllPendingEmployees,
+  allWorkplace,
 };

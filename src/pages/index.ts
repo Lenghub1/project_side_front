@@ -12,3 +12,4 @@ export * from "@/pages/companySearchResult";
 export * from "@/pages/informationInput";
 export * as Branch from "@/pages/branch";
 export * from "@/pages/organization";
+export * as choose from "@/pages/chooseOrganization";

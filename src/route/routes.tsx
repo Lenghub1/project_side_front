@@ -123,6 +123,11 @@ const routes: RouteProps[] = [
     path: "organization/modifyBranch",
     element: Pg.Branch.ModifyBranch,
   },
+  {
+    name: "chooseOrganization",
+    path: "login/organizations",
+    element: Pg.choose.default.ScreenChooseOrganization,
+  },
 ];
 
 export default routes;

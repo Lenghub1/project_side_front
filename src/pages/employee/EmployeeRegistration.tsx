@@ -3,7 +3,7 @@ import EnhancedTable from "@/components/table/Table";
 import { Container } from "@mui/material";
 import { getAllPendingEmployees } from "@/api/employee";
 import { handleApiRequest } from "@/api";
-import { socket } from "@/socket";
+// import { socket } from "@/socket";
 
 const userId = "d5e2b24b-7c77-480f-ad24-c79c786179cc";
 
@@ -28,10 +28,7 @@ const EmployeeRegistration = () => {
   React.useEffect(() => {
     newPendingEmployees();
     console.log(userId);
-    socket.on(`on-updates-${userId}`, (data) => {
-      console.log(data);
-    });
-  }, [socket]);
+  }, []);
 
   if (error) {
     if (error.response?.status === 404) {
