@@ -11,6 +11,7 @@ import IconButton from "@mui/material/IconButton";
 import { SyntheticEvent } from "react";
 import { authApi } from "@/api/auth";
 import { handleApiRequest } from "@/api";
+import Auth from "@/components/auth";
 
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -73,99 +74,108 @@ const ResetPassword = () => {
   };
 
   return (
-    <CP.Styled.Wrapper height="100vh">
-      <Flex height="inherit">
-        <CP.Styled.Div padding={!isMobile ? "0 1rem" : "0 16px"} width="600px">
-          <Flex direction="column" padding={!isMobile ? "0 3rem" : "0px"}>
-            <CP.Typography
-              variant="h4"
-              margin="0 0 2rem"
-              textAlign="start"
-              width={"100%"}
-            >
-              New Password
-            </CP.Typography>
-            <Flex direction="column" justify-content="start">
+    <Auth>
+      <CP.Styled.Wrapper height="100vh">
+        <Flex height="inherit">
+          <CP.Styled.Div
+            padding={!isMobile ? "0 1rem" : "0 16px"}
+            width="600px"
+          >
+            <Flex direction="column" padding={!isMobile ? "0 3rem" : "0px"}>
               <CP.Typography
-                fontWeight="semibold"
+                variant="h4"
+                margin="0 0 2rem"
+                textAlign="start"
                 width={"100%"}
-                textAlign={"start"}
               >
-                Please enter and confirm your new password
+                New Password
               </CP.Typography>
-              <CP.Typography
-                fontWeight="semibold"
-                width={"100%"}
-                textAlign={"start"}
-                marginBottom={"2rem"}
-              >
-                Minimum of 8 characters.
-              </CP.Typography>
-            </Flex>
-            <Flex direction="column" gap="24px" overflow="unset">
-              <Flex gap={"16px"} direction="column">
-                <CP.Input
-                  label="Password"
-                  type={passwordIsVisible ? "text" : "password"}
-                  value={password.value}
-                  onChange={password.onChange}
-                  onBlur={password.onBlur}
-                  error={password.errors.length > 0}
-                  helperText={<password.HelperText />}
-                  required
-                  InputProps={{
-                    endAdornment: (
-                      <IconButton
-                        onClick={() => setPasswordIsVisible((prev) => !prev)}
-                      >
-                        {passwordIsVisible ? <Visibility /> : <VisibilityOff />}
-                      </IconButton>
-                    ),
-                  }}
-                />
-
-                <CP.Input
-                  label="Confirm password"
-                  type={confirmPasswordIsVisible ? "text" : "password"}
-                  value={confirmPassword.value}
-                  onChange={confirmPassword.onChange}
-                  onBlur={confirmPassword.onBlur}
-                  error={!!confirmPassword.error}
-                  helperText={<confirmPassword.HelperText />}
-                  required
-                  InputProps={{
-                    endAdornment: (
-                      <IconButton
-                        onClick={() =>
-                          setConfirmPasswordIsVisible((prev) => !prev)
-                        }
-                      >
-                        {confirmPasswordIsVisible ? (
-                          <Visibility />
-                        ) : (
-                          <VisibilityOff />
-                        )}
-                      </IconButton>
-                    ),
-                  }}
-                />
-              </Flex>
-
-              <Flex justify="flex-end" gap="20px">
-                <CP.Button variant="text">Cancel</CP.Button>
-                <CP.Button
-                  disabled={isFormInvalid}
-                  type="submit"
-                  onClick={handleSubmit}
+              <Flex direction="column" justify-content="start">
+                <CP.Typography
+                  fontWeight="semibold"
+                  width={"100%"}
+                  textAlign={"start"}
                 >
-                  SAVE
-                </CP.Button>
+                  Please enter and confirm your new password
+                </CP.Typography>
+                <CP.Typography
+                  fontWeight="semibold"
+                  width={"100%"}
+                  textAlign={"start"}
+                  marginBottom={"2rem"}
+                >
+                  Minimum of 8 characters.
+                </CP.Typography>
+              </Flex>
+              <Flex direction="column" gap="24px" overflow="unset">
+                <Flex gap={"16px"} direction="column">
+                  <CP.Input
+                    label="Password"
+                    type={passwordIsVisible ? "text" : "password"}
+                    value={password.value}
+                    onChange={password.onChange}
+                    onBlur={password.onBlur}
+                    error={password.errors.length > 0}
+                    helperText={<password.HelperText />}
+                    required
+                    InputProps={{
+                      endAdornment: (
+                        <IconButton
+                          onClick={() => setPasswordIsVisible((prev) => !prev)}
+                        >
+                          {passwordIsVisible ? (
+                            <Visibility />
+                          ) : (
+                            <VisibilityOff />
+                          )}
+                        </IconButton>
+                      ),
+                    }}
+                  />
+
+                  <CP.Input
+                    label="Confirm password"
+                    type={confirmPasswordIsVisible ? "text" : "password"}
+                    value={confirmPassword.value}
+                    onChange={confirmPassword.onChange}
+                    onBlur={confirmPassword.onBlur}
+                    error={!!confirmPassword.error}
+                    helperText={<confirmPassword.HelperText />}
+                    required
+                    InputProps={{
+                      endAdornment: (
+                        <IconButton
+                          onClick={() =>
+                            setConfirmPasswordIsVisible((prev) => !prev)
+                          }
+                        >
+                          {confirmPasswordIsVisible ? (
+                            <Visibility />
+                          ) : (
+                            <VisibilityOff />
+                          )}
+                        </IconButton>
+                      ),
+                    }}
+                  />
+                </Flex>
+
+                <Flex justify="flex-end" gap="20px">
+                  <CP.Button variant="text">Cancel</CP.Button>
+                  <CP.Button
+                    disabled={isFormInvalid}
+                    type="submit"
+                    onClick={handleSubmit}
+                  >
+                    SAVE
+                  </CP.Button>
+                </Flex>
               </Flex>
             </Flex>
-          </Flex>
-        </CP.Styled.Div>
-      </Flex>
-    </CP.Styled.Wrapper>
+          </CP.Styled.Div>
+        </Flex>
+      </CP.Styled.Wrapper>
+    </Auth>
   );
 };
 

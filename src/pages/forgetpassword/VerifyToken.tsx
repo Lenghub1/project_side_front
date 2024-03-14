@@ -12,7 +12,7 @@ import { useSnackbar } from "notistack";
 const VerifyToken = () => {
   const naviagate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const [_, setLoginUser] = useState(Store.User.userState);
+  const [_, setLoginUser] = useRecoilState(Store.User.userState);
   function showError(message: string) {
     enqueueSnackbar(message, {
       variant: "error",
@@ -37,6 +37,8 @@ const VerifyToken = () => {
 
       console.log("Token", response.data.user);
       if (response?.data?.user) {
+        setLoginUser({ token: paramsElement.token, id: paramsElement.id });
+
         naviagate("/resetpassword");
       }
     },

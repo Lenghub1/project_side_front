@@ -9,6 +9,7 @@ import { SyntheticEvent } from "react";
 import { useSnackbar } from "notistack";
 import { authApi } from "@/api/auth";
 import { handleApiRequest } from "@/api";
+
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
 `;
@@ -18,6 +19,7 @@ const ForgotAccount = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 428);
   const username = useValidatedInput("", "Username");
+  const [_, setUserLoginState] = useRecoilState(State.Login.userLo);
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 428);
@@ -53,17 +55,13 @@ const ForgotAccount = () => {
     });
   }
 
-  async function forgotaccount(method: string, data: any): Promise<void> {
+  async function forgotAccount(data: string): Promise<void> {
     const [response, error] = await handleApiRequest(() =>
-      authApi.forgotPassword(method, data)
+      authApi.forgotAccount(data)
     );
 
     if (error) {
-      showError(
-        `No results were found. Please check your ${
-          method === "phone" ? "phone number" : "email"
-        } and try again.`
-      );
+      showError("No results exist. Please try again ");
       return;
     }
     console.log("Result", response);
@@ -74,7 +72,7 @@ const ForgotAccount = () => {
     event.preventDefault();
 
     let formData: any = {};
-
+    await forgotAccount(username.value);
     // if (resetPasswordBy === "email") {
     //   formData = { ...formData, email: email.value };
     //   console.log("Data", formData);
@@ -91,6 +89,8 @@ const ForgotAccount = () => {
 
     // await forgetPassword(resetPasswordBy, formData);
   };
+
+  const isInvalid = !username.value && username.setError;
 
   return (
     <CP.Styled.Wrapper height="100vh">
@@ -154,7 +154,11 @@ const ForgotAccount = () => {
               </CP.Styled.Flex>
               <Flex width="100%" justify="end" gap="20px">
                 <CP.Button variant="text">Cancel</CP.Button>
-                <CP.Button type="submit" onClick={handleSubmit}>
+                <CP.Button
+                  type="submit"
+                  onClick={handleSubmit}
+                  disabled={isInvalid}
+                >
                   Find
                 </CP.Button>
               </Flex>

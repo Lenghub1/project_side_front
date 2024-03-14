@@ -46,7 +46,7 @@ const LoginPage = () => {
     dialCode: string;
     flag: string;
   }>(countries[0]);
-  const { token, id } = useRecoilValue(Store.User.userState);
+  const { token, userId } = useRecoilValue(Store.User.userState);
   const [_, setLoginUser] = useRecoilState(Store.User.userState);
   const activeTabIndex = signupMethod === "email" ? 0 : 1;
   console.log("Window asdasd", window.screen.width);
@@ -79,7 +79,7 @@ const LoginPage = () => {
     console.log("Method", signupMethod);
   };
   console.log("Token", token);
-  console.log("ID", id);
+  console.log("ID", userId);
 
   const isFormInvalid =
     (signupMethod === "phone"

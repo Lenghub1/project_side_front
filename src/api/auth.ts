@@ -67,6 +67,10 @@ const resetPassword = async (newPassword: string) => {
   return api.patch(`auth/reset/password`, { newPassword });
 };
 
+const forgotAccount = async (username: string) => {
+  return api.get(`/users?${username}`);
+};
+
 const authApi = {
   testLogin,
   signup,

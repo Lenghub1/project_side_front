@@ -8,16 +8,17 @@ import { useRecoilState } from "recoil";
 
 const RedirectingPage = () => {
   const naviagate = useNavigate();
-  const [_, setLoginUser] = useState(Store.User.userState);
+  const [_, setLoginUser] = useRecoilState(Store.User.userState);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.hash.split("?")[1]);
 
     const paramsElement = Object.fromEntries(params.entries());
 
+    console.log("$$$", paramsElement.id);
     localStorage.setItem("token", paramsElement.token);
     localStorage.setItem("id", paramsElement.id);
-    setLoginUser({ token: paramsElement.token, id: paramsElement.id });
+    setLoginUser({ token: paramsElement.token, userId: paramsElement.id });
 
     setTimeout(() => {
       naviagate("/loginpage");

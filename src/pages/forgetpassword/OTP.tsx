@@ -14,6 +14,8 @@ import CP from "@/components";
 import { authApi } from "@/api/auth";
 import { handleApiRequest } from "@/api";
 import { useSnackbar } from "notistack";
+import { useRecoilState } from "recoil";
+import Store from "@/store";
 
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -51,6 +53,7 @@ const OTP = () => {
     "",
     "",
   ]);
+  const [_, setUserLoginState] = useRecoilState(Store.User.userState);
   const { enqueueSnackbar } = useSnackbar();
   const naviagate = useNavigate();
   const inputs = useRef<(HTMLInputElement | null)[]>([]);
@@ -163,6 +166,7 @@ const OTP = () => {
 
     console.log("Token", response.data.user);
     if (response?.data?.user) {
+      setUserLoginState(response?.data?.user);
       naviagate("/resetpassword");
     }
   }, []);
