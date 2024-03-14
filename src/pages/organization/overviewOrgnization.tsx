@@ -1,19 +1,21 @@
 import { useState, useEffect } from "react";
 import CP from "@/components";
 import theme from "@/theme/ligthTheme";
-
+import { handleApiRequest } from "@/api";
+import { getAllPendingEmployees } from "@/api/employee";
 import { BranchDetailCard } from "./branchDetail"; // Importing the BranchDetailCard component
 import Container from "@mui/material/Container"; // Import Container from Material-UI
 import styled from "styled-components";
 import { Divider } from "@mui/material";
-
+import { my_organization } from "@/api/organization";
+import React from "react";
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
 `;
 
 const OverviewOrganization = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 456);
-
+  const [organizationData, setOrganizationData] = useState({}) as any;
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 456);
@@ -26,6 +28,20 @@ const OverviewOrganization = () => {
     };
   }, []); // Empty dependency array ensures this effect runs only once
 
+  const my_organization_data = async () => {
+    const [response, error] = await handleApiRequest(() =>
+      my_organization("1ca2a528-72c9-4cb8-8823-4d26cfcdd598")
+    );
+    if (response) {
+      setOrganizationData(response.data);
+    } else {
+      console.log(error);
+    }
+  };
+
+  React.useEffect(() => {
+    my_organization_data();
+  }, []);
   return (
     <Container maxWidth="lg">
       <CP.Styled.Wrapper padding="20px" overflow="auto" width="auto">
@@ -77,12 +93,16 @@ const OverviewOrganization = () => {
               <CP.Styled.Flex direction="column" gap="10px">
                 <CP.Styled.Flex direction="column" items="flex-start">
                   <CP.Typography>Name</CP.Typography>
-                  <CP.Typography variant="subtitle1">Sandbox</CP.Typography>
+                  <CP.Typography variant="subtitle1">
+                    {organizationData.name}
+                  </CP.Typography>
                 </CP.Styled.Flex>
                 <Divider sx={{ width: "100%" }} />
                 <CP.Styled.Flex direction="column" items="flex-start">
                   <CP.Typography>Number of Employee</CP.Typography>
-                  <CP.Typography variant="subtitle1">56</CP.Typography>
+                  <CP.Typography variant="subtitle1">
+                    {organizationData.employeeCounts}
+                  </CP.Typography>
                 </CP.Styled.Flex>
                 <Divider sx={{ width: "100%" }} />
                 <CP.Styled.Flex direction="column" items="flex-start">

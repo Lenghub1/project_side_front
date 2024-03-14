@@ -1,14 +1,9 @@
 import CP from "@/components";
 import { useState } from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-
+import MapComponent from "@/components/map/Map";
 interface BranchDetailCardProps {
   branchName: string;
-}
-
-interface BranchDetailCardState {
-  expanded: boolean;
-  iconHovered: boolean;
 }
 
 export const BranchDetailCard: React.FC<BranchDetailCardProps> = ({
@@ -57,18 +52,7 @@ export const BranchDetailCard: React.FC<BranchDetailCardProps> = ({
 
         {expanded && (
           <>
-            <img
-              style={{
-                width: "100%",
-                height: "200px",
-                backgroundImage:
-                  "url('https://cdn.britannica.com/37/245037-050-79129D52/world-map-continents-oceans.jpg')",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                marginTop: "20px",
-              }}
-              alt=""
-            />
+            <MapComponent />
             <CP.Styled.Div padding="20px">
               <CP.Styled.Flex
                 justify="flex-start"
