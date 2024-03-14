@@ -15,7 +15,6 @@ import { IconButton } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import FacebookLoginButton from "./FacebookLoginButton";
 import GoogleLoginButton from "./GoogleLoginButton";
-import { Box } from "@mui/material";
 import Store from "@/store";
 import TelegramLoginButton from "./TelegramLoginButton";
 
@@ -325,15 +324,18 @@ const LoginPage = () => {
                 </CP.Typography>
               )}
               {!isMobile && (
-                <CP.Typography
-                  width="100%"
-                  sx={{ cursor: "pointer", color: "red" }}
-                  onClick={() => {
-                    navigate("/forgetpassword");
-                  }}
-                >
-                  Forget password?
-                </CP.Typography>
+                <CP.Styled.Flex width="100%" justify="start">
+                  <CP.Typography
+                    margin="1rem 0"
+                    color="red"
+                    sx={{ cursor: "pointer" }}
+                    onClick={() => {
+                      navigate("/forgetpassword");
+                    }}
+                  >
+                    Forget password?
+                  </CP.Typography>
+                </CP.Styled.Flex>
               )}
             </Flex>
 

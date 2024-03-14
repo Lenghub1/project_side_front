@@ -206,17 +206,18 @@ const ForgetPassword = () => {
                 </Flex>
               )}
 
-              <CP.Typography
-                margin="1rem 0"
-                width="100%"
-                color="red"
-                sx={{ cursor: "pointer" }}
-                onClick={() => {
-                  navigate("/forgotaccount");
-                }}
-              >
-                Forgotten account?
-              </CP.Typography>
+              <CP.Styled.Flex width="100%" justify="start">
+                <CP.Typography
+                  margin="1rem 0"
+                  color="red"
+                  sx={{ cursor: "pointer" }}
+                  onClick={() => {
+                    navigate("/forgotaccount");
+                  }}
+                >
+                  Forget account?
+                </CP.Typography>
+              </CP.Styled.Flex>
               <Flex width="100%" justify="end" gap="20px">
                 <CP.Button variant="text">Cancel</CP.Button>
                 <CP.Button

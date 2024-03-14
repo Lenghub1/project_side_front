@@ -1,13 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
-import { authApi } from "@/api/auth";
-import { handleApiRequest } from "@/api";
+import { useEffect, useRef } from "react";
 import createTelegramScript from "./CreateTelegramScript";
 import CP from "@/components";
 
 const TelegramLoginButton = (props: any) => {
   const telegramOauthRef = useRef<HTMLDivElement>(null);
   const scriptRef = useRef<HTMLScriptElement>(null);
-  const [loginHtml, setLoginHtml] = useState<any>("");
 
   useEffect(() => {
     //distroy the script ref

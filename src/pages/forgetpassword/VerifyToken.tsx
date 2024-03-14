@@ -7,11 +7,21 @@ import Store from "@/store";
 import { useRecoilState } from "recoil";
 import { authApi } from "@/api/auth";
 import { handleApiRequest } from "@/api";
+import { useSnackbar } from "notistack";
 
 const VerifyToken = () => {
   const naviagate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
   const [_, setLoginUser] = useState(Store.User.userState);
-
+  function showError(message: string) {
+    enqueueSnackbar(message, {
+      variant: "error",
+      anchorOrigin: {
+        vertical: "bottom", // or 'bottom'
+        horizontal: "center", // or 'left', 'center'
+      },
+    });
+  }
   const verifyForgetPasswordToken = useCallback(
     async (token: string): Promise<void> => {
       const [response, error] = await handleApiRequest(() =>
@@ -19,8 +29,10 @@ const VerifyToken = () => {
       );
 
       if (error) {
-        console.log("error", error);
-        return;
+        showError("Token is invalid. Please try agian");
+        setTimeout(() => {
+          naviagate("/forgetpassword");
+        }, 2000);
       }
 
       console.log("Token", response.data.user);
@@ -38,19 +50,7 @@ const VerifyToken = () => {
     paramsElement = Object.fromEntries(params.entries());
     if (paramsElement?.token) {
       verifyForgetPasswordToken(paramsElement?.token);
-      console.log("done");
     }
-    console.log("Param Element", paramsElement.token);
-
-    console.log("Param Element", paramsElement);
-
-    // localStorage.setItem("token", paramsElement.token);
-    // localStorage.setItem("id", paramsElement.id);
-    // setLoginUser({ token: paramsElement.token, id: paramsElement.id });
-
-    // setTimeout(() => {
-    //   naviagate("/loginpage");
-    // }, 2000);
   }, []);
 
   return (

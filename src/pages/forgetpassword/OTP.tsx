@@ -6,12 +6,14 @@ import React, {
   BaseSyntheticEvent,
   ClipboardEvent,
   SyntheticEvent,
+  useCallback,
 } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import CP from "@/components";
 import { authApi } from "@/api/auth";
 import { handleApiRequest } from "@/api";
+import { useSnackbar } from "notistack";
 
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -49,8 +51,10 @@ const OTP = () => {
     "",
     "",
   ]);
-
+  const { enqueueSnackbar } = useSnackbar();
+  const naviagate = useNavigate();
   const inputs = useRef<(HTMLInputElement | null)[]>([]);
+  const isValidInput = arrayValue.every((value) => value !== "");
   useEffect(() => {
     inputs.current[0]?.focus();
   }, []);
@@ -72,6 +76,7 @@ const OTP = () => {
       setMaskedValue(newMaskedValue);
     }
   };
+
   // handle clicking keyboard event
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     const keyCode = parseInt(e.key);
@@ -108,12 +113,11 @@ const OTP = () => {
       }
 
       // if the 6 input field, has value, then auto submit to OTP verify
-      console.log("Lenght of array", arrayValue);
-      if (arrayValue.every((value) => value !== "")) {
-        arrayValue.every((value) => {
-          console.log;
-        });
-      }
+      // if (arrayValue.every((value) => value !== "")) {
+      //   arrayValue.every((value) => {
+      //     console.log;
+      //   });
+      // }
     }
   };
 
@@ -138,20 +142,34 @@ const OTP = () => {
     }
   };
 
-  async function verifyOTP(otp: string): Promise<void> {
+  function showError(message: string) {
+    enqueueSnackbar(message, {
+      variant: "error",
+      anchorOrigin: {
+        vertical: "bottom", // or 'bottom'
+        horizontal: "center", // or 'left', 'center'
+      },
+    });
+  }
+
+  const verifyOTP = useCallback(async (otp: string): Promise<void> => {
     const [response, error] = await handleApiRequest(() =>
       authApi.verifyForgetPasswordToken(otp)
     );
+
     if (error) {
-      console.log("error");
-      return;
+      return showError("Token is invalid. Please try agian");
     }
-  }
+
+    console.log("Token", response.data.user);
+    if (response?.data?.user) {
+      naviagate("/resetpassword");
+    }
+  }, []);
 
   const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
-    console.log("Value", arrayValue.join(""));
-    return;
+
     await verifyOTP(arrayValue.join(""));
   };
 
@@ -210,7 +228,11 @@ const OTP = () => {
                   Resend
                 </CP.Typography>
               </Flex>
-              <CP.Button type="submit" onClick={handleSubmit}>
+              <CP.Button
+                type="submit"
+                onClick={handleSubmit}
+                disabled={!isValidInput}
+              >
                 Verify
               </CP.Button>
               <CP.Typography

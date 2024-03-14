@@ -5,14 +5,10 @@ import CP from "@/components";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
-import countries from "@/components/phonePrefix/countries.json";
 import { SyntheticEvent } from "react";
 import { useSnackbar } from "notistack";
 import { authApi } from "@/api/auth";
 import { handleApiRequest } from "@/api";
-import Tab from "@mui/material/Tab";
-import Tabs from "@mui/material/Tabs";
-
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
 `;
@@ -21,7 +17,7 @@ const ForgotAccount = () => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 428);
-
+  const username = useValidatedInput("", "Username");
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 428);
@@ -34,6 +30,19 @@ const ForgotAccount = () => {
     };
   }, []);
 
+  const isFormIvalid =
+    !username.value ||
+    !!username.error ||
+    function showError(message: string) {
+      enqueueSnackbar(message, {
+        variant: "error",
+        anchorOrigin: {
+          vertical: "bottom", // or 'bottom'
+          horizontal: isMobile ? "center" : "left", // or 'left', 'center'
+        },
+      });
+    };
+
   function showError(message: string) {
     enqueueSnackbar(message, {
       variant: "error",
@@ -44,7 +53,7 @@ const ForgotAccount = () => {
     });
   }
 
-  async function forgetPassword(method: string, data: any): Promise<void> {
+  async function forgotaccount(method: string, data: any): Promise<void> {
     const [response, error] = await handleApiRequest(() =>
       authApi.forgotPassword(method, data)
     );
@@ -122,23 +131,27 @@ const ForgotAccount = () => {
             </CP.Typography>
             <Flex direction="column" gap="24px" overflow="unset">
               <CP.Input
-                label="Company code"
-                placeholder="Company code"
+                label="Username"
+                value={username.value}
+                onChange={username.onChange}
+                onBlur={username.onBlur}
+                error={!!username.error}
+                helperText={<username.HelperText />}
                 required
               />
-              <CP.Input label="Username" placeholder="Username" required />
 
-              <CP.Typography
-                margin="1rem 0"
-                width="100%"
-                color="red"
-                sx={{ cursor: "pointer" }}
-                onClick={() => {
-                  navigate("/forgetpassword");
-                }}
-              >
-                Forget password?
-              </CP.Typography>
+              <CP.Styled.Flex width="100%" justify="start">
+                <CP.Typography
+                  margin="1rem 0"
+                  color="red"
+                  sx={{ cursor: "pointer" }}
+                  onClick={() => {
+                    navigate("/forgetpassword");
+                  }}
+                >
+                  Forget password?
+                </CP.Typography>
+              </CP.Styled.Flex>
               <Flex width="100%" justify="end" gap="20px">
                 <CP.Button variant="text">Cancel</CP.Button>
                 <CP.Button type="submit" onClick={handleSubmit}>
