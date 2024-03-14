@@ -120,6 +120,11 @@ const routes: RouteProps[] = [
     element: Pg.GroupPage,
   },
   {
+    name: "createEmployee",
+    path: "organization/employee/create",
+    element: Pg.Employee.default.CreateEmployee,
+  },
+  {
     name: "employeeRegistrationsdetail",
     path: "organization/employee/registrations/details",
     element: Pg.Employee.default.EmployeeRegistrationDetail,
