@@ -40,6 +40,12 @@ export default function useMatchInput(
     }
   };
 
+  const reset = () => {
+    setValue("");
+    setError("");
+    setTouched(false);
+  };
+
   // Use useEffect to update the error state when either value changes
   useEffect(() => {
     if (touched) {
@@ -57,5 +63,16 @@ export default function useMatchInput(
     ) : null;
   };
 
-  return { value, onChange, setValue, onBlur, error, setError, HelperText };
+  return {
+    value,
+    onChange,
+    setValue,
+    onBlur,
+    error,
+    setError,
+    HelperText,
+    touched,
+    setTouched,
+    reset,
+  };
 }

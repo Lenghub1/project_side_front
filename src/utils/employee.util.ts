@@ -15,7 +15,7 @@ const handleAcceptEmployee = async (employmentId: string) => {
   if (error) {
     alert(error.message);
   } else {
-    socket.emit("acceptEmployee", response);
+    // socket.emit("acceptEmployee", response);
   }
 };
 
@@ -28,7 +28,7 @@ const handleRejectEmployee = async (employmentId: string) => {
     alert(error.message);
   } else {
     console.log(response);
-    socket.emit("rejectEmployee", { employmentId });
+    // socket.emit("rejectEmployee", { employmentId });
   }
 };
 
