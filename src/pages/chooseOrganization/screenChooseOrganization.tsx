@@ -1,44 +1,39 @@
 import CP from "@/components";
 import { useState, useEffect } from "react";
-import React from "react";
 import Box from "@mui/material/Box";
 import { allWorkplace } from "@/api/employee";
 import { handleApiRequest } from "@/api";
-// Import the RoleCard component
-import OrganizationCard from "@/components/companyCard/organizationCard";
+import ChooseOrganizationCard from "@/components/organization/chooseOrganizationCard";
 
 const ScreenChooseOrganization = () => {
-  // State to track the active organization ID
   const [activeOrgId, setActiveOrgId] = useState<string | null>(null);
-  const [organizationData, setOrganizationData] = useState<string[]>([]);
+  const [organizationData, setOrganizationData] = useState<any[]>([]);
 
   const newPendingEmployees = async () => {
     const [response, error] = await handleApiRequest(() =>
-      allWorkplace("6d42b6ca-edc2-4c9a-a797-6e83e7cd9a1d")
+      allWorkplace("fa6f8c4b-e5fd-4c23-a20c-edbab2b5d169")
     );
     if (response) {
-      setOrganizationData(response.data || []); // Ensure response.data is an array or default to empty array
-      console.log(response);
+      setOrganizationData(response.data || []);
     } else {
       console.log(error);
     }
   };
+  console.log(activeOrgId);
 
   useEffect(() => {
     newPendingEmployees();
-  }, []); // Run once on component mount
+  }, []);
 
   return (
     <CP.Styled.Flex>
       <CP.Styled.Flex direction="column" gap="20px" padding="20px">
-        {/* Your existing content */}
         <CP.Styled.Flex direction="column">
           <CP.Styled.Flex
             direction="column"
             style={{ position: "absolute", top: "5%" }}
           >
             <CP.Typography variant="h5">Riem</CP.Typography>
-
             <CP.Typography>
               Confirmed as <strong>TourlengStrange@gmail.com</strong>
             </CP.Typography>
@@ -49,20 +44,17 @@ const ScreenChooseOrganization = () => {
           <CP.Typography variant="h4"> YOUR ORGANIZATIONS </CP.Typography>
         </CP.Styled.Flex>
 
-        {/* Render OrganizationCard for each organization */}
-        {organizationData.map((organization) => (
-          <OrganizationCard
-            key={organization.id}
+        {organizationData.map((organization, index) => (
+          <ChooseOrganizationCard
+            key={index}
             id={organization.id}
-            activeId={activeOrgId}
-            setActiveId={setActiveOrgId}
-            image={organization.image}
-            title={organization.title}
-            description={organization.description}
+            setActiveOrgId={setActiveOrgId}
+            isActive={organization.id === activeOrgId}
+            title={organization.organizations.name}
+            description="You are member of ours organization , pls click Next to Login"
           />
         ))}
 
-        {/* Your existing content */}
         <CP.Typography style={{ marginTop: "40px" }}>
           By continuing, you’re agreeing to our Main Services Agreement, User
           Terms of Service, and Riem Supplemental Terms. Additional disclosures
