@@ -104,6 +104,11 @@ const routes: RouteProps[] = [
     path: "organization/createBranch",
     element: Pg.Branch.CreateBranch,
   },
+  {
+    name: "modifyBranch",
+    path: "organization/modifyBranch",
+    element: Pg.Branch.ModifyBranch,
+  },
 ];
 
 export default routes;

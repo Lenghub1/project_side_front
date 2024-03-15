@@ -2,6 +2,9 @@ import CP from "@/components";
 import { useState } from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MapComponent from "@/components/map/Map";
+import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { selectBranch } from "@/store/branch";
 interface BranchDetailCardProps {
   branchName: string;
 }
@@ -9,6 +12,8 @@ interface BranchDetailCardProps {
 export const BranchDetailCard: React.FC<BranchDetailCardProps> = ({
   branchData,
 }) => {
+  const navigate = useNavigate();
+  const [branchSelected, setBranchSeleted] = useRecoilState(selectBranch);
   const [expanded, setExpanded] = useState<boolean>(false);
   const [iconHovered, setIconHovered] = useState<boolean>(false);
   const [isActive, setIsActive] = useState<boolean>(false);
@@ -23,6 +28,10 @@ export const BranchDetailCard: React.FC<BranchDetailCardProps> = ({
 
   const handleIconBlur = () => {
     setIconHovered(false);
+  };
+  const handleModify = () => {
+    navigate("/organization/modifyBranch");
+    setBranchSeleted(branchData);
   };
 
   return (
@@ -75,7 +84,12 @@ export const BranchDetailCard: React.FC<BranchDetailCardProps> = ({
                 overflow="unset"
               >
                 <CP.Button variant="text">Archive</CP.Button>
-                <CP.Button style={{ borderRadius: "20px" }}>Modify</CP.Button>
+                <CP.Button
+                  style={{ borderRadius: "20px" }}
+                  onClick={handleModify}
+                >
+                  Modify
+                </CP.Button>
               </CP.Styled.Flex>
             </CP.Styled.Div>
           </>

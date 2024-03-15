@@ -8,27 +8,22 @@ import CP from "@/components";
 
 const AddMember: React.FC<AddMemberProps> = ({ branchData, setBranchData }) => {
   const [selected, setSelected] = React.useState<string[]>([]);
-  const [fakeMembers, setFakeMembers] =React.useState<string[]>([]);
+  const [fakeMembers, setFakeMembers] = React.useState<string[]>([]);
   const newPendingEmployees = async () => {
     const [response, error] = await handleApiRequest(() =>
-    allEmployees("d5a86690-7488-4a3b-aa5e-383ea4e01878")
+      allEmployees("54e2ab96-b2ea-4730-963e-f040720fdf47")
     );
     console.log(response);
-    if(response){
-      setFakeMembers(response as any)
+    if (response) {
+      setFakeMembers(response as any);
     }
-    if(error){
+    if (error) {
       console.log(error);
-      
     }
-
   };
 
-  
   React.useEffect(() => {
     newPendingEmployees();
- 
-    
   }, []);
   return (
     <Container style={{ marginTop: "20px" }}>

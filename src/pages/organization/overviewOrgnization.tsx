@@ -10,6 +10,7 @@ import { my_organization } from "@/api/organization";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { BranchDetailCard } from "./branchDetail";
+
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
 `;
@@ -17,6 +18,7 @@ const Flex = styled(CP.Styled.Flex)`
 const OverviewOrganization = () => {
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 456);
+
   const [organizationData, setOrganizationData] = useState({}) as any;
   const [organizationBranchData, setOrganizationBranchData] = useState(
     []
@@ -38,7 +40,7 @@ const OverviewOrganization = () => {
   };
   const my_organization_data = async () => {
     const [response, error] = await handleApiRequest(() =>
-      my_organization("1ca2a528-72c9-4cb8-8823-4d26cfcdd598")
+      my_organization("54e2ab96-b2ea-4730-963e-f040720fdf47")
     );
     if (response) {
       setOrganizationData(response.data);
@@ -49,7 +51,7 @@ const OverviewOrganization = () => {
 
   const my_organization_branch_data = async () => {
     const [response, error] = await handleApiRequest(() =>
-      my_branch("1ca2a528-72c9-4cb8-8823-4d26cfcdd598")
+      my_branch("54e2ab96-b2ea-4730-963e-f040720fdf47")
     );
     console.log(response);
 

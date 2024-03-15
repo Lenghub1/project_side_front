@@ -10,14 +10,15 @@ import { selectMembers } from "@/store/employee";
 import { allEmployees } from "@/api/employee";
 import { create_branch } from "@/api/branch";
 import { handleApiRequest } from "@/api";
+import { useNavigate } from "react-router-dom";
 export interface BranchData {
   name: string;
   managerId: string;
   locationName: string;
-  pinPoint:{};
+  pinPoint: {};
   geoFencing: number;
   member: any[];
-  addressLine:string;
+  addressLine: string;
 }
 
 export interface AddMemberProps {
@@ -26,6 +27,7 @@ export interface AddMemberProps {
 }
 
 const CreateBranch: React.FC = () => {
+  const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [selected, setSelected] = useRecoilState(selectMembers);
   const [step, setStep] = useState<number>(0);
@@ -33,31 +35,28 @@ const CreateBranch: React.FC = () => {
     name: "",
     managerId: "",
     locationName: "",
-    addressLine:"",
-    pinPoint:{},
+    addressLine: "",
+    pinPoint: {},
     geoFencing: 10,
     member: [],
-    
   });
   const [errors, setErrors] = useState<string[]>([]);
-  const [managers, setManagers] =React.useState<string[]>([]);
+  const [managers, setManagers] = React.useState<string[]>([]);
   const newPendingEmployees = async () => {
     const [response, error] = await handleApiRequest(() =>
-    allEmployees("d5a86690-7488-4a3b-aa5e-383ea4e01878")
+      allEmployees("54e2ab96-b2ea-4730-963e-f040720fdf47")
     );
     console.log(response);
-    if(response){
-      setManagers(response as any)
+    if (response) {
+      setManagers(response as any);
     }
-    if(error){
+    if (error) {
       console.log(error);
-      
     }
-
   };
   const requestCreateBranch = async () => {
     const [response, error] = await handleApiRequest(() =>
-      create_branch("d5a86690-7488-4a3b-aa5e-383ea4e01878", branchData)
+      create_branch("54e2ab96-b2ea-4730-963e-f040720fdf47", branchData)
     );
     if (error) {
       throw error;
@@ -71,10 +70,10 @@ const CreateBranch: React.FC = () => {
         geoFencing: 10,
         member: [],
       });
-      setStep(0); // Set step back to 1
+      navigate("/overview"); // Set step back to 1
     }
   };
-  
+
   const handleNext = () => {
     // Validate fields before proceeding to the next step
     if (step === 0) {
@@ -124,78 +123,76 @@ const CreateBranch: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-
     console.log(branchData);
-    requestCreateBranch()
+    requestCreateBranch();
   };
-  
+
   const clearSelection = () => {
     setSelected([]); // Clear the selected state
   };
-  
 
   useEffect(() => {
     newPendingEmployees();
     clearSelection();
   }, []);
   return (
-    <Container style={{padding:"20px"}}>
-  
-        <Stepper activeStep={step} alternativeLabel>
-          <Step key={0}>
-            <StepLabel>Information</StepLabel>
-          </Step>
-          <Step key={1}>
-            <StepLabel>Employee</StepLabel>
-          </Step>
-          <Step key={2}>
-            <StepLabel>Confirmation</StepLabel>
-          </Step>
-        </Stepper>
-        {errors.length > 0 && (
-          <CP.Styled.Div style={{ color: "red" }}>
-            {errors.map((error, index) => (
-              <div key={index}>{error}</div>
-            ))}
-          </CP.Styled.Div>
-        )}
-        {step === 0 && (
-          <InformationBranch
-            branchData={branchData}
-            setBranchData={setBranchData}
-            handleInputChange={handleInputChange}
-            managers={managers}
-          />
-        )}
-        {step === 1 && (
-          <AddMember branchData={branchData} setBranchData={setBranchData} />
-        )}
-        {step === 2 && <ConfirmationCreateBranch branchData={branchData} manager={managers} />}
-        <CP.Styled.Div
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "flex-end",
-            gap: "20px",
-            marginTop: "20px",
-          }}
-        >
-          {step > 0 && (
-            <Button variant="outlined" onClick={handlePrevious}>
-              Previous
-            </Button>
-          )}
-          {step < 2 ? (
-            <Button variant="contained" onClick={handleNext}>
-              Next
-            </Button>
-          ) : (
-           <Button variant="contained" onClick={handleSubmit}>
-            submit
-           </Button>
-          )}
+    <Container style={{ padding: "20px" }}>
+      <Stepper activeStep={step} alternativeLabel>
+        <Step key={0}>
+          <StepLabel>Information</StepLabel>
+        </Step>
+        <Step key={1}>
+          <StepLabel>Employee</StepLabel>
+        </Step>
+        <Step key={2}>
+          <StepLabel>Confirmation</StepLabel>
+        </Step>
+      </Stepper>
+      {errors.length > 0 && (
+        <CP.Styled.Div style={{ color: "red" }}>
+          {errors.map((error, index) => (
+            <div key={index}>{error}</div>
+          ))}
         </CP.Styled.Div>
-
+      )}
+      {step === 0 && (
+        <InformationBranch
+          branchData={branchData}
+          setBranchData={setBranchData}
+          handleInputChange={handleInputChange}
+          managers={managers}
+        />
+      )}
+      {step === 1 && (
+        <AddMember branchData={branchData} setBranchData={setBranchData} />
+      )}
+      {step === 2 && (
+        <ConfirmationCreateBranch branchData={branchData} manager={managers} />
+      )}
+      <CP.Styled.Div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          alignItems: "flex-end",
+          gap: "20px",
+          marginTop: "20px",
+        }}
+      >
+        {step > 0 && (
+          <Button variant="outlined" onClick={handlePrevious}>
+            Previous
+          </Button>
+        )}
+        {step < 2 ? (
+          <Button variant="contained" onClick={handleNext}>
+            Next
+          </Button>
+        ) : (
+          <Button variant="contained" onClick={handleSubmit}>
+            submit
+          </Button>
+        )}
+      </CP.Styled.Div>
     </Container>
   );
 };
