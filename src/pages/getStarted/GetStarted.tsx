@@ -2,8 +2,12 @@ import { useState } from "react";
 import CP from "@/components";
 import { RoleCard } from "@/components/roleCard";
 import styled from "styled-components";
-import { Flex } from "../signup/Signup";
 import { Link, Outlet, useLocation } from "react-router-dom";
+import { Box } from "@mui/material";
+
+export const Flex = styled(CP.Styled.Flex)`
+  overflow: unset;
+`;
 
 const GetStarted = () => {
   const location = useLocation();
@@ -62,7 +66,27 @@ const GetStarted = () => {
           </Flex>
         </Container>
       ) : (
-        <Outlet />
+        <CP.Styled.Wrapper height="100vh" padding="0">
+          <Flex height="100%">
+            <CP.Styled.Div padding="0 1rem">
+              <Outlet />
+            </CP.Styled.Div>
+            <CP.Styled.Div height="100%">
+              <Flex>
+                <Box
+                  component="img"
+                  src="/random-unsplash.jpg"
+                  alt="Random image"
+                  sx={{
+                    width: 1,
+                    height: "100vh",
+                    objectFit: "cover",
+                  }}
+                />
+              </Flex>
+            </CP.Styled.Div>
+          </Flex>
+        </CP.Styled.Wrapper>
       )}
     </CP.Styled.Div>
   );

@@ -22,7 +22,7 @@ const addCampus = async (param: string) => {
     setTimeout(() => {
       return res({
         status_code: 200,
-        message: "ok"
+        message: "ok",
       });
     });
   });
@@ -30,7 +30,7 @@ const addCampus = async (param: string) => {
 
 const campusApi = {
   getCampusList,
-  addCampus
+  addCampus,
 };
 
 export default campusApi;

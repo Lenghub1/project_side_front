@@ -39,6 +39,8 @@ const LoginPage = () => {
     }
   };
 
+
+
   return (
     <BeforeLoginTemplate>
       <CP.Styled.Wrapper>

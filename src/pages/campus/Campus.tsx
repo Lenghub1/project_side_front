@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 
 import CP from "@/components";
@@ -8,6 +8,9 @@ import BeforeLoginTemplate from "@/components/template/BeforeLogin";
 import Store from "@/store";
 import campusApi from "@/api/campus";
 import { styled } from "styled-components";
+import { accessTokenState, userState } from "@/store/userStore";
+import { testApi } from "@/api/auth";
+import { handleApiRequest } from "@/api";
 
 const CampusPage = () => {
   const navigate = useNavigate();
@@ -18,6 +21,11 @@ const CampusPage = () => {
   useEffect(() => {
     getCampusList();
   }, []);
+
+  const accessToken = useRecoilValue(accessTokenState);
+  const user = useRecoilValue(userState);
+  console.log("MY ACCESS TOKEN IN APP: ", accessToken);
+  console.log("USER INFORMATION: ", user);
 
   const getCampusList = async () => {
     setLoading(true);
@@ -56,6 +64,10 @@ const CampusPage = () => {
         Loading..
       </CP.Styled.Wrapper>
     );
+  }
+
+  async function onGetGroupClicked() {
+    const [response, error] = await handleApiRequest(() => testApi.getGroup());
   }
 
   return (
@@ -100,6 +112,7 @@ const CampusPage = () => {
                 <div>No Campus. Please Add Campus.</div>
               )}
             </CP.Styled.Flex>
+            <CP.Button onClick={onGetGroupClicked}>Click me</CP.Button>
           </CP.Styled.Div>
         </CP.Styled.Flex>
       </CP.Styled.Wrapper>

@@ -25,11 +25,18 @@ const routes: RouteProps[] = [
     name: "getStarted",
     path: "/get-started",
     element: Pg.GetStarted,
-  },
-  {
-    name: "createAccount",
-    path: "create-account",
-    element: Pg.SignupPage,
+    children: [
+      {
+        name: "companyLookup",
+        path: "company-lookup",
+        element: Pg.CompanySearch,
+      },
+      {
+        name: "createAccount",
+        path: "create-account",
+        element: Pg.SignupPage,
+      },
+    ],
   },
   {
     name: "create-new-organization",
@@ -45,6 +52,17 @@ const routes: RouteProps[] = [
     name: "employeeRegistrations",
     path: "organization/employee/registrations",
     element: Pg.Employee.default.EmployeeRegistration,
+  },
+  {
+    name: "testLogin",
+    path: "test-login",
+    element: Pg.TestLoginPage,
+  },
+
+  {
+    name: "group",
+    path: "group",
+    element: Pg.GroupPage,
   },
 ];
 

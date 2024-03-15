@@ -1,1 +1,1 @@
-export { default as GetStarted } from "./AccountType";
+// export { default as GetStarted } from "./AccountType";
