@@ -22,10 +22,8 @@ const Wrapper = styled.div`
 
 const TopBar = () => {
   const [loginUser, setLoginUser] = useRecoilState(Store.User.loginUserState);
-  const [campus, setCampus] = useRecoilState(Store.User.campusState);
 
   const logout = () => {
-    setCampus(null);
     setLoginUser(null);
   };
 

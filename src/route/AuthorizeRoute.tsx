@@ -4,12 +4,12 @@ import { useRecoilValue } from "recoil";
 import { userState } from "@/store/userStore";
 import useFetch from "@/hooks/useFetch";
 import { getUserEmployments } from "@/api/employee";
-interface ProtectedRouteProps {
+interface AuthorizedRouteProps {
   children: React.ReactNode;
   adminOnly?: boolean;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ adminOnly }) => {
+const AuthorizedRoute: React.FC<AuthorizedRouteProps> = ({ adminOnly }) => {
   const user = useRecoilValue(userState);
   console.log(user);
   const { data, error } = useFetch(getUserEmployments);
@@ -34,4 +34,4 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ adminOnly }) => {
   }
 };
 
-export default ProtectedRoute;
+export default AuthorizedRoute;
