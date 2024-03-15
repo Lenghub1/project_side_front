@@ -9,3 +9,9 @@ export const accountTypeState = atom<"employee" | "employer" | null>({
   default: null,
   effects_UNSTABLE: [persistAtom],
 });
+
+export const codeSendingOptionState = atom<"employee" | "employer" | null>({
+  key: `accountTypeState`,
+  default: null,
+  effects_UNSTABLE: [persistAtom],
+});

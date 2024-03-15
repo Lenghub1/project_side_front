@@ -51,9 +51,7 @@ const OTP = () => {
               <CP.Typography fontWeight="semibold" textAlign="center">
                 Enter the verification code we just sent to your
               </CP.Typography>
-              <CP.Typography marginBottom={"2rem"}>
-                number {"+855 ********* 10"}
-              </CP.Typography>
+              <CP.Typography marginBottom={"2rem"}>phone number.</CP.Typography>
             </Flex>
             <Flex direction="column" gap="24px" overflow="unset">
               <Flex gap={"16px"}>
