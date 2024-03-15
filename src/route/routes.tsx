@@ -11,42 +11,8 @@ export interface RouteProps {
 }
 
 const routes: RouteProps[] = [
-  {
-    name: "home",
-    path: "/",
-    element: Pg.HomePage,
-    children: [
-      {
-        name: "overviewOrganization",
-        path: "overview",
-        element: Pg.overviewOrganization,
-        children: [
-          {
-            name: "createBranch",
-            path: "createBranch",
-            element: Pg.Branch.CreateBranch,
-          },
-        ],
-      },
-    ],
-  },
-  // { name: "login", path: "/login", element: Pg.LoginPage },
-
-  // {
-  //   name: "campusSelect",
-  //   path: "/campus",
-  //   element: Pg.Campus.default.CampusPage,
-  // },
-  // {
-  //   name: "campusSetting",
-  //   path: "/campus/set",
-  //   element: Pg.Campus.default.SetCampusPage,
-  // },
-  {
-    name: "chooseOrganization",
-    path: "/login/organizations",
-    element: Pg.choose.default.ScreenChooseOrganization,
-  },
+  { name: "home", path: "/", element: Pg.HomePage },
+  { name: "login", path: "/login", element: Pg.LoginPage },
   {
     name: "getStarted",
     path: "/get-started",
@@ -106,18 +72,6 @@ const routes: RouteProps[] = [
     path: "test-login",
     element: Pg.TestLoginPage,
     protected: false,
-  },
-  {
-    name: "chooseOrganization",
-    path: "/login/organizations",
-    element: Pg.choose.default.ScreenChooseOrganization,
-    protected: true,
-  },
-
-  {
-    name: "group",
-    path: "group",
-    element: Pg.GroupPage,
   },
   {
     name: "createEmployee",
