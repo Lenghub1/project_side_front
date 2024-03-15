@@ -2,7 +2,7 @@ import { api } from ".";
 import { AxiosResponse } from "axios";
 import { Employement } from "@/utils/interfaces/Employment";
 
-const currentOrganizationId = "30ed163a-f86f-4b6d-8a9e-eb4263e5a9de";
+const currentOrganizationId = "affbc0b2-677d-417f-a08e-d691e7535dee";
 const transformEmployeeData = (
   response: any
 ): Partial<Employement> | Partial<Employement>[] => {
@@ -97,6 +97,13 @@ const getAllPendingEmployees = async (
     }
   );
 };
+const getUserEmployments = async (
+  organizationId: string = currentOrganizationId
+): Promise<AxiosResponse<Partial<Employement[]>>> => {
+  return api.get(`/organizations/${organizationId}/employments/user`, {
+    transformResponse: [(response) => transformEmployeeData(response)],
+  });
+};
 
 export {
   allEmployees,
@@ -105,4 +112,5 @@ export {
   updateEmployee,
   deleteEmployee,
   getAllPendingEmployees,
+  getUserEmployments,
 };
