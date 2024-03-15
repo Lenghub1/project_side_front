@@ -31,3 +31,8 @@ export const axiosInterceptorState = atom({
   key: "axiosInterceptorState",
   default: false,
 });
+
+export const persistLoginState = atom({
+  key: "persistLoginState",
+  default: false,
+});

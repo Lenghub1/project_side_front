@@ -34,12 +34,9 @@ const GroupPage = () => {
   }
 
   useEffect(() => {
-    console.log(accessToken);
-    if (accessToken) {
-      console.log("IS INTERCEPTOR INITIALIZED", accessToken);
-      getGroup();
-    }
-  }, [accessToken]);
+    console.log("IS INTERCEPTOR INITIALIZED", accessToken);
+    getGroup();
+  }, []);
 
   console.log(groups);
 

@@ -13,27 +13,26 @@ function PersistLogin() {
   // const [trueSuccess, setTrueSuccess] = useState(false);
 
   useEffect(() => {
-    if (
-      effectRan.current === true ||
-      import.meta.env.VITE_NODE_ENV !== "development"
-    ) {
-      const verifyRefreshToken = async () => {
-        await refreshAccessToken(setAccessToken);
-        // setTrueSuccess(true);
-      };
-
-      // if (!accessToken && persist) verifyRefreshToken();
-      if (!accessToken) verifyRefreshToken();
-    }
-    return () => {
-      effectRan.current = true;
-      return;
+    // if (
+    //   effectRan.current === true ||
+    //   import.meta.env.VITE_NODE_ENV !== "development"
+    // ) {
+    const verifyRefreshToken = async () => {
+      await refreshAccessToken(setAccessToken);
+      // setTrueSuccess(true);
     };
+
+    if (!accessToken) verifyRefreshToken();
+    // }
+    // return () => {
+    //   effectRan.current = true;
+    //   return;
+    // };
   }, []);
 
-  if (!persist) {
-    return <Outlet />;
-  }
+  // if (!persist) {
+  //   return <Outlet />;
+  // }
 
   return <Outlet />;
 }

@@ -4,7 +4,8 @@ import useUpdateAxiosInterceptor from "@/hooks/useUpdateAxiosInterceptor";
 import { PersistLogin } from "@/components/auth";
 import useAuth from "@/hooks/useAuth";
 import { useRecoilValue } from "recoil";
-import { axiosInterceptorState } from "@/store/userStore";
+import { axiosInterceptorState, persistLoginState } from "@/store/userStore";
+import usePersistLogin from "@/hooks/usePersistLogin";
 
 const renderRoutes = (routes: RouteProps[]) => {
   return routes.map((route: RouteProps) => {
@@ -31,9 +32,11 @@ const renderRoutes = (routes: RouteProps[]) => {
 };
 
 const AppRoutes = () => {
+  usePersistLogin();
   useUpdateAxiosInterceptor();
   useAuth();
 
+  const persistLogin = useRecoilValue(persistLoginState);
   // to make sure that Authorization header
   const isInterceptorInitialized = useRecoilValue(axiosInterceptorState);
 
@@ -42,15 +45,11 @@ const AppRoutes = () => {
   // }
 
   return (
-    <>
-      {!isInterceptorInitialized ? (
-        <div>Loading...</div>
-      ) : (
-        <Routes>
-          <Route element={<PersistLogin />}>{renderRoutes(routes)}</Route>
-        </Routes>
-      )}
-    </>
+    <Routes>
+      {/* <Route element={<PersistLogin />}> */}
+      {persistLogin && isInterceptorInitialized && renderRoutes(routes)}
+      {/* </Route> */}
+    </Routes>
   );
 };
 
