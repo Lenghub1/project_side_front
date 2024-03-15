@@ -11,6 +11,8 @@ export interface RouteProps {
 }
 
 const routes: RouteProps[] = [
+  { name: "home", path: "/", element: Pg.HomePage },
+  { name: "login", path: "/login", element: Pg.LoginPage },
   {
     name: "getStarted",
     path: "/get-started",
