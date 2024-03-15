@@ -22,7 +22,8 @@ function PersistLogin() {
         // setTrueSuccess(true);
       };
 
-      if (!accessToken && persist) verifyRefreshToken();
+      // if (!accessToken && persist) verifyRefreshToken();
+      if (!accessToken) verifyRefreshToken();
     }
     return () => {
       effectRan.current = true;

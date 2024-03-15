@@ -10,9 +10,13 @@ import CP from "@/components";
 // import { fetchGroupSelector, groupRefetchTrigger } from "@/store/groupStore";
 import { handleApiRequest } from "@/api";
 import { testApi } from "@/api/auth";
+import { useRecoilValue } from "recoil";
+import { accessTokenState, axiosInterceptorState } from "@/store/userStore";
 
 const GroupPage = () => {
   const [groups, setGroups] = useState<Object[] | null>([]);
+  const isInterceptorInitialized = useRecoilValue(axiosInterceptorState);
+  const accessToken = useRecoilValue(accessTokenState);
 
   // const groups = useRecoilValueLoadable(fetchGroupSelector);
   // const refreshGroup = useRecoilRefresher_UNSTABLE(fetchGroupSelector);
@@ -30,9 +34,12 @@ const GroupPage = () => {
   }
 
   useEffect(() => {
-    console.log("hii");
-    getGroup();
-  }, []);
+    console.log(accessToken);
+    if (accessToken) {
+      console.log("IS INTERCEPTOR INITIALIZED", accessToken);
+      getGroup();
+    }
+  }, [accessToken]);
 
   console.log(groups);
 

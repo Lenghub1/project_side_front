@@ -1,7 +1,7 @@
 import CP from "@/components";
 import MuiDivider from "@mui/material/Divider";
 import styled from "styled-components";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { authApi } from "@/api/auth";
 import useValidatedInput from "@/hooks/useValidatedInput";
 import useCriteriaValidator from "@/hooks/useCriteriaInput.tsx";
@@ -22,9 +22,7 @@ const Divider = styled(MuiDivider)`
   width: 100%;
 `;
 
-type SignupProps = {
-  accountType: "employee" | "employer";
-};
+type AccountType = "employee" | "employer";
 
 type SignupMethod = "email" | "phone";
 
@@ -50,7 +48,10 @@ interface LoginResponse {
   };
 }
 
-const SignupPage = ({ accountType = "employer" }: SignupProps) => {
+const SignupPage = () => {
+  const location = useLocation();
+  const isJoinCompany = location.pathname === "/get-started/join-company";
+  const accountType: AccountType = isJoinCompany ? "employee" : "employer";
   const { enqueueSnackbar } = useSnackbar();
   const firstName = useValidatedInput("", "First Name");
   const lastName = useValidatedInput("", "Last Name");

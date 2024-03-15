@@ -34,17 +34,23 @@ const AppRoutes = () => {
   useUpdateAxiosInterceptor();
   useAuth();
 
-  // to make sure that Authorization header 
+  // to make sure that Authorization header
   const isInterceptorInitialized = useRecoilValue(axiosInterceptorState);
 
-  if (!isInterceptorInitialized) {
-    return <div>Loading...</div>;
-  }
+  // if (!isInterceptorInitialized) {
+  //   return <div>Loading...</div>;
+  // }
 
   return (
-    <Routes>
-      <Route element={<PersistLogin />}>{renderRoutes(routes)}</Route>
-    </Routes>
+    <>
+      {!isInterceptorInitialized ? (
+        <div>Loading...</div>
+      ) : (
+        <Routes>
+          <Route element={<PersistLogin />}>{renderRoutes(routes)}</Route>
+        </Routes>
+      )}
+    </>
   );
 };
 
