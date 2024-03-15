@@ -12,8 +12,8 @@ export default function GoogleLoginButton() {
       onClick={handleGoogleOauth}
       component="img"
       sx={{
-        height: 36,
-        width: 36,
+        height: 40,
+        width: 40,
         maxHeight: { xs: 233, md: 167 },
         maxWidth: { xs: 350, md: 250 },
         cursor: "pointer",

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import createTelegramScript from "./CreateTelegramScript";
 import CP from "@/components";
+import { Translate } from "@mui/icons-material";
 
 const TelegramLoginButton = (props: any) => {
   const telegramOauthRef = useRef<HTMLDivElement>(null);
@@ -16,22 +17,17 @@ const TelegramLoginButton = (props: any) => {
 
   return (
     <CP.Styled.Div
-      width="36px"
-      height="36px"
+      width="50px"
+      height="40px"
       overflow="hidden"
       padding="0 30px 0 0"
-      style={{ borderRadius: "100%" }}
+      style={{
+        borderRadius: "100%",
+        position: "relative",
+      }}
       margin="0 20px 0 0"
     >
-      <div
-        style={{
-          margin: "0 0 0 10px",
-          display: "flex",
-          justifyContent: "center",
-        }}
-        ref={telegramOauthRef}
-      />
-      ;
+      <div ref={telegramOauthRef} />
     </CP.Styled.Div>
   );
 };
