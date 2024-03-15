@@ -7,8 +7,9 @@ import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import { SyntheticEvent } from "react";
 import { useSnackbar } from "notistack";
-import { authApi } from "@/api/auth";
+import { authApi, testApi } from "@/api/auth";
 import { handleApiRequest } from "@/api";
+import Store from "@/store";
 
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -19,7 +20,9 @@ const ForgotAccount = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 428);
   const username = useValidatedInput("", "Username");
-  const [_, setUserLoginState] = useRecoilState(State.Login.userLo);
+  const [_, setCodeSendingtOption] = useRecoilState(
+    Store.User.condeSendingOption
+  );
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 428);
@@ -45,49 +48,51 @@ const ForgotAccount = () => {
       });
     };
 
-  function showError(message: string) {
+  function showMessage(message: string, variant: "error" | "success") {
     enqueueSnackbar(message, {
-      variant: "error",
+      variant: variant,
       anchorOrigin: {
         vertical: "bottom", // or 'bottom'
-        horizontal: isMobile ? "center" : "left", // or 'left', 'center'
+        horizontal: "left", // or 'left', 'center'
       },
     });
   }
 
-  async function forgotAccount(data: string): Promise<void> {
+  async function forgotAccount(
+    firstName: string,
+    lastName: string
+  ): Promise<void> {
     const [response, error] = await handleApiRequest(() =>
-      authApi.forgotAccount(data)
+      authApi.forgotAccount(firstName, lastName)
     );
+    const data = response.data.data[0];
 
-    if (error) {
-      showError("No results exist. Please try again ");
+    if (error || (!data.email && !data.phoneNumber)) {
+      console.log("THis");
+      showMessage("No results exist. Please try again ", "error");
       return;
     }
-    console.log("Result", response);
-    return;
+
+    if (data.email && data.phoneNumber) {
+      setCodeSendingtOption([
+        { email: data.email },
+        { phone: data.phoneNumber },
+      ]);
+    } else if (!data.email && data.phoneNumber) {
+      setCodeSendingtOption([{ phone: data.phoneNumber }]);
+    } else if (data.email && !data.phoneNumber) {
+      setCodeSendingtOption([{ email: data.email }]);
+    }
+
+    navigate("/receive-option");
   }
 
   const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
 
-    let formData: any = {};
-    await forgotAccount(username.value);
-    // if (resetPasswordBy === "email") {
-    //   formData = { ...formData, email: email.value };
-    //   console.log("Data", formData);
-    // } else if (resetPasswordBy === "phone") {
-    //   // remove leading 0 from phone number (E.164 format)
-    //   const phoneWithoutLeadingZero = phone.value.replace(/^0+/, "");
+    const fullName = username.value.split(" ").filter(Boolean);
 
-    //   formData = {
-    //     ...formData,
-    //     phoneNumber: selectedCountry.dialCode + phoneWithoutLeadingZero,
-    //   };
-    //   console.log("Data", formData);
-    // }
-
-    // await forgetPassword(resetPasswordBy, formData);
+    await forgotAccount(fullName[0], fullName[1]);
   };
 
   const isInvalid = !username.value && username.setError;
@@ -146,7 +151,7 @@ const ForgotAccount = () => {
                   color="red"
                   sx={{ cursor: "pointer" }}
                   onClick={() => {
-                    navigate("/forgetpassword");
+                    navigate("/forget-password");
                   }}
                 >
                   Forget password?

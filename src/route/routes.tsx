@@ -69,7 +69,7 @@ const routes: RouteProps[] = [
       },
       {
         name: "createAccount",
-        path: "create-account",
+        path: "`create-account`",
         element: Pg.SignupPage,
         protected: false,
       },
@@ -146,7 +146,7 @@ const routes: RouteProps[] = [
     element: Pg.ForgetAccount.default.ForgotAccount,
   },
   {
-    name: "codesendingoption",
+    name: "codesendingoptions",
     path: "/receive-option",
     element: Pg.ForgetAccount.default.CodeSendingOption,
   },

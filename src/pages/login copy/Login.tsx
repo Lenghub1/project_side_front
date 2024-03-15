@@ -4,7 +4,7 @@ import CP from "@/components";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import useValidatedInput from "@/hooks/useValidatedInput";
-import { authApi } from "@/api/auth";
+import { authApi, testApi } from "@/api/auth";
 import { handleApiRequest } from "@/api";
 import { SyntheticEvent } from "react";
 import Tab from "@mui/material/Tab";
@@ -46,10 +46,8 @@ const LoginPage = () => {
     dialCode: string;
     flag: string;
   }>(countries[0]);
-  const { token, userId } = useRecoilValue(Store.User.userState);
   const [_, setLoginUser] = useRecoilState(Store.User.userState);
   const activeTabIndex = signupMethod === "email" ? 0 : 1;
-  console.log("Window asdasd", window.screen.width);
 
   useEffect(() => {
     const handleResize = () => {
@@ -76,21 +74,16 @@ const LoginPage = () => {
       if (phone.value) phone.setValue("");
     }
     setSignupMethod(method);
-    console.log("Method", signupMethod);
   };
-  console.log("Token", token);
-  console.log("ID", userId);
 
   const isFormInvalid =
     (signupMethod === "phone"
       ? !phone.value || !!phone.error
       : !email.value || !!email.error) || !password.value;
 
-  console.log("is for valid", isFormInvalid);
-
-  function showError(message: string) {
+  function showMessage(message: string, variant: "error" | "success") {
     enqueueSnackbar(message, {
-      variant: "error",
+      variant: variant,
       anchorOrigin: {
         vertical: "bottom", // or 'bottom'
         horizontal: isMobile ? "center" : "left", // or 'left', 'center'
@@ -100,44 +93,39 @@ const LoginPage = () => {
 
   //function for login api
   async function login(method: string, data: any): Promise<void> {
-    console.log("Data before submit: ", data);
     const [response, error] = await handleApiRequest(() =>
-      authApi.login(method, data)
+      authApi.testLogin(method, data)
     );
-
-    console.log("error", error);
 
     if (error) {
       if (error?.response?.status === 400) {
         if (signupMethod === "email") {
-          showError("Email or password is incorrect");
+          showMessage("Email or password is incorrect", "error");
           email.setError("Email or password is incorrect");
         } else {
-          showError("Phone number or password is incorrect");
+          showMessage("Phone number or password is incorrect", "error");
           phone.setError("Phone number or password is incorrect");
         }
       } else if (error?.response?.status === 401) {
-        showError("Unauthorized. Pleaser verify your account");
+        showMessage("Unauthorized. Pleaser verify your account", "error");
       } else {
-        showError("Something went wrong. Please try again.");
+        showMessage("Something went wrong. Please try again.", "error");
       }
     }
-    console.log("Response", response.data.user);
     setLoginUser({
       token: response.data.user.accessToken,
       userId: response.data.user.id,
     });
-    return;
-    if (response?.status_code === 202) {
-      navigate("/verifyOTP");
-    }
+    setTimeout(() => {
+      showMessage("Login Successfully!", "success");
+      navigate("/");
+    }, 1500);
   }
 
   const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
 
     if (isFormInvalid) {
-      console.log("Form is invalid");
       return;
     }
 
@@ -147,7 +135,6 @@ const LoginPage = () => {
 
     if (signupMethod === "email") {
       formData = { ...formData, email: email.value };
-      console.log("Data", formData);
     } else if (signupMethod === "phone") {
       // remove leading 0 from phone number (E.164 format)
       const phoneWithoutLeadingZero = phone.value.replace(/^0+/, "");
@@ -156,7 +143,6 @@ const LoginPage = () => {
         ...formData,
         phoneNumber: selectedCountry.dialCode + phoneWithoutLeadingZero,
       };
-      console.log("Data", formData);
     }
 
     await login(signupMethod, formData);
@@ -315,7 +301,10 @@ const LoginPage = () => {
               </CP.Button>
               {/* Mobile responsive */}
               {isMobile && (
-                <CP.Typography margin="1rem 0">
+                <CP.Typography
+                  margin="1rem 0"
+                  onClick={() => navigate("/get-started")}
+                >
                   Don't have an account?{" "}
                   <a href="" style={{ color: "red", textDecoration: "none" }}>
                     {" "}

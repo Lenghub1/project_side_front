@@ -72,12 +72,12 @@ const ForgetPassword = () => {
       ? !phone.value || !!phone.error
       : !email.value || !!email.error;
 
-  function showError(message: string) {
+  function showMessage(message: string, variant: "error" | "success") {
     enqueueSnackbar(message, {
-      variant: "error",
+      variant: variant,
       anchorOrigin: {
         vertical: "bottom", // or 'bottom'
-        horizontal: isMobile ? "center" : "left", // or 'left', 'center'
+        horizontal: "left", // or 'left', 'center'
       },
     });
   }
@@ -88,16 +88,23 @@ const ForgetPassword = () => {
     );
 
     if (error) {
-      showError(
+      showMessage(
         `No results were found. Please check your ${
           method === "phone" ? "phone number" : "email"
-        } and try again.`
+        } and try again.`,
+        "error"
       );
+
       return;
     }
 
-    //navigate to information screen
-    return;
+    // setTimeout(() => {}, 2000);
+    if (method === "phone") {
+      showMessage(`OTP has been sent to ${data.phoneNumber}`, "success");
+      setTimeout(() => {
+        navigate("/verify-otp");
+      }, 2000);
+    }
   }
 
   const handleSubmit = async (event: SyntheticEvent) => {

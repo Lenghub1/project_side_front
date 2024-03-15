@@ -38,6 +38,7 @@ const AppRoutes = () => {
   useUpdateAxiosInterceptor();
   // useAuth();
 
+  // to make sure that Authorization header
   /**
    * to make sure that the application attempt to fetch
    * accessToken and set appropriate authorization header

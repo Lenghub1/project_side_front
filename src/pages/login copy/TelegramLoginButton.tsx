@@ -17,17 +17,27 @@ const TelegramLoginButton = (props: any) => {
 
   return (
     <CP.Styled.Div
-      width="50px"
+      width="40px"
       height="40px"
       overflow="hidden"
-      padding="0 30px 0 0"
+      padding="0 0 0 0"
       style={{
         borderRadius: "100%",
         position: "relative",
       }}
-      margin="0 20px 0 0"
+      margin="0 0 0 0"
     >
-      <div ref={telegramOauthRef} />
+      <CP.Styled.Div
+        style={{ opacity: 0.00001, position: "absolute", top: 0, left: 0 }}
+      >
+        <div ref={telegramOauthRef} />C
+      </CP.Styled.Div>
+      <img
+        width="40px"
+        height="40px"
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Telegram_2019_Logo.svg/1200px-Telegram_2019_Logo.svg.png"
+        alt=""
+      />
     </CP.Styled.Div>
   );
 };

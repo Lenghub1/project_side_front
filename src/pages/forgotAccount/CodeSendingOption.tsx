@@ -7,7 +7,8 @@ import { SyntheticEvent } from "react";
 import { useSnackbar } from "notistack";
 import { authApi } from "@/api/auth";
 import { handleApiRequest } from "@/api";
-
+import Store from "@/store";
+import { useRecoilValue } from "recoil";
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
 `;
@@ -16,8 +17,17 @@ const CodeSendingOption = () => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 428);
+  const option = useRecoilValue(Store.User.condeSendingOption);
+  const [selectedOption, setSelectedOption] = useState<{
+    label: string;
+    value: string;
+  } | null>(null);
 
   useEffect(() => {
+    if (!option) {
+      console.log("Option", option);
+      navigate("/forgot-account");
+    }
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 428);
     };
@@ -28,27 +38,31 @@ const CodeSendingOption = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-
-  function showError(message: string) {
+  const handleRadioChange = (option: { label: string; value: string }) => {
+    console.log("Option", option);
+    setSelectedOption(option);
+  };
+  function showMessage(message: string, variant: "error" | "success") {
     enqueueSnackbar(message, {
-      variant: "error",
+      variant: variant,
       anchorOrigin: {
         vertical: "bottom", // or 'bottom'
-        horizontal: isMobile ? "center" : "left", // or 'left', 'center'
+        horizontal: "left", // or 'left', 'center'
       },
     });
   }
 
-  async function forgetPassword(method: string, data: any): Promise<void> {
+  async function sendVerify(method: string, data: any): Promise<void> {
     const [response, error] = await handleApiRequest(() =>
       authApi.forgotPassword(method, data)
     );
 
     if (error) {
-      showError(
+      showMessage(
         `No results were found. Please check your ${
           method === "phone" ? "phone number" : "email"
-        } and try again.`
+        } and try again.`,
+        "error"
       );
       return;
     }
@@ -77,10 +91,14 @@ const CodeSendingOption = () => {
 
     // await forgetPassword(resetPasswordBy, formData);
   };
-  const radioList = [
-    { label: "By PhoneNumber", value: "option1" },
-    { label: "By Email", value: "option2" },
-  ];
+  const radioList = option.flatMap((item, index) =>
+    Object.keys(item).map((key) => ({
+      label: `By ${key}`,
+      value: option[index][key],
+    }))
+  );
+
+  console.log("radioList", radioList);
 
   return (
     <CP.Styled.Wrapper height="100vh">
@@ -122,7 +140,11 @@ const CodeSendingOption = () => {
               Select how to receive th code to find your account.
             </CP.Typography>
             <Flex direction="column" gap="24px" overflow="unset">
-              <CP.Radio list={radioList} />
+              <CP.Radio
+                list={radioList}
+                value={selectedOption}
+                onChange={handleRadioChange}
+              />
               <Flex width="100%" justify="end" gap="20px">
                 <CP.Button variant="text">Cancel</CP.Button>
                 <CP.Button type="submit" onClick={handleSubmit}>

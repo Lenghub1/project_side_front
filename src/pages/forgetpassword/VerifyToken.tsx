@@ -12,13 +12,14 @@ import { useSnackbar } from "notistack";
 const VerifyToken = () => {
   const naviagate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const [_, setLoginUser] = useRecoilState(Store.User.userState);
-  function showError(message: string) {
+
+  const [_, setAccessToken] = useRecoilState(Store.User.accessTokenState);
+  function showMessage(message: string, variant: "error" | "success") {
     enqueueSnackbar(message, {
-      variant: "error",
+      variant: variant,
       anchorOrigin: {
         vertical: "bottom", // or 'bottom'
-        horizontal: "center", // or 'left', 'center'
+        horizontal: "left", // or 'left', 'center'
       },
     });
   }
@@ -29,17 +30,18 @@ const VerifyToken = () => {
       );
 
       if (error) {
-        showError("Token is invalid. Please try agian");
+        showMessage("Token is invalid. Please try agian", "error");
         setTimeout(() => {
-          naviagate("/forgetpassword");
+          naviagate("/reset-password");
         }, 2000);
       }
 
-      console.log("Token", response.data.user);
       if (response?.data?.user) {
-        setLoginUser({ token: paramsElement.token, id: paramsElement.id });
+        console.log("@@@ MY TOKEN @@", paramsElement.token);
 
-        naviagate("/resetpassword");
+        setAccessToken(paramsElement.token);
+        showMessage("Token is verified", "success");
+        naviagate("/reset-password");
       }
     },
     []

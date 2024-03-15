@@ -11,7 +11,7 @@ import React, {
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import CP from "@/components";
-import { authApi } from "@/api/auth";
+import { authApi, testApi } from "@/api/auth";
 import { handleApiRequest } from "@/api";
 import { useSnackbar } from "notistack";
 import { useRecoilState } from "recoil";
@@ -54,6 +54,7 @@ const OTP = () => {
     "",
   ]);
   const [_, setUserLoginState] = useRecoilState(Store.User.userState);
+  const [__, setAccessToken] = useRecoilState(Store.User.accessTokenState);
   const { enqueueSnackbar } = useSnackbar();
   const naviagate = useNavigate();
   const inputs = useRef<(HTMLInputElement | null)[]>([]);
@@ -145,12 +146,12 @@ const OTP = () => {
     }
   };
 
-  function showError(message: string) {
+  function showMessage(message: string, variant: "error" | "success") {
     enqueueSnackbar(message, {
-      variant: "error",
+      variant: variant,
       anchorOrigin: {
         vertical: "bottom", // or 'bottom'
-        horizontal: "center", // or 'left', 'center'
+        horizontal: "left", // or 'left', 'center'
       },
     });
   }
@@ -161,13 +162,14 @@ const OTP = () => {
     );
 
     if (error) {
-      return showError("Token is invalid. Please try agian");
+      return showMessage("Token is invalid. Please try agian", "error");
     }
 
-    console.log("Token", response.data.user);
     if (response?.data?.user) {
-      setUserLoginState(response?.data?.user);
-      naviagate("/resetpassword");
+      setUserLoginState(response.data.user);
+      setAccessToken(response.data.user.accessToken);
+      showMessage("OTP is verified", "success");
+      naviagate("/reset-password");
     }
   }, []);
 
@@ -199,9 +201,7 @@ const OTP = () => {
               <CP.Typography fontWeight="semibold" textAlign="center">
                 Enter the verification code we just sent to your
               </CP.Typography>
-              <CP.Typography marginBottom={"2rem"}>
-                number {"+855 ********* 10"}
-              </CP.Typography>
+              <CP.Typography marginBottom={"2rem"}>phone number.</CP.Typography>
             </Flex>
             <OTPContainer>
               {maskedValue.map((value: string | number, index: number) => (
