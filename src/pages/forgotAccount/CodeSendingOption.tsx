@@ -18,10 +18,11 @@ const CodeSendingOption = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 428);
   const option = useRecoilValue(Store.User.condeSendingOption);
-  const [selectedOption, setSelectedOption] = useState<{
-    label: string;
-    value: string;
-  } | null>(null);
+
+  const [data, setData] = useState({
+    codeSendingMethod: "",
+    value: "",
+  });
 
   useEffect(() => {
     if (!option) {
@@ -38,9 +39,15 @@ const CodeSendingOption = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-  const handleRadioChange = (option: { label: string; value: string }) => {
-    console.log("Option", option);
-    setSelectedOption(option);
+  const handleRadioChange = (e: string) => {
+    console.log("IS Value start with + ", e.startsWith("+"));
+    if (e.startsWith("+")) {
+      setData({ codeSendingMethod: "phone", value: e });
+    } else {
+      setData({ codeSendingMethod: "email", value: e });
+    }
+
+    console.log("Value", data);
   };
   function showMessage(message: string, variant: "error" | "success") {
     enqueueSnackbar(message, {
@@ -142,7 +149,7 @@ const CodeSendingOption = () => {
             <Flex direction="column" gap="24px" overflow="unset">
               <CP.Radio
                 list={radioList}
-                value={selectedOption}
+                value={data.value}
                 onChange={handleRadioChange}
               />
               <Flex width="100%" justify="end" gap="20px">
