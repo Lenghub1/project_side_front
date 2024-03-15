@@ -1,14 +1,13 @@
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import FilterListIcon from "@mui/icons-material/FilterList";
-
+import SearchDisplay from "../searchBox/SearchDisplay";
 interface TableToolbarProp {
   name: string;
+  data: string;
 }
 
-const EnhancedTableToolbar: React.FC<TableToolbarProp> = ({ name }) => {
+const EnhancedTableToolbar: React.FC<TableToolbarProp> = ({ name, data }) => {
   return (
     <Toolbar
       sx={{
@@ -26,9 +25,7 @@ const EnhancedTableToolbar: React.FC<TableToolbarProp> = ({ name }) => {
       </Typography>
 
       <Tooltip title="Filter list">
-        <IconButton>
-          <FilterListIcon />
-        </IconButton>
+        <SearchDisplay data={data} />
       </Tooltip>
     </Toolbar>
   );

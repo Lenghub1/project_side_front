@@ -1,15 +1,12 @@
 import { atom } from "recoil";
-import { recoilPersist } from "recoil-persist";
-import { EmploymentWithAction } from "@/components/table/Table";
-const { persistAtom } = recoilPersist();
+import { Employement } from "@/utils/interfaces/Employment";
 
-export const employees = atom<EmploymentWithAction[]>({
-  key: `employees`,
-
-  effects_UNSTABLE: [persistAtom],
+export const allEmployees = atom<Employement[] | undefined>({
+  key: "allEmployees",
+  default: undefined,
 });
-export const selectMembers = atom<string[] | null>({
-  key: `selectMembers`,
-  default: [],
-  effects_UNSTABLE: [persistAtom],
+
+export const employeeInfo = atom<Employement | undefined>({
+  key: "employeeInfo",
+  default: undefined,
 });
