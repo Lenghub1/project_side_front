@@ -11,24 +11,26 @@ interface CustomJwtPayload {
 
 const useAuth = () => {
   const accessToken = useRecoilValue(accessTokenState);
-  const { handleApiRequest } = useApi();
+  const { response, error, handleApiRequest } = useApi();
   const [user, setUser] = useRecoilState(userState);
 
   console.log("use Auth is running");
 
   async function getUserInfo(id: string) {
-    const [response, error] = await handleApiRequest(() => authApi.getUser(id));
-    if (response) {
-      console.log(response);
-      setUser(response.data);
-    } else {
-      console.log(error);
-    }
+    await handleApiRequest(() => authApi.getUser(id));
   }
 
   useEffect(() => {
+    if (response) {
+      console.log(response);
+    } else if (error) {
+      console.log(error);
+    }
+  }, [response, error]);
+
+  useEffect(() => {
     const fetchUserInfo = async () => {
-      if (accessToken && true) {
+      if (accessToken) {
         const decoded = jwtDecode<CustomJwtPayload>(accessToken);
         const { userId } = decoded;
 

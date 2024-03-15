@@ -10,7 +10,7 @@ export async function refreshAccessToken(setAccessToken: Function) {
   } else {
     setAccessToken(null);
     if (
-      error?.response?.data?.message !==
+      error?.message !==
       "Unauthorized: Access is denied due to invalid credential. Please login again"
     ) {
       await handleApiRequest(() => authApi.logout());

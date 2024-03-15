@@ -1,4 +1,5 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
+import ApiError from "@/utils/apiError";
 
 axios.defaults.headers.post["Content-Type"] =
   "application/x-www-form-urlencoded";
@@ -18,14 +19,19 @@ api.interceptors.request.use((request) => {
 
 export async function handleApiRequest<T>(
   request: () => Promise<AxiosResponse<T>>
-): Promise<[T | null, AxiosError<T> | null]> {
+): Promise<[T | null, ApiError | null]> {
   try {
     const response = await request();
     return [response.data, null];
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log("Something went wrong: ", error.response?.data);
-      return [null, error];
+      const apiError = new ApiError(
+        error.response?.data?.message,
+        error.response?.status,
+        error.response?.data
+      );
+      return [null, apiError];
     } else {
       console.log("An unexpected error occurred: ", error);
       return [null, null];

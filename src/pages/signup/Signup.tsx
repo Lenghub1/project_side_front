@@ -5,7 +5,7 @@ import { NavLink } from "react-router-dom";
 import { authApi } from "@/api/auth";
 import useValidatedInput from "@/hooks/useValidatedInput";
 import useCriteriaValidator from "@/hooks/useCriteriaInput.tsx";
-import { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import useMatchInput from "@/hooks/useMatchInput";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -28,7 +28,7 @@ type SignupProps = {
 
 type SignupMethod = "email" | "phone";
 
-const validateEmail = (email: string): string => {
+export const validateEmail = (email: string): string => {
   const emailRegex = /^\S+@\S+\.\S+$/;
   if (!emailRegex.test(email)) {
     return "Please enter a valid email address.";
@@ -43,6 +43,12 @@ const passwordCriteria = {
   containsLowercaseLetter: true,
   // containsSpecialCharacter: true,
 };
+
+interface LoginResponse {
+  user: {
+    accessToken: string;
+  };
+}
 
 const SignupPage = ({ accountType = "employer" }: SignupProps) => {
   const { enqueueSnackbar } = useSnackbar();
@@ -102,16 +108,14 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
     });
   }
 
-  const { handleApiRequest, isLoading } = useApi();
+  const { isLoading, error, handleApiRequest } = useApi();
 
   async function signup(method: string, data: any): Promise<void> {
-    const [response, error] = await handleApiRequest(() =>
-      authApi.signup(method, data)
-    );
+    await handleApiRequest(() => authApi.signup(method, data));
+  }
 
-    if (response) {
-      console.log(response);
-    } else if (error) {
+  useEffect(() => {
+    if (error) {
       console.log(error.message);
       if (error.statusCode === 409) {
         if (signupMethod === "email") {
@@ -129,7 +133,7 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
         showError("Something went wrong. Please try again.");
       }
     }
-  }
+  }, [error]);
 
   const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
@@ -167,7 +171,6 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
 
   return (
     <CP.Styled.Form>
-      {/* <Flex items="flex-start" padding="0 3rem" direction="column"> */}
       <FormContainer>
         <Title>Create a new account</Title>
 
@@ -297,7 +300,6 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
             <NavLink to="#">Privacy Policy</NavLink>
           </CP.Typography>
         </Flex>
-        {/* </Flex> */}
       </FormContainer>
       <Flex direction="column" margin="1rem 0 0" gap="1rem">
         <Divider></Divider>
