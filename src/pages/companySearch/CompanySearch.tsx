@@ -28,7 +28,7 @@ export const FormContainer = ({ children }: any) => (
   </Flex>
 );
 
-const CompanyLookup = () => {
+const CompanySearch = () => {
   const companyCode = useValidatedInput("", "Company Code");
 
   return (
@@ -82,4 +82,4 @@ const CompanyLookup = () => {
   );
 };
 
-export default CompanyLookup;
+export default CompanySearch;

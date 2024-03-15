@@ -16,7 +16,7 @@ import countries from "@/components/phonePrefix/countries.json";
 import { useSnackbar } from "notistack";
 import useApi from "@/hooks/useApi";
 import { Flex } from "../getStarted/GetStarted";
-import { Title, FormContainer } from "../companyLookup/CompanyLookup";
+import { Title, FormContainer } from "../companySearch/CompanySearch";
 
 const Divider = styled(MuiDivider)`
   width: 100%;

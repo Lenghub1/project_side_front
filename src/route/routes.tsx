@@ -29,7 +29,7 @@ const routes: RouteProps[] = [
       {
         name: "companyLookup",
         path: "company-lookup",
-        element: Pg.CompanyLookup,
+        element: Pg.CompanySearch,
       },
       {
         name: "createAccount",
