@@ -1,19 +1,14 @@
 import CP from "@/components";
 import Typography from "@/components/typography";
-import { Container } from "@mui/material";
-import CreateOrgStepper from "@/components/stepper/CreateOrgStepper";
 import MapComponent from "@/components/map/Map";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 
 const Organization = () => {
   return (
-    <Container sx={{ paddingTop: 6 }}>
-      <CreateOrgStepper />
-
+    <CP.Container sx={{ overflow: "scroll" }}>
       <MapComponent />
-
-      <Stack gap={2}>
+      <Stack gap={2} padding="16px 0">
         <Typography>Organization Information</Typography>
         <Box>
           <CP.Input label="Name" />
@@ -28,7 +23,7 @@ const Organization = () => {
           <CP.Input label="Currency " />
         </Box>
       </Stack>
-    </Container>
+    </CP.Container>
   );
 };
 

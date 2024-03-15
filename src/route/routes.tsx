@@ -12,17 +12,7 @@ export interface RouteProps {
 
 const routes: RouteProps[] = [
   { name: "home", path: "/", element: Pg.HomePage },
-  // { name: "login", path: "/login", element: Pg.LoginPage },
-  // {
-  //   name: "campusSelect",
-  //   path: "/campus",
-  //   element: Pg.Campus.default.CampusPage,
-  // },
-  // {
-  //   name: "campusSetting",
-  //   path: "/campus/set",
-  //   element: Pg.Campus.default.SetCampusPage,
-  // },
+  { name: "login", path: "/login", element: Pg.LoginPage },
   {
     name: "getStarted",
     path: "/get-started",
@@ -82,12 +72,6 @@ const routes: RouteProps[] = [
     path: "test-login",
     element: Pg.TestLoginPage,
     protected: false,
-  },
-
-  {
-    name: "group",
-    path: "group",
-    element: Pg.GroupPage,
   },
   {
     name: "createEmployee",
