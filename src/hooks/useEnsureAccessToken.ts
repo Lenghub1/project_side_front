@@ -1,11 +1,11 @@
 import { useEffect, useRef } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { accessTokenState, persistLoginState } from "@/store/userStore";
+import { accessTokenState, isAccessTokenFetchedState } from "@/store/userStore";
 import { refreshAccessToken } from "@/utils/authUtils";
 
-function usePersistLogin() {
+function useEnsureAccessToken() {
   const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
-  const setPersistLogin = useSetRecoilState(persistLoginState);
+  const setIsAccessTokenFetched = useSetRecoilState(isAccessTokenFetchedState);
   const effectRan = useRef(false);
 
   useEffect(() => {
@@ -15,7 +15,7 @@ function usePersistLogin() {
     ) {
       const verifyRefreshToken = async () => {
         await refreshAccessToken(setAccessToken);
-        setPersistLogin(true);
+        setIsAccessTokenFetched(true);
       };
 
       if (!accessToken) verifyRefreshToken();
@@ -27,4 +27,4 @@ function usePersistLogin() {
   }, [accessToken, setAccessToken]);
 }
 
-export default usePersistLogin;
+export default useEnsureAccessToken;

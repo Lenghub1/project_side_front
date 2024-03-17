@@ -1,11 +1,13 @@
 import { Route, Routes } from "react-router-dom";
 import routes, { RouteProps } from "./routes";
 import useUpdateAxiosInterceptor from "@/hooks/useUpdateAxiosInterceptor";
-import { PersistLogin } from "@/components/auth";
 import useAuth from "@/hooks/useAuth";
 import { useRecoilValue } from "recoil";
-import { axiosInterceptorState, persistLoginState } from "@/store/userStore";
-import usePersistLogin from "@/hooks/usePersistLogin";
+import {
+  axiosInterceptorState,
+  isAccessTokenFetchedState,
+} from "@/store/userStore";
+import useEnsureAccessToken from "@/hooks/useEnsureAccessToken";
 
 const renderRoutes = (routes: RouteProps[]) => {
   return routes.map((route: RouteProps) => {
@@ -32,12 +34,15 @@ const renderRoutes = (routes: RouteProps[]) => {
 };
 
 const AppRoutes = () => {
-  usePersistLogin();
+  useEnsureAccessToken();
   useUpdateAxiosInterceptor();
   useAuth();
 
-  const persistLogin = useRecoilValue(persistLoginState);
-  // to make sure that Authorization header
+  /**
+   * to make sure that the application attempt to fetch
+   * accessToken and set appropriate authorization header
+   */
+  const isAccessTokenFetched = useRecoilValue(isAccessTokenFetchedState);
   const isInterceptorInitialized = useRecoilValue(axiosInterceptorState);
 
   // if (!isInterceptorInitialized) {
@@ -47,7 +52,7 @@ const AppRoutes = () => {
   return (
     <Routes>
       {/* <Route element={<PersistLogin />}> */}
-      {persistLogin && isInterceptorInitialized && renderRoutes(routes)}
+      {isAccessTokenFetched && isInterceptorInitialized && renderRoutes(routes)}
       {/* </Route> */}
     </Routes>
   );

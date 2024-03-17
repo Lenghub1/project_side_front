@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import CP from "@/components";
 import {
@@ -7,6 +7,7 @@ import {
   useResetRecoilState,
 } from "recoil";
 import { fetchGroupSelector } from "@/store/groupStore";
+import useRefetchOnMount from "@/hooks/useRefetchOnMount";
 
 const GroupPage = () => {
   /*
@@ -28,21 +29,7 @@ const GroupPage = () => {
   const groupsLoadable = useRecoilValueLoadable(fetchGroupSelector);
   const refreshGroup = useRecoilRefresher_UNSTABLE(fetchGroupSelector);
 
-  console.log(groupsLoadable.state);
-
-  console.log(groupsLoadable);
-  if (groupsLoadable.state === "hasValue") {
-    console.log(groupsLoadable.contents.data);
-  }
-
-  /**
-   * trigger a data refetch request
-   * SOURCE: https://github.com/facebookexperimental/Recoil/issues/85
-   */
-  useEffect(() => {
-    // force the selector to re-run
-    groupsReset();
-  }, [groupsReset]);
+  useRefetchOnMount(groupsReset);
 
   return (
     <>

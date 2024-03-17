@@ -32,7 +32,7 @@ export const axiosInterceptorState = atom({
   default: false,
 });
 
-export const persistLoginState = atom({
-  key: "persistLoginState",
+export const isAccessTokenFetchedState = atom({
+  key: "isAccessTokenFetchedState",
   default: false,
 });
