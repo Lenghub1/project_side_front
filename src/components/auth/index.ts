@@ -1,3 +1,4 @@
-import Auth from "./Auth";
+// import Auth from "./Auth";
+import ProtectedRoute from "./ProtectedRoute";
 
-export default Auth;
+export { ProtectedRoute };

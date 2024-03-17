@@ -5,22 +5,24 @@ export interface RouteProps {
   path: string;
   element?: any;
   menu?: boolean;
+  protected?: boolean;
+  allowedRoles?: string[];
   children?: RouteProps[];
 }
 
 const routes: RouteProps[] = [
-  { name: "home", path: "/", element: Pg.HomePage },
-  { name: "login", path: "/login", element: Pg.LoginPage },
-  {
-    name: "campusSelect",
-    path: "/campus",
-    element: Pg.Campus.default.CampusPage,
-  },
-  {
-    name: "campusSetting",
-    path: "/campus/set",
-    element: Pg.Campus.default.SetCampusPage,
-  },
+  { name: "home", path: "/", protected: true, element: Pg.HomePage },
+  // { name: "login", path: "/login", element: Pg.LoginPage },
+  // {
+  //   name: "campusSelect",
+  //   path: "/campus",
+  //   element: Pg.Campus.default.CampusPage,
+  // },
+  // {
+  //   name: "campusSetting",
+  //   path: "/campus/set",
+  //   element: Pg.Campus.default.SetCampusPage,
+  // },
   {
     name: "getStarted",
     path: "/get-started",

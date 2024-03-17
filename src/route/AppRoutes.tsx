@@ -1,42 +1,38 @@
 import { Route, Routes } from "react-router-dom";
 import routes, { RouteProps } from "./routes";
 import useUpdateAxiosInterceptor from "@/hooks/useUpdateAxiosInterceptor";
-import useAuth from "@/hooks/useAuth";
 import { useRecoilValue } from "recoil";
 import {
   axiosInterceptorState,
   isAccessTokenFetchedState,
 } from "@/store/userStore";
 import useEnsureAccessToken from "@/hooks/useEnsureAccessToken";
+import { ProtectedRoute } from "@/components/auth";
 
 const renderRoutes = (routes: RouteProps[]) => {
   return routes.map((route: RouteProps) => {
-    if (route.children && route.children.length > 0) {
-      return (
-        <Route
-          key={route.name}
-          path={route.path}
-          element={route.element ? <route.element /> : undefined}
-        >
-          {renderRoutes(route.children)} {/* recursive call */}
-        </Route>
-      );
-    } else {
-      return (
-        <Route
-          key={route.name}
-          path={route.path}
-          element={route.element ? <route.element /> : undefined}
-        />
-      );
-    }
+    const Element = route.element;
+    const element = route.protected ? (
+      <ProtectedRoute
+        element={Element ? <Element /> : null}
+        allowedRoles={route.allowedRoles}
+      />
+    ) : Element ? (
+      <Element />
+    ) : null;
+
+    return (
+      <Route key={route.name} path={route.path} element={element}>
+        {route.children && renderRoutes(route.children)}
+      </Route>
+    );
   });
 };
 
 const AppRoutes = () => {
   useEnsureAccessToken();
   useUpdateAxiosInterceptor();
-  useAuth();
+  // useAuth();
 
   /**
    * to make sure that the application attempt to fetch
@@ -45,15 +41,14 @@ const AppRoutes = () => {
   const isAccessTokenFetched = useRecoilValue(isAccessTokenFetchedState);
   const isInterceptorInitialized = useRecoilValue(axiosInterceptorState);
 
-  // if (!isInterceptorInitialized) {
-  //   return <div>Loading...</div>;
-  // }
+  if (!isAccessTokenFetched || !isInterceptorInitialized) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Routes>
-      {/* <Route element={<PersistLogin />}> */}
-      {isAccessTokenFetched && isInterceptorInitialized && renderRoutes(routes)}
-      {/* </Route> */}
+      {/* {isAccessTokenFetched && isInterceptorInitialized && renderRoutes(routes)} */}
+      {renderRoutes(routes)}
     </Routes>
   );
 };

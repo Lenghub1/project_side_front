@@ -1,4 +1,4 @@
-import CampusPage from "./Campus";
-import SetCampusPage from "./SetCampus";
+// import CampusPage from "./Campus";
+// import SetCampusPage from "./SetCampus";
 
-export default { CampusPage, SetCampusPage };
+// export default { CampusPage, SetCampusPage };
