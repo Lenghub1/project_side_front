@@ -30,7 +30,7 @@ const RoleCard = ({
   const isActive = accountType === role;
   const { isMobile } = useScreenSize();
   return (
-    <CP.Card
+    <CP.Card 
       sx={{
         border: isActive ? "2px solid" : "1px solid",
         borderColor: isActive ? "primary.main" : "grey.300",
