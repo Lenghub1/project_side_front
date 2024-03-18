@@ -11,7 +11,46 @@ export interface RouteProps {
 }
 
 const routes: RouteProps[] = [
-  { name: "home", path: "/", element: Pg.HomePage },
+  {
+    name: "home",
+    path: "/",
+    element: Pg.HomePage,
+    children: [
+      {
+        name: "employee",
+        path: "employee",
+        element: Pg.Employee.default.Employee,
+        children: [
+          {
+            name: "employee-management",
+            path: "manage",
+            element: Pg.Employee.default.EmployeeTable,
+          },
+          {
+            name: "create-new-employee",
+            path: "create",
+            element: Pg.Employee.default.CreateEmployee,
+          },
+          {
+            name: "employee-registrations",
+            path: "registration",
+            element: Pg.Employee.default.EmployeeRegistration,
+          },
+        ],
+      },
+      {
+        name: "organization",
+        path: "organization",
+        children: [
+          {
+            name: "organization",
+            path: "create",
+            element: Pg.Organization.default.Organization,
+          },
+        ],
+      },
+    ],
+  },
   { name: "login", path: "/login", element: Pg.LoginPage },
   {
     name: "getStarted",
@@ -53,102 +92,10 @@ const routes: RouteProps[] = [
     ],
   },
   {
-    name: "create-new-organization",
-    path: "organization/new",
-    element: Pg.Organization.default.Organization,
-  },
-  {
-    name: "employeeManagement",
-    path: "organization/employee/management",
-    element: Pg.Employee.default.EmployeeTable,
-  },
-  {
-    name: "employeeRegistrations",
-    path: "organization/employee/registrations",
-    element: Pg.Employee.default.EmployeeRegistration,
-  },
-  {
     name: "testLogin",
     path: "test-login",
     element: Pg.TestLoginPage,
     protected: false,
-  },
-  {
-    name: "createEmployee",
-    path: "organization/employee/create",
-    element: Pg.Employee.default.CreateEmployee,
-  },
-  {
-    name: "employeeRegistrationsdetail",
-    path: "organization/employee/registrations/details",
-    element: Pg.Employee.default.EmployeeRegistrationDetail,
-  },
-
-  {
-    name: "modifyBranch",
-    path: "organization/modifyBranch",
-    element: Pg.Branch.ModifyBranch,
-  },
-  {
-    name: "loginpage",
-    path: "login",
-    element: Pg.Login.default.LoginPage,
-    protected: false,
-  },
-  {
-    name: "forgetpassword",
-    path: "/forget-password",
-    element: Pg.ForgetPassword.default.ForgetPassword,
-    protected: false,
-    children: [
-      {
-        name: "forgetpasswordOTP",
-        path: "verify-otp",
-        element: Pg.Verification.default.OTP,
-        protected: false,
-      },
-      {
-        name: "resetPassword",
-        path: "reset-password",
-        element: Pg.ForgetPassword.default.ResetPassword,
-        protected: false,
-      },
-    ],
-  },
-  {
-    name: "verifytoken",
-    path: "verify-token",
-    element: Pg.Verification.default.VerifyToken,
-    protected: false,
-  },
-  {
-    name: "test-redirect",
-    path: "/test-redirect",
-    element: Pg.Login.default.RedirectingPage,
-    protected: false,
-  },
-
-  {
-    name: "forgotaccount",
-    path: "/forgot-account",
-    element: Pg.ForgetAccount.default.ForgotAccount,
-    protected: false,
-    children: [
-      {
-        name: "accountinformation",
-        path: "informations",
-        element: Pg.ForgetAccount.default.AccountList,
-        protected: false,
-        children: [
-          {
-            name: "accountdetail",
-            path: ":id",
-            element: Pg.ForgetAccount.default.DetailInformation,
-            protected: false,
-          },
-        ],
-      },
-    ],
   },
 ];
 

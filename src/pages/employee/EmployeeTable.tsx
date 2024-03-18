@@ -4,24 +4,15 @@ import { allEmployees } from "@/api/employee";
 import EnhancedTable from "@/components/table/Table";
 import { HeadCell } from "@/components/table/TableHead";
 import { Employement } from "@/utils/interfaces/Employment";
+import Error from "../error/Error";
 
 const EmployeeTable = () => {
   const { data, error } = useFetch(allEmployees);
   if (error) {
-    if (error.response?.status === 404) {
-      return (
-        <CP.Container>
-          <h1>There's no pending request</h1>
-        </CP.Container>
-      );
-    } else {
-      return (
-        <CP.Container>
-          <h1>Something went wrong</h1>
-        </CP.Container>
-      );
-    }
+    console.log(error);
+    return <Error status={error.status_code} />;
   }
+
   return (
     <CP.Container>
       <EnhancedTable<Employement>

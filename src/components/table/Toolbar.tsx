@@ -4,7 +4,7 @@ import Tooltip from "@mui/material/Tooltip";
 import SearchDisplay from "../searchBox/SearchDisplay";
 interface TableToolbarProp {
   name: string;
-  data: string;
+  data: object;
 }
 
 const EnhancedTableToolbar: React.FC<TableToolbarProp> = ({ name, data }) => {

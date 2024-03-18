@@ -5,7 +5,7 @@ import Autocomplete, {
 } from "@mui/material/Autocomplete";
 
 interface Option {
-  title: string;
+  name: string;
 }
 
 interface SearchProps {
@@ -18,7 +18,7 @@ const Search: React.FC<SearchProps> = ({ data, renderInput }) => {
     <Autocomplete
       freeSolo
       disableClearable
-      options={data.map((option: Option) => option.title)}
+      options={data.map((option: Option) => option.name)}
       renderInput={(params) =>
         renderInput ? (
           renderInput(params)
