@@ -149,9 +149,16 @@ const routes: RouteProps[] = [
     protected: false,
   },
   {
-    name: "codesendingoptions",
-    path: "/receive-option",
-    element: Pg.ForgetAccount.default.CodeSendingOption,
+    name: "accountinformation",
+    path: "/forgot-account/informations",
+    element: Pg.ForgetAccount.default.AccountList,
+    protected: false,
+  },
+  {
+    name: "accountdetail",
+    path: "/forgot-account/informations/:id",
+    element: Pg.ForgetAccount.default.DetailInformation,
+    protected: false,
   },
 ];
 

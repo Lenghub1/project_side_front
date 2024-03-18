@@ -59,3 +59,9 @@ export const selectOrganization = atom({
   default: "",
   effects_UNSTABLE: [persistAtom],
 });
+
+export const forgotAccountInformation = atom<any[]>({
+  key: "forgot account information",
+  default: [],
+  effects_UNSTABLE: [persistAtom],
+});

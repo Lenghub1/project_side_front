@@ -5,7 +5,6 @@ import styled from "styled-components";
 import { useEffect, useState } from "react";
 import useValidatedInput from "@/hooks/useValidatedInput";
 import { authApi } from "@/api/auth";
-import { handleApiRequest } from "@/api";
 import { SyntheticEvent } from "react";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";

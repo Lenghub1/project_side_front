@@ -11,6 +11,7 @@ import { useSnackbar } from "notistack";
 import { authApi, testApi } from "@/api/auth";
 import { handleApiRequest } from "@/api";
 import Store from "@/store";
+import { Outlet } from "react-router-dom";
 
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -22,8 +23,8 @@ const ForgotAccount = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 428);
   const username = useValidatedInput("", "Username");
   const companyCode = useInput("");
-  const [_, setCodeSendingtOption] = useRecoilState(
-    Store.User.condeSendingOption
+  const [_, setForgotAccountInformation] = useRecoilState(
+    Store.User.forgotAccountInformation
   );
   useEffect(() => {
     console.log("Company code", companyCode);
@@ -61,142 +62,139 @@ const ForgotAccount = () => {
     });
   }
 
-  async function forgotAccount(
-    firstName: string,
-    lastName: string
-  ): Promise<void> {
+  async function forgotAccount(data: any): Promise<void> {
     const [response, error] = await handleApiRequest(() =>
-      authApi.findForgotAccount(firstName, lastName)
+      authApi.findForgotAccount(data)
     );
-    console.log("response", response);
-    const data = response.data;
 
-    if (error || (!data.email && !data.phoneNumber)) {
-      showMessage("No results exist. Please try again ", "error");
-      return;
+    if (error) {
+      showMessage("Not results exist. Please try again!", "error");
     }
 
-    const options = [];
-    if (data.email) {
-      options.push({ email: data.email });
+    if (response.status_code === 200) {
+      // set state
+      setForgotAccountInformation(response.data);
+      console.log("DATA", _);
     }
-    if (data.phoneNumber) {
-      options.push({ phone: data.phoneNumber });
-    }
-    setCodeSendingtOption([{ id: data.id }, ...options]);
-
-    navigate("/receive-option");
+    navigate("/forgot-account/informations", { replace: true });
   }
 
   const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
 
     const fullName = username.value.split(" ").filter(Boolean);
-
-    await forgotAccount(fullName[0], fullName[0]);
+    let data = {
+      firstName: fullName[0],
+      lastName: fullName[1],
+      orgId: companyCode.value,
+    };
+    await forgotAccount(data);
   };
 
   const isInvalid = !username.value && username.setError;
 
   return (
-    <CP.Styled.Wrapper height="100vh">
-      <Flex height="inherit">
-        <CP.Styled.Div
-          style={{
-            minWidth: isMobile ? "396px" : "565px",
-            padding: !isMobile ? "0 1rem" : "0 16px",
-          }}
-        >
-          <Flex
-            items="flex-start"
-            direction="column"
+    <>
+      <CP.Styled.Wrapper height="100vh">
+        <Flex height="inherit">
+          <CP.Styled.Div
             style={{
-              padding: !isMobile ? "0 3rem" : "0px",
+              minWidth: isMobile ? "396px" : "565px",
+              padding: !isMobile ? "0 1rem" : "0 16px",
             }}
           >
-            <CP.Typography
-              variant="h4"
-              margin="0 0 2rem"
+            <Flex
+              items="flex-start"
+              direction="column"
               style={{
-                fontWeight: "semibold",
-                textAlign: isMobile ? "center" : "start",
-                width: "100%",
+                padding: !isMobile ? "0 3rem" : "0px",
               }}
             >
-              Find Account
-            </CP.Typography>
-            <CP.Typography
-              style={{
-                marginBottom: "2rem",
-                fontWeight: "semibold",
-                textAlign: isMobile ? "start" : "start",
-                width: "100%",
-              }}
-            >
-              Enter your username and company code to find your account.
-            </CP.Typography>
-            <Flex direction="column" gap="24px" overflow="unset">
-              <CP.Input
-                label="Username"
-                value={username.value}
-                onChange={username.onChange}
-                onBlur={username.onBlur}
-                error={!!username.error}
-                helperText={<username.HelperText />}
-                required
-              />
-              <CP.Input
-                label="Company code"
-                value={companyCode.value}
-                onChange={companyCode.onChange}
-                required
-                inputProps={{ maxLength: 6 }}
-              />
+              <CP.Typography
+                variant="h4"
+                margin="0 0 2rem"
+                style={{
+                  fontWeight: "semibold",
+                  textAlign: isMobile ? "center" : "start",
+                  width: "100%",
+                }}
+              >
+                Find Account
+              </CP.Typography>
+              <CP.Typography
+                style={{
+                  marginBottom: "2rem",
+                  fontWeight: "semibold",
+                  textAlign: isMobile ? "start" : "start",
+                  width: "100%",
+                }}
+              >
+                Enter your username and company code to find your account.
+              </CP.Typography>
+              <Flex direction="column" gap="24px" overflow="unset">
+                <CP.Input
+                  label="Username"
+                  value={username.value}
+                  onChange={username.onChange}
+                  onBlur={username.onBlur}
+                  error={!!username.error}
+                  helperText={<username.HelperText />}
+                  required
+                />
+                <CP.Input
+                  label="Company code"
+                  value={companyCode.value}
+                  onChange={companyCode.onChange}
+                  required
+                  inputProps={{ maxLength: 6 }}
+                />
 
-              <CP.Styled.Flex width="100%" justify="start">
-                <CP.Typography
-                  margin="1rem 0"
-                  color="red"
-                  sx={{ cursor: "pointer" }}
-                  onClick={() => {
-                    navigate("/forget-password");
-                  }}
-                >
-                  Forget password?
-                </CP.Typography>
-              </CP.Styled.Flex>
-              {/* {companyCode && <h1>{comp}</h1>} */}
-              <Flex width="100%" justify="end" gap="20px">
-                <CP.Button variant="text">Cancel</CP.Button>
-                <CP.Button
-                  type="submit"
-                  onClick={handleSubmit}
-                  disabled={isInvalid}
-                >
-                  Find
-                </CP.Button>
+                <CP.Styled.Flex width="100%" justify="start">
+                  <CP.Typography
+                    margin="1rem 0"
+                    color="red"
+                    sx={{ cursor: "pointer" }}
+                    onClick={() => {
+                      navigate("/forget-password");
+                    }}
+                  >
+                    Forget password?
+                  </CP.Typography>
+                </CP.Styled.Flex>
+                {/* {companyCode && <h1>{comp}</h1>} */}
+                <Flex width="100%" justify="end" gap="20px">
+                  <CP.Button variant="text">Cancel</CP.Button>
+                  <CP.Button
+                    type="submit"
+                    onClick={handleSubmit}
+                    disabled={isInvalid}
+                  >
+                    Find
+                  </CP.Button>
+                </Flex>
               </Flex>
             </Flex>
-          </Flex>
-        </CP.Styled.Div>
-        {!isMobile && (
-          <CP.Styled.Div height="100%">
-            <Flex style={{ height: "100%" }}>
-              <Box
-                component="img"
-                src="/random-unsplash.jpg"
-                alt="Random image"
-                sx={{
-                  width: 1,
-                  height: "100vh",
-                  objectFit: "cover",
-                }}
-              />
-            </Flex>
           </CP.Styled.Div>
-        )}
-      </Flex>
-    </CP.Styled.Wrapper>
+          {!isMobile && (
+            <CP.Styled.Div height="100%">
+              <Flex style={{ height: "100%" }}>
+                <Box
+                  component="img"
+                  src="/random-unsplash.jpg"
+                  alt="Random image"
+                  sx={{
+                    width: 1,
+                    height: "100vh",
+                    objectFit: "cover",
+                  }}
+                />
+              </Flex>
+            </CP.Styled.Div>
+          )}
+        </Flex>
+      </CP.Styled.Wrapper>
+      <Outlet />
+    </>
   );
 };
 
