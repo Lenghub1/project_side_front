@@ -4,6 +4,7 @@ import { RoleCard } from "@/components/roleCard";
 import styled from "styled-components";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { Box } from "@mui/material";
+import useScreenSize from "@/hooks/useScreenSize";
 
 export const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -14,6 +15,7 @@ const GetStarted = () => {
   const [accountType, setAccountType] = useState<
     "employer" | "employee" | null
   >(null);
+  const { isMobile } = useScreenSize();
 
   const isGetStartedRoute = location.pathname === "/get-started";
 
@@ -28,7 +30,7 @@ const GetStarted = () => {
             <CP.Typography variant="subtitle1">Choose your role</CP.Typography>
           </CP.Styled.Flex>
           <Flex direction="column" gap="2rem">
-            <Flex gap="2rem">
+            <Flex direction={isMobile ? "column" : "row"} gap="2rem">
               <RoleCard
                 accountType={accountType}
                 setAccountType={setAccountType}
@@ -71,7 +73,10 @@ const GetStarted = () => {
             <CP.Styled.Div padding="0 1rem">
               <Outlet />
             </CP.Styled.Div>
-            <CP.Styled.Div height="100%">
+            <CP.Styled.Div
+              height="100%"
+              style={{ display: isMobile ? "none" : "block" }}
+            >
               <Flex>
                 <Box
                   component="img"
@@ -93,7 +98,7 @@ const GetStarted = () => {
 };
 
 const Container = styled(Flex)`
-  height: 100vh;
+  min-height: 100vh;
   max-width: 712px;
   margin-left: auto;
   margin-right: auto;
