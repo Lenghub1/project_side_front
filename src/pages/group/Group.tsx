@@ -1,23 +1,17 @@
-import React, { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import CP from "@/components";
-// import {
-//   useRecoilRefresher_UNSTABLE,
-//   useRecoilStateLoadable,
-//   useRecoilValue,
-//   useRecoilValueLoadable,
-// } from "recoil";
-// import { fetchGroupSelector, groupRefetchTrigger } from "@/store/groupStore";
-import { handleApiRequest } from "@/api";
-import { testApi } from "@/api/auth";
+import {
+  useRecoilRefresher_UNSTABLE,
+  useRecoilValueLoadable,
+  useResetRecoilState,
+} from "recoil";
+import { fetchGroupSelector } from "@/store/groupStore";
+import useRefetchOnMount from "@/hooks/useRefetchOnMount";
 
 const GroupPage = () => {
+  /*
   const [groups, setGroups] = useState<Object[] | null>([]);
-
-  // const groups = useRecoilValueLoadable(fetchGroupSelector);
-  // const refreshGroup = useRecoilRefresher_UNSTABLE(fetchGroupSelector);
-
-  // console.log(groups.state);
 
   async function getGroup() {
     const [response, error] = await handleApiRequest(() => testApi.getGroup());
@@ -28,19 +22,31 @@ const GroupPage = () => {
       console.error(error?.message);
     }
   }
+  */
 
-  useEffect(() => {
-    console.log("hii");
-    getGroup();
-  }, []);
+  const groupsReset = useResetRecoilState(fetchGroupSelector);
 
-  console.log(groups);
+  const groupsLoadable = useRecoilValueLoadable(fetchGroupSelector);
+  const refreshGroup = useRecoilRefresher_UNSTABLE(fetchGroupSelector);
+
+  useRefetchOnMount(groupsReset);
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <div>Hello</div>
-      <CP.Button onClick={() => getGroup()}>Click me</CP.Button>
-    </Suspense>
+    <>
+      <CP.Button onClick={() => refreshGroup()}>Click me</CP.Button>
+      <CP.Typography variant="h4">Group List</CP.Typography>
+      {groupsLoadable.state === "hasValue" && (
+        <div>
+          {groupsLoadable.contents?.data?.map((item: any) => (
+            <CP.Typography key={item.id}>{item.name}</CP.Typography>
+          ))}
+        </div>
+      )}
+      {groupsLoadable.state === "loading" && <div>Loading...</div>}
+      {groupsLoadable.state === "hasError" && (
+        <div>Error: {groupsLoadable.contents.message}</div>
+      )}
+    </>
   );
 };
 

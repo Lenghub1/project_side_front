@@ -1,16 +1,12 @@
-import { Outlet } from "react-router-dom";
 import { useEffect, useRef } from "react";
-import usePersist from "@/hooks/usePersist";
-import { useRecoilState } from "recoil";
-import { accessTokenState } from "@/store/userStore";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { accessTokenState, isAccessTokenFetchedState } from "@/store/userStore";
 import { refreshAccessToken } from "@/utils/authUtils";
 
-function PersistLogin() {
-  const [persist] = usePersist();
+function useEnsureAccessToken() {
   const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
+  const setIsAccessTokenFetched = useSetRecoilState(isAccessTokenFetchedState);
   const effectRan = useRef(false);
-
-  // const [trueSuccess, setTrueSuccess] = useState(false);
 
   useEffect(() => {
     if (
@@ -19,22 +15,16 @@ function PersistLogin() {
     ) {
       const verifyRefreshToken = async () => {
         await refreshAccessToken(setAccessToken);
-        // setTrueSuccess(true);
+        setIsAccessTokenFetched(true);
       };
 
-      if (!accessToken && persist) verifyRefreshToken();
+      if (!accessToken) verifyRefreshToken();
     }
     return () => {
       effectRan.current = true;
       return;
     };
-  }, []);
-
-  if (!persist) {
-    return <Outlet />;
-  }
-
-  return <Outlet />;
+  }, [accessToken, setAccessToken]);
 }
 
-export default PersistLogin;
+export default useEnsureAccessToken;

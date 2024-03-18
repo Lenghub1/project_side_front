@@ -5,36 +5,60 @@ export interface RouteProps {
   path: string;
   element?: any;
   menu?: boolean;
+  protected?: boolean;
+  allowedRoles?: string[];
   children?: RouteProps[];
 }
 
 const routes: RouteProps[] = [
   { name: "home", path: "/", element: Pg.HomePage },
-  { name: "login", path: "/login", element: Pg.LoginPage },
-  {
-    name: "campusSelect",
-    path: "/campus",
-    element: Pg.Campus.default.CampusPage,
-  },
-  {
-    name: "campusSetting",
-    path: "/campus/set",
-    element: Pg.Campus.default.SetCampusPage,
-  },
+  // { name: "login", path: "/login", element: Pg.LoginPage },
+  // {
+  //   name: "campusSelect",
+  //   path: "/campus",
+  //   element: Pg.Campus.default.CampusPage,
+  // },
+  // {
+  //   name: "campusSetting",
+  //   path: "/campus/set",
+  //   element: Pg.Campus.default.SetCampusPage,
+  // },
   {
     name: "getStarted",
     path: "/get-started",
     element: Pg.GetStarted,
+    protected: false,
     children: [
       {
-        name: "companyLookup",
-        path: "company-lookup",
+        name: "companySearch",
+        path: "company-search",
         element: Pg.CompanySearch,
+        protected: false,
+        children: [
+          {
+            name: "companySearchResult",
+            path: ":companyId",
+            element: Pg.CompanySearchResult,
+            protected: false,
+          },
+        ],
       },
       {
         name: "createAccount",
         path: "create-account",
         element: Pg.SignupPage,
+        protected: false,
+      },
+      {
+        name: "joinCompany",
+        path: "join-company",
+        element: Pg.SignupPage,
+        protected: false,
+      },
+      {
+        name: "employeeInfo",
+        path: "employee-info",
+        element: Pg.InformationInput,
       },
     ],
   },
@@ -57,6 +81,7 @@ const routes: RouteProps[] = [
     name: "testLogin",
     path: "test-login",
     element: Pg.TestLoginPage,
+    protected: false,
   },
 
   {

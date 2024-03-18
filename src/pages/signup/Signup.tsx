@@ -1,7 +1,7 @@
 import CP from "@/components";
 import MuiDivider from "@mui/material/Divider";
 import styled from "styled-components";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { authApi } from "@/api/auth";
 import useValidatedInput from "@/hooks/useValidatedInput";
 import useCriteriaValidator from "@/hooks/useCriteriaInput.tsx";
@@ -10,21 +10,19 @@ import useMatchInput from "@/hooks/useMatchInput";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import IconButton from "@mui/material/IconButton";
-import Tab from "@mui/material/Tab";
-import Tabs from "@mui/material/Tabs";
 import countries from "@/components/phonePrefix/countries.json";
 import { useSnackbar } from "notistack";
 import useApi from "@/hooks/useApi";
 import { Flex } from "../getStarted/GetStarted";
 import { Title, FormContainer } from "../companySearch/CompanySearch";
+import Alert from "@mui/material/Alert";
+import SignupMethod from "@/components/signupMethod/SignupMethod";
 
 const Divider = styled(MuiDivider)`
   width: 100%;
 `;
 
-type SignupProps = {
-  accountType: "employee" | "employer";
-};
+type AccountType = "employee" | "employer";
 
 type SignupMethod = "email" | "phone";
 
@@ -50,7 +48,10 @@ interface LoginResponse {
   };
 }
 
-const SignupPage = ({ accountType = "employer" }: SignupProps) => {
+const SignupPage = () => {
+  const location = useLocation();
+  const isJoinCompany = location.pathname === "/get-started/join-company";
+  const accountType: AccountType = isJoinCompany ? "employee" : "employer";
   const { enqueueSnackbar } = useSnackbar();
   const firstName = useValidatedInput("", "First Name");
   const lastName = useValidatedInput("", "Last Name");
@@ -68,22 +69,6 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
     dialCode: string;
     flag: string;
   }>(countries[0]);
-  const activeTabIndex = signupMethod === "email" ? 0 : 1;
-
-  const handleSignupMethodChange = (
-    event: SyntheticEvent,
-    newValue: number
-  ) => {
-    const method = newValue === 0 ? "email" : "phone";
-    if (method === "phone" && email.touched) {
-      email.setTouched(false);
-      if (email.value) email.setValue("");
-    } else if (method === "email" && phone.touched) {
-      phone.setTouched(false);
-      if (phone.value) phone.setValue("");
-    }
-    setSignupMethod(method);
-  };
 
   const isFormInvalid =
     !firstName.value ||
@@ -108,11 +93,26 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
     });
   }
 
-  const { isLoading, error, handleApiRequest } = useApi();
+  const { isLoading, isSuccess, error, handleApiRequest } = useApi();
 
   async function signup(method: string, data: any): Promise<void> {
     await handleApiRequest(() => authApi.signup(method, data));
   }
+
+  function resetState() {
+    firstName.reset();
+    lastName.reset();
+    email.reset();
+    phone.reset();
+    password.reset();
+    confirmPassword.reset();
+  }
+
+  useEffect(() => {
+    if (isSuccess && signupMethod === "email") {
+      resetState();
+    }
+  }, [isSuccess, signupMethod]);
 
   useEffect(() => {
     if (error) {
@@ -172,6 +172,11 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
   return (
     <CP.Styled.Form>
       <FormContainer>
+        {isSuccess && signupMethod === "email" && (
+          <Alert severity="success">
+            We've sent a verification code to your email.
+          </Alert>
+        )}
         <Title>Create a new account</Title>
 
         <Flex direction="column" gap="1.5rem">
@@ -197,46 +202,14 @@ const SignupPage = ({ accountType = "employer" }: SignupProps) => {
               />
             </Flex>
           )}
-          <Tabs
-            sx={{ alignSelf: "flex-start" }}
-            value={activeTabIndex}
-            onChange={(e, value) => handleSignupMethodChange(e, value)}
-            aria-label="signup options"
-          >
-            <Tab label="With Email" />
-            <Tab label="With Phone" />
-          </Tabs>
-          {signupMethod === "email" ? (
-            <CP.Input
-              label="Email"
-              value={email.value}
-              onChange={email.onChange}
-              placeholder="Email"
-              type="email"
-              onBlur={email.onBlur}
-              error={!!email.error}
-              helperText={<email.HelperText />}
-              required
-            />
-          ) : (
-            <Flex gap="0.5rem" items="flex-start">
-              <CP.PhonePrefix
-                selectedCountry={selectedCountry}
-                setSelectedCountry={setSelectedCountry}
-              />
-              <CP.Input
-                label="Phone number"
-                value={phone.value}
-                type="number"
-                onChange={phone.onChange}
-                placeholder="Phone"
-                onBlur={phone.onBlur}
-                error={!!phone.error}
-                helperText={<phone.HelperText />}
-                required
-              />
-            </Flex>
-          )}
+          <SignupMethod
+            email={email}
+            phone={phone}
+            selectedCountry={selectedCountry}
+            setSelectedCountry={setSelectedCountry}
+            signupMethod={signupMethod}
+            setSignupMethod={setSignupMethod}
+          />
 
           <CP.Input
             label="Password"

@@ -1,9 +1,13 @@
-import useApi from "./useApi";
-import { useRecoilValue, useRecoilState } from "recoil";
-import { userState, accessTokenState } from "@/store/userStore";
+import { useRecoilValue, useRecoilState, useSetRecoilState } from "recoil";
+import {
+  userState,
+  accessTokenState,
+  isUserFetchedState,
+} from "@/store/userStore";
 import { useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { authApi } from "@/api/auth";
+import { handleApiRequest } from "@/api";
 
 interface CustomJwtPayload {
   userId?: string;
@@ -11,22 +15,19 @@ interface CustomJwtPayload {
 
 const useAuth = () => {
   const accessToken = useRecoilValue(accessTokenState);
-  const { response, error, handleApiRequest } = useApi();
   const [user, setUser] = useRecoilState(userState);
+  const setIsUserFetched = useSetRecoilState(isUserFetchedState);
 
-  console.log("use Auth is running");
+  console.log("use Auth is running", user);
 
   async function getUserInfo(id: string) {
-    await handleApiRequest(() => authApi.getUser(id));
-  }
-
-  useEffect(() => {
+    const [response, error] = await handleApiRequest(() => authApi.getUser(id));
     if (response) {
-      console.log(response);
+      setUser(response.data);
     } else if (error) {
-      console.log(error);
+      console.log(error.message);
     }
-  }, [response, error]);
+  }
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -39,7 +40,13 @@ const useAuth = () => {
     };
 
     fetchUserInfo();
+    setIsUserFetched(true);
   }, [accessToken]);
+
+  return {
+    isAuthenticated: !!accessToken,
+    userRole: user?.firstName,
+  };
 };
 
 export default useAuth;

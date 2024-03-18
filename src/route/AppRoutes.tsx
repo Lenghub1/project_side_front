@@ -1,49 +1,62 @@
 import { Route, Routes } from "react-router-dom";
 import routes, { RouteProps } from "./routes";
 import useUpdateAxiosInterceptor from "@/hooks/useUpdateAxiosInterceptor";
-import { PersistLogin } from "@/components/auth";
-import useAuth from "@/hooks/useAuth";
 import { useRecoilValue } from "recoil";
-import { axiosInterceptorState } from "@/store/userStore";
+import {
+  axiosInterceptorState,
+  isAccessTokenFetchedState,
+  isUserFetchedState,
+} from "@/store/userStore";
+import useEnsureAccessToken from "@/hooks/useEnsureAccessToken";
+import { ProtectedRoute, UnprotectedRoute } from "@/components/auth";
 
 const renderRoutes = (routes: RouteProps[]) => {
   return routes.map((route: RouteProps) => {
-    if (route.children && route.children.length > 0) {
-      return (
-        <Route
-          key={route.name}
-          path={route.path}
-          element={route.element ? <route.element /> : undefined}
-        >
-          {renderRoutes(route.children)} {/* recursive call */}
-        </Route>
-      );
-    } else {
-      return (
-        <Route
-          key={route.name}
-          path={route.path}
-          element={route.element ? <route.element /> : undefined}
-        />
-      );
-    }
+    const isProtected = route.protected !== false;
+    const Element = route.element;
+    const element = isProtected ? (
+      <ProtectedRoute
+        element={Element ? <Element /> : null}
+        allowedRoles={route.allowedRoles}
+      />
+    ) : !isProtected ? (
+      <UnprotectedRoute element={Element ? <Element /> : null} />
+    ) : Element ? (
+      <Element />
+    ) : null;
+
+    return (
+      <Route key={route.name} path={route.path} element={element}>
+        {route.children && renderRoutes(route.children)}
+      </Route>
+    );
   });
 };
 
 const AppRoutes = () => {
+  useEnsureAccessToken();
   useUpdateAxiosInterceptor();
-  useAuth();
+  // useAuth();
 
-  // to make sure that Authorization header 
+  /**
+   * to make sure that the application attempt to fetch
+   * accessToken and set appropriate authorization header
+   */
+  const isAccessTokenFetched = useRecoilValue(isAccessTokenFetchedState);
   const isInterceptorInitialized = useRecoilValue(axiosInterceptorState);
 
-  if (!isInterceptorInitialized) {
+  if (
+    !isAccessTokenFetched ||
+    !isInterceptorInitialized ||
+    !isUserFetchedState
+  ) {
     return <div>Loading...</div>;
   }
 
   return (
     <Routes>
-      <Route element={<PersistLogin />}>{renderRoutes(routes)}</Route>
+      {/* {isAccessTokenFetched && isInterceptorInitialized && renderRoutes(routes)} */}
+      {renderRoutes(routes)}
     </Routes>
   );
 };

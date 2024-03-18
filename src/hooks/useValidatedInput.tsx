@@ -5,6 +5,19 @@ import { useState, useEffect, ChangeEvent } from "react";
 type ValidatorFunction = (value: string) => string;
 type DummyValidatorFunction = () => string;
 
+export interface UseValidatedInputReturn {
+  value: string;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  setValue: React.Dispatch<React.SetStateAction<string>>;
+  error: string;
+  setError: React.Dispatch<React.SetStateAction<string>>;
+  onBlur: () => void;
+  HelperText: () => ReactJSXElement | null;
+  touched: boolean;
+  setTouched: React.Dispatch<React.SetStateAction<boolean>>;
+  reset: () => void;
+}
+
 /**
  * A custom hook for managing and validating the state of a form input.
  *
@@ -22,7 +35,7 @@ export default function useValidatedInput(
   defaultValue: string,
   fieldName: string,
   validate: ValidatorFunction | DummyValidatorFunction = () => ""
-) {
+): UseValidatedInputReturn {
   const [value, setValue] = useState(defaultValue);
   const [error, setError] = useState<string>("");
   const [touched, setTouched] = useState<boolean>(false);
@@ -42,6 +55,12 @@ export default function useValidatedInput(
       const errorMessage = validate(value);
       setError(errorMessage);
     }
+  };
+
+  const reset = () => {
+    setValue(defaultValue);
+    setError("");
+    setTouched(false);
   };
 
   // call validate function to update error state when value changes
@@ -76,5 +95,6 @@ export default function useValidatedInput(
     HelperText,
     touched,
     setTouched,
+    reset,
   };
 }

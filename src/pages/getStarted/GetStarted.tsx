@@ -50,7 +50,7 @@ const GetStarted = () => {
               to={
                 accountType === "employer"
                   ? "/get-started/create-account"
-                  : "/join-team"
+                  : "/get-started/company-search"
               }
               style={{ width: "100%" }}
             >

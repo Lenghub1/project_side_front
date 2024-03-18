@@ -1,6 +1,5 @@
-import Auth from "./Auth";
-import PersistLogin from "./PersistLogin";
+// import Auth from "./Auth";
+import ProtectedRoute from "./ProtectedRoute";
+import UnprotectedRoute from "./UnprotectedRoute";
 
-export default Auth;
-
-export { PersistLogin };
+export { ProtectedRoute, UnprotectedRoute };

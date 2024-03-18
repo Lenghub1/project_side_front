@@ -76,6 +76,12 @@ export default function useCriteriaValidator(
     setErrors(validationErrors);
   };
 
+  const reset = () => {
+    setValue(defaultValue);
+    setErrors([]);
+    setTouched(false);
+  };
+
   useEffect(() => {
     if (touched) {
       const validationErrors = validate(value, criteria);
@@ -127,5 +133,16 @@ export default function useCriteriaValidator(
     ) : null;
   };
 
-  return { value, onChange, setValue, errors, setErrors, onBlur, HelperText };
+  return {
+    value,
+    onChange,
+    setValue,
+    errors,
+    setErrors,
+    onBlur,
+    HelperText,
+    touched,
+    setTouched,
+    reset,
+  };
 }

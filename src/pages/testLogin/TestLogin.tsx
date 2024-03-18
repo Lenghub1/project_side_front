@@ -12,12 +12,10 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import countries from "@/components/phonePrefix/countries.json";
 import Box from "@mui/material/Box";
-import { handleApiRequest } from "@/api";
 import { useSnackbar } from "notistack";
 import { useRecoilState } from "recoil";
 import { accessTokenState } from "@/store/userStore";
 import { useNavigate } from "react-router-dom";
-import usePersist from "@/hooks/usePersist";
 import useApi from "@/hooks/useApi";
 
 export const Flex = styled(CP.Styled.Flex)`
@@ -60,11 +58,6 @@ const TestLoginPage = () => {
   const activeTabIndex = loginMethod === "email" ? 0 : 1;
 
   const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
-  const [persist, setPersist] = usePersist();
-
-  const handlePersistChange = () => {
-    setPersist((prev) => !prev);
-  };
 
   const handleLoginMethodChange = (event: SyntheticEvent, newValue: number) => {
     const method = newValue === 0 ? "email" : "phone";
@@ -113,7 +106,7 @@ const TestLoginPage = () => {
     if (userData?.user) {
       console.log(userData.user);
       setAccessToken(userData.user?.accessToken);
-      navigate("/campus");
+      navigate("/");
     }
   }, [response]);
 
@@ -249,11 +242,6 @@ const TestLoginPage = () => {
                     Login
                   </CP.Button>
                 </Flex>
-                <CP.Checkbox
-                  label="Persist"
-                  onChange={handlePersistChange}
-                  checked={persist}
-                />
                 <CP.Typography variant="subtitle2">
                   By signing up, you agree to our{" "}
                   <NavLink to="#">Terms of Service</NavLink> &{" "}

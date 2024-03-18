@@ -22,12 +22,22 @@ export const accessTokenState = atom<string | null>({
   default: null,
 });
 
-export const userState = atom<Object | null>({
+export const userState = atom<any | null>({
   key: "userState",
   default: {},
 });
 
 export const axiosInterceptorState = atom({
   key: "axiosInterceptorState",
+  default: false,
+});
+
+export const isAccessTokenFetchedState = atom({
+  key: "isAccessTokenFetchedState",
+  default: false,
+});
+
+export const isUserFetchedState = atom({
+  key: "isUserFetchedState",
   default: false,
 });

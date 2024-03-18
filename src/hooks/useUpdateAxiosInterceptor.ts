@@ -84,7 +84,6 @@ const useUpdateAxiosInterceptor = () => {
     );
 
     setInterceptorInitialized(true);
-
     return () => {
       api.interceptors.request.eject(requestInterceptor);
       api.interceptors.response.eject(responseInterceptor);
