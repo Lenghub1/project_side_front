@@ -28,7 +28,7 @@ const RoleCard = ({
 }: RoleCardProps) => {
   const isActive = accountType === role;
   return (
-    <CP.Card
+    <CP.Card 
       sx={{
         border: isActive ? "2px solid" : "1px solid",
         borderColor: isActive ? "primary.main" : "grey.300",
