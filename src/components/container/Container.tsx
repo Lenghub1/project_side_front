@@ -5,7 +5,7 @@ import { ReactNode } from "react";
 
 export interface ContainerProps extends MuiCatainerProps {
   children: ReactNode;
-  maxwidth?: number;
+  maxwidth?: string;
   isfixed?: boolean;
 }
 

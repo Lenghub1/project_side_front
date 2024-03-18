@@ -2,7 +2,7 @@ import { useRecoilValue } from "recoil";
 import { useRecoilValue } from "recoil";
 import CP from "@/components";
 import AfterLoginTemplate from "@/components/template/AfterLogin";
-import Organization from "../organization/Organization";
+import { Outlet } from "react-router-dom";
 
 const HomePage = () => {
   const user = useRecoilValue(Store.User.userState);
@@ -13,7 +13,7 @@ const HomePage = () => {
   return (
     <AfterLoginTemplate>
       <CP.Styled.Wrapper>
-        <Organization />
+        <Outlet />
       </CP.Styled.Wrapper>
     </AfterLoginTemplate>
   );
