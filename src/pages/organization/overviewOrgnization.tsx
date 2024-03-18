@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { BranchDetailCard } from "./branchDetail";
 import { Outlet } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import AfterLoginTemplate from "@/components/template/AfterLogin";
+
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
 `;
@@ -24,7 +24,7 @@ const OverviewOrganization = () => {
   const [organizationBranchData, setOrganizationBranchData] = useState(
     []
   ) as any;
-  const isViewOrganization = location.pathname === "/overview";
+  const isViewOrganization = location.pathname === "/overview/";
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 456);
