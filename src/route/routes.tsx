@@ -108,6 +108,12 @@ const routes: RouteProps[] = [
     element: Pg.overviewOrganization,
   },
   {
+    name: "chooseOrganization",
+    path: "/login/organizations",
+    element: Pg.choose.default.ScreenChooseOrganization,
+    protected: true,
+  },
+  {
     name: "group",
     path: "group",
     element: Pg.GroupPage,
@@ -122,11 +128,6 @@ const routes: RouteProps[] = [
     name: "modifyBranch",
     path: "organization/modifyBranch",
     element: Pg.Branch.ModifyBranch,
-  },
-  {
-    name: "chooseOrganization",
-    path: "login/organizations",
-    element: Pg.choose.default.ScreenChooseOrganization,
   },
 ];
 

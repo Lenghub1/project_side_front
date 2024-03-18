@@ -4,14 +4,16 @@ import Box from "@mui/material/Box";
 import { allWorkplace } from "@/api/employee";
 import { handleApiRequest } from "@/api";
 import ChooseOrganizationCard from "@/components/organization/chooseOrganizationCard";
-
+import { userState } from "@/store/userStore";
+import { useRecoilValue } from "recoil";
 const ScreenChooseOrganization = () => {
   const [activeOrgId, setActiveOrgId] = useState<string | null>(null);
   const [organizationData, setOrganizationData] = useState<any[]>([]);
+  const user = useRecoilValue(userState);
 
-  const newPendingEmployees = async () => {
+  const organizations = async () => {
     const [response, error] = await handleApiRequest(() =>
-      allWorkplace("fa6f8c4b-e5fd-4c23-a20c-edbab2b5d169")
+      allWorkplace(user.id)
     );
     if (response) {
       setOrganizationData(response.data || []);
@@ -19,10 +21,11 @@ const ScreenChooseOrganization = () => {
       console.log(error);
     }
   };
+
   console.log(activeOrgId);
 
   useEffect(() => {
-    newPendingEmployees();
+    organizations();
   }, []);
 
   return (
