@@ -1,7 +1,6 @@
 import { styled } from "styled-components";
 
 import { ReactNodeProps } from "@/@type/common";
-import Auth from "@/components/auth";
 import TopBar from "./TopBar";
 import SideBar from "./SideBar";
 
@@ -20,15 +19,13 @@ const Body = styled.div`
 
 const Template = ({ children }: ReactNodeProps) => {
   return (
-    <Auth>
-      <Container>
-        <TopBar />
-        <BodyWrapper>
-          <SideBar />
-          <Body>{children}</Body>
-        </BodyWrapper>
-      </Container>
-    </Auth>
+    <Container>
+      <TopBar />
+      <BodyWrapper>
+        <SideBar />
+        <Body>{children}</Body>
+      </BodyWrapper>
+    </Container>
   );
 };
 

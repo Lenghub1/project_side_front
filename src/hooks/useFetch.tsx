@@ -18,7 +18,7 @@ const useFetch = (apiRequest: Function) => {
       setError(null);
     } else {
       setData(null);
-      setError(err);
+      setError(err.data);
     }
   };
 

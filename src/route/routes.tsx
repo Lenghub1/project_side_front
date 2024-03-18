@@ -11,7 +11,46 @@ export interface RouteProps {
 }
 
 const routes: RouteProps[] = [
-  { name: "home", path: "/", element: Pg.HomePage },
+  {
+    name: "home",
+    path: "/",
+    element: Pg.HomePage,
+    children: [
+      {
+        name: "employee",
+        path: "employee",
+        element: Pg.Employee.default.Employee,
+        children: [
+          {
+            name: "employee-management",
+            path: "manage",
+            element: Pg.Employee.default.EmployeeTable,
+          },
+          {
+            name: "create-new-employee",
+            path: "create",
+            element: Pg.Employee.default.CreateEmployee,
+          },
+          {
+            name: "employee-registrations",
+            path: "registration",
+            element: Pg.Employee.default.EmployeeRegistration,
+          },
+        ],
+      },
+      {
+        name: "organization",
+        path: "organization",
+        children: [
+          {
+            name: "organization",
+            path: "create",
+            element: Pg.Organization.default.Organization,
+          },
+        ],
+      },
+    ],
+  },
   { name: "login", path: "/login", element: Pg.LoginPage },
   {
     name: "getStarted",
@@ -53,30 +92,10 @@ const routes: RouteProps[] = [
     ],
   },
   {
-    name: "create-new-organization",
-    path: "organization/new",
-    element: Pg.Organization.default.Organization,
-  },
-  {
-    name: "employeeManagement",
-    path: "organization/employee/management",
-    element: Pg.Employee.default.EmployeeTable,
-  },
-  {
-    name: "employeeRegistrations",
-    path: "organization/employee/registrations",
-    element: Pg.Employee.default.EmployeeRegistration,
-  },
-  {
     name: "testLogin",
     path: "test-login",
     element: Pg.TestLoginPage,
     protected: false,
-  },
-  {
-    name: "createEmployee",
-    path: "organization/employee/create",
-    element: Pg.Employee.default.CreateEmployee,
   },
 ];
 

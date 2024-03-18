@@ -101,7 +101,7 @@ function EnhancedTable<T>({
   return (
     <CP.Container>
       <Paper sx={{ mb: 2 }}>
-        <EnhancedTableToolbar name={tableName} />
+        <EnhancedTableToolbar data={rows} name={tableName} />
         <TableContainer>
           <Table
             sx={{ minWidth: 750, textAlign: "start" }}
