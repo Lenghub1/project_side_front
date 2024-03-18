@@ -11,7 +11,7 @@ export interface RouteProps {
 }
 
 const routes: RouteProps[] = [
-  { name: "home", path: "/", protected: true, element: Pg.HomePage },
+  { name: "home", path: "/", element: Pg.HomePage },
   // { name: "login", path: "/login", element: Pg.LoginPage },
   // {
   //   name: "campusSelect",
@@ -27,16 +27,19 @@ const routes: RouteProps[] = [
     name: "getStarted",
     path: "/get-started",
     element: Pg.GetStarted,
+    protected: false,
     children: [
       {
         name: "companySearch",
         path: "company-search",
         element: Pg.CompanySearch,
+        protected: false,
         children: [
           {
             name: "companySearchResult",
             path: ":companyId",
             element: Pg.CompanySearchResult,
+            protected: false,
           },
         ],
       },
@@ -44,11 +47,13 @@ const routes: RouteProps[] = [
         name: "createAccount",
         path: "create-account",
         element: Pg.SignupPage,
+        protected: false,
       },
       {
         name: "joinCompany",
         path: "join-company",
         element: Pg.SignupPage,
+        protected: false,
       },
       {
         name: "employeeInfo",
@@ -76,6 +81,7 @@ const routes: RouteProps[] = [
     name: "testLogin",
     path: "test-login",
     element: Pg.TestLoginPage,
+    protected: false,
   },
 
   {

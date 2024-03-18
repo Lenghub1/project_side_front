@@ -36,3 +36,8 @@ export const isAccessTokenFetchedState = atom({
   key: "isAccessTokenFetchedState",
   default: false,
 });
+
+export const isUserFetchedState = atom({
+  key: "isUserFetchedState",
+  default: false,
+});

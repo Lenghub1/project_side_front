@@ -5,18 +5,22 @@ import { useRecoilValue } from "recoil";
 import {
   axiosInterceptorState,
   isAccessTokenFetchedState,
+  isUserFetchedState,
 } from "@/store/userStore";
 import useEnsureAccessToken from "@/hooks/useEnsureAccessToken";
-import { ProtectedRoute } from "@/components/auth";
+import { ProtectedRoute, UnprotectedRoute } from "@/components/auth";
 
 const renderRoutes = (routes: RouteProps[]) => {
   return routes.map((route: RouteProps) => {
+    const isProtected = route.protected !== false;
     const Element = route.element;
-    const element = route.protected ? (
+    const element = isProtected ? (
       <ProtectedRoute
         element={Element ? <Element /> : null}
         allowedRoles={route.allowedRoles}
       />
+    ) : !isProtected ? (
+      <UnprotectedRoute element={Element ? <Element /> : null} />
     ) : Element ? (
       <Element />
     ) : null;
@@ -41,7 +45,11 @@ const AppRoutes = () => {
   const isAccessTokenFetched = useRecoilValue(isAccessTokenFetchedState);
   const isInterceptorInitialized = useRecoilValue(axiosInterceptorState);
 
-  if (!isAccessTokenFetched || !isInterceptorInitialized) {
+  if (
+    !isAccessTokenFetched ||
+    !isInterceptorInitialized ||
+    !isUserFetchedState
+  ) {
     return <div>Loading...</div>;
   }
 
