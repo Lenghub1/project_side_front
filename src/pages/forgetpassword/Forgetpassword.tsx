@@ -94,7 +94,6 @@ const ForgetPassword = () => {
 
   useEffect(() => {
     if (error) {
-      console.log("THE ERROR is", error);
       showMessage(
         `No results were found. Please check your ${
           resetPasswordBy === "phone" ? "phone number" : "email"
