@@ -9,5 +9,5 @@ sonarqube:
     SONAR_ANALYSIS_MODE: publish
   script:
     - gitlab-sonar-scanner
-  # rules:
-  #   - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
