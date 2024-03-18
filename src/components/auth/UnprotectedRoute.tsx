@@ -1,5 +1,5 @@
 import React from "react";
-import { Navigate, Location, useLocation } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
 
 interface UnprotectedRouteProps {
@@ -12,7 +12,6 @@ const UnprotectedRoute: React.FC<UnprotectedRouteProps> = ({
   redirectPath = "/",
 }) => {
   const { isAuthenticated } = useAuth();
-  const location = useLocation();
 
   if (isAuthenticated) {
     return <Navigate to={redirectPath} replace />;
