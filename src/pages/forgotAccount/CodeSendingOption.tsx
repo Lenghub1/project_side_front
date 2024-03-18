@@ -18,10 +18,11 @@ const CodeSendingOption = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 428);
   const option = useRecoilValue(Store.User.condeSendingOption);
+  console.log("###", option);
 
   const [data, setData] = useState({
+    id: "",
     codeSendingMethod: "",
-    value: "",
   });
 
   useEffect(() => {
@@ -40,15 +41,14 @@ const CodeSendingOption = () => {
     };
   }, []);
   const handleRadioChange = (e: string) => {
-    console.log("IS Value start with + ", e.startsWith("+"));
-    if (e.startsWith("+")) {
-      setData({ codeSendingMethod: "phone", value: e });
-    } else {
-      setData({ codeSendingMethod: "email", value: e });
-    }
-
-    console.log("Value", data);
+    const [index, key] = e.split("-");
+    setData({
+      id: option[0].id,
+      codeSendingMethod: key,
+    });
+    console.log("Data", data);
   };
+
   function showMessage(message: string, variant: "error" | "success") {
     enqueueSnackbar(message, {
       variant: variant,
@@ -59,15 +59,15 @@ const CodeSendingOption = () => {
     });
   }
 
-  async function sendVerify(method: string, data: any): Promise<void> {
+  async function sendVerify(data: any): Promise<void> {
     const [response, error] = await handleApiRequest(() =>
-      authApi.forgotPassword(method, data)
+      authApi.forgotAccountVerification(data)
     );
 
     if (error) {
       showMessage(
         `No results were found. Please check your ${
-          method === "phone" ? "phone number" : "email"
+          data.codeSendingMethod === "phone" ? "phone number" : "email"
         } and try again.`,
         "error"
       );
@@ -79,29 +79,15 @@ const CodeSendingOption = () => {
 
   const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
-
-    let formData: any = {};
-
-    // if (resetPasswordBy === "email") {
-    //   formData = { ...formData, email: email.value };
-    //   console.log("Data", formData);
-    // } else if (resetPasswordBy === "phone") {
-    //   // remove leading 0 from phone number (E.164 format)
-    //   const phoneWithoutLeadingZero = phone.value.replace(/^0+/, "");
-
-    //   formData = {
-    //     ...formData,
-    //     phoneNumber: selectedCountry.dialCode + phoneWithoutLeadingZero,
-    //   };
-    //   console.log("Data", formData);
-    // }
-
-    // await forgetPassword(resetPasswordBy, formData);
+    console.log("Data", data);
+    await sendVerify(data);
   };
-  const radioList = option.flatMap((item, index) =>
+
+  console.log("Options", option);
+  const radioList = option.slice(1).flatMap((item, index) =>
     Object.keys(item).map((key) => ({
       label: `By ${key}`,
-      value: option[index][key],
+      value: `${index + 1}-${key}`,
     }))
   );
 
@@ -149,7 +135,7 @@ const CodeSendingOption = () => {
             <Flex direction="column" gap="24px" overflow="unset">
               <CP.Radio
                 list={radioList}
-                value={data.value}
+                value={data.codeSendingMethod}
                 onChange={handleRadioChange}
               />
               <Flex width="100%" justify="end" gap="20px">

@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import useValidatedInput from "@/hooks/useValidatedInput";
+import useInput from "@/hooks/useInput";
 import CP from "@/components";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
@@ -20,6 +21,7 @@ const ForgotAccount = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 428);
   const username = useValidatedInput("", "Username");
+  const companyCode = useInput("");
   const [_, setCodeSendingtOption] = useRecoilState(
     Store.User.condeSendingOption
   );
@@ -63,26 +65,24 @@ const ForgotAccount = () => {
     lastName: string
   ): Promise<void> {
     const [response, error] = await handleApiRequest(() =>
-      authApi.forgotAccount(firstName, lastName)
+      authApi.findForgotAccount(firstName, lastName)
     );
-    const data = response.data.data[0];
+    console.log("response", response);
+    const data = response.data;
 
     if (error || (!data.email && !data.phoneNumber)) {
-      console.log("THis");
       showMessage("No results exist. Please try again ", "error");
       return;
     }
 
-    if (data.email && data.phoneNumber) {
-      setCodeSendingtOption([
-        { email: data.email },
-        { phone: data.phoneNumber },
-      ]);
-    } else if (!data.email && data.phoneNumber) {
-      setCodeSendingtOption([{ phone: data.phoneNumber }]);
-    } else if (data.email && !data.phoneNumber) {
-      setCodeSendingtOption([{ email: data.email }]);
+    const options = [];
+    if (data.email) {
+      options.push({ email: data.email });
     }
+    if (data.phoneNumber) {
+      options.push({ phone: data.phoneNumber });
+    }
+    setCodeSendingtOption([{ id: data.id }, ...options]);
 
     navigate("/receive-option");
   }
@@ -92,7 +92,7 @@ const ForgotAccount = () => {
 
     const fullName = username.value.split(" ").filter(Boolean);
 
-    await forgotAccount(fullName[0], fullName[1]);
+    await forgotAccount(fullName[0], fullName[0]);
   };
 
   const isInvalid = !username.value && username.setError;
@@ -144,6 +144,12 @@ const ForgotAccount = () => {
                 helperText={<username.HelperText />}
                 required
               />
+              <CP.Input
+                label="Company code"
+                value={companyCode.value}
+                onChange={companyCode.onChange}
+                required
+              />
 
               <CP.Styled.Flex width="100%" justify="start">
                 <CP.Typography
@@ -157,6 +163,7 @@ const ForgotAccount = () => {
                   Forget password?
                 </CP.Typography>
               </CP.Styled.Flex>
+              {/* {companyCode && <h1>{comp}</h1>} */}
               <Flex width="100%" justify="end" gap="20px">
                 <CP.Button variant="text">Cancel</CP.Button>
                 <CP.Button
