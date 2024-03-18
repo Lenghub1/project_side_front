@@ -11,19 +11,42 @@ export interface RouteProps {
 }
 
 const routes: RouteProps[] = [
-  // { name: "home", path: "/", element: Pg.HomePage },
-  // { name: "login", path: "/login", element: Pg.LoginPage },
+  {
+    name: "home",
+    path: "/",
+    element: Pg.HomePage,
+    children: [
+      {
+        name: "overviewOrganization",
+        path: "/overview",
+        element: Pg.overviewOrganization,
+      },
+    ],
+  },
+  { name: "login", path: "/login", element: Pg.LoginPage },
+  {
+    name: "overviewOrganization",
+    path: "/overview",
 
-  // {
-  //   name: "campusSelect",
-  //   path: "/campus",
-  //   element: Pg.Campus.default.CampusPage,
-  // },
-  // {
-  //   name: "campusSetting",
-  //   path: "/campus/set",
-  //   element: Pg.Campus.default.SetCampusPage,
-  // },
+    element: Pg.overviewOrganization,
+    children: [
+      {
+        name: "createBranch",
+        path: "createBranch",
+        element: Pg.Branch.CreateBranch,
+      },
+    ],
+  },
+  {
+    name: "campusSelect",
+    path: "/campus",
+    element: Pg.Campus.default.CampusPage,
+  },
+  {
+    name: "campusSetting",
+    path: "/campus/set",
+    element: Pg.Campus.default.SetCampusPage,
+  },
   {
     name: "getStarted",
     path: "/get-started",
@@ -99,11 +122,7 @@ const routes: RouteProps[] = [
     path: "organization/employee/registrations/details",
     element: Pg.Employee.default.EmployeeRegistrationDetail,
   },
-  {
-    name: "createBranch",
-    path: "organization/createBranch",
-    element: Pg.Branch.CreateBranch,
-  },
+
   {
     name: "modifyBranch",
     path: "organization/modifyBranch",

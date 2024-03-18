@@ -3,14 +3,15 @@ import CP from "@/components";
 import theme from "@/theme/ligthTheme";
 import { handleApiRequest } from "@/api";
 import { my_branch } from "@/api/branch";
-import Container from "@mui/material/Container";
 import styled from "styled-components";
 import { Divider } from "@mui/material";
 import { my_organization } from "@/api/organization";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { BranchDetailCard } from "./branchDetail";
-
+import { Outlet } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import AfterLoginTemplate from "@/components/template/AfterLogin";
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
 `;
@@ -18,12 +19,12 @@ const Flex = styled(CP.Styled.Flex)`
 const OverviewOrganization = () => {
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 456);
-
+  const location = useLocation();
   const [organizationData, setOrganizationData] = useState({}) as any;
   const [organizationBranchData, setOrganizationBranchData] = useState(
     []
   ) as any;
-
+  const isViewOrganization = location.pathname === "/overview";
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 456);
@@ -36,7 +37,7 @@ const OverviewOrganization = () => {
     };
   }, []);
   const createBranch = () => {
-    navigate("/organization/createBranch");
+    navigate("/overview/createBranch");
   };
   const my_organization_data = async () => {
     const [response, error] = await handleApiRequest(() =>
@@ -68,8 +69,8 @@ const OverviewOrganization = () => {
   }, []);
 
   return (
-    <Container maxWidth="lg">
-      <CP.Styled.Wrapper padding="20px" overflow="auto" width="auto">
+    <CP.Styled.Wrapper overflow="auto">
+      {isViewOrganization ? (
         <Flex direction="column" gap="10px">
           <CP.Card padding="0" width="100%">
             <CP.Styled.Flex gap={isMobile ? "20px" : "50px"}>
@@ -165,8 +166,10 @@ const OverviewOrganization = () => {
             </Flex>
           </Flex>
         </Flex>
-      </CP.Styled.Wrapper>
-    </Container>
+      ) : (
+        <Outlet />
+      )}
+    </CP.Styled.Wrapper>
   );
 };
 
