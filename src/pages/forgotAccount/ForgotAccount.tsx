@@ -26,6 +26,7 @@ const ForgotAccount = () => {
     Store.User.condeSendingOption
   );
   useEffect(() => {
+    console.log("Company code", companyCode);
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 428);
     };
@@ -35,7 +36,7 @@ const ForgotAccount = () => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [companyCode]);
 
   const isFormIvalid =
     !username.value ||
@@ -149,6 +150,7 @@ const ForgotAccount = () => {
                 value={companyCode.value}
                 onChange={companyCode.onChange}
                 required
+                inputProps={{ maxLength: 6 }}
               />
 
               <CP.Styled.Flex width="100%" justify="start">

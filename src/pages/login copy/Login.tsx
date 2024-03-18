@@ -17,12 +17,13 @@ import FacebookLoginButton from "./FacebookLoginButton";
 import GoogleLoginButton from "./GoogleLoginButton";
 import Store from "@/store";
 import TelegramLoginButton from "./TelegramLoginButton";
+import useApi from "@/hooks/useApi";
 
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
 `;
 
-type SignupMethod = "email" | "phone";
+type SignInMethod = "email" | "phone";
 
 // validate email function
 const validateEmail = (email: string): string => {
@@ -35,7 +36,7 @@ const validateEmail = (email: string): string => {
 const LoginPage = () => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const [signupMethod, setSignupMethod] = useState<SignupMethod>("email");
+  const [singInMethod, setSignInMethod] = useState<SignInMethod>("email");
   const email = useValidatedInput("", "Email", validateEmail);
   const phone = useValidatedInput("", "Phone");
   const password = useValidatedInput("", "Password");
@@ -47,7 +48,7 @@ const LoginPage = () => {
     flag: string;
   }>(countries[0]);
   const [_, setLoginUser] = useRecoilState(Store.User.userState);
-  const activeTabIndex = signupMethod === "email" ? 0 : 1;
+  const activeTabIndex = singInMethod === "email" ? 0 : 1;
 
   useEffect(() => {
     const handleResize = () => {
@@ -60,7 +61,7 @@ const LoginPage = () => {
     };
   }, [email.value, phone.value, password.value]);
 
-  const handleSignupMethodChange = (
+  const handleSignInMethodChange = (
     event: SyntheticEvent,
     newValue: number
   ) => {
@@ -73,11 +74,11 @@ const LoginPage = () => {
 
       if (phone.value) phone.setValue("");
     }
-    setSignupMethod(method);
+    setSignInMethod(method);
   };
 
   const isFormInvalid =
-    (signupMethod === "phone"
+    (singInMethod === "phone"
       ? !phone.value || !!phone.error
       : !email.value || !!email.error) || !password.value;
 
@@ -99,7 +100,7 @@ const LoginPage = () => {
 
     if (error) {
       if (error?.response?.status === 400) {
-        if (signupMethod === "email") {
+        if (singInMethod === "email") {
           showMessage("Email or password is incorrect", "error");
           email.setError("Email or password is incorrect");
         } else {
@@ -133,9 +134,9 @@ const LoginPage = () => {
       password: password.value,
     };
 
-    if (signupMethod === "email") {
+    if (singInMethod === "email") {
       formData = { ...formData, email: email.value };
-    } else if (signupMethod === "phone") {
+    } else if (singInMethod === "phone") {
       // remove leading 0 from phone number (E.164 format)
       const phoneWithoutLeadingZero = phone.value.replace(/^0+/, "");
 
@@ -145,7 +146,7 @@ const LoginPage = () => {
       };
     }
 
-    await login(signupMethod, formData);
+    await login(singInMethod, formData);
   };
 
   const handleTelegramData = async (user: any) => {
@@ -195,13 +196,13 @@ const LoginPage = () => {
               <Tabs
                 sx={{ alignSelf: !isMobile ? "flex-start" : "center" }}
                 value={activeTabIndex}
-                onChange={(e, value) => handleSignupMethodChange(e, value)}
+                onChange={(e, value) => handleSignInMethodChange(e, value)}
                 aria-label="signup options"
               >
                 <Tab label="With Email" />
                 <Tab label="With Phone" />
               </Tabs>
-              {signupMethod === "email" ? (
+              {singInMethod === "email" ? (
                 <CP.Input
                   label="Email"
                   value={email.value}

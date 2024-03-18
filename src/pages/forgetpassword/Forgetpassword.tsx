@@ -9,9 +9,9 @@ import countries from "@/components/phonePrefix/countries.json";
 import { SyntheticEvent } from "react";
 import { useSnackbar } from "notistack";
 import { authApi } from "@/api/auth";
-import { handleApiRequest } from "@/api";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
+import useApi from "@/hooks/useApi";
 
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -41,6 +41,7 @@ const ForgetPassword = () => {
   const [resetPasswordBy, setResetPasswordBy] =
     useState<FindPasswordMethod>("email");
   const activeTabIndex = resetPasswordBy === "email" ? 0 : 1;
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 428);
@@ -82,30 +83,40 @@ const ForgetPassword = () => {
     });
   }
 
+  const { response, isError, isLoading, isSuccess, error, handleApiRequest } =
+    useApi();
   async function forgetPassword(method: string, data: any): Promise<void> {
-    const [response, error] = await handleApiRequest(() =>
-      authApi.forgotPassword(method, data)
-    );
+    await handleApiRequest(() => authApi.forgotPassword(method, data));
 
+    if (!isError) {
+      console.log("Error");
+      if (method === "phone") {
+        showMessage(`OTP has been sent to ${data.phoneNumber}`, "success");
+      } else {
+        showMessage(
+          `Verifiation code has been sent. Please your email and verify`,
+          "success"
+        );
+      }
+      setTimeout(() => {
+        navigate("/verify-otp");
+      }, 2000);
+    }
+  }
+
+  useEffect(() => {
     if (error) {
+      console.log("THE ERROR is", error);
       showMessage(
         `No results were found. Please check your ${
-          method === "phone" ? "phone number" : "email"
+          resetPasswordBy === "phone" ? "phone number" : "email"
         } and try again.`,
         "error"
       );
 
       return;
     }
-
-    // setTimeout(() => {}, 2000);
-    if (method === "phone") {
-      showMessage(`OTP has been sent to ${data.phoneNumber}`, "success");
-      setTimeout(() => {
-        navigate("/verify-otp");
-      }, 2000);
-    }
-  }
+  }, [error]);
 
   const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();

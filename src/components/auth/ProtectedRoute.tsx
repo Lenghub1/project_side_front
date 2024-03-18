@@ -14,7 +14,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   if (!isAuthenticated) {
     // redirect to login if not authenticated
-    return <Navigate to="/test-login" replace />;
+    return <Navigate to="/login-page" replace />;
   }
 
   if (allowedRoles && allowedRoles.length > 0) {

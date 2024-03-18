@@ -134,16 +134,19 @@ const routes: RouteProps[] = [
     name: "test-redirect",
     path: "/test-redirect",
     element: Pg.Login.default.RedirectingPage,
+    protected: false,
   },
   {
     name: "verifytoken",
     path: "/verify-token",
     element: Pg.ForgetPassword.default.VerifyToken,
+    protected: false,
   },
   {
     name: "forgotaccount",
     path: "/forgot-account",
     element: Pg.ForgetAccount.default.ForgotAccount,
+    protected: false,
   },
   {
     name: "codesendingoptions",

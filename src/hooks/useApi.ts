@@ -25,12 +25,15 @@ function useApi<T>(): UseApiReturnType<T> {
     setIsError(false);
     setError(null);
     try {
+      console.log("###### RES ###########");
       const response = await request();
+      console.log("###### RES ###########", response);
       setIsSuccess(true);
       setResponse(response.data);
     } catch (error) {
       setIsError(true);
       if (axios.isAxiosError(error)) {
+        console.log("ERRRRR: ", error);
         console.log("Something went wrong: ", error.response?.data);
         const apiError = new ApiError(
           error.response?.data?.message,
