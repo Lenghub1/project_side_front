@@ -223,7 +223,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 }
 
 export default function EnhancedTable(props: {
-  rows: Data[];
+  rows: any[];
   branchData: any[];
   setBranchData: any;
 }) {

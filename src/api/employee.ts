@@ -18,6 +18,7 @@ const transformEmployeeData = (
   if (Array.isArray(data.data)) {
     return data.data.map((responseData: any) => ({
       id: responseData.id,
+      userId: responseData.userId,
       name: `${responseData.users.firstName} ${responseData.users.lastName}`,
       position: responseData.position,
       status: responseData.status,
@@ -41,7 +42,7 @@ const transformEmployeeData = (
 
 const allEmployees = async (
   organizationId: string
-): Promise<AxiosResponse<Partial<Employement>[]>> => {
+): Promise<AxiosResponse<Partial<Employement>>> => {
   try {
     const response = await api.get(
       `/organizations/${organizationId}/employments`,
@@ -49,11 +50,11 @@ const allEmployees = async (
         transformResponse: [(response) => transformEmployeeData(response)],
       }
     );
-    console.log("API Response:", response);
-    return response.data as AxiosResponse<Partial<Employement>[]>;
+    console.log(response);
+    return response as AxiosResponse<Partial<Employement>>;
   } catch (error) {
-    console.error("Error in allEmployees:", error);
-    throw error;
+    console.error("Error in getAllPendingEmployees:", error);
+    return {} as AxiosResponse<Partial<Employement>>;
   }
 };
 const getEmployeeById = async (

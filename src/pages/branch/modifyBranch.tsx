@@ -1,41 +1,66 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CP from "@/components";
 import { useRecoilState } from "recoil";
 import { selectBranch } from "@/store/branch";
 import MapComponent from "@/components/map/Map";
 import { TextField, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-interface Manager {
-  id: string;
-  name: string;
-}
-
-interface Location {
-  id: string;
+import { allEmployees } from "@/api/employee";
+import { handleApiRequest } from "@/api";
+import { organization_location } from "@/api/location";
+import { modify_branch } from "@/api/branch";
+interface Data {
+  locationId: string;
+  managerId: string;
   name: string;
 }
 
 const ModifyBranch: React.FC = () => {
   const [selectedBranch, setBranchSelected] = useRecoilState(selectBranch);
+  const [managers, setManagers] = useState<any[]>([]);
+  const [locations, setLocations] = useState<any[]>([]);
   console.log(selectedBranch);
   const navigate = useNavigate();
-  const [data, setData] = useState({
+  const [data, setData] = useState<Data>({
     locationId: selectedBranch.locationId,
     managerId: selectedBranch.managerId,
     name: selectedBranch.name,
   }) as any;
-  const managers: Manager[] = [
-    { id: "fa6f8c4b-e5fd-4c23-a20c-edbab2b5d169", name: "John Doe" },
-    { id: "manager-id-2", name: "Jane Smith" },
-    // Add more manager objects as needed
-  ];
+  const managerRequest = async () => {
+    const [response, error] = await handleApiRequest(() =>
+      allEmployees("84f2aa57-5d9e-4427-80a8-5e38e48e1294")
+    );
+    if (response) {
+      setManagers(response);
+    } else {
+      console.log(error);
+    }
+  };
+  console.log("hello", data);
 
-  const locations: Location[] = [
-    { id: "613e3bf0-d7fc-441f-ad3c-4491cb5f850e", name: "Location 1" },
-    { id: "location-id-2", name: "Location 2" },
-    // Add more location objects as needed
-  ];
-
+  const locationRequest = async () => {
+    const [response, error] = await handleApiRequest(() =>
+      organization_location("84f2aa57-5d9e-4427-80a8-5e38e48e1294")
+    );
+    if (response) {
+      setLocations(response.data.data);
+    } else {
+      console.log(error);
+    }
+  };
+  const branchPatch = async () => {
+    const [response, error] = await handleApiRequest(() =>
+      modify_branch(
+        "84f2aa57-5d9e-4427-80a8-5e38e48e1294",
+        selectedBranch.id,
+        data
+      )
+    );
+    if (!error) {
+      navigate("/overview");
+    }
+    console.log(response);
+  };
   const handleManagerChange = (
     event: React.ChangeEvent<{ value: unknown }>
   ) => {
@@ -50,13 +75,19 @@ const ModifyBranch: React.FC = () => {
   const handleNameChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setData({ ...data, name: event.target.value as string });
   };
-  console.log(data);
+
   const handleModifyBranch = () => {
     console.log(data);
+    branchPatch();
   };
   const handleCancelModify = () => {
     navigate("/overview");
   };
+  useEffect(() => {
+    managerRequest();
+    locationRequest();
+  }, []);
+
   return (
     <CP.Styled.Wrapper>
       <MapComponent />
