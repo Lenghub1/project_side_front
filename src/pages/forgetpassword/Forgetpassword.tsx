@@ -86,12 +86,15 @@ const ForgetPassword = () => {
     });
   }
 
+  const { response, isError, isLoading, isSuccess, error, handleApiRequest } =
+    useApi();
   async function forgetPassword(method: string, data: any): Promise<void> {
     await handleApiRequest(() => authApi.forgotPassword(method, data));
   }
 
   useEffect(() => {
     if (error) {
+      console.log("THE ERROR is", error);
       showMessage(
         `No results were found. Please check your ${
           resetPasswordBy === "phone" ? "phone number" : "email"
