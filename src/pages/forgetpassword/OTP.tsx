@@ -160,16 +160,18 @@ const OTP = () => {
     const [response, error] = await handleApiRequest(() =>
       authApi.verifyForgetPasswordToken(otp)
     );
+    console.log("Response", response);
 
     if (error) {
       return showMessage("Token is invalid. Please try agian", "error");
     }
-
+    console.log("Response", response);
     if (response?.data?.user) {
       setUserLoginState(response.data.user);
       setAccessToken(response.data.user.accessToken);
-      showMessage("OTP is verified", "success");
       naviagate("/reset-password");
+      console.log("Verified", response?.data?.user);
+      return;
     }
   }, []);
 

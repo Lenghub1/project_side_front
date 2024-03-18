@@ -33,13 +33,13 @@ function useApi<T>(): UseApiReturnType<T> {
     } catch (error) {
       setIsError(true);
       if (axios.isAxiosError(error)) {
-        console.log("ERRRRR: ", error);
         console.log("Something went wrong: ", error.response?.data);
         const apiError = new ApiError(
           error.response?.data?.message,
           error.response?.status,
           error.response?.data
         );
+
         setError(apiError);
       } else {
         console.log("An unexpected error occurred: ", error);

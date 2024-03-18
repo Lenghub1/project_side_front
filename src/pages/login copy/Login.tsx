@@ -4,7 +4,7 @@ import CP from "@/components";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import useValidatedInput from "@/hooks/useValidatedInput";
-import { authApi, testApi } from "@/api/auth";
+import { authApi } from "@/api/auth";
 import { handleApiRequest } from "@/api";
 import { SyntheticEvent } from "react";
 import Tab from "@mui/material/Tab";
@@ -33,6 +33,12 @@ const validateEmail = (email: string): string => {
   }
   return "";
 };
+
+interface LoginResponse {
+  user: {
+    accessToken: string;
+  };
+}
 const LoginPage = () => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -91,28 +97,11 @@ const LoginPage = () => {
       },
     });
   }
-
+  const { response, error, isError, handleApiRequest } = useApi();
   //function for login api
   async function login(method: string, data: any): Promise<void> {
-    const [response, error] = await handleApiRequest(() =>
-      authApi.testLogin(method, data)
-    );
+    await handleApiRequest(() => authApi.testLogin(method, data));
 
-    if (error) {
-      if (error?.response?.status === 400) {
-        if (singInMethod === "email") {
-          showMessage("Email or password is incorrect", "error");
-          email.setError("Email or password is incorrect");
-        } else {
-          showMessage("Phone number or password is incorrect", "error");
-          phone.setError("Phone number or password is incorrect");
-        }
-      } else if (error?.response?.status === 401) {
-        showMessage("Unauthorized. Pleaser verify your account", "error");
-      } else {
-        showMessage("Something went wrong. Please try again.", "error");
-      }
-    }
     setLoginUser({
       token: response.data.user.accessToken,
       userId: response.data.user.id,
@@ -122,6 +111,31 @@ const LoginPage = () => {
       navigate("/");
     }, 1500);
   }
+
+  useEffect(() => {
+    const userData = response?.data as LoginResponse;
+    if (userData?.user) {
+      console.log(userData.user);
+      setAccessToken(userData.user?.accessToken);
+      navigate("/");
+    }
+  }, [response]);
+
+  useEffect(() => {
+    if (error) {
+      console.log("ERRRRRRR", error);
+      if (error?.statusCode === 400) {
+        showMessage(
+          `${singInMethod === "email" ? "Email" : "Phone number"} or password is incorrect`,
+          "error"
+        );
+      } else if (error?.statusCode === 401) {
+        showMessage("Unauthorized. Pleaser verify your account", "error");
+      } else {
+        showMessage("Something went wrong. Please try again.", "error");
+      }
+    }
+  }, [error]);
 
   const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
@@ -187,7 +201,7 @@ const LoginPage = () => {
               {!isMobile && (
                 <CP.Typography width="100%">
                   Don't have an account?{" "}
-                  <a href="" style={{ color: "red", textDecoration: "none" }}>
+                  <a style={{ color: "red", textDecoration: "none" }}>
                     {" "}
                     Sign Up today
                   </a>
@@ -280,17 +294,18 @@ const LoginPage = () => {
                 </Flex>
               )}
               {isMobile && (
-                <CP.Typography
-                  margin="1rem 0"
-                  width="100%"
-                  color="red"
-                  sx={{ cursor: "pointer" }}
-                  onClick={() => {
-                    navigate("/forget-password");
-                  }}
-                >
-                  Forget password?
-                </CP.Typography>
+                <CP.Styled.Flex width="100%" justify="start">
+                  <CP.Typography
+                    margin="1rem 0"
+                    color="red"
+                    sx={{ cursor: "pointer" }}
+                    onClick={() => {
+                      navigate("/forget-password");
+                    }}
+                  >
+                    Forget password?
+                  </CP.Typography>
+                </CP.Styled.Flex>
               )}
               <CP.Button
                 fullWidth
@@ -307,7 +322,7 @@ const LoginPage = () => {
                   onClick={() => navigate("/get-started")}
                 >
                   Don't have an account?{" "}
-                  <a href="" style={{ color: "red", textDecoration: "none" }}>
+                  <a style={{ color: "red", textDecoration: "none" }}>
                     {" "}
                     Sign Up today
                   </a>

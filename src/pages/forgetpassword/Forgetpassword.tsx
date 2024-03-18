@@ -46,8 +46,6 @@ const ForgetPassword = () => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 428);
     };
-    console.log("Window size", window.innerWidth);
-
     window.addEventListener("resize", handleResize);
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -65,7 +63,6 @@ const ForgetPassword = () => {
       if (phone.value) phone.setValue("");
     }
     setResetPasswordBy(method);
-    console.log("Method", resetPasswordBy);
   };
 
   const isFormInvalid =
@@ -87,26 +84,10 @@ const ForgetPassword = () => {
     useApi();
   async function forgetPassword(method: string, data: any): Promise<void> {
     await handleApiRequest(() => authApi.forgotPassword(method, data));
-
-    if (!isError) {
-      console.log("Error");
-      if (method === "phone") {
-        showMessage(`OTP has been sent to ${data.phoneNumber}`, "success");
-      } else {
-        showMessage(
-          `Verifiation code has been sent. Please your email and verify`,
-          "success"
-        );
-      }
-      setTimeout(() => {
-        navigate("/verify-otp");
-      }, 2000);
-    }
   }
 
   useEffect(() => {
     if (error) {
-      console.log("THE ERROR is", error);
       showMessage(
         `No results were found. Please check your ${
           resetPasswordBy === "phone" ? "phone number" : "email"
@@ -118,11 +99,33 @@ const ForgetPassword = () => {
     }
   }, [error]);
 
+  useEffect(() => {
+    if (!error && isSuccess) {
+      if (resetPasswordBy === "phone") {
+        showMessage(
+          `OTP has been sent to ${selectedCountry.dialCode} ${phone.value}`,
+          "success"
+        );
+        setTimeout(() => {
+          navigate("/verify-otp");
+        }, 2000);
+      } else {
+        showMessage(
+          `Verifiation code has been sent. Please your email and verify`,
+          "success"
+        );
+      }
+    }
+    // // if ( !response?.data?.status_code === 200) {
+    //   return;
+    //   navigate("/");
+    // }
+  }, [response, isSuccess]);
+
   const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
 
     if (isFormInvalid) {
-      console.log("Form is invalid");
       return;
     }
 
@@ -130,7 +133,6 @@ const ForgetPassword = () => {
 
     if (resetPasswordBy === "email") {
       formData = { ...formData, email: email.value };
-      console.log("Data", formData);
     } else if (resetPasswordBy === "phone") {
       // remove leading 0 from phone number (E.164 format)
       const phoneWithoutLeadingZero = phone.value.replace(/^0+/, "");
@@ -139,7 +141,6 @@ const ForgetPassword = () => {
         ...formData,
         phoneNumber: selectedCountry.dialCode + phoneWithoutLeadingZero,
       };
-      console.log("Data", formData);
     }
 
     await forgetPassword(resetPasswordBy, formData);
