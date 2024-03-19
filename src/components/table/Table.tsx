@@ -13,7 +13,6 @@ import Switch from "@mui/material/Switch";
 import EnhancedTableToolbar from "./Toolbar";
 import EnhancedTableHead, { HeadCell } from "./TableHead";
 import { getComparator, stableSort } from "@/utils/table.util";
-
 type Order = "asc" | "desc";
 
 interface EnhancedTableProps<T> {
@@ -65,6 +64,9 @@ function EnhancedTable<T>({
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [currentOrder, setCurrentOrder] = React.useState<Order>(order);
   const [currentOrderBy, setCurrentOrderBy] = React.useState<keyof T>(orderBy);
+  const [filters, setFilters] = React.useState<{ [key: string]: string }>(
+    Object.fromEntries(headCells.map((cell) => [cell.id, ""]))
+  );
 
   const handleRequestSort = (property: keyof T) => {
     const isAsc = currentOrderBy === property && currentOrder === "asc";
@@ -93,6 +95,23 @@ function EnhancedTable<T>({
     setDense(event.target.checked);
   };
 
+  const handleFilterChange =
+    (property: keyof T) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      const value = event.target.value.toLowerCase();
+      setFilters({ ...filters, [property]: value });
+    };
+
+  const applyFilters = (rows: T[]): T[] => {
+    return rows.filter((row) => {
+      return Object.entries(filters).every(([key, value]) => {
+        const rowValue = (row as Record<keyof T, string>)[key as keyof T]
+          .toString()
+          .toLowerCase();
+        return rowValue.includes(value.toLowerCase());
+      });
+    });
+  };
+
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
@@ -103,12 +122,12 @@ function EnhancedTable<T>({
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
       ),
-    [currentOrder, currentOrderBy, page, rowsPerPage, rows]
+    [currentOrder, currentOrderBy, page, rowsPerPage, rows, filters]
   );
 
   return (
     <CP.Container>
-      <Paper sx={{ mb: 2 }}>
+      <Paper sx={{ mb: 2, padding: "1rem 0" }}>
         <EnhancedTableToolbar data={rows} name={tableName} />
         <TableContainer>
           <Table
@@ -120,19 +139,12 @@ function EnhancedTable<T>({
               order={currentOrder}
               orderBy={currentOrderBy}
               rowCount={rowCount}
-              headCells={
-                actionCell
-                  ? [
-                      ...headCells,
-                      {
-                        disablePadding: false,
-                        id: "action",
-                        label: "Action",
-                        numeric: false,
-                      },
-                    ]
-                  : headCells
-              }
+              headCells={headCells.map((headCell) => ({
+                ...headCell,
+                onFilterChange: headCell.filterable
+                  ? handleFilterChange.bind(null, headCell.id)
+                  : undefined,
+              }))}
               onRequestSort={handleRequestSort}
             />
 
@@ -148,14 +160,14 @@ function EnhancedTable<T>({
                       cursor: "default",
                     }}
                   >
-                    {headCells.map((cell) => (
-                      <TableCell key={cell.id} align="left">
+                    {headCells?.map((cell) => (
+                      <TableCell key={cell.id as string} align="left">
                         {row[cell.id]}
                       </TableCell>
                     ))}
 
                     {actionCell && (
-                      <TableCell align="left">{actionCell(row)}</TableCell>
+                      <TableCell align="left">{actionCell(row as T)}</TableCell>
                     )}
                   </TableRow>
                 );
