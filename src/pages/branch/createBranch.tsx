@@ -8,7 +8,7 @@ import { useSnackbar } from "notistack";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { selectMembers } from "@/store/employee";
 import { allEmployees } from "@/api/employee";
-import { create_branch } from "@/api/branch";
+import { createBranch } from "@/api/branch";
 import { handleApiRequest } from "@/api";
 import { useNavigate } from "react-router-dom";
 import { selectOrganization } from "@/store/userStore";
@@ -60,7 +60,7 @@ const CreateBranch: React.FC = () => {
 
   const requestCreateBranch = async () => {
     const [response, error] = await handleApiRequest(() =>
-      create_branch(organization, branchData)
+      createBranch(organization, branchData)
     );
     if (error) {
       throw error;

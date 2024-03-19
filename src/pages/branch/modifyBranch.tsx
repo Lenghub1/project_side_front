@@ -7,8 +7,8 @@ import { TextField, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { allEmployees } from "@/api/employee";
 import { handleApiRequest } from "@/api";
-import { organization_location } from "@/api/location";
-import { modify_branch } from "@/api/branch";
+import { organizationLocation } from "@/api/location";
+import { modifyBranch } from "@/api/branch";
 import { selectOrganization } from "@/store/userStore";
 interface Data {
   locationId: string;
@@ -42,7 +42,7 @@ const ModifyBranch: React.FC = () => {
 
   const locationRequest = async () => {
     const [response, error] = await handleApiRequest(() =>
-      organization_location(selected)
+      organizationLocation(selected)
     );
     if (response) {
       setLocations(response.data.data);
@@ -52,7 +52,7 @@ const ModifyBranch: React.FC = () => {
   };
   const branchPatch = async () => {
     const [response, error] = await handleApiRequest(() =>
-      modify_branch(selected, selectedBranch.id, data)
+      modifyBranch(selected, selectedBranch.id, data)
     );
     if (!error) {
       navigate("/overview");

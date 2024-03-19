@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import CP from "@/components";
 import theme from "@/theme/ligthTheme";
 import { handleApiRequest } from "@/api";
-import { my_branch } from "@/api/branch";
+import { myBranch } from "@/api/branch";
 import styled from "styled-components";
 import { Divider } from "@mui/material";
-import { my_organization } from "@/api/organization";
+import { myOrganization } from "@/api/organization";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { BranchDetailCard } from "./branchDetail";
@@ -42,9 +42,9 @@ const OverviewOrganization = () => {
   const createBranch = () => {
     navigate("/overview/createBranch");
   };
-  const my_organization_data = async () => {
+  const myOrganizationData = async () => {
     const [response, error] = await handleApiRequest(() =>
-      my_organization(selected)
+      myOrganization(selected)
     );
     if (response) {
       setOrganizationData(response.data);
@@ -53,18 +53,21 @@ const OverviewOrganization = () => {
     }
   };
 
-  const my_organization_branch_data = async () => {
-    const [response, error] = await handleApiRequest(() => my_branch(selected));
+  const myOrganizationBranchData = async () => {
+    const [response, error] = await handleApiRequest(() => myBranch(selected));
+    console.log(response);
     if (response) {
-      setOrganizationBranchData(response.data.data);
+      setOrganizationBranchData(response.data);
     } else {
       console.log(error);
     }
   };
 
+  console.log(organizationBranchData);
+
   React.useEffect(() => {
-    my_organization_data();
-    my_organization_branch_data();
+    myOrganizationData();
+    myOrganizationBranchData();
   }, []);
 
   return (

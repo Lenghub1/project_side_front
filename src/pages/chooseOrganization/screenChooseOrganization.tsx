@@ -100,7 +100,7 @@ const ScreenChooseOrganization = () => {
           justify="flex-end"
           style={{ marginTop: "20px" }}
         >
-          <CP.Button variant="outlined">CANCEL</CP.Button>
+          <CP.Button variant="text">CANCEL</CP.Button>
           {selectedOrg ? (
             <CP.Button onClick={handleNavigate}>NEXT</CP.Button>
           ) : (

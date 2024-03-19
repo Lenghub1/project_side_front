@@ -11,10 +11,10 @@ import { useRecoilValue } from "recoil";
 const AddMember: React.FC<AddMemberProps> = ({ branchData, setBranchData }) => {
   const [selected, setSelected] = React.useState<string[]>([]);
   const [fakeMembers, setFakeMembers] = React.useState<string[]>([]);
-  const selected_organization = useRecoilValue(selectOrganization);
+  const selectedOrganization = useRecoilValue(selectOrganization);
   const newPendingEmployees = async () => {
     const [response, error] = await handleApiRequest(() =>
-      allEmployees(selected_organization)
+      allEmployees(selectedOrganization)
     );
     console.log(response);
     if (response) {
