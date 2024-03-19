@@ -1,6 +1,6 @@
-import { User } from "./User";
 export interface Employement {
   id: string;
+  userId:string
   name: string;
   position: string;
   description: string;
@@ -11,4 +11,7 @@ export interface Employement {
   privilege: string;
   workLocation: string;
   userId: string;
+  email: string;
+  phoneNumber: string;
+  users: any;
 }

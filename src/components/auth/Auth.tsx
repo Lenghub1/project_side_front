@@ -12,7 +12,7 @@ const Auth = ({ children }: { children?: ReactNode }) => {
     // login campus router flow
     if (!isCampus) return navigate("/campus");
     if (!isLogin && isCampus) navigate("/login");
-    if (isLogin && isCampus) navigate("/");
+    // if (isLogin && isCampus) navigate("/");
   }, [isLogin, isCampus]);
 
   return <>{children}</>;

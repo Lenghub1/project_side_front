@@ -1,6 +1,6 @@
 import "mapbox-gl/dist/mapbox-gl.css";
 import Map from "react-map-gl";
-
+import { Marker } from "react-map-gl";
 const MapComponent = () => {
   return (
     <Map
@@ -16,8 +16,9 @@ const MapComponent = () => {
         borderRadius: 16,
       }}
       mapStyle="mapbox://styles/mapbox/streets-v9"
-    />
+    >
+      <Marker latitude={11.59669} longitude={104.92578} />
+    </Map>
   );
 };
-
 export default MapComponent;

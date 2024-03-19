@@ -11,8 +11,27 @@ export interface RouteProps {
 }
 
 const routes: RouteProps[] = [
-  { name: "home", path: "/", element: Pg.HomePage },
+  {
+    name: "home",
+    path: "/",
+    element: Pg.HomePage,
+    children: [
+      {
+        name: "overviewOrganization",
+        path: "overview",
+        element: Pg.overviewOrganization,
+        children: [
+          {
+            name: "createBranch",
+            path: "createBranch",
+            element: Pg.Branch.CreateBranch,
+          },
+        ],
+      },
+    ],
+  },
   // { name: "login", path: "/login", element: Pg.LoginPage },
+
   // {
   //   name: "campusSelect",
   //   path: "/campus",
@@ -23,6 +42,11 @@ const routes: RouteProps[] = [
   //   path: "/campus/set",
   //   element: Pg.Campus.default.SetCampusPage,
   // },
+  {
+    name: "chooseOrganization",
+    path: "/login/organizations",
+    element: Pg.choose.default.ScreenChooseOrganization,
+  },
   {
     name: "getStarted",
     path: "/get-started",
@@ -83,11 +107,28 @@ const routes: RouteProps[] = [
     element: Pg.TestLoginPage,
     protected: false,
   },
+  {
+    name: "chooseOrganization",
+    path: "/login/organizations",
+    element: Pg.choose.default.ScreenChooseOrganization,
+    protected: true,
+  },
 
   {
     name: "group",
     path: "group",
     element: Pg.GroupPage,
+  },
+  {
+    name: "employeeRegistrationsdetail",
+    path: "organization/employee/registrations/details",
+    element: Pg.Employee.default.EmployeeRegistrationDetail,
+  },
+
+  {
+    name: "modifyBranch",
+    path: "organization/modifyBranch",
+    element: Pg.Branch.ModifyBranch,
   },
 ];
 
