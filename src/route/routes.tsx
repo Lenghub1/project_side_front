@@ -130,9 +130,9 @@ const routes: RouteProps[] = [
     ],
   },
   {
-    name: "test-redirect",
-    path: "/test-redirect",
-    element: Pg.Login.default.RedirectingPage,
+    name: "loginpage",
+    path: "login",
+    element: Pg.Login.default.LoginPage,
     protected: false,
   },
 ];

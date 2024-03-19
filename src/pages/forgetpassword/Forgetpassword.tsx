@@ -152,7 +152,6 @@ const ForgetPassword = () => {
 
     await forgetPassword(resetPasswordBy, formData);
   };
-
   return (
     <>
       {isForgetPasswordRoute ? (
