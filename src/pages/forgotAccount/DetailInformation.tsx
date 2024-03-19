@@ -1,37 +1,61 @@
-import * as React from "react";
 import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 import CP from "@/components";
 import { useParams } from "react-router-dom";
 import Store from "@/store";
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
+import { useNavigate } from "react-router-dom";
 
 export default function DetailInformation() {
   const { id } = useParams();
+  console.log("ID", id);
 
-  const data = useRecoilValue(Store.User.forgotAccountInformation);
+  const [data, setData] = useRecoilState(Store.User.forgotAccountInformation);
+  const navigate = useNavigate();
+  const handleToLogin = () => {
+    setData([]);
+    navigate("/login");
+  };
   return (
-    <CP.Styled.Flex
-      width="100%"
-      height="100vh"
-      justify="center"
-      align-items="start"
-      direction="column"
-    >
-      <Typography variant="h4" marginBottom="1rem">
-        Find Your Account
-      </Typography>
-      <Typography variant="body1" align="start">
-        {`The credential account for ${data[id].firstName} ${data[id].lastName} is ${data[0].email ? data[0].email : data[0].email} `}
-      </Typography>
-      <Button
-        variant="contained"
-        color="primary"
-        size="large"
-        style={{ marginTop: "1rem" }}
+    <CP.Styled.Flex height="100%">
+      <CP.Styled.Flex
+        direction="column"
+        height="100vh"
+        gap="1rem"
+        width="400px"
+        margin="0 2rem"
+        items="flex-start"
       >
-        Login
-      </Button>
+        <CP.Typography variant="h4" marginBottom="2rem">
+          Find Your Account
+        </CP.Typography>
+
+        <CP.Typography>
+          {`The credential account for `}
+          <strong>{`${data[id].firstName} ${data[id].lastName}
+        `}</strong>
+        </CP.Typography>
+        <CP.Typography>
+          {data[id].email && (
+            <>
+              {" "}
+              {"email: "} <strong>{data[id].email}</strong>
+            </>
+          )}
+        </CP.Typography>
+        <CP.Typography>
+          {data[id].phoneNumber && `phone: ${data[id].phoneNumber}`}
+        </CP.Typography>
+        <Button
+          fullWidth
+          variant="contained"
+          color="primary"
+          size="large"
+          style={{ marginTop: "1rem" }}
+          onClick={handleToLogin}
+        >
+          Login
+        </Button>
+      </CP.Styled.Flex>
     </CP.Styled.Flex>
   );
 }

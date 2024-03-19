@@ -11,17 +11,16 @@ import Tabs from "@mui/material/Tabs";
 import countries from "@/components/phonePrefix/countries.json";
 import { useSnackbar } from "notistack";
 import { IconButton } from "@mui/material";
+import { Box } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import FacebookLoginButton from "./FacebookLoginButton";
-import GoogleLoginButton from "./GoogleLoginButton";
 import Store from "@/store";
-import TelegramLoginButton from "./TelegramLoginButton";
+// import TelegramLoginButton from "./TelegramLoginButton";
+import OauthComponent, { OauthBox } from "@/components/oauth/OauthComponent";
 import useApi from "@/hooks/useApi";
 
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
 `;
-
 type SignInMethod = "email" | "phone";
 
 // validate email function
@@ -47,6 +46,7 @@ const LoginPage = () => {
   const password = useValidatedInput("", "Password");
   const [isPassword, setIsPassword] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 428);
+  const [isTablet, setIsTable] = useState(window.innerWidth <= 960);
   const [selectedCountry, setSelectedCountry] = useState<{
     name: string;
     dialCode: string;
@@ -58,13 +58,14 @@ const LoginPage = () => {
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 428);
+      setIsTable(window.innerWidth <= 960);
     };
 
     window.addEventListener("resize", handleResize);
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [email.value, phone.value, password.value]);
+  }, []);
 
   const handleSignInMethodChange = (
     event: SyntheticEvent,
@@ -102,8 +103,8 @@ const LoginPage = () => {
     await handleApiRequest(() => authApi.testLogin(method, data));
 
     setLoginUser({
-      token: response.data.user.accessToken,
-      userId: response.data.user.id,
+      token: response?.data?.user.accessToken,
+      userId: response?.data?.user.id,
     });
     setTimeout(() => {
       showMessage("Login Successfully!", "success");
@@ -252,7 +253,7 @@ const LoginPage = () => {
                 value={password.value}
                 onChange={password.onChange}
                 onBlur={password.onBlur}
-                error={password.error}
+                error={!!password.error}
                 helperText={<password.HelperText />}
                 required
                 InputProps={{
@@ -266,34 +267,9 @@ const LoginPage = () => {
               <div style={{ width: "100%" }}>
                 <CP.Checkbox label="Remember me" />
               </div>
+              {isMobile && <OauthComponent />}
               {isMobile && (
-                <Flex direction="row" gap="40px" margin="1rem 0 0">
-                  <FacebookLoginButton />
-                  <GoogleLoginButton />
-                  {/* <Box
-                    component="img"
-                    sx={{
-                      height: 36,
-                      width: 36,
-                      maxHeight: { xs: 233, md: 167 },
-                      maxWidth: { xs: 350, md: 250 },
-                      cursor: "pointer",
-                    }}
-                    onClick={() =>
-                      (window.location.href =
-                        "https://oauth.telegram.org/auth?bot_id=7091265126&origin=https%3A%2F%2Ff643-167-179-40-121.ngrok-free.app&embed=1&request_access=write&lang=en&return_to=https%3A%2F%2Ff643-167-179-40-121.ngrok-free.app%2Fapi%2Fv1%2Fauth%2Ftelegram%2Ftest")
-                    }
-                    alt="Image for telegram"
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/1200px-Telegram_logo.svg.png"
-                  /> */}
-                  <TelegramLoginButton
-                    onAuthCallback={handleTelegramData}
-                    botUsername="riem_app_bot"
-                  />
-                </Flex>
-              )}
-              {isMobile && (
-                <CP.Styled.Flex width="100%" justify="start">
+                <CP.Styled.Flex width="100%" justify="flex-start">
                   <CP.Typography
                     margin="1rem 0"
                     color="red"
@@ -328,7 +304,7 @@ const LoginPage = () => {
                 </CP.Typography>
               )}
               {!isMobile && (
-                <CP.Styled.Flex width="100%" justify="start">
+                <CP.Styled.Flex width="100%" justify="flex-start">
                   <CP.Typography
                     margin="1rem 0"
                     color="red"
@@ -356,31 +332,7 @@ const LoginPage = () => {
                 </CP.Typography>
               )}
 
-              {!isMobile && (
-                <Flex direction="row" gap="40px" margin="1rem">
-                  <FacebookLoginButton />
-                  <GoogleLoginButton />
-                  {/* <Box
-                    component="img"
-                    sx={{
-                      height: 36,
-                      width: 36,
-                      maxHeight: { xs: 233, md: 167 },
-                      maxWidth: { xs: 350, md: 250 },
-                    }}
-                    onClick={() =>
-                      (window.location.href =
-                        "https://oauth.telegram.org/auth?bot_id=7091265126&origin=https%3A%2F%2Ff643-167-179-40-121.ngrok-free.app&embed=1&request_access=write&lang=en&return_to=https%3A%2F%2Ff643-167-179-40-121.ngrok-free.app%2Fapi%2Fv1%2Fauth%2Ftelegram%2Ftest")
-                    }
-                    alt="Image for telegram"
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/1200px-Telegram_logo.svg.png"
-                  /> */}
-                  <TelegramLoginButton
-                    onAuthCallback={handleTelegramData}
-                    botUsername="riem_app_bot"
-                  />
-                </Flex>
-              )}
+              {!isMobile && <OauthComponent />}
 
               {isMobile && (
                 <CP.Typography margin="0 0 1rem" textAlign={"center"}>
@@ -398,18 +350,19 @@ const LoginPage = () => {
           </Flex>
         </CP.Styled.Div>
 
-        {!isMobile && (
+        {!isTablet && (
           <CP.Styled.Div height="100%">
             <Flex style={{ height: "100%" }}>
-              <img
-                src="https://wallpapers.com/images/featured/anime-aesthetic-pictures-lqtumoq8zq18qvfs.jpg"
-                alt=""
-                style={{
-                  width: "auto",
-                  height: "auto",
+              <Box
+                component="img"
+                src="/random-unsplash.jpg"
+                alt="Random image"
+                width={1}
+                height={"100vh"}
+                sx={{
+                  width: 1,
+                  height: "100vh",
                   objectFit: "cover",
-                  maxWidth: "100%",
-                  maxHeight: "100%",
                 }}
               />
             </Flex>

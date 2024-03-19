@@ -21,7 +21,7 @@ const RedirectingPage = () => {
     setLoginUser({ token: paramsElement.token, userId: paramsElement.id });
 
     setTimeout(() => {
-      naviagate("/login-page");
+      naviagate("/login");
     }, 2000);
   }, [naviagate]);
 

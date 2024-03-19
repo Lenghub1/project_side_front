@@ -1,5 +1,4 @@
-import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useNavigate, useLocation, Outlet } from "react-router-dom";
 import useValidatedInput from "@/hooks/useValidatedInput";
 import CP from "@/components";
 import styled from "styled-components";
@@ -40,8 +39,11 @@ const ForgetPassword = () => {
   }>(countries[0]);
   const [resetPasswordBy, setResetPasswordBy] =
     useState<FindPasswordMethod>("email");
+  const location = useLocation();
   const activeTabIndex = resetPasswordBy === "email" ? 0 : 1;
+  const isForgetPasswordRoute = location.pathname === "/forget-password";
 
+  console.log("FORGET PASSWORD", isForgetPasswordRoute, location.pathname);
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 428);
@@ -107,7 +109,7 @@ const ForgetPassword = () => {
           "success"
         );
         setTimeout(() => {
-          navigate("/verify-otp");
+          navigate("/forget-password/verify-otp");
         }, 2000);
       } else {
         showMessage(
@@ -116,10 +118,6 @@ const ForgetPassword = () => {
         );
       }
     }
-    // // if ( !response?.data?.status_code === 200) {
-    //   return;
-    //   navigate("/");
-    // }
   }, [response, isSuccess]);
 
   const handleSubmit = async (event: SyntheticEvent) => {
@@ -145,130 +143,137 @@ const ForgetPassword = () => {
 
     await forgetPassword(resetPasswordBy, formData);
   };
-
   return (
-    <CP.Styled.Wrapper height="100vh">
-      <Flex height="inherit">
-        <CP.Styled.Div
-          style={{
-            minWidth: isMobile ? "396px" : "565px",
-            padding: !isMobile ? "0 1rem" : "0 16px",
-          }}
-        >
-          <Flex
-            items="flex-start"
-            direction="column"
-            style={{
-              padding: !isMobile ? "0 3rem" : "0px",
-            }}
-          >
-            <CP.Typography
-              variant="h4"
-              margin="0 0 2rem"
+    <>
+      {isForgetPasswordRoute ? (
+        <CP.Styled.Wrapper height="100vh">
+          <Flex height="inherit">
+            <CP.Styled.Div
               style={{
-                fontWeight: "semibold",
-                textAlign: isMobile ? "center" : "start",
-                width: "100%",
+                minWidth: isMobile ? "396px" : "565px",
+                padding: !isMobile ? "0 1rem" : "0 16px",
               }}
             >
-              Password Reset
-            </CP.Typography>
-            <CP.Typography
-              style={{
-                marginBottom: "2rem",
-                fontWeight: "semibold",
-                textAlign: isMobile ? "start" : "start",
-                width: "100%",
-              }}
-            >
-              Enter you email address below and we'll send you password reset
-              OTP.
-            </CP.Typography>
-            <Flex direction="column" gap="24px" overflow="unset">
-              <Tabs
-                sx={{ alignSelf: !isMobile ? "flex-start" : "center" }}
-                value={activeTabIndex}
-                onChange={(e, value) => handleResetPasswordBy(e, value)}
-                aria-label="signup options"
+              <Flex
+                items="flex-start"
+                direction="column"
+                style={{
+                  padding: !isMobile ? "0 3rem" : "0px",
+                }}
               >
-                <Tab label="With Email" />
-                <Tab label="With Phone" />
-              </Tabs>
-              {resetPasswordBy === "email" ? (
-                <CP.Input
-                  label="Email"
-                  value={email.value}
-                  onChange={email.onChange}
-                  placeholder="Email"
-                  type="email"
-                  onBlur={email.onBlur}
-                  error={!!email.error}
-                  helperText={<email.HelperText />}
-                  required
-                />
-              ) : (
-                <Flex gap="0.5rem" items="flex-start">
-                  <CP.PhonePrefix
-                    selectedCountry={selectedCountry}
-                    setSelectedCountry={setSelectedCountry}
-                  />
-                  <CP.Input
-                    label="Phone number"
-                    value={phone.value}
-                    type="number"
-                    onChange={phone.onChange}
-                    placeholder="Phone"
-                    onBlur={phone.onBlur}
-                    error={!!phone.error}
-                    helperText={<phone.HelperText />}
-                    required
-                  />
-                </Flex>
-              )}
-
-              <CP.Styled.Flex width="100%" justify="start">
                 <CP.Typography
-                  margin="1rem 0"
-                  color="red"
-                  sx={{ cursor: "pointer" }}
-                  onClick={() => {
-                    navigate("/forgot-account");
+                  variant="h4"
+                  margin="0 0 2rem"
+                  style={{
+                    fontWeight: "semibold",
+                    textAlign: isMobile ? "center" : "start",
+                    width: "100%",
                   }}
                 >
-                  Forget account?
+                  Password Reset
                 </CP.Typography>
-              </CP.Styled.Flex>
-              <Flex width="100%" justify="end" gap="20px">
-                <CP.Button variant="text">Cancel</CP.Button>
-                <CP.Button
-                  type="submit"
-                  onClick={handleSubmit}
-                  disabled={isFormInvalid}
+                <CP.Typography
+                  style={{
+                    marginBottom: "2rem",
+                    fontWeight: "semibold",
+                    textAlign: isMobile ? "start" : "start",
+                    width: "100%",
+                  }}
                 >
-                  Find
-                </CP.Button>
+                  Enter you email address below and we'll send you password
+                  reset OTP.
+                </CP.Typography>
+                <Flex direction="column" gap="24px" overflow="unset">
+                  <Tabs
+                    sx={{ alignSelf: !isMobile ? "flex-start" : "center" }}
+                    value={activeTabIndex}
+                    onChange={(e, value) => handleResetPasswordBy(e, value)}
+                    aria-label="signup options"
+                  >
+                    <Tab label="With Email" />
+                    <Tab label="With Phone" />
+                  </Tabs>
+                  {resetPasswordBy === "email" ? (
+                    <CP.Input
+                      label="Email"
+                      value={email.value}
+                      onChange={email.onChange}
+                      placeholder="Email"
+                      type="email"
+                      onBlur={email.onBlur}
+                      error={!!email.error}
+                      helperText={<email.HelperText />}
+                      required
+                    />
+                  ) : (
+                    <Flex gap="0.5rem" items="flex-start">
+                      <CP.PhonePrefix
+                        selectedCountry={selectedCountry}
+                        setSelectedCountry={setSelectedCountry}
+                      />
+                      <CP.Input
+                        label="Phone number"
+                        value={phone.value}
+                        type="number"
+                        onChange={phone.onChange}
+                        placeholder="Phone"
+                        onBlur={phone.onBlur}
+                        error={!!phone.error}
+                        helperText={<phone.HelperText />}
+                        required
+                      />
+                    </Flex>
+                  )}
+
+                  <CP.Styled.Flex width="100%" justify="flex-start">
+                    <CP.Typography
+                      margin="1rem 0"
+                      color="red"
+                      sx={{ cursor: "pointer" }}
+                      onClick={() => {
+                        navigate("/forgot-account");
+                      }}
+                    >
+                      Forget account?
+                    </CP.Typography>
+                  </CP.Styled.Flex>
+                  <Flex width="100%" justify="flex-end" gap="20px">
+                    <CP.Button variant="text">Cancel</CP.Button>
+                    <CP.Button
+                      type="submit"
+                      onClick={handleSubmit}
+                      disabled={isFormInvalid}
+                    >
+                      Find
+                    </CP.Button>
+                  </Flex>
+                </Flex>
               </Flex>
-            </Flex>
+            </CP.Styled.Div>
+            {!isMobile && (
+              <CP.Styled.Div height="100%">
+                <Flex style={{ height: "100%" }}>
+                  <Box
+                    component="img"
+                    src="/random-unsplash.jpg"
+                    alt="Random image"
+                    width={1}
+                    height={"100vh"}
+                    sx={{
+                      width: 1,
+                      height: "100vh",
+                      objectFit: "cover",
+                    }}
+                  />
+                </Flex>
+              </CP.Styled.Div>
+            )}
           </Flex>
-        </CP.Styled.Div>
-        {!isMobile && (
-          <CP.Styled.Div height="100%">
-            <Flex style={{ height: "100%" }}>
-              <Box
-                component="img"
-                src="/random-unsplash.jpg"
-                alt="Random image"
-                sx={{
-                  width: 1,
-                  height: "100vh",
-                  objectFit: "cover",
-                }}
-              />
-            </Flex>
-          </CP.Styled.Div>
-        )}
-      </Flex>
-    </CP.Styled.Wrapper>
+        </CP.Styled.Wrapper>
+      ) : (
+        <Outlet />
+      )}
+    </>
   );
 };
 

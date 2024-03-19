@@ -67,18 +67,22 @@ const OTP = () => {
   const handleOnPaste = (e: ClipboardEvent, index: number) => {
     e.preventDefault();
     const paste = e.clipboardData.getData("text").split("");
-    if (paste.every((item) => !isNaN(Number(item)))) {
-      let newInputValue = [...arrayValue];
-      let newMaskedValue = [...maskedValue];
-      for (let i = 0; i < paste.length; i++) {
-        if (index + i < arrayValue.length) {
-          newInputValue[index + i] = paste[i];
-          newMaskedValue[index + i] = "*";
-        }
+    let newInputValue = [...arrayValue];
+    let newMaskedValue = [...maskedValue];
+    let currentIndex = index;
+    for (let i = 0; i < paste.length; i++) {
+      if (currentIndex < arrayValue.length) {
+        newInputValue[currentIndex] = paste[i];
+        newMaskedValue[currentIndex] = "*";
+        currentIndex++;
       }
-      setArrayValue(newInputValue);
-      setMaskedValue(newMaskedValue);
     }
+    setArrayValue(newInputValue);
+    setMaskedValue(newMaskedValue);
+
+    // Focus the next input after pasting
+    const nextIndex = Math.min(index + paste.length, arrayValue.length - 1);
+    inputs.current[nextIndex]?.focus();
   };
 
   // handle clicking keyboard event
@@ -116,12 +120,19 @@ const OTP = () => {
         inputs.current[index + 1]?.focus();
       }
 
-      // if the 6 input field, has value, then auto submit to OTP verify
-      // if (arrayValue.every((value) => value !== "")) {
-      //   arrayValue.every((value) => {
-      //     console.log;
-      //   });
-      // }
+      // Update the input value based on maskedValue
+      const newInputValues = maskedValue.map((value, idx) => {
+        if (idx <= index) {
+          return value;
+        } else {
+          return "";
+        }
+      });
+      inputs.current.forEach((input, idx) => {
+        if (input) {
+          input.value = newInputValues[idx];
+        }
+      });
     }
   };
 
@@ -160,17 +171,15 @@ const OTP = () => {
     const [response, error] = await handleApiRequest(() =>
       authApi.verifyForgetPasswordToken(otp)
     );
-    console.log("Response", response);
 
     if (error) {
+      console.log("ERRROR", error);
       return showMessage("Token is invalid. Please try agian", "error");
     }
-    console.log("Response", response);
     if (response?.data?.user) {
       setUserLoginState(response.data.user);
       setAccessToken(response.data.user.accessToken);
-      naviagate("/reset-password");
-      console.log("Verified", response?.data?.user);
+      naviagate("/forget-password/reset-password");
       return;
     }
   }, []);

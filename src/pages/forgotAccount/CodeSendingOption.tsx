@@ -138,7 +138,7 @@ const CodeSendingOption = () => {
                 value={data.codeSendingMethod}
                 onChange={handleRadioChange}
               />
-              <Flex width="100%" justify="end" gap="20px">
+              <Flex width="100%" justify="flex-end" gap="20px">
                 <CP.Button variant="text">Cancel</CP.Button>
                 <CP.Button type="submit" onClick={handleSubmit}>
                   Receive Code

@@ -15,6 +15,11 @@ type DivProps = {
   flex?: number;
   minwidth?: string;
   maxWidth?: string;
+  borderRadius?: string;
+  position?: string;
+  opacity?: number;
+  top?: number;
+  left?: number;
 };
 
 export const Div = styled.div<DivProps>`
@@ -29,6 +34,11 @@ export const Div = styled.div<DivProps>`
   gap: ${({ gap }) => gap && gap};
   min-width: ${({ minwidth }) => minwidth && minwidth};
   max-width: ${({ maxWidth }) => maxWidth && maxWidth};
+  border-radius: ${({ borderRadius }) => borderRadius && borderRadius};
+  position: ${({ position }) => position && position};
+  opacity: ${({ opacity }) => opacity && opacity};
+  top: ${({ top }) => (top ? top : 0)};
+  left: ${({ left }) => (left ? left : 0)};
 `;
 
 export const Wrapper = styled(Div)`
@@ -44,6 +54,7 @@ export const Flex = styled(Div)`
   flex-direction: ${({ direction }) => (direction ? direction : "row")};
   align-items: ${({ items }) => (items ? items : "center")};
   justify-content: ${({ justify }) => (justify ? justify : "center")};
+  width: ${({ width }) => (width ? width : "100%")};
 `;
 
 export const Top = styled(Flex)`

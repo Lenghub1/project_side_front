@@ -30,18 +30,17 @@ const VerifyToken = () => {
       );
 
       if (error) {
-        showMessage("Token is invalid. Please try agian", "error");
-        setTimeout(() => {
-          naviagate("/reset-password");
-        }, 2000);
+        console.log("ERROR ", error.message);
+        return showMessage("Token is invalid. Please try agian", "error");
       }
+
+      console.log("Response", response);
 
       if (response?.data?.user) {
         console.log("@@@ MY TOKEN @@", paramsElement.token);
-
-        setAccessToken(paramsElement.token);
         showMessage("Token is verified", "success");
-        naviagate("/reset-password");
+        // setAccessToken(paramsElement.token);
+        naviagate("/forget-password/reset-password");
       }
     },
     []
@@ -50,11 +49,14 @@ const VerifyToken = () => {
   let paramsElement: { token?: string } = {};
   useEffect(() => {
     const params = new URLSearchParams(window.location.hash.split("?")[1]);
-
-    paramsElement = Object.fromEntries(params.entries());
-    if (paramsElement?.token) {
-      verifyForgetPasswordToken(paramsElement?.token);
+    const token = Object.fromEntries(params.entries())?.token;
+    let ignore = false;
+    if (token && !ignore) {
+      verifyForgetPasswordToken(token);
     }
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   return (

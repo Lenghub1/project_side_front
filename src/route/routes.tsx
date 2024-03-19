@@ -131,34 +131,66 @@ const routes: RouteProps[] = [
     element: Pg.Branch.ModifyBranch,
   },
   {
+    name: "loginpage",
+    path: "login",
+    element: Pg.Login.default.LoginPage,
+    protected: false,
+  },
+  {
+    name: "forgetpassword",
+    path: "/forget-password",
+    element: Pg.ForgetPassword.default.ForgetPassword,
+    protected: false,
+    children: [
+      {
+        name: "forgetpasswordOTP",
+        path: "verify-otp",
+        element: Pg.ForgetPassword.default.OTP,
+        protected: false,
+      },
+
+      {
+        name: "resetPassword",
+        path: "reset-password",
+        element: Pg.ForgetPassword.default.ResetPassword,
+        protected: false,
+      },
+    ],
+  },
+  {
+    name: "verifytoken",
+    path: "verify-token",
+    element: Pg.ForgetPassword.default.VerifyToken,
+    protected: false,
+  },
+  {
     name: "test-redirect",
     path: "/test-redirect",
     element: Pg.Login.default.RedirectingPage,
     protected: false,
   },
-  {
-    name: "verifytoken",
-    path: "/verify-token",
-    element: Pg.ForgetPassword.default.VerifyToken,
-    protected: false,
-  },
+
   {
     name: "forgotaccount",
     path: "/forgot-account",
     element: Pg.ForgetAccount.default.ForgotAccount,
     protected: false,
-  },
-  {
-    name: "accountinformation",
-    path: "/forgot-account/informations",
-    element: Pg.ForgetAccount.default.AccountList,
-    protected: false,
-  },
-  {
-    name: "accountdetail",
-    path: "/forgot-account/informations/:id",
-    element: Pg.ForgetAccount.default.DetailInformation,
-    protected: false,
+    children: [
+      {
+        name: "accountinformation",
+        path: "informations",
+        element: Pg.ForgetAccount.default.AccountList,
+        protected: false,
+        children: [
+          {
+            name: "accountdetail",
+            path: ":id",
+            element: Pg.ForgetAccount.default.DetailInformation,
+            protected: false,
+          },
+        ],
+      },
+    ],
   },
 ];
 
