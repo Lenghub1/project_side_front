@@ -176,102 +176,103 @@ const SignupPage = () => {
             We've sent a verification code to your email.
           </Alert>
         )}
-        <Title>Create a new account</Title>
+        <CP.Styled.Div>
+          <Title>Create a new account</Title>
+          <Flex direction="column" gap="1.5rem">
+            {accountType === "employer" && (
+              <Flex gap=".5rem" items="flex-start">
+                <CP.Input
+                  label="First name"
+                  value={firstName.value}
+                  onChange={firstName.onChange}
+                  onBlur={firstName.onBlur}
+                  error={!!firstName.error}
+                  helperText={<firstName.HelperText />}
+                  required
+                />
+                <CP.Input
+                  label="Last name"
+                  value={lastName.value}
+                  onChange={lastName.onChange}
+                  onBlur={lastName.onBlur}
+                  error={!!lastName.error}
+                  helperText={<lastName.HelperText />}
+                  required
+                />
+              </Flex>
+            )}
+            <SignupMethod
+              email={email}
+              phone={phone}
+              selectedCountry={selectedCountry}
+              setSelectedCountry={setSelectedCountry}
+              signupMethod={signupMethod}
+              setSignupMethod={setSignupMethod}
+            />
 
-        <Flex direction="column" gap="1.5rem">
-          {accountType === "employer" && (
-            <Flex gap=".5rem" items="flex-start">
-              <CP.Input
-                label="First name"
-                value={firstName.value}
-                onChange={firstName.onChange}
-                onBlur={firstName.onBlur}
-                error={!!firstName.error}
-                helperText={<firstName.HelperText />}
-                required
-              />
-              <CP.Input
-                label="Last name"
-                value={lastName.value}
-                onChange={lastName.onChange}
-                onBlur={lastName.onBlur}
-                error={!!lastName.error}
-                helperText={<lastName.HelperText />}
-                required
-              />
+            <CP.Input
+              label="Password"
+              type={passwordIsVisible ? "text" : "password"}
+              value={password.value}
+              onChange={password.onChange}
+              onBlur={password.onBlur}
+              error={password.errors.length > 0}
+              helperText={<password.HelperText />}
+              required
+              InputProps={{
+                autoComplete: "new-password",
+                endAdornment: (
+                  <IconButton
+                    onClick={() => setPasswordIsVisible((prev) => !prev)}
+                  >
+                    {passwordIsVisible ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                ),
+              }}
+            />
+
+            <CP.Input
+              label="Confirm password"
+              type={confirmPasswordIsVisible ? "text" : "password"}
+              value={confirmPassword.value}
+              onChange={confirmPassword.onChange}
+              onBlur={confirmPassword.onBlur}
+              error={!!confirmPassword.error}
+              helperText={<confirmPassword.HelperText />}
+              required
+              InputProps={{
+                endAdornment: (
+                  <IconButton
+                    onClick={() => setConfirmPasswordIsVisible((prev) => !prev)}
+                  >
+                    {confirmPasswordIsVisible ? (
+                      <Visibility />
+                    ) : (
+                      <VisibilityOff />
+                    )}
+                  </IconButton>
+                ),
+              }}
+            />
+
+            <Divider></Divider>
+            <Flex gap="1rem">
+              <CP.Button variant="text">Cancel</CP.Button>
+              <CP.Button
+                disabled={isFormInvalid}
+                type="submit"
+                onClick={handleSubmit}
+              >
+                Signup
+              </CP.Button>
             </Flex>
-          )}
-          <SignupMethod
-            email={email}
-            phone={phone}
-            selectedCountry={selectedCountry}
-            setSelectedCountry={setSelectedCountry}
-            signupMethod={signupMethod}
-            setSignupMethod={setSignupMethod}
-          />
-
-          <CP.Input
-            label="Password"
-            type={passwordIsVisible ? "text" : "password"}
-            value={password.value}
-            onChange={password.onChange}
-            onBlur={password.onBlur}
-            error={password.errors.length > 0}
-            helperText={<password.HelperText />}
-            required
-            InputProps={{
-              autoComplete: "new-password",
-              endAdornment: (
-                <IconButton
-                  onClick={() => setPasswordIsVisible((prev) => !prev)}
-                >
-                  {passwordIsVisible ? <Visibility /> : <VisibilityOff />}
-                </IconButton>
-              ),
-            }}
-          />
-
-          <CP.Input
-            label="Confirm password"
-            type={confirmPasswordIsVisible ? "text" : "password"}
-            value={confirmPassword.value}
-            onChange={confirmPassword.onChange}
-            onBlur={confirmPassword.onBlur}
-            error={!!confirmPassword.error}
-            helperText={<confirmPassword.HelperText />}
-            required
-            InputProps={{
-              endAdornment: (
-                <IconButton
-                  onClick={() => setConfirmPasswordIsVisible((prev) => !prev)}
-                >
-                  {confirmPasswordIsVisible ? (
-                    <Visibility />
-                  ) : (
-                    <VisibilityOff />
-                  )}
-                </IconButton>
-              ),
-            }}
-          />
-
-          <Divider></Divider>
-          <Flex gap="1rem">
-            <CP.Button variant="text">Cancel</CP.Button>
-            <CP.Button
-              disabled={isFormInvalid}
-              type="submit"
-              onClick={handleSubmit}
-            >
-              Signup
-            </CP.Button>
+            <CP.Typography variant="subtitle2">
+              By signing up, you agree to our{" "}
+              <NavLink to="#">Terms of Service</NavLink> &{" "}
+              <NavLink to="#">Privacy Policy</NavLink>
+            </CP.Typography>
           </Flex>
-          <CP.Typography variant="subtitle2">
-            By signing up, you agree to our{" "}
-            <NavLink to="#">Terms of Service</NavLink> &{" "}
-            <NavLink to="#">Privacy Policy</NavLink>
-          </CP.Typography>
-        </Flex>
+        </CP.Styled.Div>
       </FormContainer>
       <Flex direction="column" margin="1rem 0 0" gap="1rem">
         <Divider></Divider>

@@ -2,7 +2,7 @@ import { useState } from "react";
 import CP from "@/components";
 import { RoleCard } from "@/components/roleCard";
 import styled from "styled-components";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
 import useScreenSize from "@/hooks/useScreenSize";
 
@@ -12,6 +12,7 @@ export const Flex = styled(CP.Styled.Flex)`
 
 const GetStarted = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [accountType, setAccountType] = useState<
     "employer" | "employee" | null
   >(null);
@@ -19,18 +20,30 @@ const GetStarted = () => {
 
   const isGetStartedRoute = location.pathname === "/get-started";
 
+  const handleOnButtonClick = () => {
+    if (accountType === "employee") {
+      navigate("/get-started/company-search");
+    } else if (accountType === "employer") {
+      navigate("/get-started/create-account");
+    }
+  };
+
   return (
     <CP.Styled.Div>
       {isGetStartedRoute ? (
         <Container direction="column">
           <CP.Styled.Flex direction="column" padding="0 0 2rem">
-            <CP.Typography variant="h4" gutterBottom>
+            <CP.Typography variant={isMobile ? "h5" : "h4"} gutterBottom>
               Get started with Riem
             </CP.Typography>
             <CP.Typography variant="subtitle1">Choose your role</CP.Typography>
           </CP.Styled.Flex>
-          <Flex direction="column" gap="2rem">
-            <Flex direction={isMobile ? "column" : "row"} gap="2rem">
+          <Flex direction="column" gap="2rem" padding="auto">
+            <Flex
+              direction={isMobile ? "column" : "row"}
+              gap="2rem"
+              padding="0 1rem"
+            >
               <RoleCard
                 accountType={accountType}
                 setAccountType={setAccountType}
@@ -48,23 +61,18 @@ const GetStarted = () => {
                 description="Create a new organization to manage time & attendance for your team"
               />
             </Flex>
-            <Link
-              to={
-                accountType === "employer"
-                  ? "/get-started/create-account"
-                  : "/get-started/company-search"
-              }
-              style={{ width: "100%" }}
-            >
+
+            <Flex padding="0 1rem">
               <CP.Button
                 fullWidth
                 size="large"
                 variant="contained"
                 disabled={!accountType}
+                onClick={handleOnButtonClick}
               >
                 Continue
               </CP.Button>
-            </Link>
+            </Flex>
           </Flex>
         </Container>
       ) : (
@@ -100,8 +108,8 @@ const GetStarted = () => {
 const Container = styled(Flex)`
   min-height: 100vh;
   max-width: 712px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: auto;
+  padding: 1rem 0;
 `;
 
 export default GetStarted;

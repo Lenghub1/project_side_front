@@ -8,28 +8,42 @@ import { codeOrganization } from "@/api/organization";
 import { Flex } from "../getStarted/GetStarted";
 import { searchResultState } from "@/store/organizationStore";
 import { useRecoilState } from "recoil";
+import useScreenSize from "@/hooks/useScreenSize";
+
 const Divider = styled(MuiDivider)`
   width: 100%;
 `;
 
-export const Title = ({ children }: any) => (
-  <CP.Typography
-    variant="h4"
-    style={{
-      marginBottom: "2rem",
-      fontWeight: "semibold",
-      textAlign: "start",
-    }}
-  >
-    {children}
-  </CP.Typography>
-);
+export const Title = ({ children }: any) => {
+  const { isMobile } = useScreenSize();
 
-export const FormContainer = ({ children }: any) => (
-  <Flex items="flex-start" padding="0 3rem" direction="column" gap="1rem">
-    {children}
-  </Flex>
-);
+  return (
+    <CP.Typography
+      variant={isMobile ? "h5" : "h4"}
+      style={{
+        marginBottom: "2rem",
+        fontWeight: "semibold",
+        textAlign: isMobile ? "center" : "start",
+      }}
+    >
+      {children}
+    </CP.Typography>
+  );
+};
+
+export const FormContainer = ({ children }: any) => {
+  const { isMobile } = useScreenSize();
+  return (
+    <Flex
+      items={isMobile ? "center" : "flex-start"}
+      padding={isMobile ? "0" : "0 3rem"}
+      direction="column"
+      gap="1rem"
+    >
+      {children}
+    </Flex>
+  );
+};
 
 const CompanySearch = () => {
   const location = useLocation();
@@ -50,10 +64,15 @@ const CompanySearch = () => {
       console.log(error);
     }
   };
-  const handleCompanySearch = () => {
+  const { isMobile } = useScreenSize();
+
+  const handleCompanySearch = (event: React.FormEvent) => {
+    event.preventDefault();
     if (companyCode.value) {
       getCompanyCode();
       navigate(location.pathname + `/${companyCode.value}`);
+    } else {
+      companyCode.setTouched(true);
     }
   };
 
@@ -81,7 +100,7 @@ const CompanySearch = () => {
                     helperText={<companyCode.HelperText />}
                   />
 
-                  <Flex gap="1rem" justify="flex-end">
+                  <Flex gap="1rem" justify={isMobile ? "center" : "flex-end"}>
                     <CP.Button variant="text">Cancel</CP.Button>
                     <CP.Button type="submit" onClick={handleCompanySearch}>
                       Search
