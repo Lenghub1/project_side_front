@@ -4,12 +4,21 @@ import Box from "@mui/material/Box";
 import { allWorkplace } from "@/api/employee";
 import { handleApiRequest } from "@/api";
 import ChooseOrganizationCard from "@/components/organization/chooseOrganizationCard";
-import { userState } from "@/store/userStore";
-import { useRecoilValue } from "recoil";
+import {
+  userState,
+  selectOrganization as selectedOrg,
+} from "@/store/userStore"; // Renamed selectOrganization to selectedOrg
+import { useRecoilState, useRecoilValue } from "recoil";
+import { useNavigate } from "react-router-dom";
+import { organizationState } from "@/store/organizationStore";
+
 const ScreenChooseOrganization = () => {
-  const [activeOrgId, setActiveOrgId] = useState<string | null>(null);
-  const [organizationData, setOrganizationData] = useState<any[]>([]);
+  const navigate = useNavigate();
+  const [selectedOrg, setSelectedOrg] = useState<string | null>(null); // Renamed selectOrganization to selectedOrg
+  const [organizationData, setOrganizationData] =
+    useRecoilState(organizationState);
   const user = useRecoilValue(userState);
+  console.log(user);
 
   const organizations = async () => {
     const [response, error] = await handleApiRequest(() =>
@@ -22,7 +31,12 @@ const ScreenChooseOrganization = () => {
     }
   };
 
-  console.log(activeOrgId);
+  const handleNavigate = () => {
+    setSelectedOrg(selectedOrg); // Updated to use setSelectedOrg instead of setSelectOrganization
+    navigate("/");
+  };
+
+  console.log(selectedOrg);
 
   useEffect(() => {
     organizations();
@@ -38,7 +52,7 @@ const ScreenChooseOrganization = () => {
           >
             <CP.Typography variant="h5">Riem</CP.Typography>
             <CP.Typography>
-              Confirmed as <strong>TourlengStrange@gmail.com</strong>
+              Confirmed as <strong>{user.email}</strong>
             </CP.Typography>
           </CP.Styled.Flex>
         </CP.Styled.Flex>
@@ -47,12 +61,12 @@ const ScreenChooseOrganization = () => {
           <CP.Typography variant="h4"> YOUR ORGANIZATIONS </CP.Typography>
         </CP.Styled.Flex>
 
-        {organizationData.map((organization, index) => (
+        {organizationData.map((organization: any, index: number) => (
           <ChooseOrganizationCard
             key={index}
             id={organization.id}
-            setActiveOrgId={setActiveOrgId}
-            isActive={organization.id === activeOrgId}
+            setActiveOrgId={setSelectedOrg} // Updated to use setSelectedOrg instead of setSelectOrganization
+            isActive={organization.id === selectedOrg} // Updated to use selectedOrg instead of selectOrganization
             title={organization.organizations.name}
             description="You are member of ours organization , pls click Next to Login"
           />
@@ -69,7 +83,11 @@ const ScreenChooseOrganization = () => {
           style={{ marginTop: "20px" }}
         >
           <CP.Button variant="outlined">CANCEL</CP.Button>
-          <CP.Button>NEXT</CP.Button>
+          {selectedOrg ? (
+            <CP.Button onClick={handleNavigate}>NEXT</CP.Button>
+          ) : (
+            <CP.Button disabled>NEXT</CP.Button>
+          )}
         </CP.Styled.Flex>
       </CP.Styled.Flex>
 

@@ -1,7 +1,8 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
-
+import { useRecoilValue } from "recoil";
+import { selectOrganization } from "@/store/userStore";
 interface UnprotectedRouteProps {
   element: any;
   redirectPath?: string;
@@ -9,11 +10,15 @@ interface UnprotectedRouteProps {
 
 const UnprotectedRoute: React.FC<UnprotectedRouteProps> = ({
   element,
-  redirectPath = "/login/organizations",
+  redirectPath = "/",
 }) => {
   const { isAuthenticated } = useAuth();
+  const selected = useRecoilValue(selectOrganization);
 
   if (isAuthenticated) {
+    if (!selected) {
+      return <Navigate to="/login/organizations" replace />;
+    }
     return <Navigate to={redirectPath} replace />;
   }
 

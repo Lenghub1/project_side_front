@@ -113,7 +113,7 @@ const TestLoginPage = () => {
       console.log(userData.user);
 
       setAccessToken(userData.user?.accessToken);
-      navigate("/login/organizations");
+      navigate("/");
     }
   }, [response]);
 

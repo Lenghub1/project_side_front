@@ -43,6 +43,11 @@ const routes: RouteProps[] = [
   //   element: Pg.Campus.default.SetCampusPage,
   // },
   {
+    name: "chooseOrganization",
+    path: "/login/organizations",
+    element: Pg.choose.default.ScreenChooseOrganization,
+  },
+  {
     name: "getStarted",
     path: "/get-started",
     element: Pg.GetStarted,
@@ -113,6 +118,7 @@ const routes: RouteProps[] = [
     element: Pg.choose.default.ScreenChooseOrganization,
     protected: true,
   },
+
   {
     name: "group",
     path: "group",

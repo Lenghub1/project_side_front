@@ -39,7 +39,9 @@ const useAuth = () => {
       }
     };
 
+    console.log("Before");
     fetchUserInfo();
+    console.log("After");
     setIsUserFetched(true);
   }, [accessToken]);
 

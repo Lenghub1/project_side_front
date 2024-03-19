@@ -24,10 +24,10 @@ import { updateEmployee } from "@/api/employee";
 
 const orgId = "30ed163a-f86f-4b6d-8a9e-eb4263e5a9de";
 
-socket.emit("join", `org-30ed163a-f86f-4b6d-8a9e-eb4263e5a9de`);
-socket.on("update", (r) => {
-  console.log(r);
-});
+// socket.emit("join", `org-30ed163a-f86f-4b6d-8a9e-eb4263e5a9de`);
+// socket.on("update", (r) => {
+//   console.log(r);
+// });
 interface Data extends Employement {
   action: string;
 }
