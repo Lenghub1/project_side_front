@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CP from "@/components";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { selectBranch } from "@/store/branch";
 import MapComponent from "@/components/map/Map";
 import { TextField, MenuItem } from "@mui/material";
@@ -9,6 +9,7 @@ import { allEmployees } from "@/api/employee";
 import { handleApiRequest } from "@/api";
 import { organization_location } from "@/api/location";
 import { modify_branch } from "@/api/branch";
+import { selectOrganization } from "@/store/userStore";
 interface Data {
   locationId: string;
   managerId: string;
@@ -19,6 +20,7 @@ const ModifyBranch: React.FC = () => {
   const [selectedBranch, setBranchSelected] = useRecoilState(selectBranch);
   const [managers, setManagers] = useState<any[]>([]);
   const [locations, setLocations] = useState<any[]>([]);
+  const selected = useRecoilValue(selectOrganization);
   console.log(selectedBranch);
   const navigate = useNavigate();
   const [data, setData] = useState<Data>({
@@ -28,10 +30,10 @@ const ModifyBranch: React.FC = () => {
   }) as any;
   const managerRequest = async () => {
     const [response, error] = await handleApiRequest(() =>
-      allEmployees("84f2aa57-5d9e-4427-80a8-5e38e48e1294")
+      allEmployees(selected)
     );
     if (response) {
-      setManagers(response);
+      setManagers(response.data);
     } else {
       console.log(error);
     }
@@ -40,7 +42,7 @@ const ModifyBranch: React.FC = () => {
 
   const locationRequest = async () => {
     const [response, error] = await handleApiRequest(() =>
-      organization_location("84f2aa57-5d9e-4427-80a8-5e38e48e1294")
+      organization_location(selected)
     );
     if (response) {
       setLocations(response.data.data);
@@ -50,11 +52,7 @@ const ModifyBranch: React.FC = () => {
   };
   const branchPatch = async () => {
     const [response, error] = await handleApiRequest(() =>
-      modify_branch(
-        "84f2aa57-5d9e-4427-80a8-5e38e48e1294",
-        selectedBranch.id,
-        data
-      )
+      modify_branch(selected, selectedBranch.id, data)
     );
     if (!error) {
       navigate("/overview");
@@ -102,7 +100,7 @@ const ModifyBranch: React.FC = () => {
       >
         {managers.map((manager: any) => (
           <MenuItem key={manager.id} value={manager.id}>
-            {manager.name}
+            {manager.users.firstName} {manager.users.lastName}
           </MenuItem>
         ))}
       </TextField>

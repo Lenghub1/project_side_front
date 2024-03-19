@@ -2,16 +2,16 @@ import CP from "@/components";
 import MapComponent from "@/components/map/Map";
 import { Avatar } from "@mui/material";
 
-const ConfirmationCreateBranch = ({ branchData , manager}) => {
+const ConfirmationCreateBranch = ({ branchData, manager }) => {
   // Assuming branchData.members is an array of member objects
   const { member } = branchData;
-  console.log("asdasd",manager);
-  
+  console.log("asdasd", manager);
+
   console.log(branchData.managerId);
   const managersName = manager
-  .filter(item => item.userId === branchData.managerId)
-  .map(item => item.name);
-console.log(managersName);
+    .filter((item) => item.userId === branchData.managerId)
+    .map((item) => `${item.users.firstName} ${item.users.lastName}`);
+  console.log(managersName);
 
   return (
     <CP.Styled.Flex

@@ -15,7 +15,7 @@ const AddMember: React.FC<AddMemberProps> = ({ branchData, setBranchData }) => {
     );
     console.log(response);
     if (response) {
-      setFakeMembers(response as any);
+      setFakeMembers(response.data as any);
     }
     if (error) {
       console.log(error);

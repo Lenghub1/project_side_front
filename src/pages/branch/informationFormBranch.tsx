@@ -7,10 +7,10 @@ const InformationBranch = ({
   branchData,
   handleInputChange,
   setBranchData,
-  managers
+  managers,
 }: any) => {
   const [sliderValue, setSliderValue] = useState(branchData.geoFencing);
-  const pinPoint = { "type": "Point", "coordinates": [40, 60] };
+  const pinPoint = { type: "Point", coordinates: [40, 60] };
 
   const handleSliderChange = (
     event: Event,
@@ -18,11 +18,13 @@ const InformationBranch = ({
     activeThumb: number
   ) => {
     setSliderValue(value);
-    const updatedBranchData = { ...branchData, geoFencing: value, pinPoint: pinPoint };
+    const updatedBranchData = {
+      ...branchData,
+      geoFencing: value,
+      pinPoint: pinPoint,
+    };
     setBranchData(updatedBranchData);
   };
-  
-
 
   return (
     <CP.Styled.Div style={{ marginTop: "20px" }}>
@@ -63,11 +65,11 @@ const InformationBranch = ({
             variant="outlined"
           >
             {/* Assuming managers are stored in an array */}
-            {managers.map((manager:any) => (
-            <MenuItem key={manager.id} value={manager.userId}>
-              {manager.name}
-            </MenuItem>
-          ))}
+            {managers.map((manager: any) => (
+              <MenuItem key={manager.id} value={manager.userId}>
+                {manager.users.firstName} {manager.users.lastName}
+              </MenuItem>
+            ))}
           </TextField>
         </CP.Styled.Flex>
         <CP.Styled.Flex>
@@ -96,7 +98,6 @@ const InformationBranch = ({
             variant="outlined"
           />
         </CP.Styled.Flex>
-        
 
         <CP.Typography width={"25%"} marginTop={"20px"}>
           GeoFencing Range:

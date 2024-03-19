@@ -5,12 +5,13 @@ import InformationBranch from "./informationFormBranch";
 import ConfirmationCreateBranch from "./confirmationCreateBranch";
 import AddMember from "./addMember";
 import { useSnackbar } from "notistack";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { selectMembers } from "@/store/employee";
 import { allEmployees } from "@/api/employee";
 import { create_branch } from "@/api/branch";
 import { handleApiRequest } from "@/api";
 import { useNavigate } from "react-router-dom";
+import { selectOrganization } from "@/store/userStore";
 export interface BranchData {
   name: string;
   managerId: string;
@@ -28,6 +29,7 @@ export interface AddMemberProps {
 
 const CreateBranch: React.FC = () => {
   const navigate = useNavigate();
+  const organization = useRecoilValue(selectOrganization);
   const { enqueueSnackbar } = useSnackbar();
   const [selected, setSelected] = useRecoilState(selectMembers);
   const [step, setStep] = useState<number>(0);
@@ -44,11 +46,11 @@ const CreateBranch: React.FC = () => {
   const [managers, setManagers] = React.useState<string[]>([]);
   const newPendingEmployees = async () => {
     const [response, error] = await handleApiRequest(() =>
-      allEmployees("84f2aa57-5d9e-4427-80a8-5e38e48e1294")
+      allEmployees(organization)
     );
     console.log(response);
     if (response) {
-      setManagers(response as any);
+      setManagers(response.data as any);
     }
     if (error) {
       console.log(error);
@@ -56,7 +58,7 @@ const CreateBranch: React.FC = () => {
   };
   const requestCreateBranch = async () => {
     const [response, error] = await handleApiRequest(() =>
-      create_branch("84f2aa57-5d9e-4427-80a8-5e38e48e1294", branchData)
+      create_branch(organization, branchData)
     );
     if (error) {
       throw error;
@@ -73,6 +75,7 @@ const CreateBranch: React.FC = () => {
       navigate("/overview"); // Set step back to 1
     }
   };
+  console.log("asdasds", managers);
 
   const handleNext = () => {
     // Validate fields before proceeding to the next step

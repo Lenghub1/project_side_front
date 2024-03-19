@@ -4,17 +4,14 @@ import Box from "@mui/material/Box";
 import { allWorkplace } from "@/api/employee";
 import { handleApiRequest } from "@/api";
 import ChooseOrganizationCard from "@/components/organization/chooseOrganizationCard";
-import {
-  userState,
-  selectOrganization as selectedOrg,
-} from "@/store/userStore"; // Renamed selectOrganization to selectedOrg
+import { userState, selectOrganization } from "@/store/userStore"; // Renamed selectOrganization to selectedOrg
 import { useRecoilState, useRecoilValue } from "recoil";
 import { useNavigate } from "react-router-dom";
 import { organizationState } from "@/store/organizationStore";
 
 const ScreenChooseOrganization = () => {
   const navigate = useNavigate();
-  const [selectedOrg, setSelectedOrg] = useState<string | null>(null); // Renamed selectOrganization to selectedOrg
+  const [selectedOrg, setSelectedOrg] = useRecoilState(selectOrganization); // Renamed selectOrganization to selectedOrg
   const [organizationData, setOrganizationData] =
     useRecoilState(organizationState);
   const user = useRecoilValue(userState);
@@ -30,9 +27,21 @@ const ScreenChooseOrganization = () => {
       console.log(error);
     }
   };
-
+  console.log(organizationData);
+  const findOrgIdBySelectedId = (selectedId: string) => {
+    const selectedOrganization = organizationData.find(
+      (org: any) => org.id === selectedId
+    );
+    if (selectedOrganization) {
+      setSelectedOrg(selectedOrganization.orgId);
+      return selectedOrganization.orgId;
+    } else {
+      console.error("Selected organization not found in organizationData");
+      return null;
+    }
+  };
   const handleNavigate = () => {
-    setSelectedOrg(selectedOrg); // Updated to use setSelectedOrg instead of setSelectOrganization
+    findOrgIdBySelectedId(selectedOrg);
     navigate("/");
   };
 

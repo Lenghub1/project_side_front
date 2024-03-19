@@ -18,7 +18,7 @@ const routes: RouteProps[] = [
     children: [
       {
         name: "overviewOrganization",
-        path: "/overview",
+        path: "overview",
         element: Pg.overviewOrganization,
         children: [
           {
@@ -106,11 +106,6 @@ const routes: RouteProps[] = [
     path: "test-login",
     element: Pg.TestLoginPage,
     protected: false,
-  },
-  {
-    name: "overviewOrganization",
-    path: "/overview",
-    element: Pg.overviewOrganization,
   },
   {
     name: "chooseOrganization",

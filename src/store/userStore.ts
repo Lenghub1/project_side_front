@@ -57,4 +57,5 @@ export const employementDetail = atom<EmploymentDetailState>({
 export const selectOrganization = atom({
   key: "chooseOrganization",
   default: "",
+  effects_UNSTABLE: [persistAtom],
 });

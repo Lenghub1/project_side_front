@@ -411,7 +411,7 @@ export default function EnhancedTable(props: {
                         sx={{ display: "flex", alignItems: "center", gap: 1 }}
                       >
                         <Avatar />
-                        {row.name}
+                        {row.users.firstName} {row.users.lastName}
                       </Box>
                     </TableCell>
                     <TableCell align="left">{row.position}</TableCell>

@@ -39,16 +39,18 @@ const transformEmployeeData = (
     };
   }
 };
+const allWorkplace = async (
+  userId: string
+): Promise<AxiosResponse<Partial<Employement>[]>> => {
+  return api.get(`/organizations/self-workplace/${userId}`);
+};
 
 const allEmployees = async (
   organizationId: string
 ): Promise<AxiosResponse<Partial<Employement>>> => {
   try {
     const response = await api.get(
-      `/organizations/${organizationId}/employments`,
-      {
-        transformResponse: [(response) => transformEmployeeData(response)],
-      }
+      `/organizations/${organizationId}/employments`
     );
     console.log(response);
     return response as AxiosResponse<Partial<Employement>>;
@@ -83,11 +85,6 @@ const patchEmployeeById = async (
     console.error("Error in getEmployeeById:", error);
     return {} as AxiosResponse<Partial<Employement>>;
   }
-};
-const allWorkplace = async (
-  userId: string
-): Promise<AxiosResponse<Partial<Employement>[]>> => {
-  return api.get(`/organizations/self-workplace/${userId}`);
 };
 const createEmployee = async (
   data: Object,
@@ -129,6 +126,7 @@ const getAllPendingEmployees = async (
 };
 
 export {
+  allWorkplace,
   allEmployees,
   getEmployeeById,
   createEmployee,
@@ -136,5 +134,4 @@ export {
   deleteEmployee,
   patchEmployeeById,
   getAllPendingEmployees,
-  allWorkplace,
 };

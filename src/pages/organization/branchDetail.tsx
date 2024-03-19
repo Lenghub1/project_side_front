@@ -5,8 +5,14 @@ import MapComponent from "@/components/map/Map";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { selectBranch } from "@/store/branch";
+
 interface BranchDetailCardProps {
-  branchName: string;
+  branchData: branchData; // Corrected from branchName
+}
+
+interface branchData {
+  locationId: string;
+  name: string;
 }
 
 export const BranchDetailCard: React.FC<BranchDetailCardProps> = ({
@@ -31,7 +37,7 @@ export const BranchDetailCard: React.FC<BranchDetailCardProps> = ({
   };
   const handleModify = () => {
     navigate("/organization/modifyBranch");
-    setBranchSeleted(branchData);
+    setBranchSeleted(branchData as any);
   };
 
   return (

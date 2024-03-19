@@ -11,7 +11,8 @@ import { useNavigate } from "react-router-dom";
 import { BranchDetailCard } from "./branchDetail";
 import { Outlet } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-
+import { selectOrganization } from "@/store/userStore";
+import { useRecoilValue } from "recoil";
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
 `;
@@ -21,10 +22,11 @@ const OverviewOrganization = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 456);
   const location = useLocation();
   const [organizationData, setOrganizationData] = useState({}) as any;
+  const selected = useRecoilValue(selectOrganization);
   const [organizationBranchData, setOrganizationBranchData] = useState(
     []
   ) as any;
-  const isViewOrganization = location.pathname === "/overview/";
+  const isViewOrganization = location.pathname === "/overview";
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 456);
@@ -36,12 +38,13 @@ const OverviewOrganization = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
   const createBranch = () => {
     navigate("/overview/createBranch");
   };
   const my_organization_data = async () => {
     const [response, error] = await handleApiRequest(() =>
-      my_organization("84f2aa57-5d9e-4427-80a8-5e38e48e1294")
+      my_organization(selected)
     );
     if (response) {
       setOrganizationData(response.data);
@@ -51,11 +54,7 @@ const OverviewOrganization = () => {
   };
 
   const my_organization_branch_data = async () => {
-    const [response, error] = await handleApiRequest(() =>
-      my_branch("84f2aa57-5d9e-4427-80a8-5e38e48e1294")
-    );
-    console.log(response);
-
+    const [response, error] = await handleApiRequest(() => my_branch(selected));
     if (response) {
       setOrganizationBranchData(response.data.data);
     } else {
