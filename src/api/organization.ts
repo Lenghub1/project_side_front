@@ -6,20 +6,9 @@ const fieldMapping = generateFieldMapping({
   ownerId: "ownerId",
   name: "name",
   code: "code",
-  employeeCounts: "employeeCounts",
 });
 const myOrganization = async (organizationId: string) => {
   return api.get(`/organizations/${organizationId}`, {
-    transformResponse: [
-      (response) => {
-        const data = transformData(response, fieldMapping);
-        return data;
-      },
-    ],
-  });
-};
-const codeOrganization = async (codeId: string) => {
-  return api.get(`/organizations/code/${codeId}`, {
     transformResponse: [
       (response) => {
         const data = transformData(response, fieldMapping);
