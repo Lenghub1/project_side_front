@@ -4,6 +4,7 @@ import {
   Box,
   TableHead,
   TableRow,
+  TextField,
 } from "@mui/material";
 import { visuallyHidden } from "@mui/utils";
 
@@ -14,6 +15,7 @@ export interface HeadCell<T> {
   id: keyof T;
   label: string;
   numeric: boolean;
+  filterable?: boolean;
 }
 
 interface TableHeadCellProps<T> {
@@ -21,6 +23,9 @@ interface TableHeadCellProps<T> {
   order: Order;
   orderBy: keyof T;
   onRequestSort: (property: keyof T) => void;
+  // onFilterChange: (
+  //   property: keyof T
+  // ) => (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const TableHeadCell = <T,>({
@@ -28,6 +33,7 @@ const TableHeadCell = <T,>({
   order,
   orderBy,
   onRequestSort,
+  // onFilterChange,
 }: TableHeadCellProps<T>) => {
   const createSortHandler = () => {
     onRequestSort(headCell.id);
@@ -61,6 +67,9 @@ interface EnhancedTableHeadProps<T> {
   order: Order;
   orderBy: keyof T;
   onRequestSort: (property: keyof T) => void;
+  onFilterChange: (
+    property: keyof T
+  ) => (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const EnhancedTableHead = <T,>({
@@ -68,6 +77,7 @@ const EnhancedTableHead = <T,>({
   order,
   orderBy,
   onRequestSort,
+  onFilterChange,
 }: EnhancedTableHeadProps<T>) => {
   return (
     <TableHead>
@@ -79,6 +89,7 @@ const EnhancedTableHead = <T,>({
             order={order}
             orderBy={orderBy}
             onRequestSort={onRequestSort}
+            // onFilterChange={onFilterChange}
           />
         ))}
       </TableRow>
