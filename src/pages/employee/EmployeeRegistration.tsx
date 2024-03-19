@@ -5,7 +5,6 @@ import Button from "@/components/button";
 import Badge from "@mui/material/Badge";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { getAllPendingEmployees } from "@/api/employee";
-import { socket } from "@/socket";
 import { HeadCell } from "@/components/table/TableHead";
 import { Employement } from "@/utils/interfaces/Employment";
 import {
@@ -14,8 +13,8 @@ import {
 } from "@/utils/employee.util";
 import useFetch from "@/hooks/useFetch";
 import Error from "../error/Error";
-
-const userId = "d5e2b24b-7c77-480f-ad24-c79c786179cc";
+import { useRecoilState } from "recoil";
+import { allEmployeesData } from "@/store/employee";
 
 const RenderActionCell = (row: Employement) => {
   const { id } = row;
@@ -30,20 +29,17 @@ const RenderActionCell = (row: Employement) => {
 };
 
 const EmployeeRegistration = () => {
+  const [allEmployee, setAllEmployee] = useRecoilState(allEmployeesData);
   const { data, error } = useFetch(getAllPendingEmployees);
   const [notifiactionCount, setNotifiactionCount] = React.useState<number>(0);
 
-  React.useEffect(() => {
-    console.log(userId);
-    socket.on(`on-updates-${userId}`, (data) => {
-      console.log(data);
-    });
-  }, [socket]);
-
   if (error) {
     return <Error status={error.status_code} />;
-  } else {
-    return (
+  }
+  setAllEmployee(data);
+  console.log(allEmployee);
+  return (
+    <CP.Container>
       <CP.Container>
         <CP.Styled.Flex justify="flex-end">
           <Badge
@@ -57,18 +53,19 @@ const EmployeeRegistration = () => {
             <NotificationsIcon />
           </Badge>
         </CP.Styled.Flex>
-        <EnhancedTable<Employement>
-          headCells={headCells}
-          order="asc"
-          rows={data || []}
-          orderBy="name"
-          rowCount={data?.length || 0}
-          tableName="Employee Registrations"
-          actionCell={RenderActionCell}
-        />
       </CP.Container>
-    );
-  }
+
+      <EnhancedTable<Employement>
+        headCells={headCells}
+        order="asc"
+        rows={data || []}
+        orderBy="name"
+        rowCount={data?.length || 0}
+        tableName="Employee Registrations"
+        actionCell={RenderActionCell}
+      />
+    </CP.Container>
+  );
 };
 
 export default EmployeeRegistration;
@@ -79,6 +76,7 @@ const headCells: HeadCell<Employement>[] = [
     numeric: false,
     disablePadding: false,
     label: "Emplyee Information",
+    filterable: true,
   },
   {
     id: "position",
@@ -91,11 +89,13 @@ const headCells: HeadCell<Employement>[] = [
     numeric: false,
     disablePadding: false,
     label: "Priviledges",
+    filterable: true,
   },
   {
     id: "status",
     numeric: false,
     disablePadding: false,
     label: "Status",
+    filterable: true,
   },
 ];
