@@ -90,12 +90,7 @@ export const BranchDetailCard: React.FC<BranchDetailCardProps> = ({
                 overflow="unset"
               >
                 <CP.Button variant="text">Archive</CP.Button>
-                <CP.Button
-                  style={{ borderRadius: "20px" }}
-                  onClick={handleModify}
-                >
-                  Modify
-                </CP.Button>
+                <CP.Button onClick={handleModify}>Modify</CP.Button>
               </CP.Styled.Flex>
             </CP.Styled.Div>
           </>

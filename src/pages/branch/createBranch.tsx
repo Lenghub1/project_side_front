@@ -56,6 +56,8 @@ const CreateBranch: React.FC = () => {
       console.log(error);
     }
   };
+  console.log(organization);
+
   const requestCreateBranch = async () => {
     const [response, error] = await handleApiRequest(() =>
       create_branch(organization, branchData)

@@ -152,7 +152,7 @@ const OverviewOrganization = () => {
               margin="10px 0"
             >
               <CP.Typography sx={{ textAlign: "center" }} variant="h6">
-                BRANCHES({organizationBranchData.length})
+                BRANCHES({organizationBranchData?.length})
               </CP.Typography>
               <CP.Button onClick={createBranch}>Create</CP.Button>
             </CP.Styled.Flex>

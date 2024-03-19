@@ -19,7 +19,9 @@ const UnprotectedRoute: React.FC<UnprotectedRouteProps> = ({
     if (!selected) {
       return <Navigate to="/login/organizations" replace />;
     }
-    return <Navigate to={redirectPath} replace />;
+    if (selected) {
+      return <Navigate to={redirectPath} replace />;
+    }
   }
 
   return element;

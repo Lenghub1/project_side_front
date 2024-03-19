@@ -11,23 +11,33 @@ import { organizationState } from "@/store/organizationStore";
 
 const ScreenChooseOrganization = () => {
   const navigate = useNavigate();
-  const [selectedOrg, setSelectedOrg] = useRecoilState(selectOrganization); // Renamed selectOrganization to selectedOrg
+  const [selectedOrg, setSelectedOrg] = useRecoilState(selectOrganization);
   const [organizationData, setOrganizationData] =
     useRecoilState(organizationState);
   const user = useRecoilValue(userState);
-  console.log(user);
 
-  const organizations = async () => {
-    const [response, error] = await handleApiRequest(() =>
-      allWorkplace(user.id)
-    );
-    if (response) {
-      setOrganizationData(response.data || []);
-    } else {
-      console.log(error);
-    }
-  };
-  console.log(organizationData);
+  const [loading, setLoading] = useState(true); // State to track loading status
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const [response, error] = await handleApiRequest(() =>
+        allWorkplace(user.id)
+      );
+      if (response) {
+        setOrganizationData(response.data || []);
+      } else {
+        console.log(error);
+      }
+      setLoading(false); // Set loading to false once data fetching is complete
+    };
+
+    const timeout = setTimeout(() => {
+      fetchData();
+    }, 2000); // Delay fetching data by 3 seconds
+
+    return () => clearTimeout(timeout); // Cleanup function to clear the timeout if component unmounts
+  }, [user.id, setOrganizationData]);
+
   const findOrgIdBySelectedId = (selectedId: string) => {
     const selectedOrganization = organizationData.find(
       (org: any) => org.id === selectedId
@@ -40,16 +50,15 @@ const ScreenChooseOrganization = () => {
       return null;
     }
   };
+
   const handleNavigate = () => {
     findOrgIdBySelectedId(selectedOrg);
     navigate("/");
   };
 
-  console.log(selectedOrg);
-
-  useEffect(() => {
-    organizations();
-  }, []);
+  if (loading) {
+    return <div>Loading...</div>; // Render a loading indicator while data is being fetched
+  }
 
   return (
     <CP.Styled.Flex>

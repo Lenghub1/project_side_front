@@ -4,14 +4,17 @@ import { AddMemberProps } from "./createBranch";
 import { Container } from "@mui/material";
 import EnhancedTable from "./addMemberTable";
 import { allEmployees } from "@/api/employee";
+import { selectOrganization } from "@/store/userStore";
 import CP from "@/components";
+import { useRecoilValue } from "recoil";
 
 const AddMember: React.FC<AddMemberProps> = ({ branchData, setBranchData }) => {
   const [selected, setSelected] = React.useState<string[]>([]);
   const [fakeMembers, setFakeMembers] = React.useState<string[]>([]);
+  const selected_organization = useRecoilValue(selectOrganization);
   const newPendingEmployees = async () => {
     const [response, error] = await handleApiRequest(() =>
-      allEmployees("84f2aa57-5d9e-4427-80a8-5e38e48e1294")
+      allEmployees(selected_organization)
     );
     console.log(response);
     if (response) {
