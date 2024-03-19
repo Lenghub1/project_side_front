@@ -1,7 +1,7 @@
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Tooltip from "@mui/material/Tooltip";
 import SearchDisplay from "../searchBox/SearchDisplay";
+import FilterButton from "./Filter";
 interface TableToolbarProp {
   name: string;
   data: object;
@@ -24,9 +24,8 @@ const EnhancedTableToolbar: React.FC<TableToolbarProp> = ({ name, data }) => {
         {name}
       </Typography>
 
-      <Tooltip title="Filter list">
-        <SearchDisplay data={data} />
-      </Tooltip>
+      <SearchDisplay data={data} />
+      <FilterButton />
     </Toolbar>
   );
 };
