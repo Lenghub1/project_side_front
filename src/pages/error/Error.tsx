@@ -1,7 +1,7 @@
 import CP from "@/components";
-import { predefinedError, httpError } from "./error.data";
+import { predefinedError, ErrorResponse } from "./error.data";
 
-const Error = ({ status, message, asset }: httpError) => {
+const Error = ({ status, message, asset }: ErrorResponse) => {
   if (!message || !asset) {
     predefinedError.filter((error) => {
       if (error.status === status) {
