@@ -1,25 +1,83 @@
 import { api } from "./index";
+import { transformData, generateFieldMapping } from "@/utils/api.util";
 
-const my_organization = async (organizationId: string) => {
-  const data = await api.get(`/organizations/${organizationId}`);
-  return data;
+const fieldMapping = generateFieldMapping({
+  id: "id",
+  ownerId: "ownerId",
+  name: "name",
+  code: "code",
+});
+const myOrganization = async (organizationId: string) => {
+  return api.get(`/organizations/${organizationId}`, {
+    transformResponse: [
+      (response) => {
+        const data = transformData(response, fieldMapping);
+        return data;
+      },
+    ],
+  });
 };
 
-const new_organization = async (data: object) => {
-  return api.post(`/organizations`, data);
+const newOrganization = async (data: object) => {
+  return api.post(`/organizations`, data, {
+    transformResponse: [
+      (response) => {
+        const data = transformData(response, fieldMapping);
+        return data;
+      },
+    ],
+  });
 };
 
-const update_organization = async (organizationId: string, data: object) => {
-  return api.patch(`/organizations/:${organizationId}`, data);
+const updateOrganization = async (organizationId: string, data: object) => {
+  return api.patch(`/organizations/:${organizationId}`, data, {
+    transformResponse: [
+      (response) => {
+        const data = transformData(response, fieldMapping);
+        return data;
+      },
+    ],
+  });
 };
 
-const delete_organization = async (organizationId: string) => {
-  return api.delete(`/organizations/:${organizationId}`);
+const deleteOrganization = async (organizationId: string) => {
+  return api.delete(`/organizations/:${organizationId}`, {
+    transformResponse: [
+      (response) => {
+        const data = transformData(response, fieldMapping);
+        return data;
+      },
+    ],
+  });
+};
+
+const getOrganizationById = async (organizationId: string) => {
+  return api.get(`/organizations/:${organizationId}`, {
+    transformResponse: [
+      (response) => {
+        const data = transformData(response, fieldMapping);
+        return data;
+      },
+    ],
+  });
+};
+
+const getOrganizationByCode = async (code: string) => {
+  return api.get(`/organizations/code/${code}`, {
+    transformResponse: [
+      (response) => {
+        const data = transformData(response, fieldMapping);
+        return data;
+      },
+    ],
+  });
 };
 
 export {
-  my_organization,
-  new_organization,
-  update_organization,
-  delete_organization,
+  myOrganization,
+  newOrganization,
+  updateOrganization,
+  deleteOrganization,
+  getOrganizationById,
+  getOrganizationByCode,
 };
