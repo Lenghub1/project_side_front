@@ -2,7 +2,7 @@ import { api } from ".";
 import { AxiosResponse } from "axios";
 import { Employement } from "@/utils/interfaces/Employment";
 
-const currentOrganizationId = "affbc0b2-677d-417f-a08e-d691e7535dee";
+const currentOrganizationId = import.meta.env.VITE_CURRENT_ORGANIZATION_ID;
 const transformEmployeeData = (
   response: any
 ): Partial<Employement> | Partial<Employement>[] => {
