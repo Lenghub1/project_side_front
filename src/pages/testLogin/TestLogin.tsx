@@ -1,7 +1,7 @@
 import CP from "@/components";
 import MuiDivider from "@mui/material/Divider";
 import styled from "styled-components";
-import { NavLink } from "react-router-dom";
+import { NavLink, Navigate } from "react-router-dom";
 import { authApi } from "@/api/auth";
 import useValidatedInput from "@/hooks/useValidatedInput";
 import { SyntheticEvent, useEffect, useState } from "react";
@@ -17,6 +17,7 @@ import { useRecoilState } from "recoil";
 import { accessTokenState } from "@/store/userStore";
 import { useNavigate } from "react-router-dom";
 import useApi from "@/hooks/useApi";
+import { clearStorage } from "mapbox-gl";
 
 export const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -50,6 +51,7 @@ const TestLoginPage = () => {
   const phone = useValidatedInput("", "Phone");
   const password = useValidatedInput("", "Password");
   const [passwordIsVisible, setPasswordIsVisible] = useState(false);
+
   const [selectedCountry, setSelectedCountry] = useState<{
     name: string;
     dialCode: string;
@@ -85,6 +87,7 @@ const TestLoginPage = () => {
 
   async function login(method: string, data: any): Promise<void> {
     await handleApiRequest(() => authApi.testLogin(method, data));
+    // navigate("/login/organizations");
 
     // if (response && response.data && response.data.user) {
     //   console.log(response);
@@ -103,8 +106,12 @@ const TestLoginPage = () => {
 
   useEffect(() => {
     const userData = response?.data as LoginResponse;
+    console.log("I am here 1");
+
     if (userData?.user) {
+      console.log("I am here 2");
       console.log(userData.user);
+
       setAccessToken(userData.user?.accessToken);
       navigate("/");
     }

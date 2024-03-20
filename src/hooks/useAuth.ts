@@ -18,7 +18,7 @@ const useAuth = () => {
   const [user, setUser] = useRecoilState(userState);
   const setIsUserFetched = useSetRecoilState(isUserFetchedState);
 
-  console.log("use Auth is running", user);
+  // console.log("use Auth is running", user);
 
   async function getUserInfo(id: string) {
     const [response, error] = await handleApiRequest(() => authApi.getUser(id));
@@ -39,7 +39,9 @@ const useAuth = () => {
       }
     };
 
+    console.log("Before");
     fetchUserInfo();
+    console.log("After");
     setIsUserFetched(true);
   }, [accessToken]);
 

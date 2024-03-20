@@ -11,7 +11,6 @@ export interface RouteProps {
 }
 
 const routes: RouteProps[] = [
-  // { name: "login", path: "/login", element: Pg.Login.default.Login },
   {
     name: "getStarted",
     path: "/get-started",
@@ -56,7 +55,16 @@ const routes: RouteProps[] = [
     path: "test-login",
     element: Pg.TestLoginPage,
     protected: false,
+    children: [
+      {
+        name: "chooseOrganization",
+        path: "choose-organization",
+        element: Pg.choose.default.ScreenChooseOrganization,
+        protected: true,
+      },
+    ],
   },
+
   {
     name: "home",
     path: "/",
@@ -81,6 +89,13 @@ const routes: RouteProps[] = [
             name: "employee-registrations",
             path: "registration",
             element: Pg.Employee.default.EmployeeRegistration,
+            children: [
+              {
+                name: "employeeRegistrationsdetail",
+                path: "detail",
+                element: Pg.Employee.default.EmployeeRegistrationDetail,
+              },
+            ],
           },
         ],
       },
@@ -92,6 +107,23 @@ const routes: RouteProps[] = [
             name: "organization",
             path: "create",
             element: Pg.Organization.default.Organization,
+          },
+          {
+            name: "overviewOrganization",
+            path: "overview",
+            element: Pg.overviewOrganization,
+            children: [
+              {
+                name: "createBranch",
+                path: "createBranch",
+                element: Pg.Branch.CreateBranch,
+              },
+            ],
+          },
+          {
+            name: "modifyBranch",
+            path: "modifyBranch",
+            element: Pg.Branch.ModifyBranch,
           },
         ],
       },

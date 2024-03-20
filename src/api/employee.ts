@@ -19,11 +19,63 @@ const fieldMapping = generateFieldMapping({
   privilege: "privilege",
 });
 
+const allWorkplace = async (
+  userId: string
+): Promise<AxiosResponse<Partial<Employement>[]>> => {
+  return api.get(`/organizations/self-workplace/${userId}`);
+};
+
+const getUserEmployments = async (
+  organizationId: string = currentOrganizationId
+): Promise<AxiosResponse<Partial<Employement[]>>> => {
+  return api.get(`/organizations/${organizationId}/employments/user`, {
+    transformResponse: [
+      (response) => {
+        const data = transformData(response, fieldMapping);
+        const newData = combineFields(data, "firstName", "lastName", "name");
+        return newData;
+      },
+    ],
+  });
+};
+
+const createEmployee = async (
+  data: Object,
+  organizationId: string = currentOrganizationId
+): Promise<AxiosResponse<Partial<Employement>>> => {
+  return api.post(`/organizations/${organizationId}/employments`, data, {
+    transformResponse: [
+      (response) => {
+        const data = transformData(response, fieldMapping);
+        const newData = combineFields(data, "firstName", "lastName", "name");
+        return newData;
+      },
+    ],
+  });
+};
+
 const allEmployees = async (
   organizationId: string = currentOrganizationId
 ): Promise<AxiosResponse<Partial<Employement>[]>> => {
   return api.get(
     `/organizations/${organizationId}/employments?status_ne=pending`,
+    {
+      transformResponse: [
+        (response) => {
+          const data = transformData(response, fieldMapping);
+          const newData = combineFields(data, "firstName", "lastName", "name");
+          return newData;
+        },
+      ],
+    }
+  );
+};
+
+const getAllPendingEmployees = async (
+  organizationId: string = currentOrganizationId
+): Promise<AxiosResponse<Partial<Employement>>> => {
+  return api.get(
+    `/organizations/${organizationId}/employments?status_eq=pending`,
     {
       transformResponse: [
         (response) => {
@@ -54,21 +106,6 @@ const getEmployeeById = async (
   );
 };
 
-const createEmployee = async (
-  data: Object,
-  organizationId: string = currentOrganizationId
-): Promise<AxiosResponse<Partial<Employement>>> => {
-  return api.post(`/organizations/${organizationId}/employments`, data, {
-    transformResponse: [
-      (response) => {
-        const data = transformData(response, fieldMapping);
-        const newData = combineFields(data, "firstName", "lastName", "name");
-        return newData;
-      },
-    ],
-  });
-};
-
 const updateEmployee = async (
   data: Object,
   employmentId: string,
@@ -94,37 +131,8 @@ const deleteEmployee = async (
   organizationId: string = currentOrganizationId
 ) => api.delete(`/organizations/${organizationId}/employments/${employmentId}`);
 
-const getAllPendingEmployees = async (
-  organizationId: string = currentOrganizationId
-): Promise<AxiosResponse<Partial<Employement>>> => {
-  return api.get(
-    `/organizations/${organizationId}/employments?status_eq=pending`,
-    {
-      transformResponse: [
-        (response) => {
-          const data = transformData(response, fieldMapping);
-          const newData = combineFields(data, "firstName", "lastName", "name");
-          return newData;
-        },
-      ],
-    }
-  );
-};
-const getUserEmployments = async (
-  organizationId: string = currentOrganizationId
-): Promise<AxiosResponse<Partial<Employement[]>>> => {
-  return api.get(`/organizations/${organizationId}/employments/user`, {
-    transformResponse: [
-      (response) => {
-        const data = transformData(response, fieldMapping);
-        const newData = combineFields(data, "firstName", "lastName", "name");
-        return newData;
-      },
-    ],
-  });
-};
-
 export {
+  allWorkplace,
   allEmployees,
   getEmployeeById,
   createEmployee,
