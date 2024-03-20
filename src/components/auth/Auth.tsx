@@ -8,7 +8,7 @@ const Auth = ({ children }: { children?: ReactNode }) => {
   const isLogin = useRecoilValue(Store.User.loginUserState);
 
   useEffect(() => {
-    if (!isLogin) navigate("/test-login");
+    if (!isLogin) navigate("/login");
     if (isLogin) navigate("/");
   }, [isLogin]);
 
