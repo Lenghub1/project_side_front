@@ -6,6 +6,7 @@ const fieldMapping = generateFieldMapping({
   ownerId: "ownerId",
   name: "name",
   code: "code",
+  employeeCounts: "employeeCounts",
 });
 const myOrganization = async (organizationId: string) => {
   return api.get(`/organizations/${organizationId}`, {
