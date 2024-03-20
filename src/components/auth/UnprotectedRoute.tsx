@@ -10,10 +10,16 @@ const UnprotectedRoute: React.FC<UnprotectedRouteProps> = ({
   element,
   redirectPath = "/",
 }) => {
-  const { isAuthenticated, selected } = useAuth();
+  const { isAuthenticated } = useAuth();
+  const selected = useRecoilValue(selectOrganization);
 
-  if (isAuthenticated && selected) {
-    return <Navigate to={redirectPath || "/"} replace />;
+  if (isAuthenticated) {
+    if (!selected) {
+      return <Navigate to="/login/choose-organizations" replace />;
+    }
+    if (selected) {
+      return <Navigate to={redirectPath} replace />;
+    }
   }
 
   return element;

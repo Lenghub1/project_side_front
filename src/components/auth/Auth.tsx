@@ -9,7 +9,6 @@ const Auth = ({ children }: { children?: ReactNode }) => {
   const isLogin = useRecoilValue(Store.User.loginUserState);
 
   useEffect(() => {
-    // login campus router flow
     if (!isLogin) navigate("/login");
     if (isLogin) navigate("/");
   }, [isLogin]);
