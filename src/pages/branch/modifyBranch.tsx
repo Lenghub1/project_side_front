@@ -9,7 +9,7 @@ import { allEmployees } from "@/api/employee";
 import { handleApiRequest } from "@/api";
 import { organizationLocation } from "@/api/location";
 import { modifyBranch } from "@/api/branch";
-import { selectOrganization } from "@/store/userStore";
+import { selectedOrganization } from "@/store/userStore";
 interface Data {
   locationId: string;
   managerId: string;
@@ -20,7 +20,7 @@ const ModifyBranch: React.FC = () => {
   const [selectedBranch, setBranchSelected] = useRecoilState(selectBranch);
   const [managers, setManagers] = useState<any[]>([]);
   const [locations, setLocations] = useState<any[]>([]);
-  const selected = useRecoilValue(selectOrganization);
+  const selected = useRecoilValue(selectedOrganization);
   console.log(selectedBranch);
   const navigate = useNavigate();
   const [data, setData] = useState<Data>({
@@ -56,7 +56,7 @@ const ModifyBranch: React.FC = () => {
       modifyBranch(selected, selectedBranch.id, data)
     );
     if (!error) {
-      navigate("/organization/overview");
+      navigate("/organization");
     }
     console.log(response);
   };
