@@ -1,4 +1,5 @@
 export interface BranchData {
+  id: string;
   name: string;
   managerId: string;
   locationId: string;

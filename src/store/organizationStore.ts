@@ -3,8 +3,8 @@ import { recoilPersist } from "recoil-persist";
 
 const { persistAtom } = recoilPersist();
 
-export const organizationState = atom<any | null>({
+export const organizationState = atom<any>({
   key: "organizationState",
-  default: [],
+  default: undefined,
   effects_UNSTABLE: [persistAtom],
 });
