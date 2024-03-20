@@ -11,7 +11,7 @@ import { allEmployees } from "@/api/employee";
 import { createBranch } from "@/api/branch";
 import { handleApiRequest } from "@/api";
 import { useNavigate } from "react-router-dom";
-import { selectedOrganization } from "@/store/userStore";
+import { selectOrganization } from "@/store/userStore";
 import { BranchData } from "@/utils/interfaces/Branch";
 export interface AddMemberProps {
   branchData: BranchData;
@@ -70,7 +70,7 @@ const CreateBranch: React.FC = () => {
         geoFencing: 10,
         member: [],
       });
-      navigate("/organization"); // Set step back to 1
+      navigate("/organization/overview"); // Set step back to 1
     }
   };
   console.log("asdasds", managers);

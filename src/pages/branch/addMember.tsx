@@ -8,18 +8,20 @@ import { selectedOrganization } from "@/store/userStore";
 import CP from "@/components";
 import { useRecoilValue } from "recoil";
 import { Employement } from "@/utils/interfaces/Employment";
+import { Employement } from "@/utils/interfaces/Employment";
 const AddMember: React.FC<AddMemberProps> = ({ branchData, setBranchData }) => {
   const [selected, setSelected] = React.useState<any>([]);
   const [fakeMembers, setFakeMembers] = React.useState<Partial<Employement[]>>(
     []
   );
-  const currentOrganization = useRecoilValue(selectedOrganization);
+  const selectedOrganization = useRecoilValue(selectOrganization);
   const newPendingEmployees = async () => {
     const [response, error] = await handleApiRequest(() =>
       allEmployees(currentOrganization)
     );
     console.log(response);
     if (response) {
+      setFakeMembers(response);
       setFakeMembers(response);
     }
     if (error) {
