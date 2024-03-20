@@ -15,7 +15,7 @@ const AuthorizedRoute: React.FC<AuthorizedRouteProps> = ({ adminOnly }) => {
   console.log(user);
   if (!user) {
     // Redirect to login if user is not authenticated
-    navigate("/test-login");
+    navigate("/login");
   }
   const { data, error } = useFetch(getUserEmployments);
 

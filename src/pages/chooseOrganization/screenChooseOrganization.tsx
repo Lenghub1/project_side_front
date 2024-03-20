@@ -5,19 +5,18 @@ import { allWorkplace } from "@/api/employee";
 import { handleApiRequest } from "@/api";
 import ChooseOrganizationCard from "@/components/organization/chooseOrganizationCard";
 import { userState, selectedOrganization } from "@/store/userStore"; // Renamed selectOrganization to selectedOrg
+import { userState, selectedOrganization } from "@/store/userStore"; // Renamed selectOrganization to selectedOrg
 import { useRecoilState, useRecoilValue } from "recoil";
 import { useNavigate } from "react-router-dom";
 import { organizationState } from "@/store/organizationStore";
 
 const ScreenChooseOrganization = () => {
   const navigate = useNavigate();
-  const [selectedOrg, setSelectedOrg] = useState<string>();
-  const [selectOrg, setSelectOrg] = useRecoilState(selectedOrganization);
+  const [selectedOrg, setSelectedOrg] = useRecoilState(selectedOrganization);
   const [organizationData, setOrganizationData] =
     useRecoilState(organizationState);
   const user = useRecoilValue(userState);
   console.log(user);
-  console.log(organizationData);
 
   const [loading, setLoading] = useState(true); // State to track loading status
 
@@ -28,7 +27,6 @@ const ScreenChooseOrganization = () => {
       );
       console.log(response);
       if (response) {
-        console.log(response);
         setOrganizationData(response || []);
       } else {
         console.log(error);
@@ -39,6 +37,7 @@ const ScreenChooseOrganization = () => {
 
     const timeout = setTimeout(() => {
       fetchData();
+    }, 2000); // Delay fetching data by 2 seconds
     }, 2000); // Delay fetching data by 2 seconds
 
     return () => clearTimeout(timeout); // Cleanup function to clear the timeout if component unmounts
@@ -58,7 +57,7 @@ const ScreenChooseOrganization = () => {
   };
 
   const handleNavigate = () => {
-    findOrgIdBySelectedId(selectedOrg as string);
+    findOrgIdBySelectedId(selectedOrg);
     navigate("/organization");
   };
 
