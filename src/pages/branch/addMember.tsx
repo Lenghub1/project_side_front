@@ -7,10 +7,12 @@ import { allEmployees } from "@/api/employee";
 import { selectOrganization } from "@/store/userStore";
 import CP from "@/components";
 import { useRecoilValue } from "recoil";
-
+import { Employement } from "@/utils/interfaces/Employment";
 const AddMember: React.FC<AddMemberProps> = ({ branchData, setBranchData }) => {
-  const [selected, setSelected] = React.useState<string[]>([]);
-  const [fakeMembers, setFakeMembers] = React.useState<string[]>([]);
+  const [selected, setSelected] = React.useState<any>([]);
+  const [fakeMembers, setFakeMembers] = React.useState<Partial<Employement[]>>(
+    []
+  );
   const selectedOrganization = useRecoilValue(selectOrganization);
   const newPendingEmployees = async () => {
     const [response, error] = await handleApiRequest(() =>
@@ -18,7 +20,7 @@ const AddMember: React.FC<AddMemberProps> = ({ branchData, setBranchData }) => {
     );
     console.log(response);
     if (response) {
-      setFakeMembers(response.data.data as any);
+      setFakeMembers(response);
     }
     if (error) {
       console.log(error);

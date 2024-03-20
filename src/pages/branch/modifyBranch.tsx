@@ -35,7 +35,7 @@ const ModifyBranch: React.FC = () => {
     if (response) {
       console.log("hellosss", response);
 
-      setManagers(response.data.data);
+      setManagers(response);
     } else {
       console.log(error);
     }
@@ -56,7 +56,7 @@ const ModifyBranch: React.FC = () => {
       modifyBranch(selected, selectedBranch.id, data)
     );
     if (!error) {
-      navigate("/overview");
+      navigate("/organization/overview");
     }
     console.log(response);
   };
@@ -101,7 +101,7 @@ const ModifyBranch: React.FC = () => {
       >
         {managers.map((manager: any) => (
           <MenuItem key={manager.id} value={manager.id}>
-            {manager.user.firstName} {manager.user.lastName}
+            {manager.name}
           </MenuItem>
         ))}
       </TextField>
