@@ -1,1 +1,6 @@
-export { default as TestLoginPage } from "./TestLogin";
+import TestLoginPage from "./TestLogin";
+import Login from "./Login";
+export default {
+  Login,
+  TestLoginPage,
+};

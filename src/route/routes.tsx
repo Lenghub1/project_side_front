@@ -51,20 +51,24 @@ const routes: RouteProps[] = [
     ],
   },
   {
-    name: "testLogin",
-    path: "test-login",
-    element: Pg.TestLoginPage,
+    name: "login",
+    path: "/login",
+    element: Pg.Login.default.Login,
     protected: false,
     children: [
       {
-        name: "chooseOrganization",
-        path: "choose-organization",
-        element: Pg.choose.default.ScreenChooseOrganization,
-        protected: true,
+        name: "mainLogin",
+        path: "",
+        element: Pg.Login.default.TestLoginPage,
+        protected: false,
       },
     ],
   },
-
+  {
+    name: "chooseOrganization",
+    path: "login/choose-organization",
+    element: Pg.choose.default.ScreenChooseOrganization,
+  },
   {
     name: "home",
     path: "/",
@@ -77,7 +81,7 @@ const routes: RouteProps[] = [
         children: [
           {
             name: "employee-management",
-            path: "manage",
+            path: "",
             element: Pg.Employee.default.EmployeeTable,
           },
           {
@@ -102,16 +106,17 @@ const routes: RouteProps[] = [
       {
         name: "organization",
         path: "organization",
+        element: Pg.Organization.default.Organization,
         children: [
           {
             name: "organization",
             path: "create",
-            element: Pg.Organization.default.Organization,
+            element: Pg.Organization.default.NewOrganization,
           },
           {
             name: "overviewOrganization",
-            path: "overview",
-            element: Pg.overviewOrganization,
+            path: "",
+            element: Pg.Organization.default.OverviewOrganization,
             children: [
               {
                 name: "createBranch",

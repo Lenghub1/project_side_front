@@ -8,7 +8,7 @@ import { Divider } from "@mui/material";
 import { myOrganization } from "@/api/organization";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { BranchDetailCard } from "../branchDetail";
+import { BranchDetailCard } from "../../branch/branchDetail";
 import { Outlet } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { selectOrganization } from "@/store/userStore";
@@ -26,7 +26,7 @@ const OverviewOrganization = () => {
   const [organizationBranchData, setOrganizationBranchData] = useState(
     []
   ) as any;
-  const isViewOrganization = location.pathname === "/organization/overview";
+  const isViewOrganization = location.pathname === "/organization";
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 456);

@@ -9,7 +9,7 @@ import { newOrganization } from "@/api/organization";
 import { handleApiRequest } from "@/api";
 import FormControl from "@mui/material/FormControl";
 
-const Organization = () => {
+const NewOrganization = () => {
   const handleOnSubmit = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
     const orgData = document.querySelector("#org_form");
@@ -41,4 +41,4 @@ const Organization = () => {
   );
 };
 
-export default Organization;
+export default NewOrganization;

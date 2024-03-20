@@ -1,7 +1,7 @@
 import CP from "@/components";
 import MuiDivider from "@mui/material/Divider";
 import styled from "styled-components";
-import { NavLink, Navigate } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 import { authApi } from "@/api/auth";
 import useValidatedInput from "@/hooks/useValidatedInput";
 import { SyntheticEvent, useEffect, useState } from "react";
@@ -17,7 +17,6 @@ import { useRecoilState } from "recoil";
 import { accessTokenState } from "@/store/userStore";
 import { useNavigate } from "react-router-dom";
 import useApi from "@/hooks/useApi";
-import { clearStorage } from "mapbox-gl";
 
 export const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -279,6 +278,7 @@ const TestLoginPage = () => {
           </Flex>
         </CP.Styled.Div>
       </Flex>
+      <Outlet />
     </CP.Styled.Wrapper>
   );
 };

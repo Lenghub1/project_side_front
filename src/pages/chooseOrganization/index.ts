@@ -1,3 +1,3 @@
-import ScreenChooseOrganization from "./screenChooseOrganization";
+import ScreenChooseOrganization from "./ScreenChooseOrganization";
 
 export default { ScreenChooseOrganization };
