@@ -9,13 +9,15 @@ import React, {
   useCallback,
 } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import CP from "@/components";
 import { authApi, testApi } from "@/api/auth";
 import { handleApiRequest } from "@/api";
 import { useSnackbar } from "notistack";
 import { useRecoilState } from "recoil";
 import Store from "@/store";
+import useApi from "@/hooks/useApi";
+import { maskPhoneNumber } from "../forgotAccount/AccountList";
 
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -33,9 +35,24 @@ const OTPInput = styled.input`
   border-radius: 5px;
 `;
 
+interface VERIFY_DATA {
+  resetToken?: string;
+  phoneNumber?: string;
+  code?: string;
+  OTP?: string;
+  credential?: string;
+  loginMethod?: string;
+}
+
+export const VERIFICAITON_TYPE = {
+  VERIFY_ACCOUNT: "signup",
+  VERIFY_FORGET_PASSWORD: "forgetPassword",
+  VERIFY_2FA: "2FA",
+};
+
 const OTP = () => {
   const navigate = useNavigate();
-
+  const location = useLocation();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 428);
   const [arrayValue, setArrayValue] = useState<(string | number)[]>([
     "",
@@ -53,14 +70,52 @@ const OTP = () => {
     "",
     "",
   ]);
-  const [_, setUserLoginState] = useRecoilState(Store.User.userState);
   const [__, setAccessToken] = useRecoilState(Store.User.accessTokenState);
   const { enqueueSnackbar } = useSnackbar();
   const naviagate = useNavigate();
   const inputs = useRef<(HTMLInputElement | null)[]>([]);
   const isValidInput = arrayValue.every((value) => value !== "");
+  const { response, isLoading, isSuccess, error, handleApiRequest } = useApi();
+  const verification = location.state;
+
   useEffect(() => {
     inputs.current[0]?.focus();
+  }, []);
+
+  useEffect(() => {
+    if (error) {
+      console.log("ERROR", error);
+      showMessage("ERRROR" + error?.statusCode, "error");
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (isSuccess && response) {
+      if (verification.type === VERIFICAITON_TYPE.VERIFY_FORGET_PASSWORD) {
+        showMessage(
+          "OTP code verified successfully. You can now reset your password.",
+          "success"
+        );
+        // setAccessToken(response.data.user.accessToken);
+        setTimeout(() => {
+          naviagate("/forget-password/reset-password");
+        }, 1500);
+      } else if (verification.type === VERIFICAITON_TYPE.VERIFY_ACCOUNT) {
+        // navigate to home
+      } else if (verification.type === VERIFICAITON_TYPE.VERIFY_2FA) {
+        //navigate to home
+      }
+    }
+  }, [response, isSuccess]);
+
+  const verifyOTP = useCallback(async (data: any): Promise<void> => {
+    if (verification.type === VERIFICAITON_TYPE.VERIFY_FORGET_PASSWORD) {
+      await handleApiRequest(() => authApi.verifyForgetPasswordToken(data));
+    } else if (verification.type === VERIFICAITON_TYPE.VERIFY_ACCOUNT) {
+      await handleApiRequest(() => authApi.verifyPhoneNumber(data));
+    } else if (verification.type === VERIFICAITON_TYPE.VERIFY_2FA) {
+      await handleApiRequest(() => authApi.verify2FA(data));
+    }
   }, []);
 
   // handle pasting OTP code
@@ -120,19 +175,13 @@ const OTP = () => {
         inputs.current[index + 1]?.focus();
       }
 
-      // Update the input value based on maskedValue
-      const newInputValues = maskedValue.map((value, idx) => {
-        if (idx <= index) {
-          return value;
-        } else {
-          return "";
-        }
-      });
-      inputs.current.forEach((input, idx) => {
-        if (input) {
-          input.value = newInputValues[idx];
-        }
-      });
+      // if the 6 input field, has value, then auto submit to OTP verify
+      console.log("Lenght of array", arrayValue);
+      if (arrayValue.every((value) => value !== "")) {
+        arrayValue.every((value) => {
+          console.log;
+        });
+      }
     }
   };
 
@@ -167,27 +216,29 @@ const OTP = () => {
     });
   }
 
-  const verifyOTP = useCallback(async (otp: string): Promise<void> => {
-    const [response, error] = await handleApiRequest(() =>
-      authApi.verifyForgetPasswordToken(otp)
-    );
-
-    if (error) {
-      console.log("ERRROR", error);
-      return showMessage("Token is invalid. Please try agian", "error");
-    }
-    if (response?.data?.user) {
-      setUserLoginState(response.data.user);
-      setAccessToken(response.data.user.accessToken);
-      naviagate("/forget-password/reset-password");
-      return;
-    }
-  }, []);
-
   const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
 
-    await verifyOTP(arrayValue.join(""));
+    let data = {} as VERIFY_DATA;
+
+    if (verification.type === VERIFICAITON_TYPE.VERIFY_FORGET_PASSWORD) {
+      data = {
+        resetToken: arrayValue.join(""),
+      };
+    } else if (verification.type === VERIFICAITON_TYPE.VERIFY_2FA) {
+      data = {
+        phoneNumber: verification.phoneNumber,
+        code: arrayValue.join(""),
+      };
+    } else if (verification.type === VERIFICAITON_TYPE.VERIFY_2FA) {
+      data = {
+        OTP: arrayValue.join(""),
+        credential: verification.credential,
+        loginMethod: verification.loginMethod,
+      };
+    }
+
+    await verifyOTP(data);
   };
 
   // handle key up delet value from inpu
@@ -212,7 +263,10 @@ const OTP = () => {
               <CP.Typography fontWeight="semibold" textAlign="center">
                 Enter the verification code we just sent to your
               </CP.Typography>
-              <CP.Typography marginBottom={"2rem"}>phone number.</CP.Typography>
+              <CP.Typography marginBottom={"2rem"}>
+                phone number{verification.phone.slice(0, 7)}
+                {maskPhoneNumber(verification.phone).slice(7)}.
+              </CP.Typography>
             </Flex>
             <OTPContainer>
               {maskedValue.map((value: string | number, index: number) => (
@@ -250,14 +304,12 @@ const OTP = () => {
               >
                 Verify
               </CP.Button>
-              <CP.Typography
-                fontWeight="semibold"
-                sx={{ cursor: "pointer" }}
-                margin={1}
-                onClick={() => navigate("/forgetPassword")}
+              <CP.Button
+                variant="text"
+                onClick={() => navigate("/forget-Password")}
               >
                 CHANGE PHONE NUMBER
-              </CP.Typography>
+              </CP.Button>
             </Flex>
           </Flex>
         </CP.Styled.Div>

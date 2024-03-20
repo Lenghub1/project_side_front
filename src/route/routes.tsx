@@ -145,10 +145,9 @@ const routes: RouteProps[] = [
       {
         name: "forgetpasswordOTP",
         path: "verify-otp",
-        element: Pg.ForgetPassword.default.OTP,
+        element: Pg.Verification.default.OTP,
         protected: false,
       },
-
       {
         name: "resetPassword",
         path: "reset-password",
@@ -160,7 +159,7 @@ const routes: RouteProps[] = [
   {
     name: "verifytoken",
     path: "verify-token",
-    element: Pg.ForgetPassword.default.VerifyToken,
+    element: Pg.Verification.default.VerifyToken,
     protected: false,
   },
   {

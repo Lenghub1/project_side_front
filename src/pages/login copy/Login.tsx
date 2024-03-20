@@ -15,7 +15,7 @@ import { Box } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import Store from "@/store";
 // import TelegramLoginButton from "./TelegramLoginButton";
-import OauthComponent, { OauthBox } from "@/components/oauth/OauthComponent";
+import OauthComponent from "@/components/oauth/OauthComponent";
 import useApi from "@/hooks/useApi";
 
 const Flex = styled(CP.Styled.Flex)`
@@ -52,7 +52,7 @@ const LoginPage = () => {
     dialCode: string;
     flag: string;
   }>(countries[0]);
-  const [_, setLoginUser] = useRecoilState(Store.User.userState);
+  const [_, setAccessToken] = useRecoilState(Store.User.accessTokenState);
   const activeTabIndex = singInMethod === "email" ? 0 : 1;
 
   useEffect(() => {
@@ -97,7 +97,7 @@ const LoginPage = () => {
       },
     });
   }
-  const { response, error, isError, handleApiRequest } = useApi();
+  const { response, error, isSuccess, handleApiRequest } = useApi();
   //function for login api
   async function login(method: string, data: any): Promise<void> {
     await handleApiRequest(() => authApi.testLogin(method, data));
@@ -113,13 +113,15 @@ const LoginPage = () => {
   }
 
   useEffect(() => {
-    const userData = response?.data as LoginResponse;
-    if (userData?.user) {
-      console.log(userData.user);
-      setAccessToken(userData.user?.accessToken);
-      navigate("/");
+    if (isSuccess) {
+      const userData = response.data as LoginResponse;
+      if (userData?.user) {
+        console.log(userData.user);
+        setAccessToken(userData.user?.accessToken);
+        navigate("/");
+      }
     }
-  }, [response]);
+  }, [response, isSuccess]);
 
   useEffect(() => {
     if (error) {
@@ -163,10 +165,6 @@ const LoginPage = () => {
     await login(singInMethod, formData);
   };
 
-  const handleTelegramData = async (user: any) => {
-    await authApi.telegramOauth(user);
-  };
-
   return (
     <CP.Styled.Wrapper height="100vh">
       <Flex height="inherit">
@@ -199,13 +197,17 @@ const LoginPage = () => {
 
             <Flex direction="column" gap="24px">
               {!isMobile && (
-                <CP.Typography width="100%">
-                  Don't have an account?{" "}
-                  <a style={{ color: "red", textDecoration: "none" }}>
-                    {" "}
+                <CP.Styled.Flex width="100%" justify="flex-start" gap="8px">
+                  <CP.Typography>Don't have an account? </CP.Typography>{" "}
+                  <CP.Typography
+                    margin="1rem 0"
+                    onClick={() => navigate("/get-started")}
+                    color={"red"}
+                    sx={{ cursor: "pointer" }}
+                  >
                     Sign Up today
-                  </a>
-                </CP.Typography>
+                  </CP.Typography>
+                </CP.Styled.Flex>
               )}
               <Tabs
                 sx={{ alignSelf: !isMobile ? "flex-start" : "center" }}
@@ -292,16 +294,17 @@ const LoginPage = () => {
               </CP.Button>
               {/* Mobile responsive */}
               {isMobile && (
-                <CP.Typography
-                  margin="1rem 0"
-                  onClick={() => navigate("/get-started")}
-                >
-                  Don't have an account?{" "}
-                  <a style={{ color: "red", textDecoration: "none" }}>
-                    {" "}
+                <CP.Styled.Flex width="100%" justify="flex-start" gap="8px">
+                  <CP.Typography>Don't have an account? </CP.Typography>{" "}
+                  <CP.Typography
+                    margin="1rem 0"
+                    onClick={() => navigate("/get-started")}
+                    color={"red"}
+                    sx={{ cursor: "pointer" }}
+                  >
                     Sign Up today
-                  </a>
-                </CP.Typography>
+                  </CP.Typography>
+                </CP.Styled.Flex>
               )}
               {!isMobile && (
                 <CP.Styled.Flex width="100%" justify="flex-start">

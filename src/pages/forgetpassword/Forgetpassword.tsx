@@ -11,6 +11,7 @@ import { authApi } from "@/api/auth";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import useApi from "@/hooks/useApi";
+import { VERIFICAITON_TYPE } from "../verifications/OTP";
 
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -102,18 +103,23 @@ const ForgetPassword = () => {
   }, [error]);
 
   useEffect(() => {
-    if (!error && isSuccess) {
+    if (isSuccess) {
       if (resetPasswordBy === "phone") {
         showMessage(
           `OTP has been sent to ${selectedCountry.dialCode} ${phone.value}`,
           "success"
         );
         setTimeout(() => {
-          navigate("/forget-password/verify-otp");
-        }, 2000);
+          navigate("/forget-password/verify-otp", {
+            state: {
+              type: VERIFICAITON_TYPE.VERIFY_FORGET_PASSWORD,
+              phone: `${selectedCountry.dialCode} ${phone.value}`,
+            },
+          });
+        }, 1500);
       } else {
         showMessage(
-          `Verifiation code has been sent. Please your email and verify`,
+          `Reset password verification link has been sent. Please check your email and verify`,
           "success"
         );
       }
@@ -180,8 +186,8 @@ const ForgetPassword = () => {
                     width: "100%",
                   }}
                 >
-                  Enter you email address below and we'll send you password
-                  reset OTP.
+                  {`Enter your ${resetPasswordBy}  below and we\'ll send you password reset ${resetPasswordBy === "email" ? "token" : "OTP"}
+                  .`}
                 </CP.Typography>
                 <Flex direction="column" gap="24px" overflow="unset">
                   <Tabs

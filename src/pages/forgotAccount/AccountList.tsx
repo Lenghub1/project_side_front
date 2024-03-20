@@ -9,7 +9,9 @@ import { useRecoilValue } from "recoil";
 import Store from "@/store";
 import { useNavigate, useLocation, Outlet } from "react-router-dom";
 import { useEffect } from "react";
-
+export const maskPhoneNumber = (phoneNumber: string): string => {
+  return phoneNumber.replace(/.(?=.{2})/g, "*"); // Masks all but the last 4 digits
+};
 export default function AlignItemsList() {
   const location = useLocation();
   const users = useRecoilValue(Store.User.forgotAccountInformation);
@@ -20,9 +22,6 @@ export default function AlignItemsList() {
       navigate("/forgot-account");
     }
   }, [users]);
-  const maskPhoneNumber = (phoneNumber: string): string => {
-    return phoneNumber.replace(/.(?=.{4})/g, "*"); // Masks all but the last 4 digits
-  };
 
   const isAccountInformationRoute =
     location.pathname === "/forgot-account/informations";

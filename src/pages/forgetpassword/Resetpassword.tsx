@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import CP from "@/components";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
@@ -9,11 +9,10 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import IconButton from "@mui/material/IconButton";
 import { SyntheticEvent } from "react";
-import { authApi, testApi } from "@/api/auth";
-import { handleApiRequest } from "@/api";
-import Auth from "@/components/auth";
+import { authApi } from "@/api/auth";
 import Store from "@/store";
 import { useSnackbar } from "notistack";
+import useApi from "@/hooks/useApi";
 
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -40,7 +39,7 @@ const ResetPassword = () => {
     useState(false);
 
   const [token, setAccessToken] = useRecoilState(Store.User.accessTokenState);
-  const accessTokne = useRecoilValue(Store.User.accessTokenState);
+  console.log("#### TOKEN #######", token);
   const { enqueueSnackbar } = useSnackbar();
 
   const isFormInvalid =
@@ -52,9 +51,7 @@ const ResetPassword = () => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 428);
     };
-    console.log("Window size", window.innerWidth);
 
-    console.log("### RECOIL VALUE", token);
     window.addEventListener("resize", handleResize);
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -70,24 +67,30 @@ const ResetPassword = () => {
       },
     });
   }
+  const { response, isError, isSuccess, handleApiRequest } = useApi();
 
-  async function resetPassword(newPassword: string) {
-    const [response, error] = await handleApiRequest(() =>
-      authApi.resetPassword(newPassword)
-    );
-
-    if (error) {
+  useEffect(() => {
+    if (isError) {
       showMessage("Failed to reset password. Please try again", "success");
     }
-    console.log("Berfore delet", token);
-    setAccessToken("");
-    console.log("TOken", accessTokne);
-    showMessage("Password has been successfully reset.", "success");
-    setTimeout(() => {
-      navigate("/login-page");
-    }, 2000);
+  }, [isError]);
 
-    return;
+  useEffect(() => {
+    if (response) {
+      console.log("Response", response);
+      return;
+    }
+    if (isSuccess) {
+      showMessage("Password has been successfully reset.", "success");
+      setAccessToken("");
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
+    }
+  }, [isSuccess, response]);
+
+  async function resetPassword(newPassword: string) {
+    await handleApiRequest(() => authApi.resetPassword(newPassword));
   }
 
   const handleSubmit = async (event: SyntheticEvent) => {
