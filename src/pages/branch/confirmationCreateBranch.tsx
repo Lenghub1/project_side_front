@@ -10,7 +10,7 @@ const ConfirmationCreateBranch = ({ branchData, manager }) => {
   console.log(branchData.managerId);
   const managersName = manager
     .filter((item) => item.userId === branchData.managerId)
-    .map((item) => `${item.users.firstName} ${item.users.lastName}`);
+    .map((item) => `${item.user.firstName} ${item.user.lastName}`);
   console.log(managersName);
 
   return (

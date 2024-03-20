@@ -50,7 +50,7 @@ const CreateBranch: React.FC = () => {
     );
     console.log(response);
     if (response) {
-      setManagers(response.data as any);
+      setManagers(response.data.data as any);
     }
     if (error) {
       console.log(error);

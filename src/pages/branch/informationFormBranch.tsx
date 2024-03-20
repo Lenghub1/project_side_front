@@ -67,7 +67,7 @@ const InformationBranch = ({
             {/* Assuming managers are stored in an array */}
             {managers.map((manager: any) => (
               <MenuItem key={manager.id} value={manager.userId}>
-                {manager.users.firstName} {manager.users.lastName}
+                {manager.user.firstName} {manager.user.lastName}
               </MenuItem>
             ))}
           </TextField>

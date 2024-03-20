@@ -33,12 +33,13 @@ const ModifyBranch: React.FC = () => {
       allEmployees(selected)
     );
     if (response) {
-      setManagers(response.data);
+      console.log("hellosss", response);
+
+      setManagers(response.data.data);
     } else {
       console.log(error);
     }
   };
-  console.log("hello", data);
 
   const locationRequest = async () => {
     const [response, error] = await handleApiRequest(() =>
@@ -100,7 +101,7 @@ const ModifyBranch: React.FC = () => {
       >
         {managers.map((manager: any) => (
           <MenuItem key={manager.id} value={manager.id}>
-            {manager.users.firstName} {manager.users.lastName}
+            {manager.user.firstName} {manager.user.lastName}
           </MenuItem>
         ))}
       </TextField>

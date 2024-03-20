@@ -19,7 +19,7 @@ const transformEmployeeData = (
     return data.data.map((responseData: any) => ({
       id: responseData.id,
       userId: responseData.userId,
-      name: `${responseData.users.firstName} ${responseData.users.lastName}`,
+      name: `${responseData.user.firstName} ${responseData.user.lastName}`,
       position: responseData.position,
       status: responseData.status,
       privilege: responseData.priviledge,
@@ -30,11 +30,11 @@ const transformEmployeeData = (
     return {
       id: data.id,
       userId: data.userId,
-      name: `${data.users.firstName} ${data.users.lastName}`,
+      name: `${data.user.firstName} ${data.user.lastName}`,
       position: data.position,
       status: data.status,
       privilege: data.priviledge,
-      email: data.users.email,
+      email: data.user.email,
       phoneNumber: data.users.phoneNumber,
     };
   }

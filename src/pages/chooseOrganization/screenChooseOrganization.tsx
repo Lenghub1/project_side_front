@@ -23,6 +23,7 @@ const ScreenChooseOrganization = () => {
       const [response, error] = await handleApiRequest(() =>
         allWorkplace(user.id)
       );
+      console.log(response);
       if (response) {
         setOrganizationData(response.data || []);
       } else {
@@ -30,6 +31,7 @@ const ScreenChooseOrganization = () => {
       }
       setLoading(false); // Set loading to false once data fetching is complete
     };
+    console.log(organizationData);
 
     const timeout = setTimeout(() => {
       fetchData();
@@ -85,7 +87,7 @@ const ScreenChooseOrganization = () => {
             id={organization.id}
             setActiveOrgId={setSelectedOrg} // Updated to use setSelectedOrg instead of setSelectOrganization
             isActive={organization.id === selectedOrg} // Updated to use selectedOrg instead of selectOrganization
-            title={organization.organizations.name}
+            title={organization.organization.name}
             description="You are member of ours organization , pls click Next to Login"
           />
         ))}

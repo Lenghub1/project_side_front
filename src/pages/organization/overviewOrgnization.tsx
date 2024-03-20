@@ -42,6 +42,8 @@ const OverviewOrganization = () => {
   const createBranch = () => {
     navigate("/overview/createBranch");
   };
+  console.log(selected);
+
   const myOrganizationData = async () => {
     const [response, error] = await handleApiRequest(() =>
       myOrganization(selected)
