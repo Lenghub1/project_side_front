@@ -1,7 +1,7 @@
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import SearchDisplay from "../searchBox/SearchDisplay";
-import FilterButton from "./Filter";
+import FilterButton from "./filter/Filter";
 interface TableToolbarProp {
   name: string;
   data: object;
