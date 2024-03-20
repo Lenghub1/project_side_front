@@ -8,7 +8,7 @@ interface UnprotectedRouteProps {
 
 const UnprotectedRoute: React.FC<UnprotectedRouteProps> = ({
   element,
-  redirectPath = "/",
+  redirectPath = "/organization",
 }) => {
   const { isAuthenticated, selected } = useAuth();
   console.log(isAuthenticated);

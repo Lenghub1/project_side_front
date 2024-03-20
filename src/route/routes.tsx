@@ -207,46 +207,6 @@ const routes: RouteProps[] = [
       },
     ],
   },
-  {
-    name: "home",
-    path: "/",
-    element: Pg.HomePage,
-    children: [
-      {
-        name: "employee",
-        path: "employee",
-        element: Pg.Employee.default.Employee,
-        children: [
-          {
-            name: "employee-management",
-            path: "manage",
-            element: Pg.Employee.default.EmployeeTable,
-          },
-          {
-            name: "create-new-employee",
-            path: "create",
-            element: Pg.Employee.default.CreateEmployee,
-          },
-          {
-            name: "employee-registrations",
-            path: "registration",
-            element: Pg.Employee.default.EmployeeRegistration,
-          },
-        ],
-      },
-      {
-        name: "organization",
-        path: "organization",
-        children: [
-          {
-            name: "organization",
-            path: "create",
-            element: Pg.Organization.default.Organization,
-          },
-        ],
-      },
-    ],
-  },
 ];
 
 export default routes;
