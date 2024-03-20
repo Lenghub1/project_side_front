@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { BranchDetailCard } from "../../branch/branchDetail";
 import { Outlet } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { selectOrganization } from "@/store/userStore";
+import { selectedOrganization } from "@/store/userStore";
 import { useRecoilValue } from "recoil";
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -22,7 +22,7 @@ const OverviewOrganization = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 456);
   const location = useLocation();
   const [organizationData, setOrganizationData] = useState({}) as any;
-  const selected = useRecoilValue(selectOrganization);
+  const selected = useRecoilValue(selectedOrganization);
   const [organizationBranchData, setOrganizationBranchData] = useState(
     []
   ) as any;
@@ -40,7 +40,7 @@ const OverviewOrganization = () => {
   }, []);
 
   const createBranch = () => {
-    navigate("/organization/overview/createBranch");
+    navigate("/organization/createBranch");
   };
   console.log(selected);
 

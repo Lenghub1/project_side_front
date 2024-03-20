@@ -10,12 +10,6 @@ interface EmploymentDetailState {
   position: string;
   length: Number;
 }
-// select campus
-export const campusState = atom<string | null>({
-  key: `campusState`,
-  default: null,
-  effects_UNSTABLE: [persistAtom],
-});
 
 // login user info
 export const loginUserState = atom<string | null>({
@@ -54,8 +48,8 @@ export const employementDetail = atom<EmploymentDetailState>({
   effects_UNSTABLE: [persistAtom],
 });
 
-export const selectOrganization = atom({
-  key: "chooseOrganization",
+export const selectedOrganization = atom({
+  key: "selectedOrganization",
   default: "",
   effects_UNSTABLE: [persistAtom],
 });

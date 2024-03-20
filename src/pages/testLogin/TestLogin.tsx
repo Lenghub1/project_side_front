@@ -112,7 +112,7 @@ const TestLoginPage = () => {
       console.log(userData.user);
 
       setAccessToken(userData.user?.accessToken);
-      navigate("/");
+      navigate("/organization");
     }
   }, [response]);
 

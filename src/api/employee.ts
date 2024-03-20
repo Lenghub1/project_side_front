@@ -7,7 +7,10 @@ import {
   combineFields,
 } from "@/utils/api.util";
 
-const currentOrganizationId = import.meta.env.VITE_CURRENT_ORGANIZATION_ID;
+const data = JSON.parse(localStorage.getItem("recoil-persist")!);
+console.log(data?.selectedOrganization);
+
+const currentOrganizationId = data?.selectedOrganization;
 
 const fieldMapping = generateFieldMapping({
   id: "id",
@@ -22,7 +25,15 @@ const fieldMapping = generateFieldMapping({
 const allWorkplace = async (
   userId: string
 ): Promise<AxiosResponse<Partial<Employement>[]>> => {
-  return api.get(`/organizations/self-workplace/${userId}`);
+  return api.get(`/organizations/self-workplace/${userId}`, {
+    transformResponse: [
+      (response) => {
+        const data = transformData(response, fieldMapping);
+        const newData = combineFields(data, "firstName", "lastName", "name");
+        return newData;
+      },
+    ],
+  });
 };
 
 const getUserEmployments = async (
