@@ -8,14 +8,10 @@ import { Divider } from "@mui/material";
 import { myOrganization } from "@/api/organization";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-<<<<<<<< HEAD:src/pages/organization/overview/OverviewOrganization.tsx
 import { BranchDetailCard } from "../../branch/branchDetail";
-========
-import { BranchDetailCard } from "../branchDetail";
->>>>>>>> e7f51db (change: adjust the components with new changes):src/pages/organization/overview/overviewOrgnization.tsx
 import { Outlet } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { selectedOrganization } from "@/store/userStore";
+import { selectOrganization } from "@/store/userStore";
 import { useRecoilValue } from "recoil";
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -26,15 +22,11 @@ const OverviewOrganization = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 456);
   const location = useLocation();
   const [organizationData, setOrganizationData] = useState({}) as any;
-  const selected = useRecoilValue(selectedOrganization);
+  const selected = useRecoilValue(selectOrganization);
   const [organizationBranchData, setOrganizationBranchData] = useState(
     []
   ) as any;
-<<<<<<<< HEAD:src/pages/organization/overview/OverviewOrganization.tsx
   const isViewOrganization = location.pathname === "/organization";
-========
-  const isViewOrganization = location.pathname === "/organization/overview";
->>>>>>>> e7f51db (change: adjust the components with new changes):src/pages/organization/overview/overviewOrgnization.tsx
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 456);
@@ -48,11 +40,7 @@ const OverviewOrganization = () => {
   }, []);
 
   const createBranch = () => {
-<<<<<<<< HEAD:src/pages/organization/overview/OverviewOrganization.tsx
-    navigate("/organization/createBranch");
-========
     navigate("/organization/overview/createBranch");
->>>>>>>> e7f51db (change: adjust the components with new changes):src/pages/organization/overview/overviewOrgnization.tsx
   };
   console.log(selected);
 
