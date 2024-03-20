@@ -57,9 +57,7 @@ const forgotPassword = async (method: string, data: any) => {
   return api.post(`/auth/forgot/${method}/password`, data);
 };
 
-const verifyForgetPasswordToken = async (resetToken: string) => {
-  const data = { resetToken };
-  console.log("data", data);
+const verifyForgetPasswordToken = async (data: any) => {
   return api.post(`auth/verify/reset/password`, data);
 };
 

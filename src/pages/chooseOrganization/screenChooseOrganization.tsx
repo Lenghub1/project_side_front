@@ -20,7 +20,7 @@ const ScreenChooseOrganization = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const [response, error] = await handleApiRequest(() =>
+      const [response, error] = await handleApiRequest<any>(() =>
         allWorkplace(user.id)
       );
       console.log(response);
@@ -88,12 +88,12 @@ const ScreenChooseOrganization = () => {
             setActiveOrgId={setSelectedOrg} // Updated to use setSelectedOrg instead of setSelectOrganization
             isActive={organization.id === selectedOrg} // Updated to use selectedOrg instead of selectOrganization
             title={organization.organization.name}
-            description="You are member of ours organization , pls click Next to Login"
+            description="You are member of ours organization , pls click Next to Login ! Let join our journey"
           />
         ))}
 
         <CP.Typography style={{ marginTop: "40px" }}>
-          By continuing, you’re agreeing to our Main Services Agreement, User
+          By continuing, you're agreeing to our Main Services Agreement, User
           Terms of Service, and Riem Supplemental Terms. Additional disclosures
           are available in our Privacy Policy and Cookie Policy.
         </CP.Typography>
