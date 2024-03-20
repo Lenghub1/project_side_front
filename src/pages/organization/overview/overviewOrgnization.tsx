@@ -8,7 +8,7 @@ import { Divider } from "@mui/material";
 import { myOrganization } from "@/api/organization";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { BranchDetailCard } from "./branchDetail";
+import { BranchDetailCard } from "../branchDetail";
 import { Outlet } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { selectOrganization } from "@/store/userStore";
@@ -26,7 +26,7 @@ const OverviewOrganization = () => {
   const [organizationBranchData, setOrganizationBranchData] = useState(
     []
   ) as any;
-  const isViewOrganization = location.pathname === "/overview";
+  const isViewOrganization = location.pathname === "/organization/overview";
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 456);
@@ -40,7 +40,7 @@ const OverviewOrganization = () => {
   }, []);
 
   const createBranch = () => {
-    navigate("/overview/createBranch");
+    navigate("/organization/overview/createBranch");
   };
   console.log(selected);
 
@@ -49,7 +49,8 @@ const OverviewOrganization = () => {
       myOrganization(selected)
     );
     if (response) {
-      setOrganizationData(response.data);
+      console.log(response);
+      setOrganizationData(response);
     } else {
       console.log(error);
     }
@@ -124,14 +125,14 @@ const OverviewOrganization = () => {
                 <CP.Styled.Flex direction="column" items="flex-start">
                   <CP.Typography>Name</CP.Typography>
                   <CP.Typography variant="subtitle1">
-                    {organizationData.name}
+                    {organizationData?.name}
                   </CP.Typography>
                 </CP.Styled.Flex>
                 <Divider sx={{ width: "100%" }} />
                 <CP.Styled.Flex direction="column" items="flex-start">
                   <CP.Typography>Number of Employee</CP.Typography>
                   <CP.Typography variant="subtitle1">
-                    {organizationData.employeeCounts}
+                    {organizationData?.employeeCounts}
                   </CP.Typography>
                 </CP.Styled.Flex>
                 <Divider sx={{ width: "100%" }} />
