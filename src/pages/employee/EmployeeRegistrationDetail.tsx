@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { handleApiRequest } from "@/api";
-import { patchEmployeeById, getEmployeeById } from "@/api/employee";
+import { updateEmployee, getEmployeeById } from "@/api/employee";
 import { useNavigate } from "react-router-dom";
 import { employementDetail } from "@/store/userStore";
 import { useSnackbar } from "notistack";
@@ -44,10 +44,10 @@ const EmployeeRegistrationDetail = () => {
       console.log("Delayed for 1 second.");
 
       const [response, error] = await handleApiRequest(() =>
-        patchEmployeeById(
-          "1ca2a528-72c9-4cb8-8823-4d26cfcdd598",
+        updateEmployee(
+          body,
           employee[0].id,
-          body
+          "1ca2a528-72c9-4cb8-8823-4d26cfcdd598"
         )
       );
 
