@@ -11,7 +11,7 @@ import { allEmployees } from "@/api/employee";
 import { createBranch } from "@/api/branch";
 import { handleApiRequest } from "@/api";
 import { useNavigate } from "react-router-dom";
-import { selectOrganization } from "@/store/userStore";
+import { selectedOrganization } from "@/store/userStore";
 import { BranchData } from "@/utils/interfaces/Branch";
 export interface AddMemberProps {
   branchData: BranchData;
@@ -20,11 +20,12 @@ export interface AddMemberProps {
 
 const CreateBranch: React.FC = () => {
   const navigate = useNavigate();
-  const organization = useRecoilValue(selectOrganization);
+  const organization = useRecoilValue(selectedOrganization);
   const { enqueueSnackbar } = useSnackbar();
   const [selected, setSelected] = useRecoilState(selectMembers);
   const [step, setStep] = useState<number>(0);
   const [branchData, setBranchData] = useState<BranchData>({
+    id: "",
     name: "",
     managerId: "",
     locationId: "",
@@ -59,6 +60,7 @@ const CreateBranch: React.FC = () => {
       throw error;
     } else {
       setBranchData({
+        id: "",
         name: "",
         managerId: "",
         locationId: "",
@@ -68,7 +70,7 @@ const CreateBranch: React.FC = () => {
         geoFencing: 10,
         member: [],
       });
-      navigate("/organization/overview"); // Set step back to 1
+      navigate("/organization"); // Set step back to 1
     }
   };
   console.log("asdasds", managers);
