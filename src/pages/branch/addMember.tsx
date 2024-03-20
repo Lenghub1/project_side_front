@@ -14,7 +14,7 @@ const AddMember: React.FC<AddMemberProps> = ({ branchData, setBranchData }) => {
   const [fakeMembers, setFakeMembers] = React.useState<Partial<Employement[]>>(
     []
   );
-  const selectedOrganization = useRecoilValue(selectOrganization);
+  const currentOrganization = useRecoilValue(selectedOrganization);
   const newPendingEmployees = async () => {
     const [response, error] = await handleApiRequest(() =>
       allEmployees(currentOrganization)

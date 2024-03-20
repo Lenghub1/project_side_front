@@ -56,7 +56,7 @@ const ModifyBranch: React.FC = () => {
       modifyBranch(selected, selectedBranch.id, data)
     );
     if (!error) {
-      navigate("/overview");
+      navigate("/organization/overview");
     }
     console.log(response);
   };
