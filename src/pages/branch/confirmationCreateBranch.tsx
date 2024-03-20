@@ -1,5 +1,6 @@
 import CP from "@/components";
 import MapComponent from "@/components/map/Map";
+import { BranchData } from "@/utils/interfaces/Branch";
 import { Avatar } from "@mui/material";
 
 const ConfirmationCreateBranch = ({ branchData, manager }) => {
@@ -10,7 +11,7 @@ const ConfirmationCreateBranch = ({ branchData, manager }) => {
   console.log(branchData.managerId);
   const managersName = manager
     .filter((item) => item.userId === branchData.managerId)
-    .map((item) => `${item.user.firstName} ${item.user.lastName}`);
+    .map((item) => `${item.name}`);
   console.log(managersName);
 
   return (

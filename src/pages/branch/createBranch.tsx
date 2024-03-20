@@ -12,16 +12,7 @@ import { createBranch } from "@/api/branch";
 import { handleApiRequest } from "@/api";
 import { useNavigate } from "react-router-dom";
 import { selectOrganization } from "@/store/userStore";
-export interface BranchData {
-  name: string;
-  managerId: string;
-  locationName: string;
-  pinPoint: {};
-  geoFencing: number;
-  member: any[];
-  addressLine: string;
-}
-
+import { BranchData } from "@/utils/interfaces/Branch";
 export interface AddMemberProps {
   branchData: BranchData;
   setBranchData: React.Dispatch<React.SetStateAction<BranchData>>;
@@ -36,6 +27,7 @@ const CreateBranch: React.FC = () => {
   const [branchData, setBranchData] = useState<BranchData>({
     name: "",
     managerId: "",
+    locationId: "",
     locationName: "",
     addressLine: "",
     pinPoint: {},
@@ -43,14 +35,15 @@ const CreateBranch: React.FC = () => {
     member: [],
   });
   const [errors, setErrors] = useState<string[]>([]);
-  const [managers, setManagers] = React.useState<string[]>([]);
+  const [managers, setManagers] = React.useState<any>([]);
   const newPendingEmployees = async () => {
     const [response, error] = await handleApiRequest(() =>
       allEmployees(organization)
     );
     console.log(response);
     if (response) {
-      setManagers(response.data.data as any);
+      console.log(response);
+      setManagers(response);
     }
     if (error) {
       console.log(error);
@@ -68,13 +61,14 @@ const CreateBranch: React.FC = () => {
       setBranchData({
         name: "",
         managerId: "",
+        locationId: "",
         locationName: "",
         addressLine: "",
         pinPoint: {},
         geoFencing: 10,
         member: [],
       });
-      navigate("/overview"); // Set step back to 1
+      navigate("/organization/overview"); // Set step back to 1
     }
   };
   console.log("asdasds", managers);

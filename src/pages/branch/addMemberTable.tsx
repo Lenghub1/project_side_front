@@ -411,11 +411,11 @@ export default function EnhancedTable(props: {
                         sx={{ display: "flex", alignItems: "center", gap: 1 }}
                       >
                         <Avatar />
-                        {row.user.firstName} {row.user.lastName}
+                        {row.name}
                       </Box>
                     </TableCell>
                     <TableCell align="left">{row.position}</TableCell>
-                    <TableCell align="left">{row.workLocation}</TableCell>
+                    <TableCell align="left">{row?.workLocation}</TableCell>
                     <TableCell align="left">{row.status}</TableCell>
                   </TableRow>
                 );
