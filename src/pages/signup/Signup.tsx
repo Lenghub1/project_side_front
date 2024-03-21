@@ -236,48 +236,47 @@ const SignupPage = () => {
               }}
             />
 
-            <CP.Input
-              label="Confirm password"
-              type={confirmPasswordIsVisible ? "text" : "password"}
-              value={confirmPassword.value}
-              onChange={confirmPassword.onChange}
-              onBlur={confirmPassword.onBlur}
-              error={!!confirmPassword.error}
-              helperText={<confirmPassword.HelperText />}
-              required
-              InputProps={{
-                endAdornment: (
-                  <IconButton
-                    onClick={() => setConfirmPasswordIsVisible((prev) => !prev)}
-                  >
-                    {confirmPasswordIsVisible ? (
-                      <Visibility />
-                    ) : (
-                      <VisibilityOff />
-                    )}
-                  </IconButton>
-                ),
-              }}
-            />
-
-            <Divider></Divider>
-            <Flex gap="1rem">
-              <CP.Button variant="text">Cancel</CP.Button>
-              <CP.Button
-                disabled={isFormInvalid}
-                type="submit"
-                onClick={handleSubmit}
-              >
-                Signup
-              </CP.Button>
-            </Flex>
-            <CP.Typography variant="subtitle2">
-              By signing up, you agree to our{" "}
-              <NavLink to="#">Terms of Service</NavLink> &{" "}
-              <NavLink to="#">Privacy Policy</NavLink>
-            </CP.Typography>
+          <CP.Input
+            label="Confirm password"
+            type={confirmPasswordIsVisible ? "text" : "password"}
+            value={confirmPassword.value}
+            onChange={confirmPassword.onChange}
+            onBlur={confirmPassword.onBlur}
+            error={!!confirmPassword.error}
+            helperText={<confirmPassword.HelperText />}
+            required
+            InputProps={{
+              endAdornment: (
+                <IconButton
+                  onClick={() => setConfirmPasswordIsVisible((prev) => !prev)}
+                >
+                  {confirmPasswordIsVisible ? (
+                    <Visibility />
+                  ) : (
+                    <VisibilityOff />
+                  )}
+                </IconButton>
+              ),
+            }}
+          />
+          <OauthComponent />
+          <Divider></Divider>
+          <Flex gap="1rem">
+            <CP.Button variant="text">Cancel</CP.Button>
+            <CP.Button
+              disabled={isFormInvalid}
+              type="submit"
+              onClick={handleSubmit}
+            >
+              Signup
+            </CP.Button>
           </Flex>
-        </CP.Styled.Div>
+          <CP.Typography variant="subtitle2">
+            By signing up, you agree to our{" "}
+            <NavLink to="#">Terms of Service</NavLink> &{" "}
+            <NavLink to="#">Privacy Policy</NavLink>
+          </CP.Typography>
+        </Flex>
       </FormContainer>
       <Flex direction="column" margin="1rem 0 0" gap="1rem">
         <Divider></Divider>
