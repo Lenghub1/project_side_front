@@ -75,12 +75,11 @@ const ResetPassword = () => {
     };
   }, []);
 
-  useEffect(() => {
-    console.log("TOKEN", resetPasswordToken);
-    if (!resetPasswordToken) {
-      navigate("/login");
-    }
-  });
+  // useEffect(() => {
+  //   if (!resetPasswordToken) {
+  //     navigate("/login");
+  //   }
+  // });
 
   useEffect(() => {
     if (isError) {
@@ -95,6 +94,7 @@ const ResetPassword = () => {
     }
     if (isSuccess) {
       showMessage("Password has been successfully reset.", "success");
+      setResetPasswordToken(false);
       setTimeout(async () => {
         await logOut();
       }, 1500);

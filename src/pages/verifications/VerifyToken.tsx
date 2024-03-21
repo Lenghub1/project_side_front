@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, ElementType } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
@@ -16,10 +16,13 @@ interface ElementType {
 }
 
 const VerifyToken = () => {
-  const naviagate = useNavigate();
+  const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const location = useLocation();
   const [_, setAccessToken] = useRecoilState(Store.User.accessTokenState);
+  const [__, setResetPasswordToken] = useRecoilState(
+    Store.User.resetPasswordToken
+  );
   const [params, setParams] = useState<ElementType>({
     token: "",
     verificationType: "",
@@ -82,11 +85,12 @@ const VerifyToken = () => {
         params.verificationType === VERIFICAITON_TYPE.VERIFY_FORGET_PASSWORD
       ) {
         console.log("####### RESPONSE #######", response);
+        setResetPasswordToken(true);
         setTimeout(() => {
-          naviagate("/forget-password/reset-password");
+          navigate("/forget-password/reset-password");
         });
       } else if (params.verificationType === VERIFICAITON_TYPE.VERIFY_ACCOUNT) {
-        naviagate("/");
+        navigate("/");
       }
     }
   }, [isSuccess, response]);

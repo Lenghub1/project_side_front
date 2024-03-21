@@ -101,7 +101,7 @@ const OTP = () => {
           "OTP code verified successfully. You can now reset your password.",
           "success"
         );
-        setResetPasswordToken(response.data.user.accessToken);
+        setResetPasswordToken(true);
         setTimeout(() => {
           naviagate("/forget-password/reset-password");
         }, 1500);

@@ -1,6 +1,8 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
+import { resetPasswordToken } from "@/store/userStore";
+import { useRecoilValue } from "recoil";
 interface ProtectedRouteProps {
   element: any;
   allowedRoles?: string[];
