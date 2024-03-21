@@ -28,9 +28,8 @@ const allWorkplace = async (
   return api.get(`/organizations/self-workplace/${userId}`, {
     transformResponse: [
       (response) => {
-        const data = transformData(response, fieldMapping);
-        const newData = combineFields(data, "firstName", "lastName", "name");
-        return newData;
+        const { data } = JSON.parse(response);
+        return data;
       },
     ],
   });
