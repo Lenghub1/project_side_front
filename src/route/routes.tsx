@@ -33,7 +33,7 @@ const routes: RouteProps[] = [
       },
       {
         name: "createAccount",
-        path: "`create-account`",
+        path: "create-account",
         element: Pg.SignupPage,
         protected: false,
       },
