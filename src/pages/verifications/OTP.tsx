@@ -18,6 +18,7 @@ import { useRecoilState } from "recoil";
 import Store from "@/store";
 import useApi from "@/hooks/useApi";
 import { maskPhoneNumber } from "../forgotAccount/AccountList";
+import useCancelModal from "@/hooks/useCancelModal";
 
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -70,7 +71,11 @@ const OTP = () => {
     "",
     "",
   ]);
-  const [__, setAccessToken] = useRecoilState(Store.User.accessTokenState);
+  const { open, handleCancelConfirm, handleModalOpen, handleCloseModal } =
+    useCancelModal();
+  const [__, setResetPasswordToken] = useRecoilState(
+    Store.User.resetPasswordToken
+  );
   const { enqueueSnackbar } = useSnackbar();
   const naviagate = useNavigate();
   const inputs = useRef<(HTMLInputElement | null)[]>([]);
@@ -96,7 +101,7 @@ const OTP = () => {
           "OTP code verified successfully. You can now reset your password.",
           "success"
         );
-        // setAccessToken(response.data.user.accessToken);
+        setResetPasswordToken(response.data.user.accessToken);
         setTimeout(() => {
           naviagate("/forget-password/reset-password");
         }, 1500);
@@ -297,23 +302,37 @@ const OTP = () => {
                   Resend
                 </CP.Typography>
               </Flex>
-              <CP.Button
-                type="submit"
-                onClick={handleSubmit}
-                disabled={!isValidInput}
-              >
-                Verify
-              </CP.Button>
-              <CP.Button
-                variant="text"
-                onClick={() => navigate("/forget-Password")}
-              >
-                CHANGE PHONE NUMBER
-              </CP.Button>
+              <Flex gap="1rem" width="100%" justify="flex-end">
+                <CP.Button variant="text" onClick={handleModalOpen}>
+                  cancel
+                </CP.Button>
+                <CP.Button
+                  type="submit"
+                  onClick={handleSubmit}
+                  disabled={!isValidInput}
+                >
+                  Verify
+                </CP.Button>
+              </Flex>
             </Flex>
           </Flex>
         </CP.Styled.Div>
       </Flex>
+      <CP.Modal
+        open={open}
+        onClose={handleCloseModal}
+        type="confirm"
+        onOk={handleCancelConfirm}
+        okText={"Yes"}
+        cancelText="NO"
+      >
+        <CP.Styled.Flex direction="column" items="flex-start" gap="1rem">
+          <CP.Typography variant="h6">
+            Canceling Resetting Password?
+          </CP.Typography>
+          <CP.Typography> Are you sure to cancel it now?</CP.Typography>
+        </CP.Styled.Flex>
+      </CP.Modal>
     </CP.Styled.Wrapper>
   );
 };

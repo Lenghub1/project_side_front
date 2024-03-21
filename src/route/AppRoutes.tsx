@@ -12,7 +12,7 @@ import { ProtectedRoute, UnprotectedRoute } from "@/components/auth";
 
 const renderRoutes = (routes: RouteProps[]) => {
   return routes.map((route: RouteProps) => {
-    const isProtected = route.protected !== false;
+    const isProtected = route.protected;
     const Element = route.element;
     const element = isProtected ? (
       <ProtectedRoute

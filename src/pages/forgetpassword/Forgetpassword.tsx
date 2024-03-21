@@ -12,7 +12,7 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import useApi from "@/hooks/useApi";
 import { VERIFICAITON_TYPE } from "../verifications/OTP";
-
+import useCancelModal from "@/hooks/useCancelModal";
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
 `;
@@ -40,6 +40,9 @@ const ForgetPassword = () => {
   }>(countries[0]);
   const [resetPasswordBy, setResetPasswordBy] =
     useState<FindPasswordMethod>("email");
+  const { response, isSuccess, error, handleApiRequest } = useApi();
+  const { open, handleCancelConfirm, handleModalOpen, handleCloseModal } =
+    useCancelModal();
   const location = useLocation();
   const activeTabIndex = resetPasswordBy === "email" ? 0 : 1;
   const isForgetPasswordRoute = location.pathname === "/forget-password";
@@ -83,8 +86,6 @@ const ForgetPassword = () => {
     });
   }
 
-  const { response, isError, isLoading, isSuccess, error, handleApiRequest } =
-    useApi();
   async function forgetPassword(method: string, data: any): Promise<void> {
     await handleApiRequest(() => authApi.forgotPassword(method, data));
   }
@@ -149,6 +150,7 @@ const ForgetPassword = () => {
 
     await forgetPassword(resetPasswordBy, formData);
   };
+
   return (
     <>
       {isForgetPasswordRoute ? (
@@ -244,7 +246,9 @@ const ForgetPassword = () => {
                     </CP.Typography>
                   </CP.Styled.Flex>
                   <Flex width="100%" justify="flex-end" gap="20px">
-                    <CP.Button variant="text">Cancel</CP.Button>
+                    <CP.Button variant="text" onClick={handleModalOpen}>
+                      Cancel
+                    </CP.Button>
                     <CP.Button
                       type="submit"
                       onClick={handleSubmit}
@@ -275,6 +279,21 @@ const ForgetPassword = () => {
               </CP.Styled.Div>
             )}
           </Flex>
+          <CP.Modal
+            open={open}
+            onClose={handleCloseModal}
+            type="confirm"
+            onOk={handleCancelConfirm}
+            okText={"Yes"}
+            cancelText="NO"
+          >
+            <CP.Styled.Flex direction="column" items="flex-start" gap="1rem">
+              <CP.Typography variant="h6">
+                Canceling reset password?
+              </CP.Typography>
+              <CP.Typography> Are you sure to cancel it now?</CP.Typography>
+            </CP.Styled.Flex>
+          </CP.Modal>
         </CP.Styled.Wrapper>
       ) : (
         <Outlet />

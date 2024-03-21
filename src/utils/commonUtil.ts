@@ -2,7 +2,7 @@ import { useSnackbar } from "notistack";
 
 export function showMessage(message: string, variant: "error" | "success") {
   const { enqueueSnackbar } = useSnackbar();
-  enqueueSnackbar(message, {
+  return enqueueSnackbar(message, {
     variant: variant,
     anchorOrigin: {
       vertical: "bottom", // or 'bottom'

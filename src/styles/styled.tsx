@@ -160,7 +160,7 @@ export const CheckboxWrapper = styled.label`
   align-items: center;
 `;
 
-export const StyleDialog = styled(Dialog)`
+export const StyleDialog = styled(Dialog)<DivProps>`
   & .MuiDialogActions-root {
     & > div {
       width: auto !important;

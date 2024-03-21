@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import CP from "@/components";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
@@ -13,6 +13,7 @@ import { authApi } from "@/api/auth";
 import Store from "@/store";
 import { useSnackbar } from "notistack";
 import useApi from "@/hooks/useApi";
+import useCancelModal from "@/hooks/useCancelModal";
 
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -37,16 +38,32 @@ const ResetPassword = () => {
   const [passwordIsVisible, setPasswordIsVisible] = useState(false);
   const [confirmPasswordIsVisible, setConfirmPasswordIsVisible] =
     useState(false);
-
-  const [token, setAccessToken] = useRecoilState(Store.User.accessTokenState);
-  console.log("#### TOKEN #######", token);
+  const [resetPasswordToken, setResetPasswordToken] = useRecoilState(
+    Store.User.resetPasswordToken
+  );
+  const { open, handleCancelConfirm, handleModalOpen, handleCloseModal } =
+    useCancelModal();
   const { enqueueSnackbar } = useSnackbar();
-
+  const { response, isError, isSuccess, handleApiRequest } = useApi();
   const isFormInvalid =
     !password.value ||
     password.errors.length !== 0 ||
     !confirmPassword.value ||
     !!confirmPassword.error;
+
+  function showMessage(message: string, variant: "error" | "success") {
+    enqueueSnackbar(message, {
+      variant: variant,
+      anchorOrigin: {
+        vertical: "bottom", // or 'bottom'
+        horizontal: "left", // or 'left', 'center'
+      },
+    });
+  }
+
+  async function logOut() {
+    await handleApiRequest(() => authApi.logout());
+  }
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 428);
@@ -58,16 +75,12 @@ const ResetPassword = () => {
     };
   }, []);
 
-  function showMessage(message: string, variant: "error" | "success") {
-    enqueueSnackbar(message, {
-      variant: variant,
-      anchorOrigin: {
-        vertical: "bottom", // or 'bottom'
-        horizontal: "left", // or 'left', 'center'
-      },
-    });
-  }
-  const { response, isError, isSuccess, handleApiRequest } = useApi();
+  useEffect(() => {
+    console.log("TOKEN", resetPasswordToken);
+    if (!resetPasswordToken) {
+      navigate("/login");
+    }
+  });
 
   useEffect(() => {
     if (isError) {
@@ -82,9 +95,8 @@ const ResetPassword = () => {
     }
     if (isSuccess) {
       showMessage("Password has been successfully reset.", "success");
-      setAccessToken("");
-      setTimeout(() => {
-        navigate("/login");
+      setTimeout(async () => {
+        await logOut();
       }, 1500);
     }
   }, [isSuccess, response]);
@@ -179,7 +191,9 @@ const ResetPassword = () => {
               </Flex>
 
               <Flex justify="flex-end" gap="20px">
-                <CP.Button variant="text">Cancel</CP.Button>
+                <CP.Button variant="text" onClick={handleModalOpen}>
+                  Cancel
+                </CP.Button>
                 <CP.Button
                   disabled={isFormInvalid}
                   type="submit"
@@ -192,6 +206,21 @@ const ResetPassword = () => {
           </Flex>
         </CP.Styled.Div>
       </Flex>
+      <CP.Modal
+        open={open}
+        onClose={handleCloseModal}
+        type="confirm"
+        onOk={handleCancelConfirm}
+        okText={"Yes"}
+        cancelText="NO"
+      >
+        <CP.Styled.Flex direction="column" items="flex-start" gap="1rem">
+          <CP.Typography variant="h6">
+            Canceling Resetting Password?
+          </CP.Typography>
+          <CP.Typography> Are you sure to cancel it now?</CP.Typography>
+        </CP.Styled.Flex>
+      </CP.Modal>
     </CP.Styled.Wrapper>
   );
 };

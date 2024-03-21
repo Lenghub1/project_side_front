@@ -10,8 +10,8 @@ import { SyntheticEvent } from "react";
 import { useSnackbar } from "notistack";
 import { authApi, testApi } from "@/api/auth";
 import { handleApiRequest } from "@/api";
-import Store from "@/store";
 import { Outlet } from "react-router-dom";
+import useCancelModal from "@/hooks/useCancelModal";
 
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -40,10 +40,8 @@ const ForgotAccount = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 428);
   const username = useValidatedInput("", "Username");
   const companyCode = useInput("");
-  const [_, setForgotAccountInformation] = useRecoilState(
-    Store.User.forgotAccountInformation
-  );
-
+  const { open, handleCancelConfirm, handleModalOpen, handleCloseModal } =
+    useCancelModal();
   const isForgotAccountRoute = location.pathname === "/forgot-account";
   useEffect(() => {
     console.log("Company code", companyCode);
@@ -92,8 +90,6 @@ const ForgotAccount = () => {
 
     if (response.status_code === 200) {
       // set state
-      setForgotAccountInformation(response.data);
-      console.log("##### USER  #####", _);
       navigate("/forgot-account/informations");
     }
   }
@@ -181,7 +177,9 @@ const ForgotAccount = () => {
                   </CP.Styled.Flex>
                   {/* {companyCode && <h1>{comp}</h1>} */}
                   <Flex width="100%" justify="flex-end" gap="20px">
-                    <CP.Button variant="text">Cancel</CP.Button>
+                    <CP.Button variant="text" onClick={handleModalOpen}>
+                      Cancel
+                    </CP.Button>
                     <CP.Button
                       type="submit"
                       onClick={handleSubmit}
@@ -211,6 +209,21 @@ const ForgotAccount = () => {
               </CP.Styled.Div>
             )}
           </Flex>
+          <CP.Modal
+            open={open}
+            onClose={handleCloseModal}
+            type="confirm"
+            onOk={handleCancelConfirm}
+            okText={"Yes"}
+            cancelText="NO"
+          >
+            <CP.Styled.Flex direction="column" items="flex-start" gap="1rem">
+              <CP.Typography variant="h6">
+                Canceling finding the account?
+              </CP.Typography>
+              <CP.Typography> Are you sure to cancel it now?</CP.Typography>
+            </CP.Styled.Flex>
+          </CP.Modal>
         </CP.Styled.Wrapper>
       ) : (
         <Outlet />

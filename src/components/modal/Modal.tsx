@@ -34,7 +34,7 @@ const Modal = ({
   onOk,
   onCancel,
   okText,
-  cancelText
+  cancelText,
 }: ModalProps) => {
   return (
     <CP.Styled.StyleDialog open={open} onClose={onClose}>
@@ -47,7 +47,7 @@ const Modal = ({
               <CP.Button variant="text" onClick={onCancel ? onCancel : onClose}>
                 {cancelText ? cancelText : "Cancel"}
               </CP.Button>
-              <CP.Button onClick={onOk ? onOk : onClose}>
+              <CP.Button variant="text" onClick={onOk ? onOk : onClose}>
                 {okText ? okText : "Confirm"}
               </CP.Button>
             </>
