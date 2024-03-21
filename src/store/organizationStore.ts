@@ -9,3 +9,13 @@ export const organizationState = atom<any>({
   default: undefined,
   effects_UNSTABLE: [persistAtom],
 });
+export const searchResultState = atom<Organization>({
+  key: "searchOrganizationState",
+  default: undefined,
+  effects_UNSTABLE: [persistAtom],
+});
+export const employeeRegister = atom<any>({
+  key: "registerAsEmployee",
+  default: undefined,
+  effects_UNSTABLE: [persistAtom],
+});

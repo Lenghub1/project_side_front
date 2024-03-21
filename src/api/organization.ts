@@ -17,6 +17,16 @@ const myOrganization = async (organizationId: string) => {
     ],
   });
 };
+const codeOrganization = async (codeId: string) => {
+  return api.get(`/organizations/code/${codeId}`, {
+    transformResponse: [
+      (response) => {
+        const data = transformData(response, fieldMapping);
+        return data;
+      },
+    ],
+  });
+};
 const newOrganization = async (data: object) => {
   return api.post(`/organizations`, data, {
     transformResponse: [
