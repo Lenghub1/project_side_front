@@ -1,7 +1,6 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
-
 interface UnprotectedRouteProps {
   element: any;
   redirectPath?: string;
@@ -9,13 +8,17 @@ interface UnprotectedRouteProps {
 
 const UnprotectedRoute: React.FC<UnprotectedRouteProps> = ({
   element,
-  redirectPath,
+  redirectPath = "/",
 }) => {
-  const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, selected } = useAuth();
+  console.log(selected);
 
-  if (isAuthenticated && redirectPath) {
-    navigate(redirectPath);
+  if (isAuthenticated) {
+    if (!selected) {
+      return <Navigate to="/login/choose-organization" replace />;
+    } else if (selected) {
+      return <Navigate to={redirectPath} replace />;
+    }
   }
 
   return element;
