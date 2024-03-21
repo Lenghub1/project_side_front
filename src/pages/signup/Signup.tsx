@@ -17,7 +17,9 @@ import { Flex } from "../getStarted/GetStarted";
 import { Title, FormContainer } from "../companySearch/CompanySearch";
 import Alert from "@mui/material/Alert";
 import SignupMethod from "@/components/signupMethod/SignupMethod";
-
+import { useRecoilState, useSetRecoilState } from "recoil";
+import Store from "@/store";
+import { OauthComponent } from "@/components/oauth";
 const Divider = styled(MuiDivider)`
   width: 100%;
 `;
@@ -69,7 +71,7 @@ const SignupPage = () => {
     dialCode: string;
     flag: string;
   }>(countries[0]);
-
+  const [_, setAccountType] = useRecoilState(Store.SignUp.accountTypeState);
   const isFormInvalid =
     ((!firstName.value || !!firstName.error) && accountType === "employer") ||
     !lastName.value ||
@@ -106,6 +108,10 @@ const SignupPage = () => {
     password.reset();
     confirmPassword.reset();
   }
+
+  useEffect(() => {
+    setAccountType(accountType);
+  }, [accountType]);
 
   useEffect(() => {
     if (isSuccess && signupMethod === "email") {
@@ -254,7 +260,7 @@ const SignupPage = () => {
               ),
             }}
           />
-
+          <OauthComponent />
           <Divider></Divider>
           <Flex gap="1rem">
             <CP.Button variant="text">Cancel</CP.Button>
