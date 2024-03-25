@@ -30,3 +30,8 @@ export const selectMembers = atom<string[] | null>({
   default: [],
   effects_UNSTABLE: [persistAtom],
 });
+
+export const filteredDataState = atom({
+  key: "filteredDataState",
+  default: [],
+});

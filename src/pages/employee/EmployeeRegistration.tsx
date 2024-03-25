@@ -13,8 +13,8 @@ import {
 } from "@/utils/employee.util";
 import useFetch from "@/hooks/useFetch";
 import Error from "../error/Error";
-import { useRecoilState } from "recoil";
-import { allEmployeesData } from "@/store/employee";
+import { useRecoilValue } from "recoil";
+import { filteredDataState } from "@/store/employee";
 
 const RenderActionCell = (row: Employement) => {
   const { id } = row;
@@ -29,15 +29,14 @@ const RenderActionCell = (row: Employement) => {
 };
 
 const EmployeeRegistration = () => {
-  const [allEmployee, setAllEmployee] = useRecoilState(allEmployeesData);
+  const filteredData = useRecoilValue(filteredDataState);
   const { data, error } = useFetch(getAllPendingEmployees);
   const [notifiactionCount, setNotifiactionCount] = React.useState<number>(0);
 
   if (error) {
     return <Error status={error.status_code} />;
   }
-  setAllEmployee(data);
-  console.log(allEmployee);
+  console.log(filteredData);
   return (
     <CP.Container>
       <CP.Container>
@@ -58,9 +57,9 @@ const EmployeeRegistration = () => {
       <EnhancedTable<Employement>
         headCells={headCells}
         order="asc"
-        rows={data || []}
+        rows={filteredData || []}
         orderBy="name"
-        rowCount={data?.length || 0}
+        rowCount={filteredData?.length || 0}
         tableName="Employee Registrations"
         actionCell={RenderActionCell}
       />
