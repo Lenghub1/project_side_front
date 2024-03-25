@@ -87,10 +87,6 @@ const SignupPage = () => {
   function showError(message: string) {
     enqueueSnackbar(message, {
       variant: "error",
-      anchorOrigin: {
-        vertical: "bottom", // or 'bottom'
-        horizontal: "left", // or 'left', 'center'
-      },
     });
   }
 
@@ -116,6 +112,14 @@ const SignupPage = () => {
   useEffect(() => {
     if (isSuccess && signupMethod === "email") {
       resetState();
+    }
+  }, [isSuccess, signupMethod]);
+
+  useEffect(() => {
+    if (isSuccess && signupMethod === "email") {
+      enqueueSnackbar("We've sent a verification code to your email.", {
+        variant: "success",
+      });
     }
   }, [isSuccess, signupMethod]);
 
@@ -177,11 +181,6 @@ const SignupPage = () => {
   return (
     <CP.Styled.Form>
       <FormContainer>
-        {isSuccess && signupMethod === "email" && (
-          <Alert severity="success">
-            We've sent a verification code to your email.
-          </Alert>
-        )}
         <CP.Styled.Div>
           <Title>Create a new account</Title>
           <Flex direction="column" gap="1.5rem">
