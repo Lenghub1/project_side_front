@@ -68,6 +68,7 @@ const routes: RouteProps[] = [
     name: "chooseOrganization",
     path: "login/choose-organization",
     element: Pg.choose.default.ScreenChooseOrganization,
+    protected: false,
   },
   {
     name: "home",
