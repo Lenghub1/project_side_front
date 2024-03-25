@@ -80,7 +80,7 @@ const ModifyBranch: React.FC = () => {
     branchPatch();
   };
   const handleCancelModify = () => {
-    navigate("/overview");
+    navigate("/organization");
   };
   useEffect(() => {
     managerRequest();
