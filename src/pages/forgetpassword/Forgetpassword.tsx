@@ -13,6 +13,7 @@ import Tabs from "@mui/material/Tabs";
 import useApi from "@/hooks/useApi";
 import { VERIFICAITON_TYPE } from "../verifications/OTP";
 import useCancelModal from "@/hooks/useCancelModal";
+import useHistoryPopstate from "@/hooks/usePopState";
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
 `;
@@ -47,7 +48,6 @@ const ForgetPassword = () => {
   const activeTabIndex = resetPasswordBy === "email" ? 0 : 1;
   const isForgetPasswordRoute = location.pathname === "/forget-password";
 
-  console.log("FORGET PASSWORD", isForgetPasswordRoute, location.pathname);
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 428);
@@ -57,6 +57,8 @@ const ForgetPassword = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  useHistoryPopstate(handleModalOpen);
 
   const handleResetPasswordBy = (event: SyntheticEvent, newValue: number) => {
     const method = newValue === 0 ? "email" : "phone";

@@ -13,6 +13,8 @@ import Switch from "@mui/material/Switch";
 import EnhancedTableToolbar from "./Toolbar";
 import EnhancedTableHead, { HeadCell } from "./TableHead";
 import { getComparator, stableSort } from "@/utils/table.util";
+import { useRecoilState } from "recoil";
+import { employementDetail } from "@/store/userStore";
 type Order = "asc" | "desc";
 
 interface EnhancedTableProps<T> {
@@ -67,6 +69,7 @@ function EnhancedTable<T>({
   const [filters, setFilters] = React.useState<{ [key: string]: string }>(
     Object.fromEntries(headCells.map((cell) => [cell.id, ""]))
   );
+  const navigate = useNavigate();
 
   const handleRequestSort = (property: keyof T) => {
     const isAsc = currentOrderBy === property && currentOrder === "asc";
