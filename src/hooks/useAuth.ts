@@ -1,13 +1,13 @@
 import { useRecoilValue, useRecoilState, useSetRecoilState } from "recoil";
+import { useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
+import { authApi } from "@/api/auth";
+import { handleApiRequest } from "@/api";
 import {
   userState,
   accessTokenState,
   isUserFetchedState,
 } from "@/store/userStore";
-import { useEffect } from "react";
-import { jwtDecode } from "jwt-decode";
-import { authApi } from "@/api/auth";
-import { handleApiRequest } from "@/api";
 import { selectedOrganization } from "@/store/userStore";
 interface CustomJwtPayload {
   userId?: string;
@@ -18,7 +18,6 @@ const useAuth = () => {
   const [user, setUser] = useRecoilState(userState);
   const setIsUserFetched = useSetRecoilState(isUserFetchedState);
   const selected = useRecoilValue(selectedOrganization);
-  // console.log("use Auth is running", user);
 
   async function getUserInfo(id: string) {
     const [response, error] = await handleApiRequest(() => authApi.getUser(id));
@@ -39,12 +38,9 @@ const useAuth = () => {
       }
     };
 
-    console.log("Before");
     fetchUserInfo();
-    console.log("After");
     setIsUserFetched(true);
-  }, [accessToken]);
-  console.log("auth", selected);
+  }, [accessToken, setUser, setIsUserFetched]);
 
   return {
     selected: !!selected,

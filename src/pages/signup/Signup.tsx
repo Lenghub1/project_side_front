@@ -17,7 +17,7 @@ import { Flex } from "../getStarted/GetStarted";
 import { Title, FormContainer } from "../companySearch/CompanySearch";
 import SignupMethod from "@/components/signupMethod/SignupMethod";
 
-const Divider = styled(MuiDivider)`
+export const Divider = styled(MuiDivider)`
   width: 100%;
 `;
 

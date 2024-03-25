@@ -2,14 +2,17 @@ import CP from "..";
 import styled from "styled-components";
 import CardActionArea from "@mui/material/CardActionArea";
 import CardContent from "@mui/material/CardContent";
-import { Avatar } from "@mui/material";
-
+import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
+import PlaceIcon from "@mui/icons-material/Place";
+import PersonIcon from "@mui/icons-material/Person";
 interface RoleCardProps {
   id: string;
   setActiveOrgId: (id: string | undefined) => void;
   isActive: boolean;
   title: string;
   description: string;
+  location: Number;
+  employee: Number;
 }
 
 const Typography = styled(CP.Typography)`
@@ -22,10 +25,15 @@ const ChooseOrganizationCard = ({
   isActive,
   title,
   description,
+  location,
+  employee,
 }: RoleCardProps) => {
   const handleCardClick = () => {
     setActiveOrgId(isActive ? undefined : id);
   };
+
+  // Truncate title if it's longer than 25 characters
+  const truncatedTitle = title.length > 25 ? title.slice(0, 23) + " .." : title;
 
   return (
     <CP.Card
@@ -44,15 +52,23 @@ const ChooseOrganizationCard = ({
       <CardActionArea
         sx={{ color: isActive ? "primary.main" : "text.primary" }}
       >
-        <CP.Styled.Flex padding="1.5rem">
-          <Avatar></Avatar>
+        <CP.Styled.Flex padding="1.5rem" justify="flex-start">
           <CardContent>
-            <Typography variant="h5" gutterBottom color="inherit">
-              {title}
+            <Typography variant="h6" gutterBottom color="inherit">
+              {truncatedTitle}
             </Typography>
-            <Typography variant="body2" color="inherit">
+            <CP.Styled.Flex gap="20px" justify="flex-start">
+              <PersonIcon />
               {description}
-            </Typography>
+            </CP.Styled.Flex>
+            <CP.Styled.Flex gap="20px" justify="flex-start" margin="10px 0">
+              <PlaceIcon />
+              {Number(location)}
+            </CP.Styled.Flex>
+            <CP.Styled.Flex gap="20px" justify="flex-start" margin="10px 0">
+              <SupervisorAccountIcon />
+              {Number(employee)}
+            </CP.Styled.Flex>
           </CardContent>
         </CP.Styled.Flex>
       </CardActionArea>

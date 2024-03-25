@@ -3,9 +3,11 @@ import { useParams, useNavigate, redirect } from "react-router-dom";
 import { Flex } from "../getStarted/GetStarted";
 import { Title, FormContainer } from "../companySearch/CompanySearch";
 import Box from "@mui/material/Box";
-import { searchResultState } from "@/store/organizationStore";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { employeeRegister } from "@/store/organizationStore";
+import { handleApiRequest } from "@/api";
+import { codeOrganization } from "@/api/organization";
+import { useEffect, useState } from "react";
 interface RegisterAsEmployee {
   orgId: string;
   email: string;
@@ -15,25 +17,39 @@ interface RegisterAsEmployee {
 
 const CompanySearchResult = () => {
   const navigate = useNavigate();
+  const [searchResult, setSearchResult] = useState<any>();
   const [regisgerAsEmployee, setRegisterAsEmployee] =
     useRecoilState<RegisterAsEmployee>(employeeRegister);
-  const { companyId } = useParams() || 1;
-  console.log(companyId);
-  const resultSearch = useRecoilValue(searchResultState);
-  console.log(resultSearch);
+  const { companyId } = useParams<string>() || undefined;
+  const getCompanyCode = async () => {
+    const [response, error] = await handleApiRequest(() =>
+      codeOrganization(companyId as string)
+    );
+    console.log(response);
+    if (response) {
+      setSearchResult(response);
+    }
+    if (error) {
+      console.log(error);
+    }
+  };
 
   const handleContinueClick = () => {
-    if (resultSearch) {
+    if (searchResult) {
+      setRegisterAsEmployee(searchResult);
       navigate("/get-started/join-company");
     } else {
       redirect("/get-started/company-search");
     }
   };
+  useEffect(() => {
+    getCompanyCode();
+  }, []);
   return (
     <>
       <FormContainer>
         <CP.Styled.Div>
-          <Title>{resultSearch.name}</Title>
+          <Title>{searchResult?.name}</Title>
           <Flex direction="column" gap="1.5rem" items="flex-start">
             <Flex gap="1rem" items="flex-start">
               <Box
@@ -46,7 +62,7 @@ const CompanySearchResult = () => {
                 }}
               />
               <CP.Typography variant="body1">
-                <b>{resultSearch.name}</b> is a global educational technology
+                <b>{searchResult?.name}</b> is a global educational technology
                 company based in South Korea, specializing in e-learning content
                 development and offering a consilience learning platform for
                 learning curation. The company focuses on various sectors

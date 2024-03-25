@@ -1,8 +1,9 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
+
 interface ProtectedRouteProps {
-  element: any;
+  element: React.ReactNode;
   allowedRoles?: string[];
 }
 
@@ -11,16 +12,17 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   allowedRoles,
 }) => {
   const { isAuthenticated, userRole, selected } = useAuth();
-  console.log(selected);
 
-  if (!isAuthenticated) {
-    // redirect to login if not authenticated
-    return <Navigate to="/login" replace />;
+  if (!isAuthenticated || !selected) {
+    // redirect to login or choose organization if not authenticated or selected
+    return (
+      <Navigate
+        to={!isAuthenticated ? "/login" : "/login/choose-organization"}
+        replace
+      />
+    );
   }
-  if (!selected) {
-    // Redirect to choose organization page
-    return <Navigate to="/login/choose-organization" replace />;
-  }
+
   if (allowedRoles && allowedRoles.length > 0) {
     // check if user has required roles
     const hasRequiredRole = allowedRoles.includes(userRole);
@@ -31,7 +33,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     }
   }
 
-  return element;
+  return <>{element}</>;
 };
 
 export default ProtectedRoute;
