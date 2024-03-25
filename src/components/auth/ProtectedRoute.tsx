@@ -10,12 +10,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   element,
   allowedRoles,
 }) => {
-<<<<<<< HEAD
   const { isAuthenticated, userRole, selected } = useAuth();
   console.log(selected);
-=======
-  const { isAuthenticated, userRole } = useAuth();
->>>>>>> 39a6d77 (fix: fixing the token for resetting password)
 
   if (!isAuthenticated) {
     // redirect to login if not authenticated
