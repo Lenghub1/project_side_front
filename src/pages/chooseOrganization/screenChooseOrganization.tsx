@@ -11,7 +11,8 @@ import { organizationState } from "@/store/organizationStore";
 
 const ScreenChooseOrganization = () => {
   const navigate = useNavigate();
-  const [selectedOrg, setSelectedOrg] = useRecoilState(selectedOrganization);
+  const [selectedOrg, setSelectedOrg] = useState<string>();
+  const [selectOrg, setSelectOrg] = useRecoilState(selectedOrganization);
   const [organizationData, setOrganizationData] =
     useRecoilState(organizationState);
   const user = useRecoilValue(userState);
@@ -48,7 +49,7 @@ const ScreenChooseOrganization = () => {
       (org: any) => org.id === selectedId
     );
     if (selectedOrganization) {
-      setSelectedOrg(selectedOrganization.orgId);
+      setSelectOrg(selectedOrganization.orgId);
       return selectedOrganization.orgId;
     } else {
       console.error("Selected organization not found in organizationData");
@@ -57,7 +58,7 @@ const ScreenChooseOrganization = () => {
   };
 
   const handleNavigate = () => {
-    findOrgIdBySelectedId(selectedOrg);
+    findOrgIdBySelectedId(selectedOrg as string);
     navigate("/organization");
   };
 

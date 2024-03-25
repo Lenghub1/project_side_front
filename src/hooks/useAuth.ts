@@ -44,6 +44,7 @@ const useAuth = () => {
     console.log("After");
     setIsUserFetched(true);
   }, [accessToken]);
+  console.log("auth", selected);
 
   return {
     selected: !!selected,
