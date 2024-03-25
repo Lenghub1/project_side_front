@@ -152,7 +152,6 @@ const routes: RouteProps[] = [
       },
     ],
   },
-
   {
     name: "forgetpassword",
     path: "/forget-password",
