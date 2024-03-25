@@ -1,13 +1,8 @@
 import { ReactNodeProps } from "@/@type/common";
-import Auth from "@/components/auth";
 import { styled } from "styled-components";
 
 const Template = ({ children }: ReactNodeProps) => {
-  return (
-    <Auth>
-      <Container>{children}</Container>
-    </Auth>
-  );
+  return <Container>{children}</Container>;
 };
 
 const Container = styled.div`

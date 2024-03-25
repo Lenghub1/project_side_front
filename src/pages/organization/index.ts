@@ -1,4 +1,5 @@
 import Organization from "./Organization";
+import NewOrganization from "./permission/NewOrganization";
+import OverviewOrganization from "./overview/OverviewOrganization";
 
-export default { Organization };
-export { default as overviewOrganization } from "./overviewOrgnization";
+export default { Organization, OverviewOrganization, NewOrganization };

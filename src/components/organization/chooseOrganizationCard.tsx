@@ -3,11 +3,10 @@ import styled from "styled-components";
 import CardActionArea from "@mui/material/CardActionArea";
 import CardContent from "@mui/material/CardContent";
 import { Avatar } from "@mui/material";
-import { useState } from "react";
 
 interface RoleCardProps {
   id: string;
-  setActiveOrgId: (id: string | null) => void;
+  setActiveOrgId: (id: string | undefined) => void;
   isActive: boolean;
   title: string;
   description: string;
@@ -25,7 +24,7 @@ const ChooseOrganizationCard = ({
   description,
 }: RoleCardProps) => {
   const handleCardClick = () => {
-    setActiveOrgId(isActive ? null : id);
+    setActiveOrgId(isActive ? undefined : id);
   };
 
   return (

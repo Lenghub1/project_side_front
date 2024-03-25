@@ -71,10 +71,9 @@ const SignupPage = () => {
   }>(countries[0]);
 
   const isFormInvalid =
-    !firstName.value ||
-    !!firstName.error ||
+    ((!firstName.value || !!firstName.error) && accountType === "employer") ||
     !lastName.value ||
-    !!lastName.error ||
+    (!!lastName.error && accountType === "employer") ||
     (signupMethod === "phone"
       ? !phone.value || !!phone.error
       : !email.value || !!email.error) ||

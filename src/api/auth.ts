@@ -25,7 +25,7 @@ const logout = async () => {
 };
 
 const getUser = async (id: string) => {
-  return api.get(`/users/me/${id}`);
+  return api.get(`/users/${id}`);
 };
 
 const authApi = {

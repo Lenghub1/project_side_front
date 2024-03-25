@@ -1,6 +1,6 @@
 export interface Employement {
   id: string;
-  userId:string
+  userId: string;
   name: string;
   position: string;
   description: string;
@@ -10,7 +10,6 @@ export interface Employement {
   status: string;
   privilege: string;
   workLocation: string;
-  userId: string;
   email: string;
   phoneNumber: string;
   users: any;

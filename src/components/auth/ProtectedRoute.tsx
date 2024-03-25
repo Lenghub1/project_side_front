@@ -10,13 +10,17 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   element,
   allowedRoles,
 }) => {
-  const { isAuthenticated, userRole } = useAuth();
+  const { isAuthenticated, userRole, selected } = useAuth();
+  console.log(selected);
 
   if (!isAuthenticated) {
     // redirect to login if not authenticated
-    return <Navigate to="/test-login" replace />;
+    return <Navigate to="/login" replace />;
   }
-
+  if (!selected) {
+    // Redirect to choose organization page
+    return <Navigate to="/login/choose-organization" replace />;
+  }
   if (allowedRoles && allowedRoles.length > 0) {
     // check if user has required roles
     const hasRequiredRole = allowedRoles.includes(userRole);

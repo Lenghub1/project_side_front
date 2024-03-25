@@ -1,23 +1,39 @@
 import CP from "@/components";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, redirect } from "react-router-dom";
 import { Flex } from "../getStarted/GetStarted";
 import { Title, FormContainer } from "../companySearch/CompanySearch";
 import Box from "@mui/material/Box";
+import { searchResultState } from "@/store/organizationStore";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { employeeRegister } from "@/store/organizationStore";
+interface RegisterAsEmployee {
+  orgId: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
 
 const CompanySearchResult = () => {
   const navigate = useNavigate();
+  const [regisgerAsEmployee, setRegisterAsEmployee] =
+    useRecoilState<RegisterAsEmployee>(employeeRegister);
   const { companyId } = useParams() || 1;
   console.log(companyId);
+  const resultSearch = useRecoilValue(searchResultState);
+  console.log(resultSearch);
 
   const handleContinueClick = () => {
-    navigate("/get-started/join-company");
+    if (resultSearch) {
+      navigate("/get-started/join-company");
+    } else {
+      redirect("/get-started/company-search");
+    }
   };
-
   return (
     <>
       <FormContainer>
         <CP.Styled.Div>
-          <Title>EMCAST</Title>
+          <Title>{resultSearch.name}</Title>
           <Flex direction="column" gap="1.5rem" items="flex-start">
             <Flex gap="1rem" items="flex-start">
               <Box
@@ -30,11 +46,11 @@ const CompanySearchResult = () => {
                 }}
               />
               <CP.Typography variant="body1">
-                <b>EMCAST</b> is a global educational technology company based
-                in South Korea, specializing in e-learning content development
-                and offering a consilience learning platform for learning
-                curation. The company focuses on various sectors including
-                retail, franchise, and corporate employee education.
+                <b>{resultSearch.name}</b> is a global educational technology
+                company based in South Korea, specializing in e-learning content
+                development and offering a consilience learning platform for
+                learning curation. The company focuses on various sectors
+                including retail, franchise, and corporate employee education.
               </CP.Typography>
             </Flex>
 

@@ -12,42 +12,6 @@ export interface RouteProps {
 
 const routes: RouteProps[] = [
   {
-    name: "home",
-    path: "/",
-    element: Pg.HomePage,
-    children: [
-      {
-        name: "overviewOrganization",
-        path: "overview",
-        element: Pg.overviewOrganization,
-        children: [
-          {
-            name: "createBranch",
-            path: "createBranch",
-            element: Pg.Branch.CreateBranch,
-          },
-        ],
-      },
-    ],
-  },
-  // { name: "login", path: "/login", element: Pg.LoginPage },
-
-  // {
-  //   name: "campusSelect",
-  //   path: "/campus",
-  //   element: Pg.Campus.default.CampusPage,
-  // },
-  // {
-  //   name: "campusSetting",
-  //   path: "/campus/set",
-  //   element: Pg.Campus.default.SetCampusPage,
-  // },
-  {
-    name: "chooseOrganization",
-    path: "/login/organizations",
-    element: Pg.choose.default.ScreenChooseOrganization,
-  },
-  {
     name: "getStarted",
     path: "/get-started",
     element: Pg.GetStarted,
@@ -87,48 +51,89 @@ const routes: RouteProps[] = [
     ],
   },
   {
-    name: "create-new-organization",
-    path: "organization/new",
-    element: Pg.Organization.default.Organization,
-  },
-  {
-    name: "employeeManagement",
-    path: "organization/employee/management",
-    element: Pg.Employee.default.EmployeeTable,
-  },
-  {
-    name: "employeeRegistrations",
-    path: "organization/employee/registrations",
-    element: Pg.Employee.default.EmployeeRegistration,
-  },
-  {
-    name: "testLogin",
-    path: "test-login",
-    element: Pg.TestLoginPage,
+    name: "login",
+    path: "/login",
+    element: Pg.Login.default.Login,
     protected: false,
+    children: [
+      {
+        name: "mainLogin",
+        path: "",
+        element: Pg.Login.default.TestLoginPage,
+        protected: false,
+      },
+    ],
   },
   {
     name: "chooseOrganization",
-    path: "/login/organizations",
+    path: "login/choose-organization",
     element: Pg.choose.default.ScreenChooseOrganization,
-    protected: true,
-  },
-
-  {
-    name: "group",
-    path: "group",
-    element: Pg.GroupPage,
+    protected: false,
   },
   {
-    name: "employeeRegistrationsdetail",
-    path: "organization/employee/registrations/details",
-    element: Pg.Employee.default.EmployeeRegistrationDetail,
-  },
-
-  {
-    name: "modifyBranch",
-    path: "organization/modifyBranch",
-    element: Pg.Branch.ModifyBranch,
+    name: "home",
+    path: "/",
+    element: Pg.HomePage,
+    children: [
+      {
+        name: "employee",
+        path: "employee",
+        element: Pg.Employee.default.Employee,
+        children: [
+          {
+            name: "employee-management",
+            path: "",
+            element: Pg.Employee.default.EmployeeTable,
+          },
+          {
+            name: "create-new-employee",
+            path: "create",
+            element: Pg.Employee.default.CreateEmployee,
+          },
+          {
+            name: "employee-registrations",
+            path: "registration",
+            element: Pg.Employee.default.EmployeeRegistration,
+            children: [
+              {
+                name: "employeeRegistrationsdetail",
+                path: "detail",
+                element: Pg.Employee.default.EmployeeRegistrationDetail,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        name: "organization",
+        path: "organization",
+        element: Pg.Organization.default.Organization,
+        children: [
+          {
+            name: "organization",
+            path: "create",
+            element: Pg.Organization.default.NewOrganization,
+          },
+          {
+            name: "overviewOrganization",
+            path: "",
+            element: Pg.Organization.default.OverviewOrganization,
+            children: [
+              {
+                name: "createBranch",
+                path: "createBranch",
+                element: Pg.Branch.CreateBranch,
+              },
+            ],
+          },
+          {
+            name: "modifyBranch",
+            path: "modifyBranch",
+            element: Pg.Branch.ModifyBranch,
+          },
+        ],
+      },
+    ],
   },
 ];
 
