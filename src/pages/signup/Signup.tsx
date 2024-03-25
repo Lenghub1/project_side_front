@@ -126,6 +126,14 @@ const SignupPage = () => {
   }, [isSuccess, signupMethod]);
 
   useEffect(() => {
+    if (isSuccess && signupMethod === "email") {
+      enqueueSnackbar("We've sent a verification code to your email.", {
+        variant: "success",
+      });
+    }
+  }, [isSuccess, signupMethod]);
+
+  useEffect(() => {
     if (error) {
       console.log(error.message);
       if (error.statusCode === 409) {
