@@ -9,7 +9,6 @@ import Typography from "./typography";
 import PhonePrefix from "./phonePrefix";
 import InputBox from "./inputbox/Inputbox";
 import Container from "./container";
-import InputBox from "./inputbox/Inputbox";
 import SnackbarMessage from "./showMessage";
 
 import * as Layout from "./layout";
@@ -26,8 +25,6 @@ const CP = {
   Input,
   Typography,
   PhonePrefix,
-  InputBox,
-  Container,
   InputBox,
   Container,
   SnackbarMessage,

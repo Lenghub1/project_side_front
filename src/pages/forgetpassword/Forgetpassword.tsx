@@ -89,8 +89,6 @@ const ForgetPassword = () => {
     });
   }
 
-  const { response, isError, isLoading, isSuccess, error, handleApiRequest } =
-    useApi();
   async function forgetPassword(method: string, data: any): Promise<void> {
     await handleApiRequest(() => authApi.forgotPassword(method, data));
   }
