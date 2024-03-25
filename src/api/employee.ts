@@ -113,20 +113,6 @@ const patchEmployeeById = async (
     return {} as AxiosResponse<Partial<Employement>>;
   }
 };
-const createEmployee = async (
-  data: Object,
-  organizationId: string = currentOrganizationId
-): Promise<AxiosResponse<Partial<Employement>>> => {
-  return api.post(`/organizations/${organizationId}/employments`, data, {
-    transformResponse: [
-      (response) => {
-        const data = transformData(response, fieldMapping);
-        const newData = combineFields(data, "firstName", "lastName", "name");
-        return newData;
-      },
-    ],
-  });
-};
 
 const updateEmployee = async (
   data: Object,
@@ -168,19 +154,6 @@ const getAllPendingEmployees = async (
       ],
     }
   );
-};
-const getUserEmployments = async (
-  organizationId: string = currentOrganizationId
-): Promise<AxiosResponse<Partial<Employement[]>>> => {
-  return api.get(`/organizations/${organizationId}/employments/user`, {
-    transformResponse: [
-      (response) => {
-        const data = transformData(response, fieldMapping);
-        const newData = combineFields(data, "firstName", "lastName", "name");
-        return newData;
-      },
-    ],
-  });
 };
 
 export {

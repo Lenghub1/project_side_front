@@ -135,6 +135,61 @@ const routes: RouteProps[] = [
     element: Pg.LoginPage.default.LoginPage,
     protected: false,
   },
+  {
+    name: "forgetpassword",
+    path: "/forget-password",
+    element: Pg.ForgetPassword.default.ForgetPassword,
+    protected: false,
+    children: [
+      {
+        name: "forgetpasswordOTP",
+        path: "verify-otp",
+        element: Pg.Verification.default.OTP,
+        protected: false,
+      },
+      {
+        name: "resetPassword",
+        path: "reset-password",
+        element: Pg.ForgetPassword.default.ResetPassword,
+        protected: false,
+      },
+    ],
+  },
+  {
+    name: "verifytoken",
+    path: "verify-token",
+    element: Pg.Verification.default.VerifyToken,
+    protected: false,
+  },
+  {
+    name: "test-redirect",
+    path: "/test-redirect",
+    element: Pg.LoginPage.default.RedirectingPage,
+    protected: false,
+  },
+
+  {
+    name: "forgotaccount",
+    path: "/forgot-account",
+    element: Pg.ForgetAccount.default.ForgotAccount,
+    protected: false,
+    children: [
+      {
+        name: "accountinformation",
+        path: "informations",
+        element: Pg.ForgetAccount.default.AccountList,
+        protected: false,
+        children: [
+          {
+            name: "accountdetail",
+            path: ":id",
+            element: Pg.ForgetAccount.default.DetailInformation,
+            protected: false,
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 export default routes;

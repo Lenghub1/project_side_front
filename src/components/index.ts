@@ -9,8 +9,6 @@ import Typography from "./typography";
 import PhonePrefix from "./phonePrefix";
 import InputBox from "./inputbox/Inputbox";
 import Container from "./container";
-import InputBox from "./inputbox/Inputbox";
-
 import * as Layout from "./layout";
 import * as Styled from "../styles/styled";
 const CP = {
@@ -27,7 +25,6 @@ const CP = {
   PhonePrefix,
   InputBox,
   Container,
-  InputBox,
 };
 
 export type { ButtonProps };
