@@ -7,6 +7,8 @@ import useScreenSize from "@/hooks/useScreenSize";
 import { Flex } from "../getStarted/GetStarted";
 import Modal from "@/components/modal";
 import useModal from "@/hooks/useModal";
+import { Typography } from "@mui/material/styles/createTypography";
+import { TypographyOwnProps } from "@mui/material";
 
 const Divider = styled(MuiDivider)`
   width: 100%;
