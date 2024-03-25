@@ -12,7 +12,8 @@ import { organizationState } from "@/store/organizationStore";
 
 const ScreenChooseOrganization = () => {
   const navigate = useNavigate();
-  const [selectedOrg, setSelectedOrg] = useRecoilState(selectedOrganization);
+  const [selectedOrg, setSelectedOrg] = useState<string>();
+  const [selectOrg, setSelectOrg] = useRecoilState(selectedOrganization);
   const [organizationData, setOrganizationData] =
     useRecoilState(organizationState);
   const user = useRecoilValue(userState);
@@ -57,7 +58,7 @@ const ScreenChooseOrganization = () => {
   };
 
   const handleNavigate = () => {
-    findOrgIdBySelectedId(selectedOrg);
+    findOrgIdBySelectedId(selectedOrg as string);
     navigate("/organization");
   };
 
