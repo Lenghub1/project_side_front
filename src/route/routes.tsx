@@ -53,7 +53,7 @@ const routes: RouteProps[] = [
   },
   {
     name: "login",
-    path: "/login",
+    path: "/test-login",
     element: Pg.Login.default.Login,
     protected: false,
     children: [
@@ -132,7 +132,7 @@ const routes: RouteProps[] = [
   {
     name: "loginpage",
     path: "login",
-    element: Pg.Login.default.LoginPage,
+    element: Pg.LoginPage.default.LoginPage,
     protected: false,
   },
 ];

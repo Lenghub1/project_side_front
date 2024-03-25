@@ -12,10 +12,7 @@ import styled from "styled-components";
 import { useNavigate, useLocation } from "react-router-dom";
 import CP from "@/components";
 import { authApi, testApi } from "@/api/auth";
-import { handleApiRequest } from "@/api";
 import { useSnackbar } from "notistack";
-import { useRecoilState } from "recoil";
-import Store from "@/store";
 import useApi from "@/hooks/useApi";
 import { maskPhoneNumber } from "../forgotAccount/AccountList";
 import useCancelModal from "@/hooks/useCancelModal";
@@ -73,14 +70,10 @@ const OTP = () => {
   ]);
   const { open, handleCancelConfirm, handleModalOpen, handleCloseModal } =
     useCancelModal();
-  const [__, setResetPasswordToken] = useRecoilState(
-    Store.User.resetPasswordToken
-  );
   const { enqueueSnackbar } = useSnackbar();
-  const naviagate = useNavigate();
   const inputs = useRef<(HTMLInputElement | null)[]>([]);
   const isValidInput = arrayValue.every((value) => value !== "");
-  const { response, isLoading, isSuccess, error, handleApiRequest } = useApi();
+  const { response, isSuccess, error, handleApiRequest } = useApi();
   const verification = location.state;
 
   useEffect(() => {
@@ -101,9 +94,9 @@ const OTP = () => {
           "OTP code verified successfully. You can now reset your password.",
           "success"
         );
-        setResetPasswordToken(true);
+
         setTimeout(() => {
-          naviagate("/forget-password/reset-password");
+          navigate("/forget-password/reset-password");
         }, 1500);
       } else if (verification.type === VERIFICAITON_TYPE.VERIFY_ACCOUNT) {
         // navigate to home
@@ -302,7 +295,7 @@ const OTP = () => {
                   Resend
                 </CP.Typography>
               </Flex>
-              <Flex gap="1rem" width="100%" justify="flex-end">
+              <Flex gap="1rem" width="100%" justify="flex-end" margin="">
                 <CP.Button variant="text" onClick={handleModalOpen}>
                   cancel
                 </CP.Button>

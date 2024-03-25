@@ -84,7 +84,6 @@ const VerifyToken = () => {
       if (
         params.verificationType === VERIFICAITON_TYPE.VERIFY_FORGET_PASSWORD
       ) {
-        console.log("####### RESPONSE #######", response);
         setResetPasswordToken(true);
         setTimeout(() => {
           navigate("/forget-password/reset-password");

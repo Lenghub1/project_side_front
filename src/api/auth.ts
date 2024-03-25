@@ -65,6 +65,10 @@ const resetPassword = async (newPassword: string) => {
   return api.patch(`auth/reset/password`, { newPassword });
 };
 
+const clearResetToken = async () => {
+  return api.post("auth/clearToken");
+};
+
 const authApi = {
   testLogin,
   signup,
@@ -80,6 +84,7 @@ const authApi = {
   verifyPhoneNumber,
   verify2FA,
   verifyEmail,
+  clearResetToken,
 };
 
 const getGroup = async () => {

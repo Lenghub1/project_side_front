@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import CP from "@/components";
 import styled from "styled-components";
@@ -10,7 +10,6 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import IconButton from "@mui/material/IconButton";
 import { SyntheticEvent } from "react";
 import { authApi } from "@/api/auth";
-import Store from "@/store";
 import { useSnackbar } from "notistack";
 import useApi from "@/hooks/useApi";
 import useCancelModal from "@/hooks/useCancelModal";
@@ -33,18 +32,16 @@ const ResetPassword = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 428);
 
   console.log("Window asdasd", window.screen.width);
+  const location = useLocation();
   const password = useCriteriaValidator("", passwordCriteria);
   const confirmPassword = useMatchInput(password.value, "", "Confirm Password");
   const [passwordIsVisible, setPasswordIsVisible] = useState(false);
   const [confirmPasswordIsVisible, setConfirmPasswordIsVisible] =
     useState(false);
-  const [resetPasswordToken, setResetPasswordToken] = useRecoilState(
-    Store.User.resetPasswordToken
-  );
   const { open, handleCancelConfirm, handleModalOpen, handleCloseModal } =
     useCancelModal();
   const { enqueueSnackbar } = useSnackbar();
-  const { response, isError, isSuccess, handleApiRequest } = useApi();
+  const { response, error, isError, isSuccess, handleApiRequest } = useApi();
   const isFormInvalid =
     !password.value ||
     password.errors.length !== 0 ||
@@ -60,9 +57,10 @@ const ResetPassword = () => {
       },
     });
   }
+  const token = location.state;
 
   async function logOut() {
-    await handleApiRequest(() => authApi.logout());
+    await handleApiRequest(() => authApi.clearResetToken());
   }
   useEffect(() => {
     const handleResize = () => {
@@ -82,21 +80,18 @@ const ResetPassword = () => {
   // });
 
   useEffect(() => {
+    console.log("EERRRROR", error);
     if (isError) {
       showMessage("Failed to reset password. Please try again", "success");
     }
   }, [isError]);
 
   useEffect(() => {
-    if (response) {
-      console.log("Response", response);
-      return;
-    }
     if (isSuccess) {
       showMessage("Password has been successfully reset.", "success");
-      setResetPasswordToken(false);
       setTimeout(async () => {
         await logOut();
+        navigate("/login");
       }, 1500);
     }
   }, [isSuccess, response]);
@@ -107,7 +102,6 @@ const ResetPassword = () => {
 
   const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
-
     await resetPassword(password.value);
   };
 
