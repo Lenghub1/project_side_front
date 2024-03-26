@@ -9,6 +9,7 @@ import {
   accessTokenState,
   isUserFetchedState,
 } from "@/store/userStore";
+import { resetPasswordToken } from "@/store/userStore";
 interface CustomJwtPayload {
   userId?: string;
 }
@@ -17,6 +18,7 @@ const useAuth = () => {
   const accessToken = useRecoilValue(accessTokenState);
   const setUser = useSetRecoilState(userState);
   const setIsUserFetched = useSetRecoilState(isUserFetchedState);
+  const resetToken = useRecoilValue(resetPasswordToken);
 
   async function getUserInfo(id: string) {
     const [response, error] = await handleApiRequest(() => authApi.getUser(id));
