@@ -30,7 +30,7 @@ const RenderActionCell = (row: Employement) => {
 
 const EmployeeRegistration = () => {
   const [dataToFilter, setDataToFilter] = useRecoilState(dataToFilterState);
-  const filteredData = useRecoilValue(filteredDataState);
+  const { isFilter, data: filteredData } = useRecoilValue(filteredDataState);
   const { data, error } = useFetch(getAllPendingEmployees);
   const [notifiactionCount, setNotifiactionCount] = React.useState<number>(0);
 
@@ -41,7 +41,7 @@ const EmployeeRegistration = () => {
     setDataToFilter(data);
   }, []);
   console.log(dataToFilter);
-  const dispalyData = filteredData.length ? filteredData : data;
+  const displayData = isFilter ? filteredData : data;
   return (
     <CP.Container>
       <CP.Container>
@@ -62,9 +62,9 @@ const EmployeeRegistration = () => {
       <EnhancedTable<Employement>
         headCells={headCells}
         order="asc"
-        rows={dispalyData || []}
+        rows={displayData || []}
         orderBy="name"
-        rowCount={dispalyData?.length || 0}
+        rowCount={displayData?.length || 0}
         tableName="Employee Registrations"
         actionCell={RenderActionCell}
       />
