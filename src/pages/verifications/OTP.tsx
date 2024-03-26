@@ -1,4 +1,4 @@
-import React, {
+import {
   useEffect,
   useRef,
   useState,
@@ -11,7 +11,7 @@ import React, {
 import styled from "styled-components";
 import { useNavigate, useLocation } from "react-router-dom";
 import CP from "@/components";
-import { authApi, testApi } from "@/api/auth";
+import { authApi } from "@/api/auth";
 import { useSnackbar } from "notistack";
 import useApi from "@/hooks/useApi";
 import { maskPhoneNumber } from "../forgotAccount/AccountList";

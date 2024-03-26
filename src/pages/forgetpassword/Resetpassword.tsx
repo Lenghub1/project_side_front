@@ -1,5 +1,4 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { useRecoilState, useRecoilValue } from "recoil";
 import CP from "@/components";
 import styled from "styled-components";
 import { useEffect, useState } from "react";

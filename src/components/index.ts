@@ -8,6 +8,7 @@ import Modal from "./modal";
 import Typography from "./typography";
 import PhonePrefix from "./phonePrefix";
 import Container from "./container";
+import SnackbarMessage from "./showMessage";
 
 import * as Layout from "./layout";
 import * as Styled from "../styles/styled";
@@ -24,6 +25,7 @@ const CP = {
   Typography,
   PhonePrefix,
   Container,
+  SnackbarMessage,
 };
 
 export type { ButtonProps };

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useSetRecoilState } from "recoil";
 import CP from "@/components";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
@@ -14,7 +14,6 @@ import { IconButton } from "@mui/material";
 import { Box } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import Store from "@/store";
-// import TelegramLoginButton from "./TelegramLoginButton";
 import OauthComponent from "@/components/oauth/OauthComponent";
 import useApi from "@/hooks/useApi";
 
@@ -52,7 +51,7 @@ const LoginPage = () => {
     dialCode: string;
     flag: string;
   }>(countries[0]);
-  const [_, setAccessToken] = useRecoilState(Store.User.accessTokenState);
+  const setAccessToken = useSetRecoilState(Store.User.accessTokenState);
   const activeTabIndex = singInMethod === "email" ? 0 : 1;
 
   useEffect(() => {
@@ -102,10 +101,6 @@ const LoginPage = () => {
   async function login(method: string, data: any): Promise<void> {
     await handleApiRequest(() => authApi.testLogin(method, data));
 
-    setLoginUser({
-      token: response?.data?.user.accessToken,
-      userId: response?.data?.user.id,
-    });
     setTimeout(() => {
       showMessage("Login Successfully!", "success");
       navigate("/");
@@ -163,10 +158,6 @@ const LoginPage = () => {
     }
 
     await login(singInMethod, formData);
-  };
-
-  const handleTelegramData = async (user: any) => {
-    await authApi.telegramOauth(user);
   };
 
   return (
