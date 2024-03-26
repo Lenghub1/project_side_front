@@ -13,6 +13,9 @@ import { useSnackbar } from "notistack";
 import useApi from "@/hooks/useApi";
 import useCancelModal from "@/hooks/useCancelModal";
 import useScreenSize from "@/hooks/useScreenSize";
+import useAuth from "@/hooks/useAuth";
+import { useResetRecoilState } from "recoil";
+import { resetPasswordToken } from "@/store/userStore";
 
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -41,6 +44,9 @@ const ResetPassword = () => {
     useCancelModal();
   const { enqueueSnackbar } = useSnackbar();
   const { response, error, isError, isSuccess, handleApiRequest } = useApi();
+  const { resetToken } = useAuth();
+  const resetTokenState = useResetRecoilState(resetPasswordToken);
+
   const isFormInvalid =
     !password.value ||
     password.errors.length !== 0 ||
@@ -61,11 +67,11 @@ const ResetPassword = () => {
   async function logOut() {
     await handleApiRequest(() => authApi.clearResetToken());
   }
-  // useEffect(() => {
-  //   if (!resetPasswordToken) {
-  //     navigate("/login");
-  //   }
-  // });
+  useEffect(() => {
+    if (!resetToken) {
+      navigate("/login");
+    }
+  }, [resetToken]);
 
   useEffect(() => {
     if (isError) {
@@ -78,6 +84,7 @@ const ResetPassword = () => {
       showMessage("Password has been successfully reset.", "success");
       setTimeout(async () => {
         await logOut();
+        resetTokenState();
         navigate("/login");
       }, 1500);
     }

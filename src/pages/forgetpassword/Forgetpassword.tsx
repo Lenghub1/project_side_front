@@ -28,6 +28,10 @@ const validateEmail = (email: string): string => {
   return "";
 };
 
+const removeLeadingZeron = (phoneNumber: string): string => {
+  return phoneNumber.replace(/^0+/, "");
+};
+
 const ForgetPassword = () => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -117,6 +121,11 @@ const ForgetPassword = () => {
             state: {
               type: VERIFICATION_TYPE.VERIFY_FORGET_PASSWORD,
               phone: `${selectedCountry.dialCode} ${phone.value}`,
+              method: resetPasswordBy,
+              data: {
+                phoneNumber:
+                  selectedCountry.dialCode + removeLeadingZeron(phone.value),
+              },
             },
           });
         }, 1500);
@@ -142,11 +151,10 @@ const ForgetPassword = () => {
       formData = { ...formData, email: email.value };
     } else if (resetPasswordBy === "phone") {
       // remove leading 0 from phone number (E.164 format)
-      const phoneWithoutLeadingZero = phone.value.replace(/^0+/, "");
 
       formData = {
         ...formData,
-        phoneNumber: selectedCountry.dialCode + phoneWithoutLeadingZero,
+        phoneNumber: selectedCountry.dialCode + removeLeadingZeron(phone.value),
       };
     }
 

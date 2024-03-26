@@ -17,6 +17,8 @@ import useApi from "@/hooks/useApi";
 import { maskPhoneNumber } from "../forgotAccount/AccountList";
 import useCancelModal from "@/hooks/useCancelModal";
 import useScreenSize from "@/hooks/useScreenSize";
+import { useSetRecoilState } from "recoil";
+import Store from "@/store";
 
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -76,6 +78,7 @@ const OTP = () => {
   const isValidInput = arrayValue.every((value) => value !== "");
   const { response, isSuccess, error, handleApiRequest } = useApi();
   const verification = location.state;
+  const setResetPassword = useSetRecoilState(Store.User.resetPasswordToken);
 
   useEffect(() => {
     inputs.current[0]?.focus();
@@ -85,17 +88,28 @@ const OTP = () => {
     if (error) {
       console.log("ERROR", error);
       showMessage("ERRROR" + error?.statusCode, "error");
+      setArrayValue(Array(6).fill("")); // Reset input values to empty string
+      inputs.current[5]?.focus();
     }
   }, [error]);
 
   useEffect(() => {
+    console.log("RESPONSE", response);
+
     if (isSuccess && response) {
+      if (response.status_code === 200) {
+        showMessage(
+          "OTP has been resent. Please check your phone and verify",
+          "success"
+        );
+        return;
+      }
       if (verification.type === VERIFICATION_TYPE.VERIFY_FORGET_PASSWORD) {
         showMessage(
           "OTP code verified successfully. You can now reset your password.",
           "success"
         );
-
+        setResetPassword(true);
         setTimeout(() => {
           navigate("/forget-password/reset-password");
         }, 1500);
@@ -116,6 +130,12 @@ const OTP = () => {
       await handleApiRequest(() => authApi.verify2FA(data));
     }
   }, []);
+
+  async function resendOTP(): Promise<void> {
+    await handleApiRequest(() =>
+      authApi.forgotPassword(verification.method, verification.data)
+    );
+  }
 
   // handle pasting OTP code
   const handleOnPaste = (e: ClipboardEvent, index: number) => {
@@ -139,20 +159,6 @@ const OTP = () => {
     inputs.current[nextIndex]?.focus();
   };
 
-  // handle clicking keyboard event
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    const keyCode = parseInt(e.key);
-    if (
-      e.key !== "Backspace" &&
-      e.key !== "Delete" &&
-      e.key !== "Tab" &&
-      !(e.metaKey && e.key === "v") &&
-      !(keyCode >= 0 && keyCode <= 9)
-    ) {
-      e.preventDefault();
-    }
-  };
-
   // on change
   const handleChange = (e: BaseSyntheticEvent, index: number) => {
     const input = e.target.value;
@@ -169,16 +175,11 @@ const OTP = () => {
         return newArray;
       });
 
-      if (
-        input !== "" &&
-        index < arrayValue.length - 1 &&
-        arrayValue[index + 1] === ""
-      ) {
+      if (input !== "" && index < arrayValue.length - 1) {
         inputs.current[index + 1]?.focus();
+        inputs.current[index + 1]?.select();
       }
 
-      // if the 6 input field, has value, then auto submit to OTP verify
-      console.log("Lenght of array", arrayValue);
       if (arrayValue.every((value) => value !== "")) {
         arrayValue.every((value) => {
           console.log(value);
@@ -202,7 +203,9 @@ const OTP = () => {
       });
 
       if (index > 0) {
+        console.log("MY INDEX", index);
         inputs.current[index - 1]?.focus();
+        inputs.current[index - 1]?.select();
       }
     }
   };
@@ -216,6 +219,29 @@ const OTP = () => {
       },
     });
   }
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>, index: number) => {
+    const keyCode = parseInt(e.key);
+    console.log("KEYYY CODE", e.key);
+    if (
+      e.key !== "Backspace" &&
+      e.key !== "Delete" &&
+      e.key !== "Tab" &&
+      !(e.metaKey && e.key === "v") &&
+      !(keyCode >= 0 && keyCode <= 9)
+    ) {
+      e.preventDefault();
+      inputs.current[index - 1]?.focus();
+      inputs.current[index - 1]?.select();
+    }
+    if (e.key === "ArrowLeft") {
+      inputs.current[index - 1]?.focus();
+      inputs.current[index - 1]?.select();
+    }
+    if (e.key === "ArrowRight") {
+      inputs.current[index + 1]?.focus();
+      inputs.current[index + 1]?.select();
+    }
+  };
 
   const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
@@ -238,6 +264,7 @@ const OTP = () => {
         loginMethod: verification.loginMethod,
       };
     }
+    console.log("VALUE", arrayValue.join(""));
 
     await verifyOTP(data);
   };
@@ -271,11 +298,14 @@ const OTP = () => {
                   ref={(el) => (inputs.current[index] = el)}
                   onChange={(e) => handleChange(e, index)}
                   onKeyUp={(e) => handleKeyUp(e, index)}
-                  onKeyDown={(e) => handleKeyDown(e)}
+                  onKeyDown={(e) => handleKeyDown(e, index)}
                   onPaste={(e) => handleOnPaste(e, index)}
                   maxLength={1}
                   autoComplete="off"
                   accessKey={String(index)}
+                  onFocus={(e) => {
+                    e.target.select();
+                  }}
                 />
               ))}
             </OTPContainer>
@@ -288,6 +318,7 @@ const OTP = () => {
                   fontWeight="semibold"
                   color={"primary"}
                   sx={{ cursor: "pointer" }}
+                  onClick={() => resendOTP()}
                 >
                   Resend
                 </CP.Typography>

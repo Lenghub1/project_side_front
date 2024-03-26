@@ -86,21 +86,6 @@ const TestLoginPage = () => {
 
   async function login(method: string, data: any): Promise<void> {
     await handleApiRequest(() => authApi.testLogin(method, data));
-    // navigate("/login/organizations");
-
-    // if (response && response.data && response.data.user) {
-    //   console.log(response);
-    //   setAccessToken(response.data.user.accessToken);
-    //   navigate("/campus");
-    // } else if (error) {
-    //   if (error?.response?.status === 400) {
-    //     showError(
-    //       `${loginMethod === "email" ? "Email" : "Phone number"} or password is incorrect`
-    //     );
-    //   } else {
-    //     showError("Something went wrong. Please try again.");
-    //   }
-    // }
   }
 
   useEffect(() => {
