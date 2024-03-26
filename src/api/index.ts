@@ -6,7 +6,7 @@ axios.defaults.headers.post["Content-Type"] =
 
 // Create an instance of axios with custom configuration
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL_DEV || "http://localhost:3000/api/v1",
+  baseURL: import.meta.env.VITE_BASE_URL || "http://localhost:3000/api/v1",
   timeout: 3000,
   withCredentials: true, // include cookies in the request
 });
