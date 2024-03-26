@@ -198,6 +198,7 @@ const routes: RouteProps[] = [
         name: "resetPassword",
         path: "reset-password",
         element: Pg.ForgetPassword.default.ResetPassword,
+        protected: false,
       },
     ],
   },
