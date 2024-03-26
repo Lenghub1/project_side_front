@@ -1,9 +1,9 @@
 type Data = { [key: string]: string | Data };
 
-export interface InformationProvider {
+interface InformationProvider {
   data: Data;
   direction?: string;
   fullwidth?: boolean;
 }
 
-export { type Data };
+export { type Data, type InformationProvider };

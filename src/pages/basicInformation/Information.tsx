@@ -1,6 +1,5 @@
 import CP from "@/components";
-import { InformationProvider } from "@/utils/interfaces/information";
-import { Data } from "@/utils/interfaces/information";
+import { InformationProvider, Data } from "@/utils/interfaces/Information";
 
 const InformationForm = ({
   data,
