@@ -80,13 +80,6 @@ const ForgetPassword = () => {
   useEffect(() => {
     if (isError) {
       showMessage("Failed to reset password. Please try again", "error");
-    if (error) {
-      showMessage(
-        `No results were found. Please check your ${
-          resetPasswordBy === "phone" ? "phone number" : "email"
-        } and try again.`,
-        "error"
-      );
 
       return;
     }
