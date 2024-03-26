@@ -6,16 +6,9 @@ body {
     min-height : 100vh;
     overflow : hidden;
 
-<<<<<<< HEAD
     #root {
         width : inherit;
         height : inherit;
-
-=======
-    #root {    
-        width : inherit;
-        height : inherit;
->>>>>>> develop
        }
 
    h1,h2,h3,h4,h5,h6, p{

@@ -115,25 +115,6 @@ const getEmployeeById = async (
     }
   );
 };
-<<<<<<< HEAD
-const patchEmployeeById = async (
-  organizationId: string,
-  employmentId: string,
-  body: {}
-): Promise<AxiosResponse<Partial<Employement>>> => {
-  try {
-    const response = await api.patch(
-      `/organizations/${organizationId}/employments/${employmentId}`,
-      body
-    );
-    return response;
-  } catch (error) {
-    console.error("Error in getEmployeeById:", error);
-    return {} as AxiosResponse<Partial<Employement>>;
-  }
-};
-=======
->>>>>>> develop
 
 const updateEmployee = async (
   data: Object,
@@ -160,26 +141,6 @@ const deleteEmployee = async (
   organizationId: string = currentOrganizationId
 ) => api.delete(`/organizations/${organizationId}/employments/${employmentId}`);
 
-<<<<<<< HEAD
-const getAllPendingEmployees = async (
-  organizationId: string = currentOrganizationId
-): Promise<AxiosResponse<Partial<Employement>>> => {
-  return api.get(
-    `/organizations/${organizationId}/employments?status_eq=pending`,
-    {
-      transformResponse: [
-        (response) => {
-          const data = transformData(response, fieldMapping);
-          const newData = combineFields(data, "firstName", "lastName", "name");
-          return newData;
-        },
-      ],
-    }
-  );
-};
-
-=======
->>>>>>> develop
 export {
   allWorkplace,
   allEmployees,

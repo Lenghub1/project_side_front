@@ -11,10 +11,6 @@ export interface RouteProps {
 }
 
 const routes: RouteProps[] = [
-<<<<<<< HEAD
-  // { name: "login", path: "/login", element: Pg.Login.default.Login },
-=======
->>>>>>> develop
   {
     name: "getStarted",
     path: "/get-started",
@@ -56,11 +52,7 @@ const routes: RouteProps[] = [
   },
   {
     name: "login",
-<<<<<<< HEAD
     path: "/test-login",
-=======
-    path: "/login",
->>>>>>> develop
     element: Pg.Login.default.Login,
     protected: false,
     children: [
@@ -102,16 +94,6 @@ const routes: RouteProps[] = [
             name: "employee-registrations",
             path: "registration",
             element: Pg.Employee.default.EmployeeRegistration,
-<<<<<<< HEAD
-=======
-            children: [
-              {
-                name: "employeeRegistrationsdetail",
-                path: "detail",
-                element: Pg.Employee.default.EmployeeRegistrationDetail,
-              },
-            ],
->>>>>>> develop
           },
         ],
       },
@@ -145,7 +127,6 @@ const routes: RouteProps[] = [
         ],
       },
     ],
-<<<<<<< HEAD
   },
   {
     name: "loginpage",
@@ -207,8 +188,6 @@ const routes: RouteProps[] = [
         ],
       },
     ],
-=======
->>>>>>> develop
   },
 ];
 

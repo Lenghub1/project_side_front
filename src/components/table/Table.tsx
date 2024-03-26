@@ -12,11 +12,6 @@ import Switch from "@mui/material/Switch";
 import EnhancedTableToolbar from "./Toolbar";
 import EnhancedTableHead, { HeadCell } from "./TableHead";
 import { getComparator, stableSort } from "@/utils/table.util";
-<<<<<<< HEAD
-import { useRecoilState } from "recoil";
-import { employementDetail } from "@/store/userStore";
-=======
->>>>>>> develop
 type Order = "asc" | "desc";
 
 interface EnhancedTableProps<T> {
@@ -70,24 +65,11 @@ function EnhancedTable<T>({
   const [filters, setFilters] = React.useState<{ [key: string]: string }>(
     Object.fromEntries(headCells.map((cell) => [cell.id, ""]))
   );
-<<<<<<< HEAD
-  const navigate = useNavigate();
-=======
->>>>>>> develop
 
   const handleRequestSort = (property: keyof T) => {
     const isAsc = currentOrderBy === property && currentOrder === "asc";
     setCurrentOrder(isAsc ? "desc" : "asc");
     setCurrentOrderBy(property);
-<<<<<<< HEAD
-  };
-  const handleRowClick = (clickedRow: any) => {
-    console.log(clickedRow);
-    setEmployeeDetail(clickedRow);
-
-    navigate(`/organization/employee/registrations/details`);
-=======
->>>>>>> develop
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
