@@ -2,7 +2,7 @@ import { useState } from "react";
 import CP from "@/components";
 import { RoleCard } from "@/components/roleCard";
 import styled from "styled-components";
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
 import useScreenSize from "@/hooks/useScreenSize";
 
@@ -16,7 +16,7 @@ const GetStarted = () => {
   const [accountType, setAccountType] = useState<
     "employer" | "employee" | null
   >(null);
-  const { isMobile } = useScreenSize();
+  const { isMobile, isTablet } = useScreenSize();
 
   const isGetStartedRoute = location.pathname === "/get-started";
 
@@ -76,14 +76,14 @@ const GetStarted = () => {
           </Flex>
         </Container>
       ) : (
-        <CP.Styled.Wrapper height="100vh" padding="0">
-          <Flex height="100%">
+        <CP.Styled.Wrapper padding="0">
+          <Flex>
             <CP.Styled.Div padding="0 1rem">
               <Outlet />
             </CP.Styled.Div>
             <CP.Styled.Div
               height="100%"
-              style={{ display: isMobile ? "none" : "block" }}
+              style={{ display: isMobile || isTablet ? "none" : "block" }}
             >
               <Flex>
                 <Box

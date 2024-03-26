@@ -1,7 +1,7 @@
 import CP from "@/components";
 import MuiDivider from "@mui/material/Divider";
 import styled from "styled-components";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { authApi } from "@/api/auth";
 import useValidatedInput from "@/hooks/useValidatedInput";
 import useCriteriaValidator from "@/hooks/useCriteriaInput.tsx";
@@ -15,7 +15,6 @@ import { useSnackbar } from "notistack";
 import useApi from "@/hooks/useApi";
 import { Flex } from "../getStarted/GetStarted";
 import { Title, FormContainer } from "../companySearch/CompanySearch";
-import Alert from "@mui/material/Alert";
 import SignupMethod from "@/components/signupMethod/SignupMethod";
 
 const Divider = styled(MuiDivider)`
@@ -50,6 +49,7 @@ interface LoginResponse {
 
 const SignupPage = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const isJoinCompany = location.pathname === "/get-started/join-company";
   const accountType: AccountType = isJoinCompany ? "employee" : "employer";
   const { enqueueSnackbar } = useSnackbar();
@@ -111,8 +111,11 @@ const SignupPage = () => {
 
   useEffect(() => {
     if (isSuccess && signupMethod === "email") {
-      enqueueSnackbar("We've sent a verification code to your email.", {
-        variant: "success",
+      // enqueueSnackbar("We've sent a verification code to your email.", {
+      //   variant: "success",
+      // });
+      navigate("/login/activate-account", {
+        state: { credential: email.value, accountMethod: signupMethod },
       });
     }
   }, [isSuccess, signupMethod]);

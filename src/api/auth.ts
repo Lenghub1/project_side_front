@@ -69,6 +69,10 @@ const clearResetToken = async () => {
   return api.post("auth/clearToken");
 };
 
+const resendActivationCode = async (method: string, data: any) => {
+  return api.post(`/auth/resend/${method}/activation`, data);
+};
+
 const authApi = {
   testLogin,
   signup,
@@ -85,6 +89,7 @@ const authApi = {
   verify2FA,
   verifyEmail,
   clearResetToken,
+  resendActivationCode,
 };
 
 const getGroup = async () => {

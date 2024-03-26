@@ -39,7 +39,7 @@ interface LoginResponse {
 const LoginPage = () => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const [singInMethod, setSignInMethod] = useState<SignInMethod>("email");
+  const [loginMethod, setLoginMethod] = useState<SignInMethod>("email");
   const email = useValidatedInput("", "Email", validateEmail);
   const phone = useValidatedInput("", "Phone");
   const password = useValidatedInput("", "Password");
@@ -52,7 +52,7 @@ const LoginPage = () => {
     flag: string;
   }>(countries[0]);
   const setAccessToken = useSetRecoilState(Store.User.accessTokenState);
-  const activeTabIndex = singInMethod === "email" ? 0 : 1;
+  const activeTabIndex = loginMethod === "email" ? 0 : 1;
 
   useEffect(() => {
     const handleResize = () => {
@@ -79,11 +79,11 @@ const LoginPage = () => {
 
       if (phone.value) phone.setValue("");
     }
-    setSignInMethod(method);
+    setLoginMethod(method);
   };
 
   const isFormInvalid =
-    (singInMethod === "phone"
+    (loginMethod === "phone"
       ? !phone.value || !!phone.error
       : !email.value || !!email.error) || !password.value;
 
@@ -101,10 +101,10 @@ const LoginPage = () => {
   async function login(method: string, data: any): Promise<void> {
     await handleApiRequest(() => authApi.testLogin(method, data));
 
-    setTimeout(() => {
-      showMessage("Login Successfully!", "success");
-      navigate("/");
-    }, 1500);
+    // setTimeout(() => {
+    //   showMessage("Login Successfully!", "success");
+    //   navigate("/");
+    // }, 1500);
   }
 
   useEffect(() => {
@@ -123,11 +123,16 @@ const LoginPage = () => {
       console.log("ERRRRRRR", error);
       if (error?.statusCode === 400) {
         showMessage(
-          `${singInMethod === "email" ? "Email" : "Phone number"} or password is incorrect`,
+          `${loginMethod === "email" ? "Email" : "Phone number"} or password is incorrect`,
           "error"
         );
-      } else if (error?.statusCode === 401) {
-        showMessage("Unauthorized. Pleaser verify your account", "error");
+      } else if (error.statusCode === 401) {
+        navigate("/get-started/activate-account", {
+          state: {
+            credential: loginMethod === "email" ? email.value : phone.value,
+            accountMethod: loginMethod,
+          },
+        });
       } else {
         showMessage("Something went wrong. Please try again.", "error");
       }
@@ -145,9 +150,9 @@ const LoginPage = () => {
       password: password.value,
     };
 
-    if (singInMethod === "email") {
+    if (loginMethod === "email") {
       formData = { ...formData, email: email.value };
-    } else if (singInMethod === "phone") {
+    } else if (loginMethod === "phone") {
       // remove leading 0 from phone number (E.164 format)
       const phoneWithoutLeadingZero = phone.value.replace(/^0+/, "");
 
@@ -157,7 +162,7 @@ const LoginPage = () => {
       };
     }
 
-    await login(singInMethod, formData);
+    await login(loginMethod, formData);
   };
 
   return (
@@ -213,7 +218,7 @@ const LoginPage = () => {
                 <Tab label="With Email" />
                 <Tab label="With Phone" />
               </Tabs>
-              {singInMethod === "email" ? (
+              {loginMethod === "email" ? (
                 <CP.Input
                   label="Email"
                   value={email.value}

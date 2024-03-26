@@ -16,3 +16,4 @@ export * as LoginPage from "@/pages/login copy";
 export * as ForgetPassword from "@/pages/forgetpassword";
 export * as ForgetAccount from "@/pages/forgotAccount";
 export * as Verification from "@/pages/verifications";
+export * from "@/pages/accountVerification";

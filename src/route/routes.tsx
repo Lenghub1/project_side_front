@@ -48,6 +48,12 @@ const routes: RouteProps[] = [
         path: "employee-info",
         element: Pg.InformationInput,
       },
+      {
+        name: "accountVerification",
+        path: "activate-account",
+        element: Pg.AccountVerification,
+        protected: false,
+      },
     ],
   },
   {
