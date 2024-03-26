@@ -5,14 +5,18 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 const ScreenChooseOrganization = () => {
   const navigate = useNavigate();
-  const [typeSelected, setTypeSelected] = useState<"Join" | "Create">("Join");
+  const [typeSelected, setTypeSelected] = useState<"Join" | "Create" | null>(
+    null
+  );
   const handleNextClick = () => {
+    console.log("Selected Type:", typeSelected);
     if (typeSelected === "Join") {
-      navigate("/join-organization"); // Navigate to ScreenJoinOrganization
+      navigate("/join-organization");
     } else {
       navigate("/create-organization");
     }
   };
+
   return (
     <Container
       style={{
@@ -30,18 +34,22 @@ const ScreenChooseOrganization = () => {
           setTypeSelected={setTypeSelected}
           image="https://web.jibble.io/img/signup-type-1.7657a54a.svg"
           title="Join"
-          description="Description for Join type"
+          description="If you want to join exist Organization you can click me"
         />
         <TypeCard
           typeSelected={typeSelected}
           setTypeSelected={setTypeSelected}
           image="https://web.jibble.io/img/signup-type-1.7657a54a.svg"
           title="Create"
-          description="Description for Create type"
+          description="If you want to create Organization you can click me"
         />
       </CP.Styled.Flex>
-      <CP.Button onClick={handleNextClick} style={{ width: "58%" }}>
-        {" "}
+
+      <CP.Button
+        onClick={handleNextClick}
+        style={{ width: "62%" }}
+        disabled={typeSelected === null}
+      >
         NEXT
       </CP.Button>
     </Container>

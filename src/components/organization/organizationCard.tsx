@@ -5,8 +5,8 @@ import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 
 interface TypeCardProps {
-  typeSelected: "Join" | "Create";
-  setTypeSelected: (value: "Join" | "Create") => void;
+  typeSelected: "Join" | "Create" | null;
+  setTypeSelected: (value: "Join" | "Create" | null) => void;
   image: string;
   title: string;
   description: string;
@@ -35,7 +35,7 @@ const TypeCard = ({
       }}
       variant="outlined"
       padding="0"
-      onClick={() => setTypeSelected(title as "Join" | "Create")}
+      onClick={() => setTypeSelected(title as "Join" | "Create" | null)}
     >
       <CardActionArea
         sx={{ color: isActive ? "primary.main" : "text.primary" }}
