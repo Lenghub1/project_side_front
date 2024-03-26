@@ -61,14 +61,6 @@ const ChooseOrganizationCard = ({
               <PersonIcon />
               {description}
             </CP.Styled.Flex>
-            <CP.Styled.Flex gap="20px" justify="flex-start" margin="10px 0">
-              <PlaceIcon />
-              {Number(location)}
-            </CP.Styled.Flex>
-            <CP.Styled.Flex gap="20px" justify="flex-start" margin="10px 0">
-              <SupervisorAccountIcon />
-              {Number(employee)}
-            </CP.Styled.Flex>
           </CardContent>
         </CP.Styled.Flex>
       </CardActionArea>
