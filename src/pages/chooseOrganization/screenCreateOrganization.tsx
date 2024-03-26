@@ -1,4 +1,8 @@
 import React, { useState } from "react";
+import { useSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom"; // Import useHistory for navigation
+import { newOrganization } from "@/api/organization";
+import { handleApiRequest } from "@/api";
 import {
   Typography,
   Button,
@@ -9,14 +13,17 @@ import {
   Select,
   FormControl,
   InputLabel,
-} from "@mui/material"; // Assuming you're using Material-UI
+} from "@mui/material";
 import CP from "@/components";
 
 const ScreenCreateOrganization = () => {
   const [organizationName, setOrganizationName] = useState("");
-  const [businessType, setBusinessType] = useState(""); // Updated state variable
+  const [businessType, setBusinessType] = useState("");
   const [companySize, setCompanySize] = useState("");
   const [country, setCountry] = useState("");
+
+  const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate(); // Initialize useHistory for navigation
 
   const handleBusinessTypeChange = (event: any) => {
     setBusinessType(event.target.value);
@@ -34,13 +41,40 @@ const ScreenCreateOrganization = () => {
   const companySizes = ["1-25", "26-50", "51-100"];
   const countries = ["USA", "UK", "Canada"];
 
+  const createOrganization = async (data: any) => {
+    const [response, error] = await handleApiRequest(() =>
+      newOrganization(data)
+    );
+    if (error) {
+      enqueueSnackbar("Failed to create organization", {
+        variant: "error",
+        autoHideDuration: 1500,
+      });
+    } else {
+      enqueueSnackbar("Organization created successfully", {
+        variant: "success",
+        autoHideDuration: 1500,
+      });
+      // Navigate to join-organization screen upon successful creation
+      navigate("/join-organization");
+    }
+  };
+
   const handleCreateOrganization = () => {
+    if (!organizationName || !businessType || !companySize || !country) {
+      enqueueSnackbar("Please fill in all fields.", {
+        variant: "error",
+        autoHideDuration: 1500,
+      });
+      return;
+    }
     const data = {
       name: organizationName,
       type: businessType,
       companySize: companySize,
       country: country,
     };
+    createOrganization(data);
     console.log(data);
   };
 
