@@ -108,12 +108,6 @@ function EnhancedTable<T>({
     setCurrentOrder(isAsc ? "desc" : "asc");
     setCurrentOrderBy(property);
   };
-  const handleRowClick = (clickedRow: any) => {
-    console.log(clickedRow);
-    setEmployeeDetail(clickedRow);
-
-    navigate(`/organization/employee/registrations/details`);
-  };
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
