@@ -25,15 +25,7 @@ const fieldMapping = generateFieldMapping({
 const allWorkplace = async (
   userId: string
 ): Promise<AxiosResponse<Partial<Employement>[]>> => {
-  return api.get(`/organizations/self-workplace/${userId}`, {
-    transformResponse: [
-      (response) => {
-        const data = transformData(response, fieldMapping);
-        const newData = combineFields(data, "firstName", "lastName", "name");
-        return newData;
-      },
-    ],
-  });
+  return api.get(`/organizations/self-workplace/${userId}`, {});
 };
 
 const getUserEmployments = async (

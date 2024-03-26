@@ -27,7 +27,7 @@ const ScreenChooseOrganization = () => {
       );
       console.log(response);
       if (response) {
-        setOrganizationData(response || []);
+        setOrganizationData(response.data || []);
       } else {
         console.log(error);
       }
@@ -82,17 +82,24 @@ const ScreenChooseOrganization = () => {
           <CP.Typography variant="h4">CHOOSE</CP.Typography>
           <CP.Typography variant="h4"> YOUR ORGANIZATIONS </CP.Typography>
         </CP.Styled.Flex>
-
-        {organizationData?.map((organization: any, index: number) => (
-          <ChooseOrganizationCard
-            key={index}
-            id={organization.id}
-            setActiveOrgId={setSelectedOrg} // Updated to use setSelectedOrg instead of setSelectOrganization
-            isActive={organization.id === selectedOrg} // Updated to use selectedOrg instead of selectOrganization
-            title={organization.organization.name}
-            description="You are member of ours organization , pls click Next to Login"
-          />
-        ))}
+        <CP.Styled.Flex
+          height="20vh"
+          direction="column"
+          overflow="auto"
+          justify="flex-start"
+          gap="20px"
+        >
+          {organizationData?.map((organization: any, index: number) => (
+            <ChooseOrganizationCard
+              key={index}
+              id={organization.id}
+              setActiveOrgId={setSelectedOrg} // Updated to use setSelectedOrg instead of setSelectOrganization
+              isActive={organization.id === selectedOrg} // Updated to use selectedOrg instead of selectOrganization
+              title={organization.organization.name}
+              description="You are member of ours organization , pls click Next to Login"
+            />
+          ))}
+        </CP.Styled.Flex>
 
         <CP.Typography style={{ marginTop: "40px" }}>
           By continuing, you’re agreeing to our Main Services Agreement, User
