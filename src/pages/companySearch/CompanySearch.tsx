@@ -3,11 +3,8 @@ import MuiDivider from "@mui/material/Divider";
 import styled from "styled-components";
 import useValidatedInput from "@/hooks/useValidatedInput";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
-
-import { Flex } from "../getStarted/GetStarted";
-import { searchResultState } from "@/store/organizationStore";
-import { useRecoilState } from "recoil";
 import useScreenSize from "@/hooks/useScreenSize";
+import { Flex } from "../getStarted/GetStarted";
 
 const Divider = styled(MuiDivider)`
   width: 100%;
@@ -47,25 +44,11 @@ export const FormContainer = ({ children }: any) => {
 const CompanySearch = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
+  const { isMobile } = useScreenSize();
   const companyCode = useValidatedInput("", "Company Code");
   const isCompanySearch = location.pathname === "/get-started/company-search";
-  const getCompanyCode = async () => {
-    const [response, error] = await handleApiRequest(() =>
-      codeOrganization(companyCode.value)
-    );
-    console.log(response);
-    if (response) {
-      setSearchOrganizationResult(response);
-    }
-    if (error) {
-      console.log(error);
-    }
-  };
-  const { isMobile } = useScreenSize();
 
-  const handleCompanySearch = (event: React.FormEvent) => {
-    event.preventDefault();
+  const handleCompanySearch = () => {
     if (companyCode.value) {
       navigate(location.pathname + `/${companyCode.value}`);
     } else {
