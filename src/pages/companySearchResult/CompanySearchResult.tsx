@@ -8,6 +8,7 @@ import { employeeRegister } from "@/store/organizationStore";
 import { handleApiRequest } from "@/api";
 import { codeOrganization } from "@/api/organization";
 import { useEffect, useState } from "react";
+
 interface RegisterAsEmployee {
   orgId: string;
   email: string;
@@ -20,6 +21,7 @@ const CompanySearchResult = () => {
   const [searchResult, setSearchResult] = useState<any>();
   const [regisgerAsEmployee, setRegisterAsEmployee] =
     useRecoilState<RegisterAsEmployee>(employeeRegister);
+
   const { companyId } = useParams<string>() || undefined;
   const getCompanyCode = async () => {
     const [response, error] = await handleApiRequest(() =>
@@ -45,6 +47,8 @@ const CompanySearchResult = () => {
   useEffect(() => {
     getCompanyCode();
   }, []);
+  console.log(regisgerAsEmployee);
+
   return (
     <>
       <FormContainer>

@@ -24,7 +24,9 @@ const refresh = async () => {
 const logout = async () => {
   return api.post("/auth/logout");
 };
-
+const signupAsEmployee = async (data: any) => {
+  return api.post("/auth/signupAsEmployee", data);
+};
 const getUser = async (id: string) => {
   return api.get(`/users/${id}`);
 };
@@ -90,6 +92,7 @@ const authApi = {
   verifyEmail,
   clearResetToken,
   resendActivationCode,
+  signupAsEmployee,
 };
 
 const getGroup = async () => {

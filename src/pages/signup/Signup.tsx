@@ -16,7 +16,8 @@ import useApi from "@/hooks/useApi";
 import { Flex } from "../getStarted/GetStarted";
 import { Title, FormContainer } from "../companySearch/CompanySearch";
 import SignupMethod from "@/components/signupMethod/SignupMethod";
-
+import { employeeRegister } from "@/store/organizationStore";
+import { useRecoilState } from "recoil";
 export const Divider = styled(MuiDivider)`
   width: 100%;
 `;
@@ -57,7 +58,7 @@ const SignupPage = () => {
   const lastName = useValidatedInput("", "Last Name");
   const [signupMethod, setSignupMethod] = useState<SignupMethod>("email");
   const email = useValidatedInput("", "Email", validateEmail);
-
+  const RegisterAsEmployee = useRecoilState(employeeRegister);
   const phone = useValidatedInput("", "Phone");
   const password = useCriteriaValidator("", passwordCriteria);
   const confirmPassword = useMatchInput(password.value, "", "Confirm Password");
@@ -72,8 +73,7 @@ const SignupPage = () => {
 
   const isFormInvalid =
     ((!firstName.value || !!firstName.error) && accountType === "employer") ||
-    !lastName.value ||
-    (!!lastName.error && accountType === "employer") ||
+    ((!lastName.value || !!lastName.error) && accountType === "employer") ||
     (signupMethod === "phone"
       ? !phone.value || !!phone.error
       : !email.value || !!email.error) ||
@@ -89,9 +89,14 @@ const SignupPage = () => {
   }
 
   const { isLoading, isSuccess, error, handleApiRequest } = useApi();
+  console.log(RegisterAsEmployee);
 
   async function signup(method: string, data: any): Promise<void> {
-    await handleApiRequest(() => authApi.signup(method, data));
+    if (isJoinCompany) {
+      await handleApiRequest(() => authApi.signupAsEmployee(data));
+    } else {
+      await handleApiRequest(() => authApi.signup(method, data));
+    }
   }
 
   function resetState() {
@@ -167,7 +172,12 @@ const SignupPage = () => {
         phoneNumber: selectedCountry.dialCode + phoneWithoutLeadingZero,
       };
     }
-
+    if (isJoinCompany) {
+      formData = {
+        ...formData,
+        orgId: RegisterAsEmployee[0].id,
+      };
+    }
     await signup(signupMethod, formData);
   };
 
