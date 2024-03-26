@@ -37,9 +37,12 @@ const AccountVerification = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      enqueueSnackbar("We have resend the code to your ", {
-        variant: "success",
-      });
+      enqueueSnackbar(
+        `We have resent the verification code to your ${accountMethod === "email" ? "email" : "phone number"}.`,
+        {
+          variant: "success",
+        }
+      );
     } else if (isError) {
       enqueueSnackbar(error?.message, { variant: "error" });
     }
@@ -49,15 +52,14 @@ const AccountVerification = () => {
     <CP.Styled.Form>
       <FormContainer>
         <CP.Styled.Div>
-          <Title align="center">Account has not been verified</Title>
+          <Title align="center">Account has not been verified!</Title>
           <Flex direction="column" gap="1.5rem" items="center">
-            <CP.Typography>
-              You must verify your{" "}
-              {accountMethod === "email" ? "email" : "phone nubmer"} "
-              {credential}" first. <br />
-              If you haven't received{" "}
-              {accountMethod === "email" ? "an email" : "a sms"}, please click
-              resend button.
+            <CP.Typography align="center">
+              Please ensure that you have checked your{" "}
+              {accountMethod === "email" ? "email" : "phone number"} for the
+              verification code. If you have not received{" "}
+              {accountMethod === "email" ? "an email" : "a text message"}, you
+              may click the resend button to receive a new code.
             </CP.Typography>
 
             <Flex gap="1rem" justify="center">

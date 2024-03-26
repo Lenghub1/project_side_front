@@ -48,14 +48,6 @@ const routes: RouteProps[] = [
         path: "employee-info",
         element: Pg.InformationInput,
       },
-    ],
-  },
-  {
-    name: "loginpage",
-    path: "login",
-    element: Pg.LoginPage.default.LoginPage,
-    protected: false,
-    children: [
       {
         name: "accountVerification",
         path: "activate-account",
@@ -63,6 +55,12 @@ const routes: RouteProps[] = [
         protected: false,
       },
     ],
+  },
+  {
+    name: "loginpage",
+    path: "login",
+    element: Pg.LoginPage.default.LoginPage,
+    protected: false,
   },
   // {
   //   name: "login",
