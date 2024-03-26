@@ -61,14 +61,6 @@ const routes: RouteProps[] = [
     path: "/login",
     element: Pg.LoginPage.default.LoginPage,
     protected: false,
-    children: [
-      {
-        name: "accountVerification",
-        path: "activate-account",
-        element: Pg.AccountVerification,
-        protected: false,
-      },
-    ],
   },
   {
     name: "loginpage",
