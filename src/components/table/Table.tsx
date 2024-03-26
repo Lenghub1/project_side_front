@@ -5,7 +5,6 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
-import { useNavigate } from "react-router-dom";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -13,8 +12,11 @@ import Switch from "@mui/material/Switch";
 import EnhancedTableToolbar from "./Toolbar";
 import EnhancedTableHead, { HeadCell } from "./TableHead";
 import { getComparator, stableSort } from "@/utils/table.util";
+<<<<<<< HEAD
 import { useRecoilState } from "recoil";
 import { employementDetail } from "@/store/userStore";
+=======
+>>>>>>> develop
 type Order = "asc" | "desc";
 
 interface EnhancedTableProps<T> {
@@ -62,25 +64,30 @@ function EnhancedTable<T>({
 }: EnhancedTableProps<T>) {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [employeeDetail, setEmployeeDetail] = useRecoilState(employementDetail);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [currentOrder, setCurrentOrder] = React.useState<Order>(order);
   const [currentOrderBy, setCurrentOrderBy] = React.useState<keyof T>(orderBy);
   const [filters, setFilters] = React.useState<{ [key: string]: string }>(
     Object.fromEntries(headCells.map((cell) => [cell.id, ""]))
   );
+<<<<<<< HEAD
   const navigate = useNavigate();
+=======
+>>>>>>> develop
 
   const handleRequestSort = (property: keyof T) => {
     const isAsc = currentOrderBy === property && currentOrder === "asc";
     setCurrentOrder(isAsc ? "desc" : "asc");
     setCurrentOrderBy(property);
+<<<<<<< HEAD
   };
   const handleRowClick = (clickedRow: any) => {
     console.log(clickedRow);
     setEmployeeDetail(clickedRow);
 
     navigate(`/organization/employee/registrations/details`);
+=======
+>>>>>>> develop
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {

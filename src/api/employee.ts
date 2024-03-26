@@ -80,6 +80,24 @@ const allEmployees = async (
     }
   );
 };
+
+const getAllPendingEmployees = async (
+  organizationId: string = currentOrganizationId
+): Promise<AxiosResponse<Partial<Employement>>> => {
+  return api.get(
+    `/organizations/${organizationId}/employments?status_eq=pending`,
+    {
+      transformResponse: [
+        (response) => {
+          const data = transformData(response, fieldMapping);
+          const newData = combineFields(data, "firstName", "lastName", "name");
+          return newData;
+        },
+      ],
+    }
+  );
+};
+
 const getEmployeeById = async (
   employmentId: string,
   organizationId: string = currentOrganizationId
@@ -97,6 +115,7 @@ const getEmployeeById = async (
     }
   );
 };
+<<<<<<< HEAD
 const patchEmployeeById = async (
   organizationId: string,
   employmentId: string,
@@ -113,6 +132,8 @@ const patchEmployeeById = async (
     return {} as AxiosResponse<Partial<Employement>>;
   }
 };
+=======
+>>>>>>> develop
 
 const updateEmployee = async (
   data: Object,
@@ -139,6 +160,7 @@ const deleteEmployee = async (
   organizationId: string = currentOrganizationId
 ) => api.delete(`/organizations/${organizationId}/employments/${employmentId}`);
 
+<<<<<<< HEAD
 const getAllPendingEmployees = async (
   organizationId: string = currentOrganizationId
 ): Promise<AxiosResponse<Partial<Employement>>> => {
@@ -156,6 +178,8 @@ const getAllPendingEmployees = async (
   );
 };
 
+=======
+>>>>>>> develop
 export {
   allWorkplace,
   allEmployees,
@@ -163,7 +187,6 @@ export {
   createEmployee,
   updateEmployee,
   deleteEmployee,
-  patchEmployeeById,
   getAllPendingEmployees,
   getUserEmployments,
 };

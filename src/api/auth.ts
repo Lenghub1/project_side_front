@@ -27,6 +27,7 @@ const logout = async () => {
 
 const getUser = async (id: string) => {
   return api.get(`/users/${id}`);
+<<<<<<< HEAD
 };
 
 const telegramOauth = async (user: any) => {
@@ -67,6 +68,8 @@ const resetPassword = async (newPassword: string) => {
 
 const clearResetToken = async () => {
   return api.post("auth/clearToken");
+=======
+>>>>>>> develop
 };
 
 const authApi = {
