@@ -17,9 +17,7 @@ import { Flex } from "../getStarted/GetStarted";
 import { Title, FormContainer } from "../companySearch/CompanySearch";
 import Alert from "@mui/material/Alert";
 import SignupMethod from "@/components/signupMethod/SignupMethod";
-import { useRecoilState, useSetRecoilState } from "recoil";
-import Store from "@/store";
-import { OauthComponent } from "@/components/oauth";
+
 const Divider = styled(MuiDivider)`
   width: 100%;
 `;
@@ -71,7 +69,7 @@ const SignupPage = () => {
     dialCode: string;
     flag: string;
   }>(countries[0]);
-  const [_, setAccountType] = useRecoilState(Store.SignUp.accountTypeState);
+
   const isFormInvalid =
     ((!firstName.value || !!firstName.error) && accountType === "employer") ||
     !lastName.value ||
@@ -104,10 +102,6 @@ const SignupPage = () => {
     password.reset();
     confirmPassword.reset();
   }
-
-  useEffect(() => {
-    setAccountType(accountType);
-  }, [accountType]);
 
   useEffect(() => {
     if (isSuccess && signupMethod === "email") {
@@ -236,47 +230,48 @@ const SignupPage = () => {
               }}
             />
 
-          <CP.Input
-            label="Confirm password"
-            type={confirmPasswordIsVisible ? "text" : "password"}
-            value={confirmPassword.value}
-            onChange={confirmPassword.onChange}
-            onBlur={confirmPassword.onBlur}
-            error={!!confirmPassword.error}
-            helperText={<confirmPassword.HelperText />}
-            required
-            InputProps={{
-              endAdornment: (
-                <IconButton
-                  onClick={() => setConfirmPasswordIsVisible((prev) => !prev)}
-                >
-                  {confirmPasswordIsVisible ? (
-                    <Visibility />
-                  ) : (
-                    <VisibilityOff />
-                  )}
-                </IconButton>
-              ),
-            }}
-          />
-          <OauthComponent />
-          <Divider></Divider>
-          <Flex gap="1rem">
-            <CP.Button variant="text">Cancel</CP.Button>
-            <CP.Button
-              disabled={isFormInvalid}
-              type="submit"
-              onClick={handleSubmit}
-            >
-              Signup
-            </CP.Button>
+            <CP.Input
+              label="Confirm password"
+              type={confirmPasswordIsVisible ? "text" : "password"}
+              value={confirmPassword.value}
+              onChange={confirmPassword.onChange}
+              onBlur={confirmPassword.onBlur}
+              error={!!confirmPassword.error}
+              helperText={<confirmPassword.HelperText />}
+              required
+              InputProps={{
+                endAdornment: (
+                  <IconButton
+                    onClick={() => setConfirmPasswordIsVisible((prev) => !prev)}
+                  >
+                    {confirmPasswordIsVisible ? (
+                      <Visibility />
+                    ) : (
+                      <VisibilityOff />
+                    )}
+                  </IconButton>
+                ),
+              }}
+            />
+
+            <Divider></Divider>
+            <Flex gap="1rem">
+              <CP.Button variant="text">Cancel</CP.Button>
+              <CP.Button
+                disabled={isFormInvalid}
+                type="submit"
+                onClick={handleSubmit}
+              >
+                Signup
+              </CP.Button>
+            </Flex>
+            <CP.Typography variant="subtitle2">
+              By signing up, you agree to our{" "}
+              <NavLink to="#">Terms of Service</NavLink> &{" "}
+              <NavLink to="#">Privacy Policy</NavLink>
+            </CP.Typography>
           </Flex>
-          <CP.Typography variant="subtitle2">
-            By signing up, you agree to our{" "}
-            <NavLink to="#">Terms of Service</NavLink> &{" "}
-            <NavLink to="#">Privacy Policy</NavLink>
-          </CP.Typography>
-        </Flex>
+        </CP.Styled.Div>
       </FormContainer>
       <Flex direction="column" margin="1rem 0 0" gap="1rem">
         <Divider></Divider>

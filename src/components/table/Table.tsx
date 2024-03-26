@@ -16,7 +16,6 @@ type Order = "asc" | "desc";
 
 interface EnhancedTableProps<T> {
   headCells: HeadCell<T>[];
-  headCells: HeadCell<T>[];
   rows: T[];
   order: Order;
   orderBy: keyof T;
@@ -51,43 +50,7 @@ interface EnhancedTableProps<T> {
  */
 function EnhancedTable<T>({
   headCells,
-  tableName: string;
-  actionCell?: (row: T) => React.ReactNode;
-}
-
-/**
- * EnhancedTable Component
- *
- * This component displays an enhanced table with sorting, pagination, dense padding, and optional action cells.
- *
- * Props:
- *   - headCells: An array of objects defining the table header cells.
- *   - rows: An array of data objects to be displayed in the table rows.
- *   - order: The current sorting order ('asc' for ascending, 'desc' for descending).
- *   - orderBy: The currently sorted column key.
- *   - rowCount: The total number of rows.
- *   - tableName: The name of the table.
- *   - actionCell: An optional function that returns ReactNode to be rendered in an additional action cell for each row.
- *
- * @param {Array} headCells - An array of objects defining the table header cells.
- * @param {Array} rows - An array of data objects to be displayed in the table rows.
- * @param {string} order - The current sorting order ('asc' for ascending, 'desc' for descending).
- * @param {string} orderBy - The currently sorted column key.
- * @param {number} rowCount - The total number of rows.
- * @param {string} tableName - The name of the table.
- * @param {Function} [actionCell] - An optional function that returns ReactNode to be rendered in an additional action cell for each row.
- *
- * @returns {JSX.Element} React component
- */
-function EnhancedTable<T>({
-  headCells,
   rows,
-  order,
-  orderBy,
-  rowCount,
-  tableName,
-  actionCell,
-}: EnhancedTableProps<T>) {
   order,
   orderBy,
   rowCount,
@@ -148,7 +111,6 @@ function EnhancedTable<T>({
   const visibleRows = React.useMemo(
     () =>
       stableSort(rows, getComparator(currentOrder, currentOrderBy)).slice(
-      stableSort(rows, getComparator(currentOrder, currentOrderBy)).slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
       ),
@@ -180,7 +142,6 @@ function EnhancedTable<T>({
 
             <TableBody>
               {visibleRows.map((row) => {
-              {visibleRows.map((row) => {
                 return (
                   <TableRow
                     hover
@@ -210,7 +171,6 @@ function EnhancedTable<T>({
                   }}
                 >
                   <TableCell colSpan={headCells.length} />
-                  <TableCell colSpan={headCells.length} />
                 </TableRow>
               )}
             </TableBody>
@@ -219,7 +179,6 @@ function EnhancedTable<T>({
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rowCount}
           count={rowCount}
           rowsPerPage={rowsPerPage}
           page={page}

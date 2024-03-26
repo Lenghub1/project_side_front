@@ -5,7 +5,6 @@ import { allWorkplace } from "@/api/employee";
 import { handleApiRequest } from "@/api";
 import ChooseOrganizationCard from "@/components/organization/chooseOrganizationCard";
 import { userState, selectedOrganization } from "@/store/userStore"; // Renamed selectOrganization to selectedOrg
-import { userState, selectedOrganization } from "@/store/userStore"; // Renamed selectOrganization to selectedOrg
 import { useRecoilState, useRecoilValue } from "recoil";
 import { useNavigate } from "react-router-dom";
 import { organizationState } from "@/store/organizationStore";
@@ -23,7 +22,7 @@ const ScreenChooseOrganization = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const [response, error] = await handleApiRequest<any>(() =>
+      const [response, error] = await handleApiRequest(() =>
         allWorkplace(user.id)
       );
       console.log(response);
@@ -38,7 +37,6 @@ const ScreenChooseOrganization = () => {
 
     const timeout = setTimeout(() => {
       fetchData();
-    }, 2000); // Delay fetching data by 2 seconds
     }, 2000); // Delay fetching data by 2 seconds
 
     return () => clearTimeout(timeout); // Cleanup function to clear the timeout if component unmounts
@@ -92,12 +90,12 @@ const ScreenChooseOrganization = () => {
             setActiveOrgId={setSelectedOrg} // Updated to use setSelectedOrg instead of setSelectOrganization
             isActive={organization.id === selectedOrg} // Updated to use selectedOrg instead of selectOrganization
             title={organization.organization.name}
-            description="You are member of ours organization , pls click Next to Login ! Let join our journey"
+            description="You are member of ours organization , pls click Next to Login"
           />
         ))}
 
         <CP.Typography style={{ marginTop: "40px" }}>
-          By continuing, you're agreeing to our Main Services Agreement, User
+          By continuing, you’re agreeing to our Main Services Agreement, User
           Terms of Service, and Riem Supplemental Terms. Additional disclosures
           are available in our Privacy Policy and Cookie Policy.
         </CP.Typography>

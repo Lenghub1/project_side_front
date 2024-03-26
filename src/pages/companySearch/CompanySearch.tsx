@@ -5,11 +5,11 @@ import useValidatedInput from "@/hooks/useValidatedInput";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { handleApiRequest } from "@/api";
 import { codeOrganization } from "@/api/organization";
-import { handleApiRequest } from "@/api";
-import { codeOrganization } from "@/api/organization";
 import { Flex } from "../getStarted/GetStarted";
 import { searchResultState } from "@/store/organizationStore";
 import { useRecoilState } from "recoil";
+import useScreenSize from "@/hooks/useScreenSize";
+
 const Divider = styled(MuiDivider)`
   width: 100%;
 `;
@@ -50,8 +50,6 @@ const CompanySearch = () => {
   const navigate = useNavigate();
   const [searchOrganizationResult, setSearchOrganizationResult] =
     useRecoilState(searchResultState);
-  const [searchOrganizationResult, setSearchOrganizationResult] =
-    useRecoilState(searchResultState);
   const companyCode = useValidatedInput("", "Company Code");
   const isCompanySearch = location.pathname === "/get-started/company-search";
   const getCompanyCode = async () => {
@@ -66,7 +64,10 @@ const CompanySearch = () => {
       console.log(error);
     }
   };
-  const handleCompanySearch = () => {
+  const { isMobile } = useScreenSize();
+
+  const handleCompanySearch = (event: React.FormEvent) => {
+    event.preventDefault();
     if (companyCode.value) {
       getCompanyCode();
       navigate(location.pathname + `/${companyCode.value}`);

@@ -8,7 +8,6 @@ import { selectedOrganization } from "@/store/userStore";
 import CP from "@/components";
 import { useRecoilValue } from "recoil";
 import { Employement } from "@/utils/interfaces/Employment";
-import { Employement } from "@/utils/interfaces/Employment";
 const AddMember: React.FC<AddMemberProps> = ({ branchData, setBranchData }) => {
   const [selected, setSelected] = React.useState<any>([]);
   const [fakeMembers, setFakeMembers] = React.useState<Partial<Employement[]>>(
@@ -21,7 +20,6 @@ const AddMember: React.FC<AddMemberProps> = ({ branchData, setBranchData }) => {
     );
     console.log(response);
     if (response) {
-      setFakeMembers(response);
       setFakeMembers(response);
     }
     if (error) {

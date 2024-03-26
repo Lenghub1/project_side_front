@@ -81,12 +81,12 @@ const allEmployees = async (
     }
   );
 };
-const getEmployeeById = async (
-  employmentId: string,
+
+const getAllPendingEmployees = async (
   organizationId: string = currentOrganizationId
 ): Promise<AxiosResponse<Partial<Employement>>> => {
   return api.get(
-    `/organizations/${organizationId}/employments/${employmentId}`,
+    `/organizations/${organizationId}/employments?status_eq=pending`,
     {
       transformResponse: [
         (response) => {
@@ -95,6 +95,17 @@ const getEmployeeById = async (
           return newData;
         },
       ],
+    }
+  );
+};
+
+const getEmployeeById = async (
+  employmentId: string,
+  organizationId: string = currentOrganizationId
+): Promise<AxiosResponse<Partial<Employement>>> => {
+  return api.get(
+    `/organizations/${organizationId}/employments/${employmentId}`,
+    {
       transformResponse: [
         (response) => {
           const data = transformData(response, fieldMapping);

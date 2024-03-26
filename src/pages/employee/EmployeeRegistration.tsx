@@ -1,6 +1,5 @@
 import React from "react";
 import CP from "@/components";
-import CP from "@/components";
 import EnhancedTable from "@/components/table/Table";
 import Button from "@/components/button";
 import Badge from "@mui/material/Badge";
