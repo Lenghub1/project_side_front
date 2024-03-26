@@ -123,6 +123,13 @@ const TestLoginPage = () => {
         showError(
           `${loginMethod === "email" ? "Email" : "Phone number"} or password is incorrect`
         );
+      } else if (error.statusCode === 401) {
+        navigate("/login/activate-account", {
+          state: {
+            credential: loginMethod === "email" ? email.value : phone.value,
+            accountMethod: loginMethod,
+          },
+        });
       } else {
         showError("Something went wrong. Please try again.");
       }

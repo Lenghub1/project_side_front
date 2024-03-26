@@ -9,6 +9,7 @@ type UseApiReturnType<T> = {
   isError: boolean;
   error: ApiError | null;
   handleApiRequest: (request: () => Promise<AxiosResponse<T>>) => Promise<void>;
+  resetState: () => void;
 };
 
 function useApi<T>(): UseApiReturnType<T> {
@@ -49,7 +50,23 @@ function useApi<T>(): UseApiReturnType<T> {
     }
   }
 
-  return { response, isLoading, isSuccess, isError, error, handleApiRequest };
+  function resetState() {
+    setResponse(null);
+    setIsLoading(false);
+    setIsSuccess(false);
+    setIsError(false);
+    setError(null);
+  }
+
+  return {
+    response,
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+    handleApiRequest,
+    resetState,
+  };
 }
 
 export default useApi;
