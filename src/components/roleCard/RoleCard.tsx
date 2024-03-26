@@ -3,6 +3,7 @@ import styled from "styled-components";
 import CardActionArea from "@mui/material/CardActionArea";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
+import useScreenSize from "@/hooks/useScreenSize";
 
 interface RoleCardProps {
   accountType: "employer" | "employee" | null;
@@ -27,6 +28,7 @@ const RoleCard = ({
   description,
 }: RoleCardProps) => {
   const isActive = accountType === role;
+  const { isMobile } = useScreenSize();
   return (
     <CP.Card
       sx={{
@@ -43,10 +45,14 @@ const RoleCard = ({
       <CardActionArea
         sx={{ color: isActive ? "primary.main" : "text.primary" }}
       >
-        <CP.Styled.Div padding="1.5rem">
+        <CP.Styled.Div padding={isMobile ? "1rem" : "1.5rem"}>
           <CardMedia component="img" alt={title} height="auto" image={image} />
           <CardContent>
-            <Typography variant="h5" gutterBottom color="inherit">
+            <Typography
+              variant={isMobile ? "h6" : "h5"}
+              gutterBottom
+              color="inherit"
+            >
               {title}
             </Typography>
             <Typography variant="body2" color="inherit">
