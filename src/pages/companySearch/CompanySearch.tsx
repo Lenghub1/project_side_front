@@ -15,7 +15,7 @@ const Divider = styled(MuiDivider)`
 `;
 
 export const Title = ({ children }: any) => {
-  const { isMobile } = useScreenSize();
+  const { isMobile, isTablet } = useScreenSize();
 
   return (
     <CP.Typography
@@ -23,7 +23,7 @@ export const Title = ({ children }: any) => {
       style={{
         marginBottom: "2rem",
         fontWeight: "semibold",
-        textAlign: isMobile ? "center" : "start",
+        textAlign: isMobile || isTablet ? "center" : "start",
       }}
     >
       {children}
