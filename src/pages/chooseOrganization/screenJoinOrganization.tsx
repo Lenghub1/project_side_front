@@ -29,8 +29,10 @@ const ScreenJoinOrganization = () => {
       const [response, error] = await handleApiRequest(() =>
         allWorkplace(user.id)
       );
+      console.log("asdasd", response);
+
       if (response) {
-        setOrganizationData(response || []);
+        setOrganizationData(response.data || []);
       } else {
         console.log(error);
       }
@@ -72,15 +74,7 @@ const ScreenJoinOrganization = () => {
     <CP.Styled.Flex>
       <CP.Styled.Flex direction="column" gap="20px" padding="20px">
         <CP.Styled.Flex direction="column">
-          <CP.Styled.Flex
-            direction="column"
-            style={{ position: "absolute", top: "5%" }}
-          >
-            <CP.Typography variant="h5">Riem</CP.Typography>
-            <CP.Typography>
-              Confirmed as <strong>{user.email}</strong>
-            </CP.Typography>
-          </CP.Styled.Flex>
+          <CP.Styled.Flex direction="column"></CP.Styled.Flex>
         </CP.Styled.Flex>
         <CP.Styled.Flex direction="column">
           {organizationData && (
