@@ -83,6 +83,18 @@ const routes: RouteProps[] = [
     protected: false,
   },
   {
+    name: "joinOrganization",
+    path: "join-organization",
+    element: Pg.choose.default.ScreenJoinOrganization,
+    protected: false,
+  },
+  {
+    name: "joinOrganization",
+    path: "create-organization",
+    element: Pg.choose.default.ScreenCreateOrganization,
+    protected: false,
+  },
+  {
     name: "home",
     path: "/",
     element: Pg.HomePage,

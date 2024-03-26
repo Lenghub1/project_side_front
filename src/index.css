@@ -18,7 +18,10 @@
   margin: 0;
   box-sizing: border-box;
 }
-
+.splide-container {
+  display: flex;
+  padding: 50px;
+}
 /* input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,

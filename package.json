@@ -24,6 +24,8 @@
     "@mui/x-data-grid-generator": "^6.19.6",
     "@mui/x-date-pickers": "^6.19.0",
     "@react-google-maps/api": "^2.19.2",
+    "@splidejs/react-splide": "^0.7.12",
+    "@splidejs/splide": "^4.1.4",
     "@storybook/addon-actions": "^7.6.8",
     "@storybook/addon-console": "^2.0.0",
     "@storybook/core-events": "^7.6.8",

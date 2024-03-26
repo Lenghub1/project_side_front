@@ -1,3 +1,8 @@
 import ScreenChooseOrganization from "./screenChooseOrganization";
-
-export default { ScreenChooseOrganization };
+import ScreenJoinOrganization from "./screenJoinOrganization";
+import ScreenCreateOrganization from "./screenCreateOrganization";
+export default {
+  ScreenChooseOrganization,
+  ScreenJoinOrganization,
+  ScreenCreateOrganization,
+};

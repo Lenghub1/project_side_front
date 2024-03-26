@@ -1,13 +1,13 @@
 import CP from "..";
 import styled from "styled-components";
 import CardActionArea from "@mui/material/CardActionArea";
+import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
-import { Avatar } from "@mui/material";
 
-interface RoleCardProps {
-  id: string;
-  setActiveOrgId: (id: string | undefined) => void;
-  isActive: boolean;
+interface TypeCardProps {
+  typeSelected: "Join" | "Create";
+  setTypeSelected: (value: "Join" | "Create") => void;
+  image: string;
   title: string;
   description: string;
 }
@@ -16,36 +16,32 @@ const Typography = styled(CP.Typography)`
   color: inherit;
 `;
 
-const ChooseOrganizationCard = ({
-  id,
-  setActiveOrgId,
-  isActive,
+const TypeCard = ({
+  typeSelected,
+  setTypeSelected,
+  image,
   title,
   description,
-}: RoleCardProps) => {
-  const handleCardClick = () => {
-    setActiveOrgId(isActive ? undefined : id);
-  };
-
+}: TypeCardProps) => {
+  const isActive = typeSelected === title;
   return (
     <CP.Card
       sx={{
         border: isActive ? "2px solid" : "1px solid",
         borderColor: isActive ? "primary.main" : "grey.300",
         color: isActive ? "primary.main" : "text.primary",
-        maxWidth: "100%",
-        height: "9rem",
+        maxWidth: "340px",
         borderRadius: "1rem",
       }}
       variant="outlined"
       padding="0"
-      onClick={handleCardClick}
+      onClick={() => setTypeSelected(title as "Join" | "Create")}
     >
       <CardActionArea
         sx={{ color: isActive ? "primary.main" : "text.primary" }}
       >
-        <CP.Styled.Flex padding="1.5rem">
-          <Avatar></Avatar>
+        <CP.Styled.Div padding="1.5rem">
+          <CardMedia component="img" alt={title} height="auto" image={image} />
           <CardContent>
             <Typography variant="h5" gutterBottom color="inherit">
               {title}
@@ -54,10 +50,10 @@ const ChooseOrganizationCard = ({
               {description}
             </Typography>
           </CardContent>
-        </CP.Styled.Flex>
+        </CP.Styled.Div>
       </CardActionArea>
     </CP.Card>
   );
 };
 
-export default ChooseOrganizationCard;
+export default TypeCard;
