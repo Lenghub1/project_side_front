@@ -4,7 +4,7 @@ import { recoilPersist } from "recoil-persist";
 
 const { persistAtom } = recoilPersist();
 
-export const allEmployeesData = atom<Employement[] | undefined>({
+export const allEmployees = atom<Employement[] | undefined>({
   key: "allEmployees",
   default: undefined,
 });

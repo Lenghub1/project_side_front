@@ -5,18 +5,22 @@ import EnhancedTable from "@/components/table/Table";
 import { HeadCell } from "@/components/table/TableHead";
 import { Employement } from "@/utils/interfaces/Employment";
 import Error from "../error/Error";
-import { allEmployeesData } from "@/store/employee";
-import { useRecoilState } from "recoil";
-
+import { useRecoilValue, useRecoilState } from "recoil";
+import { filteredDataState, dataToFilterState } from "@/store/filterStore";
+import { useEffect } from "react";
 const EmployeeTable = () => {
-  const [allEmployee, setAllEmployee] = useRecoilState(allEmployeesData);
+  const [_, setDataToFilter] = useRecoilState(dataToFilterState);
+  const { isFilter, data: filteredData } = useRecoilValue(filteredDataState);
   const { data, error } = useFetch(allEmployees);
   if (error) {
     console.log(error);
     return <Error status={error.status_code} />;
   }
-  setAllEmployee(data);
-  console.log(allEmployee);
+  useEffect(() => {
+    setDataToFilter(data);
+    console.log(data);
+  }, []);
+  const displayData = isFilter ? filteredData : data;
 
   return (
     <CP.Container>
@@ -24,8 +28,8 @@ const EmployeeTable = () => {
         orderBy="name"
         order="asc"
         headCells={headCells}
-        rows={data || []}
-        rowCount={data?.length || 0}
+        rows={displayData || []}
+        rowCount={displayData?.length || 0}
         tableName="Employee"
       />
     </CP.Container>

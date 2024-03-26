@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CP from "@/components";
 import EnhancedTable from "@/components/table/Table";
 import Button from "@/components/button";
@@ -13,8 +13,8 @@ import {
 } from "@/utils/employee.util";
 import useFetch from "@/hooks/useFetch";
 import Error from "../error/Error";
-import { useRecoilState } from "recoil";
-import { allEmployeesData } from "@/store/employee";
+import { useRecoilValue, useRecoilState } from "recoil";
+import { filteredDataState, dataToFilterState } from "@/store/filterStore";
 
 const RenderActionCell = (row: Employement) => {
   const { id } = row;
@@ -29,15 +29,19 @@ const RenderActionCell = (row: Employement) => {
 };
 
 const EmployeeRegistration = () => {
-  const [allEmployee, setAllEmployee] = useRecoilState(allEmployeesData);
+  const [dataToFilter, setDataToFilter] = useRecoilState(dataToFilterState);
+  const { isFilter, data: filteredData } = useRecoilValue(filteredDataState);
   const { data, error } = useFetch(getAllPendingEmployees);
   const [notifiactionCount, setNotifiactionCount] = React.useState<number>(0);
 
   if (error) {
     return <Error status={error.status_code} />;
   }
-  setAllEmployee(data);
-  console.log(allEmployee);
+  useEffect(() => {
+    setDataToFilter(data);
+  }, []);
+  console.log(dataToFilter);
+  const displayData = isFilter ? filteredData : data;
   return (
     <CP.Container>
       <CP.Container>
@@ -58,9 +62,9 @@ const EmployeeRegistration = () => {
       <EnhancedTable<Employement>
         headCells={headCells}
         order="asc"
-        rows={data || []}
+        rows={displayData || []}
         orderBy="name"
-        rowCount={data?.length || 0}
+        rowCount={displayData?.length || 0}
         tableName="Employee Registrations"
         actionCell={RenderActionCell}
       />
@@ -75,7 +79,7 @@ const headCells: HeadCell<Employement>[] = [
     id: "name",
     numeric: false,
     disablePadding: false,
-    label: "Emplyee Information",
+    label: "Employee",
     filterable: true,
   },
   {
