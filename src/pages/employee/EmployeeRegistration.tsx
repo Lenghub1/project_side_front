@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CP from "@/components";
 import EnhancedTable from "@/components/table/Table";
 import Button from "@/components/button";
@@ -13,8 +13,8 @@ import {
 } from "@/utils/employee.util";
 import useFetch from "@/hooks/useFetch";
 import Error from "../error/Error";
-import { useRecoilValue } from "recoil";
-import { filteredDataState } from "@/store/employee";
+import { useRecoilValue, useRecoilState } from "recoil";
+import { filteredDataState, dataToFilterState } from "@/store/filterStore";
 
 const RenderActionCell = (row: Employement) => {
   const { id } = row;
@@ -29,6 +29,7 @@ const RenderActionCell = (row: Employement) => {
 };
 
 const EmployeeRegistration = () => {
+  const [dataToFilter, setDataToFilter] = useRecoilState(dataToFilterState);
   const filteredData = useRecoilValue(filteredDataState);
   const { data, error } = useFetch(getAllPendingEmployees);
   const [notifiactionCount, setNotifiactionCount] = React.useState<number>(0);
@@ -36,7 +37,11 @@ const EmployeeRegistration = () => {
   if (error) {
     return <Error status={error.status_code} />;
   }
-  console.log(filteredData);
+  useEffect(() => {
+    setDataToFilter(data);
+  }, []);
+  console.log(dataToFilter);
+  const dispalyData = filteredData.length ? filteredData : data;
   return (
     <CP.Container>
       <CP.Container>
@@ -57,9 +62,9 @@ const EmployeeRegistration = () => {
       <EnhancedTable<Employement>
         headCells={headCells}
         order="asc"
-        rows={filteredData || []}
+        rows={dispalyData || []}
         orderBy="name"
-        rowCount={filteredData?.length || 0}
+        rowCount={dispalyData?.length || 0}
         tableName="Employee Registrations"
         actionCell={RenderActionCell}
       />
@@ -74,7 +79,7 @@ const headCells: HeadCell<Employement>[] = [
     id: "name",
     numeric: false,
     disablePadding: false,
-    label: "Emplyee Information",
+    label: "Employee",
     filterable: true,
   },
   {
