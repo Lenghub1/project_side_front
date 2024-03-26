@@ -70,6 +70,12 @@ const routes: RouteProps[] = [
       },
     ],
   },
+  {
+    name: "loginpage",
+    path: "login",
+    element: Pg.LoginPage.default.LoginPage,
+    protected: false,
+  },
   // {
   //   name: "login",
   //   path: "/test-login",
