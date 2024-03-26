@@ -13,6 +13,13 @@ type DivProps = {
   items?: "center" | "space-between" | "flex-end" | "flex-start";
   gap?: string;
   flex?: number;
+  minwidth?: string;
+  maxWidth?: string;
+  borderRadius?: string;
+  position?: string;
+  opacity?: number;
+  top?: number;
+  left?: number;
 };
 
 export const Div = styled.div<DivProps>`
@@ -25,6 +32,13 @@ export const Div = styled.div<DivProps>`
   overflow: ${({ overflow }) => (overflow ? overflow : "hidden")};
   flex: ${({ flex }) => flex && flex};
   gap: ${({ gap }) => gap && gap};
+  min-width: ${({ minwidth }) => minwidth && minwidth};
+  max-width: ${({ maxWidth }) => maxWidth && maxWidth};
+  border-radius: ${({ borderRadius }) => borderRadius && borderRadius};
+  position: ${({ position }) => position && position};
+  opacity: ${({ opacity }) => opacity && opacity};
+  top: ${({ top }) => (top ? top : 0)};
+  left: ${({ left }) => (left ? left : 0)};
 `;
 
 export const Wrapper = styled(Div)`
@@ -40,6 +54,7 @@ export const Flex = styled(Div)`
   flex-direction: ${({ direction }) => (direction ? direction : "row")};
   align-items: ${({ items }) => (items ? items : "center")};
   justify-content: ${({ justify }) => (justify ? justify : "center")};
+  width: ${({ width }) => (width ? width : "100%")};
 `;
 
 export const Top = styled(Flex)`
@@ -82,14 +97,14 @@ export const InputWrapper = styled.div`
   }
 `;
 
-export const RadioWrapper = styled.div`
-  width: auto;
+export const RadioWrapper = styled.div<DivProps>`
+  width: 100%;
   & .MuiFormGroup-root {
     display: flex;
     width: 100%;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
     flex-wrap: wrap;
 
     & label {
@@ -145,12 +160,27 @@ export const CheckboxWrapper = styled.label`
   align-items: center;
 `;
 
-export const StyleDialog = styled(Dialog)`
+export const StyleDialog = styled(Dialog)<DivProps>`
   & .MuiDialogActions-root {
     & > div {
       width: auto !important;
       & button {
         height: 40px;
+      }
+    }
+  }
+`;
+
+export const InputBoxWrapper = styled.div`
+  width: auto;
+
+  & .MuiTextField-root {
+    width: 44px;
+    height: 44px;
+    & .MuiInputBase-root {
+      width: auto;
+      & .MuiInputBase-input {
+        maxlength: 1;
       }
     }
   }

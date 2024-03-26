@@ -12,7 +12,7 @@ import { ProtectedRoute, UnprotectedRoute } from "@/components/auth";
 
 const renderRoutes = (routes: RouteProps[]) => {
   return routes.map((route: RouteProps) => {
-    const isProtected = route.protected !== false;
+    const isProtected = route.protected;
     const Element = route.element;
     const element = isProtected ? (
       <ProtectedRoute
@@ -38,6 +38,7 @@ const AppRoutes = () => {
   useUpdateAxiosInterceptor();
   // useAuth();
 
+  // to make sure that Authorization header
   /**
    * to make sure that the application attempt to fetch
    * accessToken and set appropriate authorization header

@@ -1,24 +1,20 @@
 import CP from "@/components";
-import { predefinedError, ErrorResponse } from "./error.data";
 
-const Error = ({ status, message, asset }: ErrorResponse) => {
-  if (!message || !asset) {
-    predefinedError.filter((error) => {
-      if (error.status === status) {
-        if (!message) message = error.message;
-        if (!asset) asset = error.asset;
-      }
-    });
-  }
+export interface ErrorProps {
+  message: string;
+  status: number;
+  asset?: string;
+}
 
+const Error = ({ message, status, asset }: ErrorProps) => {
   return (
     <CP.Container>
-      <CP.Typography variant="h3">{message}</CP.Typography>
-      <CP.Typography variant="h6">{status}</CP.Typography>
+      <CP.Typography variant="h1">{message}</CP.Typography>
+      <CP.Typography variant="subtitle1">{status}</CP.Typography>
       {asset && (
-        <CP.Container maxWidth="sm">
+        <CP.Styled.Div>
           <img src={asset} alt={message} />
-        </CP.Container>
+        </CP.Styled.Div>
       )}
     </CP.Container>
   );

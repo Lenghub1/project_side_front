@@ -17,7 +17,6 @@ const ScreenChooseOrganization = () => {
     useRecoilState(organizationState);
   const user = useRecoilValue(userState);
   console.log(user);
-  console.log(organizationData);
 
   const [loading, setLoading] = useState(true); // State to track loading status
 
@@ -28,7 +27,6 @@ const ScreenChooseOrganization = () => {
       );
       console.log(response);
       if (response) {
-        console.log(response);
         setOrganizationData(response || []);
       } else {
         console.log(error);

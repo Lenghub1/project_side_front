@@ -2,7 +2,7 @@ import { uuid } from "@/utils/commonUtil";
 import {
   Radio as MuiRadio,
   RadioProps as MuiRadioProps,
-  RadioGroup
+  RadioGroup,
 } from "@mui/material";
 import CP from "..";
 import { ColorPalette } from "@/@type/common";
@@ -18,7 +18,7 @@ export interface RadioProps extends MuiRadioProps {
 
 const Radio = ({ list, value, onChange, ...props }: RadioProps) => {
   return (
-    <CP.Styled.RadioWrapper>
+    <CP.Styled.RadioWrapper {...props}>
       <RadioGroup
         defaultValue={
           value ? value : list?.length > 0 ? list[0]?.value : undefined

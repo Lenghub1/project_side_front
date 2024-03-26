@@ -25,7 +25,9 @@ function useApi<T>(): UseApiReturnType<T> {
     setIsError(false);
     setError(null);
     try {
+      console.log("###### RES ###########");
       const response = await request();
+      console.log("###### RES ###########", response);
       setIsSuccess(true);
       setResponse(response.data);
     } catch (error) {
@@ -37,6 +39,7 @@ function useApi<T>(): UseApiReturnType<T> {
           error.response?.status,
           error.response?.data
         );
+
         setError(apiError);
       } else {
         console.log("An unexpected error occurred: ", error);

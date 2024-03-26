@@ -52,7 +52,7 @@ const routes: RouteProps[] = [
   },
   {
     name: "login",
-    path: "/login",
+    path: "/test-login",
     element: Pg.Login.default.Login,
     protected: false,
     children: [
@@ -94,13 +94,6 @@ const routes: RouteProps[] = [
             name: "employee-registrations",
             path: "registration",
             element: Pg.Employee.default.EmployeeRegistration,
-            children: [
-              {
-                name: "employeeRegistrationsdetail",
-                path: "detail",
-                element: Pg.Employee.default.EmployeeRegistrationDetail,
-              },
-            ],
           },
         ],
       },
@@ -130,6 +123,66 @@ const routes: RouteProps[] = [
             name: "modifyBranch",
             path: "modifyBranch",
             element: Pg.Branch.ModifyBranch,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    name: "loginpage",
+    path: "login",
+    element: Pg.LoginPage.default.LoginPage,
+    protected: false,
+  },
+  {
+    name: "forgetpassword",
+    path: "/forget-password",
+    element: Pg.ForgetPassword.default.ForgetPassword,
+    protected: false,
+    children: [
+      {
+        name: "forgetpasswordOTP",
+        path: "verify-otp",
+        element: Pg.Verification.default.OTP,
+        protected: false,
+      },
+      {
+        name: "resetPassword",
+        path: "reset-password",
+        element: Pg.ForgetPassword.default.ResetPassword,
+      },
+    ],
+  },
+  {
+    name: "verifytoken",
+    path: "verify-token",
+    element: Pg.Verification.default.VerifyToken,
+    protected: false,
+  },
+  {
+    name: "test-redirect",
+    path: "/test-redirect",
+    element: Pg.LoginPage.default.RedirectingPage,
+    protected: false,
+  },
+
+  {
+    name: "forgotaccount",
+    path: "/forgot-account",
+    element: Pg.ForgetAccount.default.ForgotAccount,
+    protected: false,
+    children: [
+      {
+        name: "accountinformation",
+        path: "informations",
+        element: Pg.ForgetAccount.default.AccountList,
+        protected: false,
+        children: [
+          {
+            name: "accountdetail",
+            path: ":id",
+            element: Pg.ForgetAccount.default.DetailInformation,
+            protected: false,
           },
         ],
       },

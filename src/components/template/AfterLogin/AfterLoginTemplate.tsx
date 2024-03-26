@@ -20,12 +20,10 @@ const Body = styled.div`
 const Template = ({ children }: ReactNodeProps) => {
   return (
     <Container>
+      <TopBar />
       <BodyWrapper>
         <SideBar />
-        <CP.Styled.Div overflow="auto">
-          <TopBar />
-          <Body>{children}</Body>
-        </CP.Styled.Div>
+        <Body>{children}</Body>
       </BodyWrapper>
     </Container>
   );

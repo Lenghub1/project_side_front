@@ -1,46 +1,46 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import CancelIcon from "@mui/icons-material/Cancel";
-import IconButton from "@mui/material/IconButton";
 import Search from "./Search";
 import CP from "..";
-import { Tooltip } from "@mui/material";
 
 const SearchDisplay = ({ data }) => {
   const [showSearch, setShowSearch] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
   const toggleSearch = () => {
-    setShowSearch((previous) => !previous);
+    setShowSearch(!showSearch);
+    if (!showSearch) {
+      setSearchValue("");
+    }
   };
 
   const handleSearchClick = () => {
-    console.log("Sending request to backend with search value:", searchValue);
+    if (searchValue.trim() !== "") {
+      console.log("Sending request to backend with search value:", searchValue);
+    }
+  };
+
+  const handleInputChange = (event) => {
+    setSearchValue(event.target.value);
   };
 
   const handleCancelClick = () => {
     setSearchValue("");
-    setShowSearch(false);
   };
 
   return (
-    <CP.Styled.Flex justify="flex-end" width="100%">
+    <CP.Styled.Flex justify="flex-end">
       {showSearch ? (
         <>
+          <CancelIcon onClick={handleCancelClick} />
           <Search data={data} />
-          <IconButton onClick={handleCancelClick}>
-            <CancelIcon />
-          </IconButton>
-          <IconButton onClick={handleSearchClick}>
-            <SearchIcon />
-          </IconButton>
         </>
       ) : (
-        <Tooltip title="search">
-          <IconButton onClick={toggleSearch}>
-            <SearchIcon />
-          </IconButton>
-        </Tooltip>
+        <SearchIcon onClick={toggleSearch} />
+      )}
+      {showSearch && (
+        <SearchIcon onClick={handleSearchClick} style={{ marginLeft: "8px" }} />
       )}
     </CP.Styled.Flex>
   );

@@ -1,5 +1,5 @@
 import MuiTypography, {
-  TypographyProps as MuiTypographyProps
+  TypographyProps as MuiTypographyProps,
 } from "@mui/material/Typography";
 import { ReactNode } from "react";
 

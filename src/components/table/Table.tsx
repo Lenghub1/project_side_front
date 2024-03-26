@@ -93,6 +93,17 @@ function EnhancedTable<T>({
       setFilters({ ...filters, [property]: value });
     };
 
+  const applyFilters = (rows: T[]): T[] => {
+    return rows.filter((row) => {
+      return Object.entries(filters).every(([key, value]) => {
+        const rowValue = (row as Record<keyof T, string>)[key as keyof T]
+          .toString()
+          .toLowerCase();
+        return rowValue.includes(value.toLowerCase());
+      });
+    });
+  };
+
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
@@ -109,12 +120,7 @@ function EnhancedTable<T>({
   return (
     <CP.Container>
       <Paper sx={{ mb: 2, padding: "1rem 0" }}>
-        <EnhancedTableToolbar
-          data={rows}
-          name={tableName}
-          headCells={headCells}
-          onFilterChange={() => handleFilterChange}
-        />
+        <EnhancedTableToolbar data={rows} name={tableName} />
         <TableContainer>
           <Table
             sx={{ minWidth: 750, textAlign: "start" }}

@@ -1,22 +1,18 @@
+import { useRecoilValue } from "recoil";
+
 import CP from "@/components";
 import AfterLoginTemplate from "@/components/template/AfterLogin";
 import { Outlet } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import Store from "@/store";
+
 const HomePage = () => {
-  const location = useLocation();
-  const isHomePage = location.pathname === "/";
+  const user = useRecoilValue(Store.User.userState);
+  console.log(user);
 
   return (
     <AfterLoginTemplate>
-      <CP.Styled.Wrapper overflow="auto">
-        {isHomePage ? (
-          <>
-            <h2>Body</h2>
-            <h4>Main</h4>
-          </>
-        ) : (
-          <Outlet />
-        )}
+      <CP.Styled.Wrapper>
+        <Outlet />
       </CP.Styled.Wrapper>
     </AfterLoginTemplate>
   );
