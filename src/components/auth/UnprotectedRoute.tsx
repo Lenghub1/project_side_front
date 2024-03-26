@@ -11,6 +11,8 @@ const UnprotectedRoute: React.FC<UnprotectedRouteProps> = ({
   redirectPath = "/",
 }) => {
   const { isAuthenticated, selected } = useAuth();
+  console.log(isAuthenticated);
+  console.log(selected);
 
   if (isAuthenticated && selected) {
     return <Navigate to={redirectPath || "/"} replace />;

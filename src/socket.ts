@@ -5,6 +5,6 @@
 //   autoConnect: false,
 // });
 
-window.addEventListener("beforeunload", () => {
-  socket.disconnect();
-});
+// window.addEventListener("beforeunload", () => {
+//   socket.disconnect();
+// });

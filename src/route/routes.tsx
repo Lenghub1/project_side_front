@@ -51,19 +51,25 @@ const routes: RouteProps[] = [
     ],
   },
   {
-    name: "login",
-    path: "/test-login",
-    element: Pg.Login.default.Login,
+    name: "loginpage",
+    path: "login",
+    element: Pg.LoginPage.default.LoginPage,
     protected: false,
-    children: [
-      {
-        name: "mainLogin",
-        path: "",
-        element: Pg.Login.default.TestLoginPage,
-        protected: false,
-      },
-    ],
   },
+  // {
+  //   name: "login",
+  //   path: "/test-login",
+  //   element: Pg.Login.default.Login,
+  //   protected: false,
+  //   children: [
+  //     {
+  //       name: "mainLogin",
+  //       path: "",
+  //       element: Pg.Login.default.TestLoginPage,
+  //       protected: false,
+  //     },
+  //   ],
+  // },
   {
     name: "chooseOrganization",
     path: "login/choose-organization",
@@ -128,12 +134,7 @@ const routes: RouteProps[] = [
       },
     ],
   },
-  {
-    name: "loginpage",
-    path: "login",
-    element: Pg.LoginPage.default.LoginPage,
-    protected: false,
-  },
+
   {
     name: "forgetpassword",
     path: "/forget-password",
