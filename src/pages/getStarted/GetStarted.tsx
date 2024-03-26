@@ -2,7 +2,7 @@ import { useState } from "react";
 import CP from "@/components";
 import { RoleCard } from "@/components/roleCard";
 import styled from "styled-components";
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
 import useScreenSize from "@/hooks/useScreenSize";
 
@@ -77,7 +77,7 @@ const GetStarted = () => {
         </Container>
       ) : (
         <CP.Styled.Wrapper padding="0">
-          <Flex height="100%">
+          <Flex>
             <CP.Styled.Div padding="0 1rem">
               <Outlet />
             </CP.Styled.Div>
