@@ -39,7 +39,6 @@ const headCells: HeadCell<Employement>[] = [
     id: "name",
     numeric: false,
     disablePadding: false,
-    disablePadding: false,
     label: "Emplyee Information",
     filterable: true,
   },
@@ -51,7 +50,6 @@ const headCells: HeadCell<Employement>[] = [
     filterable: true,
   },
   {
-    id: "privilege",
     id: "privilege",
     numeric: false,
     disablePadding: false,

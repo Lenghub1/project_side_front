@@ -12,6 +12,7 @@ import { authApi } from "@/api/auth";
 import { useSnackbar } from "notistack";
 import useApi from "@/hooks/useApi";
 import useCancelModal from "@/hooks/useCancelModal";
+import useScreenSize from "@/hooks/useScreenSize";
 
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -28,9 +29,8 @@ const passwordCriteria = {
 const ResetPassword = () => {
   const navigate = useNavigate();
 
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 428);
+  const { isMobile } = useScreenSize();
 
-  console.log("Window asdasd", window.screen.width);
   const location = useLocation();
   const password = useCriteriaValidator("", passwordCriteria);
   const confirmPassword = useMatchInput(password.value, "", "Confirm Password");
@@ -61,17 +61,6 @@ const ResetPassword = () => {
   async function logOut() {
     await handleApiRequest(() => authApi.clearResetToken());
   }
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 428);
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
   // useEffect(() => {
   //   if (!resetPasswordToken) {
   //     navigate("/login");

@@ -11,7 +11,7 @@ import { authApi } from "@/api/auth";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import useApi from "@/hooks/useApi";
-import { VERIFICAITON_TYPE } from "../verifications/OTP";
+import { VERIFICATION_TYPE } from "../verifications/OTP";
 import useCancelModal from "@/hooks/useCancelModal";
 import useHistoryPopstate from "@/hooks/usePopState";
 const Flex = styled(CP.Styled.Flex)`
@@ -116,7 +116,7 @@ const ForgetPassword = () => {
         setTimeout(() => {
           navigate("/forget-password/verify-otp", {
             state: {
-              type: VERIFICAITON_TYPE.VERIFY_FORGET_PASSWORD,
+              type: VERIFICATION_TYPE.VERIFY_FORGET_PASSWORD,
               phone: `${selectedCountry.dialCode} ${phone.value}`,
             },
           });

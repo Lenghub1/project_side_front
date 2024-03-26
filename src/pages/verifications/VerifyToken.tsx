@@ -6,7 +6,7 @@ import CP from "@/components";
 import Store from "@/store";
 import { useRecoilState } from "recoil";
 import { authApi } from "@/api/auth";
-import { VERIFICAITON_TYPE } from "./OTP";
+import { VERIFICATION_TYPE } from "./OTP";
 import { useSnackbar } from "notistack";
 import useApi from "@/hooks/useApi";
 
@@ -69,11 +69,11 @@ const VerifyToken = () => {
   useEffect(() => {
     if (params.token && params.verificationType) {
       if (
-        params.verificationType === VERIFICAITON_TYPE.VERIFY_FORGET_PASSWORD
+        params.verificationType === VERIFICATION_TYPE.VERIFY_FORGET_PASSWORD
       ) {
         verifyForgetPasswordToken({ resetToken: params.token });
-      } else if (params.verificationType === VERIFICAITON_TYPE.VERIFY_ACCOUNT) {
-        verifyEmail({ resetToken: params.token });
+      } else if (params.verificationType === VERIFICATION_TYPE.VERIFY_ACCOUNT) {
+        verifyEmail({ token: params.token });
       }
     }
   }, [params]);
@@ -82,13 +82,13 @@ const VerifyToken = () => {
     if (isSuccess) {
       showMessage("Token has been successfully verified", "success");
       if (
-        params.verificationType === VERIFICAITON_TYPE.VERIFY_FORGET_PASSWORD
+        params.verificationType === VERIFICATION_TYPE.VERIFY_FORGET_PASSWORD
       ) {
         setResetPasswordToken(true);
         setTimeout(() => {
           navigate("/forget-password/reset-password");
         });
-      } else if (params.verificationType === VERIFICAITON_TYPE.VERIFY_ACCOUNT) {
+      } else if (params.verificationType === VERIFICATION_TYPE.VERIFY_ACCOUNT) {
         navigate("/");
       }
     }

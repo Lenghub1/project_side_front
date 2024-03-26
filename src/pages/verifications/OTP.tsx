@@ -16,6 +16,7 @@ import { useSnackbar } from "notistack";
 import useApi from "@/hooks/useApi";
 import { maskPhoneNumber } from "../forgotAccount/AccountList";
 import useCancelModal from "@/hooks/useCancelModal";
+import useScreenSize from "@/hooks/useScreenSize";
 
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -42,7 +43,7 @@ interface VERIFY_DATA {
   loginMethod?: string;
 }
 
-export const VERIFICAITON_TYPE = {
+export const VERIFICATION_TYPE = {
   VERIFY_ACCOUNT: "signup",
   VERIFY_FORGET_PASSWORD: "forgetPassword",
   VERIFY_2FA: "2FA",
@@ -51,7 +52,7 @@ export const VERIFICAITON_TYPE = {
 const OTP = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 428);
+  const { isMobile } = useScreenSize();
   const [arrayValue, setArrayValue] = useState<(string | number)[]>([
     "",
     "",
@@ -89,7 +90,7 @@ const OTP = () => {
 
   useEffect(() => {
     if (isSuccess && response) {
-      if (verification.type === VERIFICAITON_TYPE.VERIFY_FORGET_PASSWORD) {
+      if (verification.type === VERIFICATION_TYPE.VERIFY_FORGET_PASSWORD) {
         showMessage(
           "OTP code verified successfully. You can now reset your password.",
           "success"
@@ -98,20 +99,20 @@ const OTP = () => {
         setTimeout(() => {
           navigate("/forget-password/reset-password");
         }, 1500);
-      } else if (verification.type === VERIFICAITON_TYPE.VERIFY_ACCOUNT) {
+      } else if (verification.type === VERIFICATION_TYPE.VERIFY_ACCOUNT) {
         // navigate to home
-      } else if (verification.type === VERIFICAITON_TYPE.VERIFY_2FA) {
+      } else if (verification.type === VERIFICATION_TYPE.VERIFY_2FA) {
         //navigate to home
       }
     }
   }, [response, isSuccess]);
 
   const verifyOTP = useCallback(async (data: any): Promise<void> => {
-    if (verification.type === VERIFICAITON_TYPE.VERIFY_FORGET_PASSWORD) {
+    if (verification.type === VERIFICATION_TYPE.VERIFY_FORGET_PASSWORD) {
       await handleApiRequest(() => authApi.verifyForgetPasswordToken(data));
-    } else if (verification.type === VERIFICAITON_TYPE.VERIFY_ACCOUNT) {
+    } else if (verification.type === VERIFICATION_TYPE.VERIFY_ACCOUNT) {
       await handleApiRequest(() => authApi.verifyPhoneNumber(data));
-    } else if (verification.type === VERIFICAITON_TYPE.VERIFY_2FA) {
+    } else if (verification.type === VERIFICATION_TYPE.VERIFY_2FA) {
       await handleApiRequest(() => authApi.verify2FA(data));
     }
   }, []);
@@ -155,7 +156,6 @@ const OTP = () => {
   // on change
   const handleChange = (e: BaseSyntheticEvent, index: number) => {
     const input = e.target.value;
-    console.log("INPUT index ", index, "=", input);
     if (!isNaN(input)) {
       setArrayValue((preValue: (string | number)[]) => {
         const newArray = [...preValue];
@@ -169,7 +169,11 @@ const OTP = () => {
         return newArray;
       });
 
-      if (input !== "" && index < arrayValue.length - 1) {
+      if (
+        input !== "" &&
+        index < arrayValue.length - 1 &&
+        arrayValue[index + 1] === ""
+      ) {
         inputs.current[index + 1]?.focus();
       }
 
@@ -177,12 +181,11 @@ const OTP = () => {
       console.log("Lenght of array", arrayValue);
       if (arrayValue.every((value) => value !== "")) {
         arrayValue.every((value) => {
-          console.log;
+          console.log(value);
         });
       }
     }
   };
-
   //handle on key up
   const handleKeyUp = (e: KeyboardEvent<HTMLInputElement>, index: number) => {
     if (e.key === "Backspace" || e.key === "Delete") {
@@ -219,16 +222,16 @@ const OTP = () => {
 
     let data = {} as VERIFY_DATA;
 
-    if (verification.type === VERIFICAITON_TYPE.VERIFY_FORGET_PASSWORD) {
+    if (verification.type === VERIFICATION_TYPE.VERIFY_FORGET_PASSWORD) {
       data = {
         resetToken: arrayValue.join(""),
       };
-    } else if (verification.type === VERIFICAITON_TYPE.VERIFY_2FA) {
+    } else if (verification.type === VERIFICATION_TYPE.VERIFY_2FA) {
       data = {
         phoneNumber: verification.phoneNumber,
         code: arrayValue.join(""),
       };
-    } else if (verification.type === VERIFICAITON_TYPE.VERIFY_2FA) {
+    } else if (verification.type === VERIFICATION_TYPE.VERIFY_2FA) {
       data = {
         OTP: arrayValue.join(""),
         credential: verification.credential,
@@ -239,16 +242,11 @@ const OTP = () => {
     await verifyOTP(data);
   };
 
-  // handle key up delet value from inpu
   return (
     <CP.Styled.Wrapper height="100vh">
       <Flex height="inherit">
-        <CP.Styled.Div padding={!isMobile ? "0 1rem" : "0 16px"} width="600px">
-          <Flex
-            items="flex-start"
-            direction="column"
-            padding={!isMobile ? "0 3rem" : "0px"}
-          >
+        <CP.Styled.Div padding={!isMobile ? "0" : "0 16px"}>
+          <Flex items="flex-start" direction="column">
             <CP.Typography
               variant="h4"
               margin="0 0 2rem"
@@ -291,21 +289,22 @@ const OTP = () => {
                   color={"primary"}
                   sx={{ cursor: "pointer" }}
                 >
-                  {" "}
                   Resend
                 </CP.Typography>
               </Flex>
-              <Flex gap="1rem" width="100%" justify="flex-end" margin="">
-                <CP.Button variant="text" onClick={handleModalOpen}>
-                  cancel
-                </CP.Button>
-                <CP.Button
-                  type="submit"
-                  onClick={handleSubmit}
-                  disabled={!isValidInput}
-                >
-                  Verify
-                </CP.Button>
+              <Flex gap={"100px"} width="100%" justify="center">
+                <Flex width="400px" justify="flex-end">
+                  <CP.Button variant="text" onClick={handleModalOpen}>
+                    cancel
+                  </CP.Button>
+                  <CP.Button
+                    type="submit"
+                    onClick={handleSubmit}
+                    disabled={!isValidInput}
+                  >
+                    Verify
+                  </CP.Button>
+                </Flex>
               </Flex>
             </Flex>
           </Flex>
