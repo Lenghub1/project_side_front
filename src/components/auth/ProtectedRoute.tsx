@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import {
@@ -35,7 +35,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
       />
     );
   }
-
+  if (!user.firstName) {
+    return <Navigate to="/fillForm" replace />;
+  }
   if (allowedRoles && allowedRoles.length > 0) {
     // check if user has required roles
     const hasRequiredRole = allowedRoles.includes(userRole);

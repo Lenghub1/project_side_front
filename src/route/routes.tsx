@@ -91,6 +91,12 @@ const routes: RouteProps[] = [
     protected: false,
   },
   {
+    name: "fillForm",
+    path: "fillForm",
+    element: Pg.FillForm.default.FillForm,
+    protected: false,
+  },
+  {
     name: "joinOrganization",
     path: "join-organization",
     element: Pg.choose.default.ScreenJoinOrganization,
@@ -106,26 +112,31 @@ const routes: RouteProps[] = [
     name: "home",
     path: "/",
     element: Pg.HomePage,
+    protected: true,
     children: [
       {
         name: "employee",
         path: "employee",
         element: Pg.Employee.default.Employee,
+        protected: true,
         children: [
           {
             name: "employee-management",
             path: "",
             element: Pg.Employee.default.EmployeeTable,
+            protected: true,
           },
           {
             name: "create-new-employee",
             path: "create",
             element: Pg.Employee.default.CreateEmployee,
+            protected: true,
           },
           {
             name: "employee-registrations",
             path: "registration",
             element: Pg.Employee.default.EmployeeRegistration,
+            protected: true,
           },
         ],
       },
@@ -133,21 +144,25 @@ const routes: RouteProps[] = [
         name: "organization",
         path: "organization",
         element: Pg.Organization.default.Organization,
+        protected: true,
         children: [
           {
             name: "organization",
             path: "create",
             element: Pg.Organization.default.NewOrganization,
+            protected: true,
           },
           {
             name: "overviewOrganization",
             path: "",
             element: Pg.Organization.default.OverviewOrganization,
+            protected: true,
             children: [
               {
                 name: "createBranch",
                 path: "createBranch",
                 element: Pg.Branch.CreateBranch,
+                protected: true,
               },
             ],
           },
@@ -155,6 +170,7 @@ const routes: RouteProps[] = [
             name: "modifyBranch",
             path: "modifyBranch",
             element: Pg.Branch.ModifyBranch,
+            protected: true,
           },
         ],
       },
