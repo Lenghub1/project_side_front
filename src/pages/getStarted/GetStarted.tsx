@@ -78,14 +78,17 @@ const GetStarted = () => {
       ) : (
         <CP.Styled.Wrapper padding="0">
           <Flex>
-            <CP.Styled.Div padding="0 1rem">
-              <Outlet />
-            </CP.Styled.Div>
+            <CP.Styled.Flex padding="0 1rem" height="100vh" overflow="auto">
+              <CP.Styled.Div margin="auto 0">
+                <Outlet />
+              </CP.Styled.Div>
+            </CP.Styled.Flex>
             <CP.Styled.Div
-              height="100%"
-              style={{ display: isMobile || isTablet ? "none" : "block" }}
+              style={{
+                display: isMobile || isTablet ? "none" : "block",
+              }}
             >
-              <Flex>
+              <Flex height="100%">
                 <Box
                   component="img"
                   src="/random-unsplash.jpg"
@@ -106,7 +109,7 @@ const GetStarted = () => {
 };
 
 const Container = styled(Flex)`
-  min-height: 100vh;
+  // min-height: 100vh;
   max-width: 712px;
   margin: auto;
   padding: 1rem 0;
