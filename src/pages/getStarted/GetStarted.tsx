@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import CP from "@/components";
 import { RoleCard } from "@/components/roleCard";
 import styled from "styled-components";
@@ -9,6 +9,16 @@ import useScreenSize from "@/hooks/useScreenSize";
 export const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
 `;
+
+export const ScrollableWrapper = ({ children }: any) => {
+  return (
+    <CP.Styled.Flex padding="0 1rem" height="100vh" overflow="auto">
+      <CP.Styled.Div padding="1rem 0" margin="auto 0">
+        {children}
+      </CP.Styled.Div>
+    </CP.Styled.Flex>
+  );
+};
 
 const GetStarted = () => {
   const location = useLocation();
@@ -31,7 +41,7 @@ const GetStarted = () => {
   return (
     <CP.Styled.Div>
       {isGetStartedRoute ? (
-        <Container direction="column">
+        <ScrollableWrapper>
           <CP.Styled.Flex direction="column" padding="0 0 2rem">
             <CP.Typography variant={isMobile ? "h5" : "h4"} gutterBottom>
               Get started with Riem
@@ -69,50 +79,40 @@ const GetStarted = () => {
                 variant="contained"
                 disabled={!accountType}
                 onClick={handleOnButtonClick}
+                style={{ maxWidth: 712 }}
               >
                 Continue
               </CP.Button>
             </Flex>
           </Flex>
-        </Container>
+        </ScrollableWrapper>
       ) : (
-        <CP.Styled.Wrapper padding="0">
-          <Flex>
-            <CP.Styled.Flex padding="0 1rem" height="100vh" overflow="auto">
-              <CP.Styled.Div margin="auto 0">
-                <Outlet />
-              </CP.Styled.Div>
-            </CP.Styled.Flex>
-            <CP.Styled.Div
-              style={{
-                display: isMobile || isTablet ? "none" : "block",
-              }}
-            >
-              <Flex height="100%">
-                <Box
-                  component="img"
-                  src="/random-unsplash.jpg"
-                  alt="Random image"
-                  sx={{
-                    width: 1,
-                    height: "100vh",
-                    objectFit: "cover",
-                  }}
-                />
-              </Flex>
-            </CP.Styled.Div>
-          </Flex>
-        </CP.Styled.Wrapper>
+        <Flex>
+          <ScrollableWrapper>
+            <Outlet />
+          </ScrollableWrapper>
+          <CP.Styled.Div
+            style={{
+              display: isMobile || isTablet ? "none" : "block",
+            }}
+          >
+            <Flex height="100%">
+              <Box
+                component="img"
+                src="/random-unsplash.jpg"
+                alt="Random image"
+                sx={{
+                  width: 1,
+                  height: "100vh",
+                  objectFit: "cover",
+                }}
+              />
+            </Flex>
+          </CP.Styled.Div>
+        </Flex>
       )}
     </CP.Styled.Div>
   );
 };
-
-const Container = styled(Flex)`
-  // min-height: 100vh;
-  max-width: 712px;
-  margin: auto;
-  padding: 1rem 0;
-`;
 
 export default GetStarted;
