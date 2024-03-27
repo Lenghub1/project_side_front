@@ -16,6 +16,7 @@ interface SearchProps {
 const Search: React.FC<SearchProps> = ({ data, renderInput }) => {
   return (
     <Autocomplete
+      fullWidth
       freeSolo
       disableClearable
       options={data.map((option: Option) => option.name)}

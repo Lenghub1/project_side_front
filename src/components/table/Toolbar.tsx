@@ -1,13 +1,20 @@
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import SearchDisplay from "../searchBox/SearchDisplay";
-import FilterButton from "./filter/Filter";
+import TableFilter from "./filter/Filter";
 interface TableToolbarProp {
   name: string;
   data: object;
+  headCells: any[];
+  onFilterChange: (filters: Record<string, string[]>) => void;
 }
 
-const EnhancedTableToolbar: React.FC<TableToolbarProp> = ({ name, data }) => {
+const EnhancedTableToolbar: React.FC<TableToolbarProp> = ({
+  name,
+  data,
+  headCells,
+  onFilterChange,
+}) => {
   return (
     <Toolbar
       sx={{
@@ -25,7 +32,7 @@ const EnhancedTableToolbar: React.FC<TableToolbarProp> = ({ name, data }) => {
       </Typography>
 
       <SearchDisplay data={data} />
-      <FilterButton />
+      <TableFilter headCells={headCells} onFilterChange={onFilterChange} />
     </Toolbar>
   );
 };

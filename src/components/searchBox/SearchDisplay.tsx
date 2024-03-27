@@ -33,8 +33,8 @@ const SearchDisplay = ({ data }) => {
     <CP.Styled.Flex justify="flex-end">
       {showSearch ? (
         <>
-          <CancelIcon onClick={handleCancelClick} />
           <Search data={data} />
+          <CancelIcon onClick={handleCancelClick} />
         </>
       ) : (
         <SearchIcon onClick={toggleSearch} />
