@@ -75,7 +75,6 @@ const ScreenCreateOrganization = () => {
       country: country,
     };
     createOrganization(data);
-    console.log(data);
   };
 
   return (

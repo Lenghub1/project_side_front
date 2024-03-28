@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { selectedOrganization } from "@/store/userStore";
 import { BranchData } from "@/utils/interfaces/Branch";
 export interface AddMemberProps {
-  branchData: BranchData;
+  branchData: BranchData | any;
   setBranchData: React.Dispatch<React.SetStateAction<BranchData>>;
 }
 
@@ -41,16 +41,14 @@ const CreateBranch: React.FC = () => {
     const [response, error] = await handleApiRequest(() =>
       allEmployees(organization)
     );
-    console.log(response);
+
     if (response) {
-      console.log(response);
       setManagers(response);
     }
     if (error) {
-      console.log(error);
+      return error;
     }
   };
-  console.log(organization);
 
   const requestCreateBranch = async () => {
     const [response, error] = await handleApiRequest(() =>
@@ -73,7 +71,6 @@ const CreateBranch: React.FC = () => {
       navigate("/organization"); // Set step back to 1
     }
   };
-  console.log("asdasds", managers);
 
   const handleNext = () => {
     // Validate fields before proceeding to the next step
@@ -124,7 +121,6 @@ const CreateBranch: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    console.log(branchData);
     requestCreateBranch();
   };
 

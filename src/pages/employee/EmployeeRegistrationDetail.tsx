@@ -28,7 +28,6 @@ const EmployeeRegistrationDetail = () => {
       getEmployeeById("1ca2a528-72c9-4cb8-8823-4d26cfcdd598", employee[0].id)
     );
     if (error) {
-      console.log(error);
       enqueueSnackbar("Failed to get information of employee", {
         variant: "error",
         autoHideDuration: 2000,
@@ -41,8 +40,6 @@ const EmployeeRegistrationDetail = () => {
   const acceptEmployee = async () => {
     setLoading(true); // Set loading state to true
     setTimeout(async () => {
-      console.log("Delayed for 1 second.");
-
       const [response, error] = await handleApiRequest(() =>
         updateEmployee(
           body,
@@ -52,7 +49,6 @@ const EmployeeRegistrationDetail = () => {
       );
 
       if (error) {
-        console.log(error);
         enqueueSnackbar("Failed to accept employee", {
           variant: "error",
           autoHideDuration: 2000,

@@ -27,12 +27,11 @@ const CompanySearchResult = () => {
     const [response, error] = await handleApiRequest(() =>
       codeOrganization(companyId as string)
     );
-    console.log(response);
+
     if (response) {
       setSearchResult(response);
     }
     if (error) {
-      console.log(error);
     }
   };
 
@@ -48,7 +47,6 @@ const CompanySearchResult = () => {
   useEffect(() => {
     getCompanyCode();
   }, []);
-  console.log(regisgerAsEmployee);
 
   return (
     <>

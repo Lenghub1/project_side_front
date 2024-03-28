@@ -13,12 +13,10 @@ const EmployeeTable = () => {
   const { isFilter, data: filteredData } = useRecoilValue(filteredDataState);
   const { data, error } = useFetch(allEmployees);
   if (error) {
-    console.log(error);
     return <Error status={error.status_code} />;
   }
   useEffect(() => {
     setDataToFilter(data);
-    console.log(data);
   }, []);
   const displayData = isFilter ? filteredData : data;
 

@@ -21,7 +21,7 @@ const ModifyBranch: React.FC = () => {
   const [managers, setManagers] = useState<any[]>([]);
   const [locations, setLocations] = useState<any[]>([]);
   const selected = useRecoilValue(selectedOrganization);
-  console.log(selectedBranch);
+
   const navigate = useNavigate();
   const [data, setData] = useState<Data>({
     locationId: selectedBranch.locationId,
@@ -33,11 +33,8 @@ const ModifyBranch: React.FC = () => {
       allEmployees(selected)
     );
     if (response) {
-      console.log("hellosss", response);
-
       setManagers(response);
     } else {
-      console.log(error);
     }
   };
 
@@ -48,7 +45,6 @@ const ModifyBranch: React.FC = () => {
     if (response) {
       setLocations(response.data.data);
     } else {
-      console.log(error);
     }
   };
   const branchPatch = async () => {
@@ -58,7 +54,6 @@ const ModifyBranch: React.FC = () => {
     if (!error) {
       navigate("/organization/overview");
     }
-    console.log(response);
   };
   const handleManagerChange = (
     event: React.ChangeEvent<{ value: unknown }>
@@ -76,7 +71,6 @@ const ModifyBranch: React.FC = () => {
   };
 
   const handleModifyBranch = () => {
-    console.log(data);
     branchPatch();
   };
   const handleCancelModify = () => {

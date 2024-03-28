@@ -18,8 +18,6 @@ const ScreenJoinOrganization = () => {
   const [organizationData, setOrganizationData] =
     useRecoilState(organizationState);
   const user = useRecoilValue(userState);
-  console.log(user);
-  console.log(organizationData);
 
   const [loading, setLoading] = useState(true); // State to track loading status
 
@@ -29,12 +27,10 @@ const ScreenJoinOrganization = () => {
       const [response, error] = await handleApiRequest(() =>
         allWorkplace(user.id)
       );
-      console.log("asdasd", response);
 
       if (response) {
         setOrganizationData(response.data || []);
       } else {
-        console.log(error);
       }
       setLoading(false); // Set loading to false once data fetching is complete
     };

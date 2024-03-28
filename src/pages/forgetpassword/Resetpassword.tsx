@@ -68,7 +68,6 @@ const ResetPassword = () => {
   // });
 
   useEffect(() => {
-    console.log("EERRRROR", error);
     if (isError) {
       showMessage("Failed to reset password. Please try again", "success");
     }

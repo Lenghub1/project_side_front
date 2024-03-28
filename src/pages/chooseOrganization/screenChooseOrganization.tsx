@@ -9,7 +9,6 @@ const ScreenChooseOrganization = () => {
     null
   );
   const handleNextClick = () => {
-    console.log("Selected Type:", typeSelected);
     if (typeSelected === "Join") {
       navigate("/join-organization");
     } else {

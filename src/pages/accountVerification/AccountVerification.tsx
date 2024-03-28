@@ -18,7 +18,6 @@ const AccountVerification = () => {
   useEffect(() => {
     if (!accountMethod && !credential) {
       navigate(-1);
-      console.log("No credential");
     }
   }, [credential, accountMethod]);
   const handleCodeResending = async (event: React.FormEvent) => {
@@ -29,7 +28,6 @@ const AccountVerification = () => {
         ? { email: credential }
         : { phoneNumber: credential };
 
-    console.log(data);
     await handleApiRequest(() =>
       authApi.resendActivationCode(accountMethod, data)
     );

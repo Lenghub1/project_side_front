@@ -3,16 +3,17 @@ import MapComponent from "@/components/map/Map";
 import { BranchData } from "@/utils/interfaces/Branch";
 import { Avatar } from "@mui/material";
 
-const ConfirmationCreateBranch = ({ branchData, manager }) => {
-  // Assuming branchData.members is an array of member objects
-  const { member } = branchData;
-  console.log("asdasd", manager);
+interface Props {
+  branchData: BranchData;
+  manager: any[];
+}
 
-  console.log(branchData.managerId);
+const ConfirmationCreateBranch = ({ branchData, manager }: Props) => {
+  const { member } = branchData;
+
   const managersName = manager
     .filter((item) => item.userId === branchData.managerId)
     .map((item) => `${item.name}`);
-  console.log(managersName);
 
   return (
     <CP.Styled.Flex

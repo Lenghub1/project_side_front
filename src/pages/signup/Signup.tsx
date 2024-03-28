@@ -95,7 +95,6 @@ const SignupPage = () => {
   }
 
   const { isLoading, isSuccess, error, handleApiRequest } = useApi();
-  console.log(RegisterAsEmployee);
 
   async function signup(method: string, data: any): Promise<void> {
     if (isJoinCompany) {
@@ -133,7 +132,6 @@ const SignupPage = () => {
 
   useEffect(() => {
     if (error) {
-      console.log(error.message);
       if (error.statusCode === 409) {
         if (signupMethod === "email") {
           showError(
@@ -156,7 +154,6 @@ const SignupPage = () => {
     event.preventDefault();
 
     if (isFormInvalid) {
-      console.log("Form is invalid");
       return;
     }
 

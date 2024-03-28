@@ -42,31 +42,25 @@ const OverviewOrganization = () => {
   const createBranch = () => {
     navigate("/organization/createBranch");
   };
-  console.log(selected);
 
   const myOrganizationData = async () => {
     const [response, error] = await handleApiRequest(() =>
       myOrganization(selected)
     );
     if (response) {
-      console.log(response);
       setOrganizationData(response);
     } else {
-      console.log(error);
     }
   };
 
   const myOrganizationBranchData = async () => {
     const [response, error] = await handleApiRequest(() => myBranch(selected));
-    console.log(response);
+
     if (response) {
       setOrganizationBranchData(response.data);
     } else {
-      console.log(error);
     }
   };
-
-  console.log(organizationBranchData);
 
   React.useEffect(() => {
     myOrganizationData();
