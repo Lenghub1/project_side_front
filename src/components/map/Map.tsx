@@ -12,7 +12,7 @@ const MapComponent = () => {
       }}
       style={{
         position: "relative",
-        height: 400,
+        height: 350,
         borderRadius: 16,
       }}
       mapStyle="mapbox://styles/mapbox/streets-v9"

@@ -10,7 +10,6 @@ import { useRecoilValue } from "recoil";
 import { Employement } from "@/utils/interfaces/Employment";
 
 const AddMember: React.FC<AddMemberProps> = ({ branchData, setBranchData }) => {
-  const [selected, setSelected] = React.useState<any>([]);
   const [fakeMembers, setFakeMembers] = React.useState<Partial<Employement[]>>(
     []
   );
@@ -27,7 +26,7 @@ const AddMember: React.FC<AddMemberProps> = ({ branchData, setBranchData }) => {
     }
 
     if (error) {
-      console.error(error);
+      return error;
     }
   };
 
@@ -36,7 +35,7 @@ const AddMember: React.FC<AddMemberProps> = ({ branchData, setBranchData }) => {
   }, []);
 
   return (
-    <Container style={{ marginTop: "20px" }}>
+    <Container style={{ marginTop: "20px", padding: "0" }}>
       <CP.Typography variant="h5" fontFamily={"bold"}>
         Add Members
       </CP.Typography>

@@ -334,7 +334,7 @@ export default function EnhancedTable(props: {
   // Function to clear selection from global state
 
   return (
-    <Container sx={{ width: "100%" }}>
+    <CP.Styled.Div maxWidth="1400px">
       <CP.Styled.Flex gap="10px" justify="flex-start">
         <CP.Styled.Flex gap="10px" justify="flex-start">
           <TextField
@@ -462,6 +462,6 @@ export default function EnhancedTable(props: {
         control={<Switch checked={dense} onChange={handleChangeDense} />}
         label="Dense padding"
       />
-    </Container>
+    </CP.Styled.Div>
   );
 }

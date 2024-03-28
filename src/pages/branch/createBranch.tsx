@@ -133,7 +133,7 @@ const CreateBranch: React.FC = () => {
     clearSelection();
   }, []);
   return (
-    <Container style={{ padding: "20px" }}>
+    <Container style={{ padding: "50px" }}>
       <Stepper activeStep={step} alternativeLabel>
         <Step key={0}>
           <StepLabel>Information</StepLabel>

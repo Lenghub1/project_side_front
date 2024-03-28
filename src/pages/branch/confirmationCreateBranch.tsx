@@ -17,6 +17,7 @@ const ConfirmationCreateBranch = ({ branchData, manager }: Props) => {
 
   return (
     <CP.Styled.Flex
+      width="100%"
       direction="column"
       justify="flex-start"
       items="flex-start"
