@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
 import CP from "@/components";
-import EnhancedTable from "@/components/table/Table";
+import EnhancedTable from "@/components/table/EnhanceTable";
 import Button from "@/components/button";
 import Badge from "@mui/material/Badge";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { getAllPendingEmployees } from "@/api/employee";
-import { HeadCell } from "@/components/table/TableHead";
 import { Employement } from "@/utils/interfaces/Employment";
 import {
   handleAcceptEmployee,
@@ -66,7 +65,6 @@ const EmployeeRegistration = () => {
         orderBy="name"
         rowCount={displayData?.length || 0}
         tableName="Employee Registrations"
-        actionCell={RenderActionCell}
       />
     </CP.Container>
   );
@@ -74,19 +72,21 @@ const EmployeeRegistration = () => {
 
 export default EmployeeRegistration;
 
-const headCells: HeadCell<Employement>[] = [
+const headCells = [
   {
     id: "name",
     numeric: false,
     disablePadding: false,
     label: "Employee",
     filterable: true,
+    sortable: true,
   },
   {
     id: "position",
     numeric: false,
     disablePadding: false,
     label: "Position",
+    sortable: true,
   },
   {
     id: "privilege",
@@ -94,6 +94,7 @@ const headCells: HeadCell<Employement>[] = [
     disablePadding: false,
     label: "Priviledges",
     filterable: true,
+    sortable: true,
   },
   {
     id: "status",
@@ -101,5 +102,10 @@ const headCells: HeadCell<Employement>[] = [
     disablePadding: false,
     label: "Status",
     filterable: true,
+  },
+  {
+    type: "ReactCell",
+    label: "Action",
+    element: RenderActionCell,
   },
 ];

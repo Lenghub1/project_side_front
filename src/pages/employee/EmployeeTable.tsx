@@ -1,13 +1,29 @@
 import CP from "@/components";
 import useFetch from "@/hooks/useFetch";
 import { allEmployees } from "@/api/employee";
-import EnhancedTable from "@/components/table/Table";
-import { HeadCell } from "@/components/table/TableHead";
+import EnhancedTable from "@/components/table/EnhanceTable";
 import { Employement } from "@/utils/interfaces/Employment";
 import Error from "../error/Error";
 import { useRecoilValue, useRecoilState } from "recoil";
 import { filteredDataState, dataToFilterState } from "@/store/filterStore";
 import { useEffect } from "react";
+import { Stack, Typography } from "@mui/material";
+import Avatar from "@mui/material/Avatar";
+
+const UserInformationCell = (row: Employement) => {
+  return (
+    <CP.Styled.Flex gap="8px" justify="flex-start">
+      <Avatar src="https://avatar.iran.liara.run/public" />
+      <Stack>
+        <Typography>{row.name}</Typography>
+        <Typography>
+          <small>{row.user.email || row.user.phone}</small>
+        </Typography>
+      </Stack>
+    </CP.Styled.Flex>
+  );
+};
+
 const EmployeeTable = () => {
   const [_, setDataToFilter] = useRecoilState(dataToFilterState);
   const { isFilter, data: filteredData } = useRecoilValue(filteredDataState);
@@ -19,7 +35,9 @@ const EmployeeTable = () => {
     setDataToFilter(data);
   }, []);
   const displayData = isFilter ? filteredData : data;
-
+  if (!displayData) {
+    return <h1>Loading</h1>;
+  }
   return (
     <CP.Container>
       <EnhancedTable<Employement>
@@ -36,13 +54,14 @@ const EmployeeTable = () => {
 
 export default EmployeeTable;
 
-const headCells: HeadCell<Employement>[] = [
+const headCells = [
   {
+    label: "Employee",
+    type: "ReactCell",
+    element: UserInformationCell,
+    sortable: true,
+    sortFeild: "name", //The sort field and id have to be the same for sorting to work properly
     id: "name",
-    numeric: false,
-    disablePadding: false,
-    label: "Emplyee Information",
-    filterable: true,
   },
   {
     id: "position",
@@ -50,19 +69,21 @@ const headCells: HeadCell<Employement>[] = [
     disablePadding: false,
     label: "Position",
     filterable: true,
+    sortable: true,
   },
   {
     id: "privilege",
     numeric: false,
     disablePadding: false,
-    label: "privilege",
+    label: "Privilege",
     filterable: true,
+    sortable: true,
   },
   {
     id: "status",
     numeric: false,
     disablePadding: false,
     label: "Status",
-    filterable: true,
+    filterable: false,
   },
 ];
