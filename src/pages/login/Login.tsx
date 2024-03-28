@@ -60,7 +60,7 @@ const LoginPage = () => {
       },
     });
   }
-  const { response, isLoading, error, isSuccess, handleApiRequest } = useApi();
+  const { response, error, isSuccess, handleApiRequest } = useApi();
   // function for login api
   async function login(method: string, data: any): Promise<void> {
     await handleApiRequest(() => authApi.testLogin(method, data));
@@ -95,10 +95,6 @@ const LoginPage = () => {
       }
     }
   }, [error]);
-
-  if (isLoading) {
-    return <Loading isLoading={true} />;
-  }
 
   const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
