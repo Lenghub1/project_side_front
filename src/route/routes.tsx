@@ -63,9 +63,9 @@ const routes: RouteProps[] = [
     protected: false,
   },
   {
-    name: "loginpage",
-    path: "login",
-    element: Pg.LoginPage.default.LoginPage,
+    name: "oauthCallback",
+    path: "/login/callback/:state(state=.*)",
+    element: Pg.LoginPage.default.RedirectingPage,
     protected: false,
   },
   // {
