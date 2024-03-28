@@ -6,20 +6,13 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
 import useScreenSize from "@/hooks/useScreenSize";
 import { AlreadyHaveAccountLink } from "../companySearch/CompanySearch";
+import SpaWithImage, {
+  ScrollableWrapper,
+} from "@/components/spaWithImage/SpaWithImage";
 
 export const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
 `;
-
-export const ScrollableWrapper = ({ children }: any) => {
-  return (
-    <CP.Styled.Flex padding="0 1rem" height="100vh" overflow="auto">
-      <CP.Styled.Div padding="1rem 0" margin="auto 0">
-        {children}
-      </CP.Styled.Div>
-    </CP.Styled.Flex>
-  );
-};
 
 const GetStarted = () => {
   const location = useLocation();
@@ -89,29 +82,9 @@ const GetStarted = () => {
           </Flex>
         </ScrollableWrapper>
       ) : (
-        <Flex>
-          <ScrollableWrapper>
-            <Outlet />
-          </ScrollableWrapper>
-          <CP.Styled.Div
-            style={{
-              display: isMobile || isTablet ? "none" : "block",
-            }}
-          >
-            <Flex height="100%">
-              <Box
-                component="img"
-                src="/random-unsplash.jpg"
-                alt="Random image"
-                sx={{
-                  width: 1,
-                  height: "100vh",
-                  objectFit: "cover",
-                }}
-              />
-            </Flex>
-          </CP.Styled.Div>
-        </Flex>
+        <SpaWithImage>
+          <Outlet />
+        </SpaWithImage>
       )}
     </CP.Styled.Div>
   );
