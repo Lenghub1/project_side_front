@@ -3,11 +3,11 @@ import { useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { authApi } from "@/api/auth";
 import { handleApiRequest } from "@/api";
+
 import {
   userState,
   accessTokenState,
   isUserFetchedState,
-  // authenticationState,
 } from "@/store/userStore";
 interface CustomJwtPayload {
   userId?: string;
