@@ -44,6 +44,7 @@ const CompanySearchResult = () => {
       redirect("/get-started/company-search");
     }
   };
+  
   useEffect(() => {
     getCompanyCode();
   }, []);

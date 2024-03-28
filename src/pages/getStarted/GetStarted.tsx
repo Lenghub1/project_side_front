@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
 import useScreenSize from "@/hooks/useScreenSize";
+import { AlreadyHaveAccountLink } from "../companySearch/CompanySearch";
 
 export const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -84,6 +85,7 @@ const GetStarted = () => {
                 Continue
               </CP.Button>
             </Flex>
+            <AlreadyHaveAccountLink />
           </Flex>
         </ScrollableWrapper>
       ) : (
