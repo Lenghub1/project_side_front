@@ -17,6 +17,10 @@ const fieldMapping = generateFieldMapping({
   userId: "userId",
   firstName: "user.firstName",
   lastName: "user.lastName",
+  user: {
+    email: "email",
+    phone: "phoneNumber",
+  },
   position: "position",
   status: "status",
   privilege: "privilege",
