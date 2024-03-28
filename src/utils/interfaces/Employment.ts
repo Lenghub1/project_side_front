@@ -1,3 +1,7 @@
+export interface UserContact {
+  email: string;
+  phone: string;
+}
 export interface Employement {
   id: string;
   userId: string;
