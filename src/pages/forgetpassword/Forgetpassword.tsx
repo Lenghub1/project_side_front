@@ -48,7 +48,6 @@ const ForgetPassword = () => {
   const activeTabIndex = resetPasswordBy === "email" ? 0 : 1;
   const isForgetPasswordRoute = location.pathname === "/forget-password";
 
-  console.log("FORGET PASSWORD", isForgetPasswordRoute, location.pathname);
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 428);

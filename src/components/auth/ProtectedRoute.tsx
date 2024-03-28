@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import {
   isAuthenticatedState,
   isSelectedState,
-  isUserFetchedState,
   userRoleState,
   userState,
 } from "@/store/userStore";
@@ -22,18 +21,19 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const selected = useRecoilValue(isSelectedState);
   const userRole = useRecoilValue(userRoleState);
   const user = useRecoilValue(userState);
-  const isUserFetched = useRecoilValue(isUserFetchedState);
 
-  console.log("USER: ", user, isUserFetched);
+  console.log("USER: ", user);
 
-  if (!isAuthenticated || !selected) {
-    // redirect to login or choose organization if not authenticated or selected
-    return (
-      <Navigate
-        to={!isAuthenticated ? "/login" : "/login/choose-organization"}
-        replace
-      />
-    );
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (!user.firstName || !user.lastName) {
+    return <Navigate to="/fillForm" replace />;
+  }
+
+  if (!selected) {
+    return <Navigate to="/login/choose-organization" replace />;
   }
 
   if (allowedRoles && allowedRoles.length > 0) {

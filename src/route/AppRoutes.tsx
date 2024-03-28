@@ -22,7 +22,7 @@ const renderRoutes = ({
   isAuthenticated: boolean;
 }) => {
   return routes.map((route: RouteProps) => {
-    const isProtected = route.protected !== false;
+    const isProtected = route.protected;
     const Element = route.element;
     const element = isProtected ? (
       isUserFetched || (!isAuthenticated && !isUserFetched) ? (

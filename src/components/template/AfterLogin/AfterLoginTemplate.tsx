@@ -3,7 +3,6 @@ import { styled } from "styled-components";
 import { ReactNodeProps } from "@/@type/common";
 import TopBar from "./TopBar";
 import SideBar from "./SideBar";
-import CP from "@/components";
 
 const Container = styled.div`
   height: 100vh;

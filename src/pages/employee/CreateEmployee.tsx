@@ -25,7 +25,7 @@ const CreateEmployee = () => {
 
   const handleSubmit = () => {
     // Handle form submission here
-    console.log("Form submitted with data:", inputData);
+    
     // Clear input data
     setInputData({
       firstName: "",

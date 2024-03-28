@@ -40,7 +40,7 @@ const EmployeeRegistration = () => {
   useEffect(() => {
     setDataToFilter(data);
   }, []);
-  console.log(dataToFilter);
+
   const displayData = isFilter ? filteredData : data;
   return (
     <CP.Container>

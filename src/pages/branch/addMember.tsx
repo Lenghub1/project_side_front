@@ -8,43 +8,41 @@ import { selectedOrganization } from "@/store/userStore";
 import CP from "@/components";
 import { useRecoilValue } from "recoil";
 import { Employement } from "@/utils/interfaces/Employment";
+
 const AddMember: React.FC<AddMemberProps> = ({ branchData, setBranchData }) => {
-  const [selected, setSelected] = React.useState<any>([]);
   const [fakeMembers, setFakeMembers] = React.useState<Partial<Employement[]>>(
     []
   );
+
   const currentOrganization = useRecoilValue(selectedOrganization);
+
   const newPendingEmployees = async () => {
     const [response, error] = await handleApiRequest(() =>
       allEmployees(currentOrganization)
     );
-    console.log(response);
+
     if (response) {
-      setFakeMembers(response);
+      setFakeMembers(response as any);
     }
+
     if (error) {
-      console.log(error);
+      return error;
     }
   };
 
   React.useEffect(() => {
     newPendingEmployees();
   }, []);
+
   return (
-    <Container style={{ marginTop: "20px" }}>
+    <Container style={{ marginTop: "20px", padding: "0" }}>
       <CP.Typography variant="h5" fontFamily={"bold"}>
         Add Members
       </CP.Typography>
       <EnhancedTable
-        onRequestSort={(_, property) => console.log(property)}
-        order="asc"
-        rows={fakeMembers}
-        selected={selected}
-        setSelected={setSelected}
+        rows={fakeMembers} // Ensure that only the expected props are passed
         branchData={branchData}
         setBranchData={setBranchData}
-        orderBy="name"
-        rowCount={fakeMembers.length}
       />
     </Container>
   );

@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 
 export default function DetailInformation() {
   const { id } = useParams();
-  console.log("ID", id);
 
   const [data, setData] = useRecoilState(Store.User.forgotAccountInformation);
   const navigate = useNavigate();

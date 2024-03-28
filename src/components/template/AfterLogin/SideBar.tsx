@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { styled } from "styled-components";
 import CP from "@/components";
+import { useIsMobile } from "@/utils/isMobile";
 import {
   Avatar,
   Collapse,
@@ -20,6 +21,7 @@ const Container = styled.div`
 `;
 
 const SideBar = () => {
+  const isMobile = useIsMobile();
   const [openOperation, setOpenOperation] = useState(false);
   const [openPayroll, setOpenPayroll] = useState(false);
   const [openEmployee, setOpenEmployee] = useState(false);

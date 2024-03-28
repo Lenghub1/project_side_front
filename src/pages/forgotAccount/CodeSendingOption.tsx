@@ -18,7 +18,6 @@ const CodeSendingOption = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 428);
   const option = useRecoilValue(Store.User.condeSendingOption);
-  console.log("###", option);
 
   const [data, setData] = useState({
     id: "",
@@ -27,13 +26,11 @@ const CodeSendingOption = () => {
 
   useEffect(() => {
     if (!option) {
-      console.log("Option", option);
       navigate("/forgot-account");
     }
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 428);
     };
-    console.log("Window size", window.innerWidth);
 
     window.addEventListener("resize", handleResize);
     return () => {
@@ -46,7 +43,6 @@ const CodeSendingOption = () => {
       id: option[0].id,
       codeSendingMethod: key,
     });
-    console.log("Data", data);
   };
 
   function showMessage(message: string, variant: "error" | "success") {
@@ -73,25 +69,22 @@ const CodeSendingOption = () => {
       );
       return;
     }
-    console.log("Result", response);
+
     return;
   }
 
   const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
-    console.log("Data", data);
+
     await sendVerify(data);
   };
 
-  console.log("Options", option);
   const radioList = option.slice(1).flatMap((item, index) =>
     Object.keys(item).map((key) => ({
       label: `By ${key}`,
       value: `${index + 1}-${key}`,
     }))
   );
-
-  console.log("radioList", radioList);
 
   return (
     <CP.Styled.Wrapper height="100vh">

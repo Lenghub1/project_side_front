@@ -28,8 +28,23 @@ import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import { useRecoilState } from "recoil";
 import { selectMembers } from "@/store/employee";
-import { useEffect } from "react";
+
+import { BranchData } from "@/utils/interfaces/Branch";
 interface Data extends Employement {}
+interface EnhancedTableProps {
+  rows: Employement[]; // Define the 'rows' prop here
+  numSelected: number;
+  onRequestSort: (
+    event: React.MouseEvent<unknown>,
+    property: keyof Employement
+  ) => void;
+  onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  order: Order;
+  orderBy: string;
+  rowCount: number;
+  selected: any[]; // Add selected prop
+  setSelected: React.Dispatch<React.SetStateAction<any[]>>; // Add setSelected prop
+}
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -224,7 +239,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 
 export default function EnhancedTable(props: {
   rows: any[];
-  branchData: any[];
+  branchData: BranchData;
   setBranchData: any;
 }) {
   const [order, setOrder] = React.useState<Order>("asc");
@@ -238,7 +253,9 @@ export default function EnhancedTable(props: {
   const handleChange = (event: any) => {
     setAttribute(event.target.value);
   };
-  const [selected, setSelected] = useRecoilState<string[]>(selectMembers);
+  const [selected, setSelected] = useRecoilState<string[]>(
+    selectMembers as any
+  );
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
     property: keyof Data
@@ -313,12 +330,11 @@ export default function EnhancedTable(props: {
       ),
     [order, orderBy, page, rowsPerPage, props.rows]
   );
-  console.log(selected);
 
   // Function to clear selection from global state
 
   return (
-    <Container sx={{ width: "100%" }}>
+    <CP.Styled.Div maxWidth="1400px">
       <CP.Styled.Flex gap="10px" justify="flex-start">
         <CP.Styled.Flex gap="10px" justify="flex-start">
           <TextField
@@ -446,6 +462,6 @@ export default function EnhancedTable(props: {
         control={<Switch checked={dense} onChange={handleChangeDense} />}
         label="Dense padding"
       />
-    </Container>
+    </CP.Styled.Div>
   );
 }

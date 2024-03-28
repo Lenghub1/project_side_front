@@ -25,7 +25,7 @@ export default function AlignItemsList() {
 
   const isAccountInformationRoute =
     location.pathname === "/forgot-account/informations";
-  console.log("Location", location.pathname);
+
   const maskEmail = (email: string): string => {
     const [username, domain] = email.split("@");
     const maskedUsername = username.replace(/.(?=.{2})/g, "*"); // Masks all but the last 2 characters
@@ -65,12 +65,7 @@ export default function AlignItemsList() {
                   navigate(`/forgot-account/informations/${index}`)
                 }
               >
-                <ListItem
-                  alignItems="flex-start"
-                  onClick={() => {
-                    console.log("Checking info of", index);
-                  }}
-                >
+                <ListItem alignItems="flex-start" onClick={() => {}}>
                   <ListItemAvatar>
                     <Avatar alt={user.lastName} src={user.avatar} />
                   </ListItemAvatar>
