@@ -1,16 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TextField, Button, Grid, Container, MenuItem } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import CP from "@/components";
-import { handleApiRequest } from "@/api";
+
 import { patchUser } from "@/api/user";
 import { userState } from "@/store/userStore";
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
+import useApi from "@/hooks/useApi";
+
 const FillForm = () => {
   const navigate = useNavigate();
+  const { isSuccess, isError, error, handleApiRequest } = useApi();
+
   const { enqueueSnackbar } = useSnackbar();
-  const user = useRecoilValue(userState);
+  const [user, setUser] = useRecoilState(userState);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -19,27 +23,35 @@ const FillForm = () => {
 
   const roles = ["Super admin", "Admin", "Employee"]; // Array of roles
   const userPatch = async () => {
-    const [response, error] = await handleApiRequest(() =>
-      patchUser(user.id, formData)
-    );
+    await handleApiRequest(() => patchUser(user.id, formData));
+  };
 
-    if (error) {
-      const errorMessage = enqueueSnackbar(error.message, {
+  useEffect(() => {
+    if (isSuccess) {
+      enqueueSnackbar("successfully Update Your Personal Information", {
+        variant: "success",
+        autoHideDuration: 1500,
+      });
+
+      setUser({
+        ...user,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+      });
+      setFormData({
+        firstName: "",
+        lastName: "",
+        role: "",
+      });
+      navigate("/login/choose-organization");
+    } else if (isError) {
+      enqueueSnackbar(error?.message, {
         variant: "error",
         autoHideDuration: 1500,
       });
-      return { error, errorMessage };
+      console.log(error);
     }
-    enqueueSnackbar("successfully Update Your Personal Information", {
-      variant: "success",
-      autoHideDuration: 1500,
-    });
-    setFormData({
-      firstName: "",
-      lastName: "",
-      role: "",
-    });
-  };
+  }, [isSuccess, isError, error]);
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -73,8 +85,6 @@ const FillForm = () => {
     }
 
     userPatch();
-
-    navigate("/login/choose-organization");
   };
 
   return (

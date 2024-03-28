@@ -4,7 +4,6 @@ import { useRecoilValue } from "recoil";
 import {
   isAuthenticatedState,
   isSelectedState,
-  isUserFetchedState,
   userRoleState,
   userState,
 } from "@/store/userStore";
@@ -22,13 +21,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const selected = useRecoilValue(isSelectedState);
   const userRole = useRecoilValue(userRoleState);
   const user = useRecoilValue(userState);
-  const isUserFetched = useRecoilValue(isUserFetchedState);
 
-  console.log("USER: ", user, isUserFetched);
+  console.log("USER: ", user);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }

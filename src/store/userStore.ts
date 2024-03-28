@@ -26,7 +26,6 @@ export const accessTokenState = atom<string | null>({
 export const userState = atom<any | null>({
   key: "userState",
   default: {},
-  effects_UNSTABLE: [persistAtom],
 });
 
 export const axiosInterceptorState = atom({
