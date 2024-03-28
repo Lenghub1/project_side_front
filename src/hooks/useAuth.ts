@@ -1,4 +1,4 @@
-import { useRecoilValue, useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { authApi } from "@/api/auth";
@@ -7,20 +7,15 @@ import {
   userState,
   accessTokenState,
   isUserFetchedState,
-  // authenticationState,
 } from "@/store/userStore";
-import { selectedOrganization } from "@/store/userStore";
 interface CustomJwtPayload {
   userId?: string;
 }
 
 const useAuth = () => {
   const accessToken = useRecoilValue(accessTokenState);
-  const [user, setUser] = useRecoilState(userState);
+  const setUser = useSetRecoilState(userState);
   const setIsUserFetched = useSetRecoilState(isUserFetchedState);
-  const selected = useRecoilValue(selectedOrganization);
-  // const [authentication, setAuthentication] =
-  //   useRecoilState(authenticationState);
 
   async function getUserInfo(id: string) {
     const [response, error] = await handleApiRequest(() => authApi.getUser(id));
@@ -29,6 +24,7 @@ const useAuth = () => {
     } else if (error) {
       console.log(error.message);
     }
+    setIsUserFetched(true);
   }
 
   useEffect(() => {
@@ -39,27 +35,12 @@ const useAuth = () => {
 
         if (userId) {
           await getUserInfo(userId);
-          // setAuthentication({
-          //   isAuthenticated: !!accessToken,
-          //   selected: !!selected,
-          //   userRole: user?.firstName,
-          // });
         }
       }
     };
 
     fetchUserInfo();
-    setIsUserFetched(true);
   }, [accessToken, setUser, setIsUserFetched]);
-
-  console.log("Is authenticated", !!accessToken);
-  // console.log("Auth state", authentication);
-
-  // return {
-  //   selected: !!selected,
-  //   isAuthenticated: !!accessToken,
-  //   userRole: user?.firstName,
-  // };
 };
 
 export default useAuth;

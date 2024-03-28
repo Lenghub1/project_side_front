@@ -84,6 +84,6 @@ export const userRoleState = selector({
   key: "userRoleState",
   get: ({ get }) => {
     const user = get(userState);
-    return user?.role || "";
+    return user.firstName || "";
   },
 });

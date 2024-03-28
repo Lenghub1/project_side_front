@@ -1,8 +1,9 @@
 import { Route, Routes } from "react-router-dom";
-import routes, { RouteProps } from "./routes";
+import routes, { RouteProps } from "./routes"; // Assuming this is correctly imported
 import useUpdateAxiosInterceptor from "@/hooks/useUpdateAxiosInterceptor";
 import { useRecoilValue } from "recoil";
 import {
+  accessTokenState,
   axiosInterceptorState,
   isAccessTokenFetchedState,
   isUserFetchedState,
@@ -11,15 +12,25 @@ import useEnsureAccessToken from "@/hooks/useEnsureAccessToken";
 import { ProtectedRoute, UnprotectedRoute } from "@/components/auth";
 import useAuth from "@/hooks/useAuth";
 
-const renderRoutes = (routes: RouteProps[]) => {
+const renderRoutes = ({
+  routes,
+  isUserFetched,
+  isAuthenticated,
+}: {
+  routes: RouteProps[];
+  isUserFetched: boolean;
+  isAuthenticated: boolean;
+}) => {
   return routes.map((route: RouteProps) => {
     const isProtected = route.protected !== false;
     const Element = route.element;
     const element = isProtected ? (
-      <ProtectedRoute
-        element={Element ? <Element /> : null}
-        allowedRoles={route.allowedRoles}
-      />
+      isUserFetched || (!isAuthenticated && !isUserFetched) ? (
+        <ProtectedRoute
+          element={Element ? <Element /> : null}
+          allowedRoles={route.allowedRoles}
+        />
+      ) : null
     ) : !isProtected ? (
       <UnprotectedRoute element={Element ? <Element /> : null} />
     ) : Element ? (
@@ -28,7 +39,12 @@ const renderRoutes = (routes: RouteProps[]) => {
 
     return (
       <Route key={route.name} path={route.path} element={element}>
-        {route.children && renderRoutes(route.children)}
+        {route.children &&
+          renderRoutes({
+            routes: route.children,
+            isUserFetched,
+            isAuthenticated,
+          })}
       </Route>
     );
   });
@@ -39,22 +55,23 @@ const AppRoutes = () => {
   useUpdateAxiosInterceptor();
   useAuth();
 
-  /**
-   * to make sure that the application attempt to fetch
-   * accessToken and set appropriate authorization header
-   */
   const isAccessTokenFetched = useRecoilValue(isAccessTokenFetchedState);
   const isInterceptorInitialized = useRecoilValue(axiosInterceptorState);
   const isUserFetched = useRecoilValue(isUserFetchedState);
+  const accessToken = useRecoilValue(accessTokenState);
 
-  if (!isAccessTokenFetched || !isInterceptorInitialized || !isUserFetched) {
+  if (!isAccessTokenFetched || !isInterceptorInitialized) {
     return <div>Loading...</div>;
   }
 
   return (
     <Routes>
       {/* {isAccessTokenFetched && isInterceptorInitialized && renderRoutes(routes)} */}
-      {renderRoutes(routes)}
+      {renderRoutes({
+        routes,
+        isUserFetched,
+        isAuthenticated: !!accessToken,
+      })}
     </Routes>
   );
 };

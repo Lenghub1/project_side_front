@@ -4,7 +4,9 @@ import { useRecoilValue } from "recoil";
 import {
   isAuthenticatedState,
   isSelectedState,
+  isUserFetchedState,
   userRoleState,
+  userState,
 } from "@/store/userStore";
 
 interface ProtectedRouteProps {
@@ -19,6 +21,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const isAuthenticated = useRecoilValue(isAuthenticatedState);
   const selected = useRecoilValue(isSelectedState);
   const userRole = useRecoilValue(userRoleState);
+  const user = useRecoilValue(userState);
+  const isUserFetched = useRecoilValue(isUserFetchedState);
+
+  console.log("USER: ", user, isUserFetched);
 
   if (!isAuthenticated || !selected) {
     // redirect to login or choose organization if not authenticated or selected
