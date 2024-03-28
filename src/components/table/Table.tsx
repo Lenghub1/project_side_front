@@ -148,7 +148,14 @@ function EnhancedTable<T>({
                   >
                     {headCells?.map((cell) => (
                       <TableCell key={cell.id as string} align="left">
-                        {row[cell.id]}
+                        {typeof row[cell.id] === "object"
+                          ? Object.entries(row[cell.id]).map(([key, value]) => (
+                              <div key={cell.id as string}>
+                                <strong>{key}: </strong>
+                                {value}
+                              </div>
+                            ))
+                          : row[cell.id]}
                       </TableCell>
                     ))}
 

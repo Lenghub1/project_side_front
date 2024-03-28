@@ -1,0 +1,265 @@
+import React, { useState, useMemo } from "react";
+import {
+  Container,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TablePagination,
+  TableRow,
+  Checkbox,
+  IconButton,
+  Typography,
+  FormControlLabel,
+  Switch,
+} from "@mui/material";
+import SelectAllIcon from "@mui/icons-material/SelectAll";
+import ClearAllIcon from "@mui/icons-material/ClearAll";
+import EnhancedTableToolbar from "./Toolbar";
+import EnhancedTableHead, { HeadCell } from "./TableHead";
+import { getComparator, stableSort } from "@/utils/table.util";
+
+type Order = "asc" | "desc";
+
+interface ReactCell<T> {
+  label: string;
+  type: "ReactCell";
+  element: (row: T) => React.ReactNode;
+}
+
+interface NormalCell {
+  type?: "NormalCell";
+}
+
+type TableCellType<T> = ReactCell<T> | NormalCell;
+
+interface EnhancedTableProps<T> {
+  headCells: (HeadCell<T> & TableCellType<T>)[];
+  rows: T[];
+  order: Order;
+  orderBy: keyof T;
+  rowCount: number;
+  tableName: string;
+  actionCell?: (row: T) => React.ReactNode;
+}
+
+function EnhancedTable<T>({
+  headCells,
+  rows,
+  order,
+  orderBy,
+  rowCount,
+  tableName,
+  actionCell,
+}: EnhancedTableProps<T>) {
+  const [page, setPage] = useState(0);
+  const [dense, setDense] = useState(false);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [currentOrder, setCurrentOrder] = useState<Order>(order);
+  const [currentOrderBy, setCurrentOrderBy] = useState<keyof T>(orderBy);
+  const [filters, setFilters] = useState<{ [key: string]: string }>(
+    Object.fromEntries(headCells.map((cell) => [cell.id, ""]))
+  );
+  const [selectedRows, setSelectedRows] = useState<T[]>([]);
+  const [isSelectable, setIsSelectable] = useState(false);
+  const [sortedRows, setSortedRows] = useState<T[]>(rows);
+
+  const handleRequestSort = (property: keyof T | string) => {
+    const isAsc = currentOrderBy === property && currentOrder === "asc";
+    setCurrentOrder(isAsc ? "desc" : "asc");
+    setCurrentOrderBy(property);
+
+    if (typeof property === "string") {
+      const headCell = headCells.find((cell) => cell.id === property);
+      if (headCell && headCell.sortable) {
+        if (headCell.type === "ReactCell" && "sortField" in headCell) {
+          const isAsc =
+            currentOrderBy === headCell.sortField && currentOrder === "asc";
+          const sortedRows = stableSort(rows, (a: T, b: T) => {
+            const valueA = a[headCell.sortField] as string;
+            const valueB = b[headCell.sortField] as string;
+            return isAsc
+              ? valueA.localeCompare(valueB)
+              : valueB.localeCompare(valueA);
+          });
+          setSortedRows(sortedRows);
+        } else {
+          const currentSortedRows = stableSort(
+            rows,
+            getComparator(isAsc ? "desc" : "asc", property)
+          );
+          setSortedRows(currentSortedRows);
+        }
+      }
+    }
+  };
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDense(event.target.checked);
+  };
+
+  const handleFilterChange =
+    (property: keyof T) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      const value = event.target.value.toLowerCase();
+      setFilters({ ...filters, [property]: value });
+    };
+
+  const handleRowClick = (row: T) => {
+    const selectedIndex = selectedRows.indexOf(row);
+    let newSelected: T[] = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selectedRows, row);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selectedRows.slice(1));
+    } else if (selectedIndex === selectedRows.length - 1) {
+      newSelected = newSelected.concat(selectedRows.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selectedRows.slice(0, selectedIndex),
+        selectedRows.slice(selectedIndex + 1)
+      );
+    }
+
+    setSelectedRows(newSelected);
+  };
+
+  const handleSelectClick = () => {
+    setIsSelectable((prev) => !prev);
+    setSelectedRows([]);
+  };
+
+  const emptyRows =
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+
+  const visibleRows = useMemo(
+    () =>
+      stableSort(sortedRows, getComparator(currentOrder, currentOrderBy)).slice(
+        page * rowsPerPage,
+        page * rowsPerPage + rowsPerPage
+      ),
+    [currentOrder, currentOrderBy, page, rowsPerPage, sortedRows, filters]
+  );
+
+  return (
+    <Container>
+      <Paper sx={{ mb: 2, padding: "1rem 0" }}>
+        <EnhancedTableToolbar
+          data={rows}
+          name={tableName}
+          headCells={headCells}
+          onFilterChange={() => handleFilterChange}
+          numSelected={selectedRows.length}
+        />
+        <TableContainer>
+          <Table
+            sx={{ minWidth: 750, textAlign: "start" }}
+            aria-labelledby="tableTitle"
+            size={dense ? "small" : "medium"}
+          >
+            <EnhancedTableHead<T>
+              order={currentOrder}
+              orderBy={currentOrderBy}
+              headCells={headCells}
+              onRequestSort={handleRequestSort}
+              isSelectable={isSelectable}
+              onSelectClick={handleSelectClick}
+              numSelected={selectedRows.length}
+              rowCount={rowCount}
+            />
+
+            <TableBody>
+              {visibleRows.map((row, rowIndex) => (
+                <TableRow
+                  hover
+                  role="checkbox"
+                  tabIndex={-1}
+                  key={rowIndex}
+                  selected={selectedRows.includes(row)}
+                  onClick={() => isSelectable && handleRowClick(row)}
+                  sx={{
+                    cursor: isSelectable ? "pointer" : "default",
+                  }}
+                >
+                  {isSelectable && (
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        checked={selectedRows.includes(row)}
+                        onChange={() => isSelectable && handleRowClick(row)}
+                      />
+                    </TableCell>
+                  )}
+                  {headCells.map((cell, cellIndex) => {
+                    const cellValue = row[cell.id];
+
+                    if (cell.type === "ReactCell" && "element" in cell) {
+                      return (
+                        <TableCell key={cellIndex} align="left">
+                          {(cell as ReactCell<T>).element(row as T)}
+                        </TableCell>
+                      );
+                    } else {
+                      return (
+                        <TableCell key={cellIndex} align="left">
+                          {cellValue}
+                        </TableCell>
+                      );
+                    }
+                  })}
+                  {actionCell && (
+                    <TableCell align="left">{actionCell(row as T)}</TableCell>
+                  )}
+                </TableRow>
+              ))}
+              {emptyRows > 0 && (
+                <TableRow
+                  style={{
+                    height: (dense ? 32 : 54) * emptyRows,
+                  }}
+                >
+                  <TableCell colSpan={headCells.length} />
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={rowCount}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Paper>
+      <div>
+        <IconButton onClick={handleSelectClick} color="primary">
+          {isSelectable ? <ClearAllIcon /> : <SelectAllIcon />}
+        </IconButton>
+        <Typography>
+          {isSelectable ? "Clear Selection" : "Select All"}
+        </Typography>
+      </div>
+      <FormControlLabel
+        control={<Switch checked={dense} onChange={handleChangeDense} />}
+        label="Dense padding"
+        sx={{ color: (theme) => theme.palette.text.primary }}
+      />
+    </Container>
+  );
+}
+
+export default EnhancedTable;

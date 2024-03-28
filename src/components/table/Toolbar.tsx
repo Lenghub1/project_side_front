@@ -1,11 +1,18 @@
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import SearchDisplay from "../searchBox/SearchDisplay";
+import IconButton from "@mui/material/IconButton";
+import FilterIcon from "@mui/icons-material/FilterList";
+import CloseIcon from "@mui/icons-material/Close";
+import Box from "@mui/material/Box";
 import TableFilter from "./filter/Filter";
+import CP from "..";
+import { useState } from "react";
 interface TableToolbarProp {
   name: string;
   data: object;
   headCells: any[];
+  numSelected: number;
   onFilterChange: (filters: Record<string, string[]>) => void;
 }
 
@@ -13,26 +20,52 @@ const EnhancedTableToolbar: React.FC<TableToolbarProp> = ({
   name,
   data,
   headCells,
+  numSelected,
   onFilterChange,
 }) => {
+  const [showFilter, setShowFilter] = useState(false);
   return (
-    <Toolbar
-      sx={{
-        pl: { sm: 2 },
-        pr: { xs: 1, sm: 1 },
-      }}
-    >
-      <Typography
-        sx={{ flex: "1 1 100%" }}
-        variant="h6"
-        id="tableTitle"
-        component="div"
-      >
-        {name}
-      </Typography>
+    <Toolbar disableGutters>
+      <CP.Styled.Flex direction="column" gap="8px">
+        <CP.Styled.Flex padding="8px">
+          <Typography
+            sx={{ flex: "1 1 100%" }}
+            variant="h6"
+            id="tableTitle"
+            component="div"
+          >
+            {name}
+          </Typography>
+          <SearchDisplay data={data} />
+          <IconButton onClick={() => setShowFilter((pre) => !pre)}>
+            {showFilter ? <CloseIcon /> : <FilterIcon />}
+          </IconButton>
+        </CP.Styled.Flex>
+        {(numSelected || showFilter) && (
+          <Box
+            sx={{
+              backgroundColor: "whitesmoke",
+            }}
+            width="100%"
+            padding={1}
+          >
+            <CP.Styled.Flex justify="space-between">
+              {showFilter && (
+                <TableFilter
+                  headCells={headCells}
+                  onFilterChange={onFilterChange}
+                />
+              )}
 
-      <SearchDisplay data={data} />
-      <TableFilter headCells={headCells} onFilterChange={onFilterChange} />
+              {!!numSelected && (
+                <Typography variant="subtitle1">
+                  {numSelected} selected
+                </Typography>
+              )}
+            </CP.Styled.Flex>
+          </Box>
+        )}
+      </CP.Styled.Flex>
     </Toolbar>
   );
 };

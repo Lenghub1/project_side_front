@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
-import FilterIcon from "@mui/icons-material/FilterList";
 import CloseIcon from "@mui/icons-material/Close";
 import Chip from "@mui/material/Chip";
 import Popper, { PopperPlacementType } from "@mui/material/Popper";
@@ -10,6 +9,7 @@ import Stack from "@mui/material/Stack";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { dataToFilterState, filteredDataState } from "@/store/filterStore";
+import AddIcon from "@mui/icons-material/Add";
 
 interface TableFilterProps {
   headCells: any[];
@@ -102,9 +102,13 @@ const TableFilter = ({ headCells, onFilterChange }: TableFilterProps) => {
 
   return (
     <Box>
-      <IconButton onClick={handleOuterClick("bottom-start")}>
-        {outerOpen ? <CloseIcon /> : <FilterIcon />}
-      </IconButton>
+      <Chip
+        label="Add Filter"
+        key="NewFilter"
+        icon={<AddIcon />}
+        onClick={handleOuterClick("bottom-start")}
+      />
+
       {outerOpen && (
         <Popper open={outerOpen} anchorEl={anchorEl} placement={placement}>
           <Paper
@@ -112,7 +116,6 @@ const TableFilter = ({ headCells, onFilterChange }: TableFilterProps) => {
               padding: 4,
               maxHeight: "350px",
               width: "300px",
-              overflowY: "scroll",
             }}
           >
             <Stack gap="16px" width="100%">
@@ -124,11 +127,7 @@ const TableFilter = ({ headCells, onFilterChange }: TableFilterProps) => {
                   color="primary"
                   size="small"
                   icon={
-                    selectedFilters[headCell.id] ? (
-                      <CloseIcon />
-                    ) : (
-                      <FilterIcon />
-                    )
+                    selectedFilters[headCell.id] ? <CloseIcon /> : <AddIcon />
                   }
                   onClick={() => handleChipClick(headCell.id)}
                 />
@@ -150,7 +149,6 @@ const TableFilter = ({ headCells, onFilterChange }: TableFilterProps) => {
               padding: 4,
               maxHeight: "350px",
               width: "300px",
-              overflowY: "scroll",
             }}
           >
             <Stack gap="16px" alignItems="flex-start">
@@ -185,5 +183,4 @@ const TableFilter = ({ headCells, onFilterChange }: TableFilterProps) => {
     </Box>
   );
 };
-
 export default TableFilter;
