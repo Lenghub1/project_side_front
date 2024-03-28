@@ -1,1 +1,4 @@
-// export { default as LoginPage } from "./Login";
+import LoginPage from "./Login";
+import RedirectingPage from "./Redirecting";
+
+export default { LoginPage, RedirectingPage };

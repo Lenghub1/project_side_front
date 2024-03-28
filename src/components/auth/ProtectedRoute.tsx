@@ -1,6 +1,11 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import useAuth from "@/hooks/useAuth";
+import { useRecoilValue } from "recoil";
+import {
+  isAuthenticatedState,
+  isSelectedState,
+  userRoleState,
+} from "@/store/userStore";
 
 interface ProtectedRouteProps {
   element: React.ReactNode;
@@ -11,7 +16,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   element,
   allowedRoles,
 }) => {
-  const { isAuthenticated, userRole, selected } = useAuth();
+  const isAuthenticated = useRecoilValue(isAuthenticatedState);
+  const selected = useRecoilValue(isSelectedState);
+  const userRole = useRecoilValue(userRoleState);
 
   if (!isAuthenticated || !selected) {
     // redirect to login or choose organization if not authenticated or selected

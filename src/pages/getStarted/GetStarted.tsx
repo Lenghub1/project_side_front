@@ -1,10 +1,14 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import CP from "@/components";
 import { RoleCard } from "@/components/roleCard";
 import styled from "styled-components";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
 import useScreenSize from "@/hooks/useScreenSize";
+import { AlreadyHaveAccountLink } from "../companySearch/CompanySearch";
+import SpaWithImage, {
+  ScrollableWrapper,
+} from "@/components/spaWithImage/SpaWithImage";
 
 export const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -31,7 +35,7 @@ const GetStarted = () => {
   return (
     <CP.Styled.Div>
       {isGetStartedRoute ? (
-        <Container direction="column">
+        <ScrollableWrapper>
           <CP.Styled.Flex direction="column" padding="0 0 2rem">
             <CP.Typography variant={isMobile ? "h5" : "h4"} gutterBottom>
               Get started with Riem
@@ -69,47 +73,21 @@ const GetStarted = () => {
                 variant="contained"
                 disabled={!accountType}
                 onClick={handleOnButtonClick}
+                style={{ maxWidth: 712 }}
               >
                 Continue
               </CP.Button>
             </Flex>
+            <AlreadyHaveAccountLink />
           </Flex>
-        </Container>
+        </ScrollableWrapper>
       ) : (
-        <CP.Styled.Wrapper padding="0">
-          <Flex>
-            <CP.Styled.Div padding="0 1rem">
-              <Outlet />
-            </CP.Styled.Div>
-            <CP.Styled.Div
-              height="100%"
-              style={{ display: isMobile || isTablet ? "none" : "block" }}
-            >
-              <Flex>
-                <Box
-                  component="img"
-                  src="/random-unsplash.jpg"
-                  alt="Random image"
-                  sx={{
-                    width: 1,
-                    height: "100vh",
-                    objectFit: "cover",
-                  }}
-                />
-              </Flex>
-            </CP.Styled.Div>
-          </Flex>
-        </CP.Styled.Wrapper>
+        <SpaWithImage>
+          <Outlet />
+        </SpaWithImage>
       )}
     </CP.Styled.Div>
   );
 };
-
-const Container = styled(Flex)`
-  min-height: 100vh;
-  max-width: 712px;
-  margin: auto;
-  padding: 1rem 0;
-`;
 
 export default GetStarted;

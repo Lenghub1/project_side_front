@@ -1,4 +1,4 @@
-import { atom } from "recoil";
+import { atom, selector } from "recoil";
 import { recoilPersist } from "recoil-persist";
 
 const { persistAtom } = recoilPersist();
@@ -44,7 +44,6 @@ export const isUserFetchedState = atom({
 });
 export const employementDetail = atom<EmploymentDetailState>({
   key: `employementDetail`,
-
   effects_UNSTABLE: [persistAtom],
 });
 
@@ -63,4 +62,28 @@ export const resetPasswordToken = atom<Boolean>({
   key: "resetPasswordToken",
   default: false,
   effects_UNSTABLE: [persistAtom],
+});
+
+export const isAuthenticatedState = selector({
+  key: "isAuthenticatedState",
+  get: ({ get }) => {
+    const accessToken = get(accessTokenState);
+    return !!accessToken;
+  },
+});
+
+export const isSelectedState = selector({
+  key: "isSelectedState",
+  get: ({ get }) => {
+    const organization = get(selectedOrganization);
+    return organization !== "";
+  },
+});
+
+export const userRoleState = selector({
+  key: "userRoleState",
+  get: ({ get }) => {
+    const user = get(userState);
+    return user?.role || "";
+  },
 });

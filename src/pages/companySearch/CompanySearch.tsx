@@ -2,9 +2,17 @@ import CP from "@/components";
 import MuiDivider from "@mui/material/Divider";
 import styled from "styled-components";
 import useValidatedInput from "@/hooks/useValidatedInput";
-import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import {
+  Link,
+  NavLink,
+  Outlet,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import useScreenSize from "@/hooks/useScreenSize";
 import { Flex } from "../getStarted/GetStarted";
+import { Typography } from "@mui/material/styles/createTypography";
+import { TypographyOwnProps } from "@mui/material";
 
 const Divider = styled(MuiDivider)`
   width: 100%;
@@ -38,6 +46,16 @@ export const FormContainer = ({ children }: any) => {
     >
       {children}
     </Flex>
+  );
+};
+export const AlreadyHaveAccountLink = () => {
+  return (
+    <CP.Typography align="center">
+      Already have an account?{" "}
+      <Link to="/login">
+        <b>Login here</b>
+      </Link>
+    </CP.Typography>
   );
 };
 
@@ -102,9 +120,7 @@ const CompanySearch = () => {
             </FormContainer>
             <Flex direction="column" margin="1rem 0 0" gap="1rem">
               <Divider></Divider>
-              <CP.Typography>
-                Already have an account? <NavLink to="#">Login here</NavLink>
-              </CP.Typography>
+              <AlreadyHaveAccountLink />
             </Flex>
           </CP.Styled.Form>
         </>

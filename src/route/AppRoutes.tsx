@@ -9,6 +9,7 @@ import {
 } from "@/store/userStore";
 import useEnsureAccessToken from "@/hooks/useEnsureAccessToken";
 import { ProtectedRoute, UnprotectedRoute } from "@/components/auth";
+import useAuth from "@/hooks/useAuth";
 
 const renderRoutes = (routes: RouteProps[]) => {
   return routes.map((route: RouteProps) => {
@@ -36,7 +37,7 @@ const renderRoutes = (routes: RouteProps[]) => {
 const AppRoutes = () => {
   useEnsureAccessToken();
   useUpdateAxiosInterceptor();
-  // useAuth();
+  useAuth();
 
   /**
    * to make sure that the application attempt to fetch
@@ -44,12 +45,9 @@ const AppRoutes = () => {
    */
   const isAccessTokenFetched = useRecoilValue(isAccessTokenFetchedState);
   const isInterceptorInitialized = useRecoilValue(axiosInterceptorState);
+  const isUserFetched = useRecoilValue(isUserFetchedState);
 
-  if (
-    !isAccessTokenFetched ||
-    !isInterceptorInitialized ||
-    !isUserFetchedState
-  ) {
+  if (!isAccessTokenFetched || !isInterceptorInitialized || !isUserFetched) {
     return <div>Loading...</div>;
   }
 

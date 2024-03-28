@@ -1,7 +1,7 @@
 import CP from "@/components";
 import MuiDivider from "@mui/material/Divider";
 import styled from "styled-components";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { authApi } from "@/api/auth";
 import useValidatedInput from "@/hooks/useValidatedInput";
 import useCriteriaValidator from "@/hooks/useCriteriaInput.tsx";
@@ -14,10 +14,16 @@ import countries from "@/components/phonePrefix/countries.json";
 import { useSnackbar } from "notistack";
 import useApi from "@/hooks/useApi";
 import { Flex } from "../getStarted/GetStarted";
-import { Title, FormContainer } from "../companySearch/CompanySearch";
+import {
+  Title,
+  FormContainer,
+  AlreadyHaveAccountLink,
+} from "../companySearch/CompanySearch";
 import SignupMethod from "@/components/signupMethod/SignupMethod";
 import { employeeRegister } from "@/store/organizationStore";
 import { useRecoilState } from "recoil";
+import { OauthComponent } from "@/components/oauth";
+
 export const Divider = styled(MuiDivider)`
   width: 100%;
 `;
@@ -268,6 +274,7 @@ const SignupPage = () => {
             />
 
             <Divider></Divider>
+            <OauthComponent margin="0" />
             <Flex gap="1rem">
               <CP.Button variant="text">Cancel</CP.Button>
               <CP.Button
@@ -278,7 +285,7 @@ const SignupPage = () => {
                 Signup
               </CP.Button>
             </Flex>
-            <CP.Typography variant="subtitle2">
+            <CP.Typography variant="subtitle2" align="center">
               By signing up, you agree to our{" "}
               <NavLink to="#">Terms of Service</NavLink> &{" "}
               <NavLink to="#">Privacy Policy</NavLink>
@@ -288,9 +295,7 @@ const SignupPage = () => {
       </FormContainer>
       <Flex direction="column" margin="1rem 0 0" gap="1rem">
         <Divider></Divider>
-        <CP.Typography>
-          Already have an account? <NavLink to="#">Login here</NavLink>
-        </CP.Typography>
+        <AlreadyHaveAccountLink />
       </Flex>
     </CP.Styled.Form>
   );

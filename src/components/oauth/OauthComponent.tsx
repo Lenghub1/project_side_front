@@ -45,10 +45,9 @@ export const OauthBox = ({ src, alt, click }: OauthProps) => {
     />
   );
 };
-console.log("Login");
-const OuauthComponent = () => {
+const OuauthComponent = ({ margin }: { margin?: string }) => {
   return (
-    <Flex width="100%" gap="40px" margin="1rem 0">
+    <Flex width="100%" gap="40px" margin={margin || "1rem 0"}>
       <OauthBox
         src={facebookObject.src}
         alt={facebookObject.alt}

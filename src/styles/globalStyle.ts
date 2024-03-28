@@ -15,6 +15,10 @@ body {
     margin : 0px;
    }
 
+   a {
+    color: #f03c3c
+   }
+
 }
 
 `;
