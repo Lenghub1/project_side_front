@@ -18,6 +18,7 @@ import {
   Title,
   FormContainer,
   AlreadyHaveAccountLink,
+  CancelSignupButton,
 } from "../companySearch/CompanySearch";
 import SignupMethod from "@/components/signupMethod/SignupMethod";
 import { employeeRegister } from "@/store/organizationStore";
@@ -273,7 +274,7 @@ const SignupPage = () => {
             <Divider></Divider>
             <OauthComponent margin="0" />
             <Flex gap="1rem">
-              <CP.Button variant="text">Cancel</CP.Button>
+              <CancelSignupButton />
               <CP.Button
                 disabled={isFormInvalid}
                 type="submit"

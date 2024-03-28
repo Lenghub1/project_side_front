@@ -2,17 +2,11 @@ import CP from "@/components";
 import MuiDivider from "@mui/material/Divider";
 import styled from "styled-components";
 import useValidatedInput from "@/hooks/useValidatedInput";
-import {
-  Link,
-  NavLink,
-  Outlet,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import useScreenSize from "@/hooks/useScreenSize";
 import { Flex } from "../getStarted/GetStarted";
-import { Typography } from "@mui/material/styles/createTypography";
-import { TypographyOwnProps } from "@mui/material";
+import Modal from "@/components/modal";
+import useModal from "@/hooks/useModal";
 
 const Divider = styled(MuiDivider)`
   width: 100%;
@@ -59,6 +53,46 @@ export const AlreadyHaveAccountLink = () => {
   );
 };
 
+interface CancelSignupButtonProps {
+  resetFunction?: () => void;
+}
+
+export const CancelSignupButton = ({
+  resetFunction,
+}: CancelSignupButtonProps) => {
+  const navigate = useNavigate();
+  const { isModalOpen, openModal, closeModal } = useModal();
+
+  const handleOk = (resetFunction: () => void = () => {}) => {
+    resetFunction();
+    navigate("/");
+  };
+
+  const handleCancel = () => {
+    console.log("Close modal");
+    closeModal();
+  };
+
+  return (
+    <>
+      <CP.Button variant="text" onClick={openModal}>
+        Cancel
+      </CP.Button>
+      <Modal
+        open={isModalOpen}
+        onClose={closeModal}
+        onOk={() => handleOk(resetFunction)}
+        onCancel={handleCancel}
+        okText="Confirm"
+        cancelText="Cancel"
+        type="confirm"
+      >
+        <p>Are you sure you want to cancel this signup process?</p>
+      </Modal>
+    </>
+  );
+};
+
 const CompanySearch = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -99,7 +133,9 @@ const CompanySearch = () => {
                   />
 
                   <Flex gap="1rem" justify={isMobile ? "center" : "flex-end"}>
-                    <CP.Button variant="text">Cancel</CP.Button>
+                    <CancelSignupButton
+                      resetFunction={() => console.log("Cancle signup")}
+                    />
                     <CP.Button type="submit" onClick={handleCompanySearch}>
                       Search
                     </CP.Button>

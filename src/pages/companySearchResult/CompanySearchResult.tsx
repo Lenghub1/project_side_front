@@ -1,7 +1,11 @@
 import CP from "@/components";
 import { useParams, useNavigate, redirect } from "react-router-dom";
 import { Flex } from "../getStarted/GetStarted";
-import { Title, FormContainer } from "../companySearch/CompanySearch";
+import {
+  Title,
+  FormContainer,
+  CancelSignupButton,
+} from "../companySearch/CompanySearch";
 import Box from "@mui/material/Box";
 import { useRecoilState } from "recoil";
 import { employeeRegister } from "@/store/organizationStore";
@@ -43,7 +47,7 @@ const CompanySearchResult = () => {
       redirect("/get-started/company-search");
     }
   };
-  
+
   useEffect(() => {
     getCompanyCode();
   }, []);
@@ -74,7 +78,7 @@ const CompanySearchResult = () => {
             </Flex>
 
             <Flex gap="1rem">
-              <CP.Button variant="text">Cancel</CP.Button>
+              <CancelSignupButton />
               <CP.Button type="submit" onClick={handleContinueClick}>
                 Continue
               </CP.Button>
