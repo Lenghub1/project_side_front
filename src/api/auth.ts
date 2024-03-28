@@ -32,7 +32,7 @@ const getUser = async (id: string) => {
 };
 
 const telegramOauth = async (user: any) => {
-  return api.post("/auth/telegram/callback", { user });
+  return api.post("/auth/telegram/callback", user);
 };
 
 const findForgotAccount = async (data: any) => {
@@ -75,6 +75,10 @@ const resendActivationCode = async (method: string, data: any) => {
   return api.post(`/auth/resend/${method}/activation`, data);
 };
 
+const facebookSignIn = async (data: any) => {
+  return api.post("/auth/facebook/signin", data);
+};
+
 const authApi = {
   testLogin,
   signup,
@@ -93,6 +97,7 @@ const authApi = {
   clearResetToken,
   resendActivationCode,
   signupAsEmployee,
+  facebookSignIn,
 };
 
 const getGroup = async () => {

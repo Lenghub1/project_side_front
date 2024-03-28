@@ -58,7 +58,7 @@ const routes: RouteProps[] = [
   },
   {
     name: "loginpage",
-    path: "login",
+    path: "/login",
     element: Pg.LoginPage.default.LoginPage,
     protected: false,
     children: [

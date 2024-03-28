@@ -29,7 +29,7 @@ const RedirectingPage = () => {
       }, 2000);
     }
   }, [navigate]);
-
+  console.log("Redirecting page");
   return (
     <CP.Styled.Flex height="100vh" direction="column">
       <Box sx={{ display: "flex", height: "inheriten" }}>
