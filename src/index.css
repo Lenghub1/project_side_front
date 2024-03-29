@@ -34,7 +34,7 @@
   display: flex;
   padding: 50px;
 }
-@media only screen and (max-width: 478px) {
+@media only screen and (max-width: 768px) {
   .splide-container {
     padding: 0;
   }
