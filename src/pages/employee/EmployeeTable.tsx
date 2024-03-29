@@ -10,7 +10,7 @@ import { useEffect } from "react";
 import { Stack, Typography } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 
-const UserInformationCell = (row: Employement) => {
+export const UserInformationCell = (row: Employement) => {
   return (
     <CP.Styled.Flex gap="8px" justify="flex-start">
       <Avatar src="https://avatar.iran.liara.run/public" />
@@ -35,13 +35,11 @@ const EmployeeTable = () => {
     setDataToFilter(data);
   }, []);
   const displayData = isFilter ? filteredData : data;
-  if (!displayData) {
-    return <h1>Loading</h1>;
-  }
+
   return (
     <CP.Container>
       <EnhancedTable<Employement>
-        orderBy="name"
+        orderBy="position"
         order="asc"
         headCells={headCells}
         rows={displayData || []}

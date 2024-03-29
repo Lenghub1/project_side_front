@@ -9,23 +9,25 @@ import {
   TablePagination,
   TableRow,
   Checkbox,
-  IconButton,
-  Typography,
   FormControlLabel,
   Switch,
 } from "@mui/material";
-import SelectAllIcon from "@mui/icons-material/SelectAll";
-import ClearAllIcon from "@mui/icons-material/ClearAll";
+import CP from "..";
 import EnhancedTableToolbar from "./Toolbar";
 import EnhancedTableHead, { HeadCell } from "./TableHead";
 import { getComparator, stableSort } from "@/utils/table.util";
+import { SetStateAction } from "react";
 
 type Order = "asc" | "desc";
 
 interface ReactCell<T> {
+  id: string;
   label: string;
   type: "ReactCell";
   element: (row: T) => React.ReactNode;
+  sortable: boolean;
+  sortFeild: keyof T;
+  filterable?: boolean;
 }
 
 interface NormalCell {
@@ -41,7 +43,6 @@ interface EnhancedTableProps<T> {
   orderBy: keyof T;
   rowCount: number;
   tableName: string;
-  actionCell?: (row: T) => React.ReactNode;
 }
 
 function EnhancedTable<T>({
@@ -51,7 +52,6 @@ function EnhancedTable<T>({
   orderBy,
   rowCount,
   tableName,
-  actionCell,
 }: EnhancedTableProps<T>) {
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
@@ -68,7 +68,7 @@ function EnhancedTable<T>({
   const handleRequestSort = (property: keyof T | string) => {
     const isAsc = currentOrderBy === property && currentOrder === "asc";
     setCurrentOrder(isAsc ? "desc" : "asc");
-    setCurrentOrderBy(property);
+    setCurrentOrderBy(property as SetStateAction<keyof T>);
 
     if (typeof property === "string") {
       const headCell = headCells.find((cell) => cell.id === property);
@@ -77,8 +77,8 @@ function EnhancedTable<T>({
           const isAsc =
             currentOrderBy === headCell.sortField && currentOrder === "asc";
           const sortedRows = stableSort(rows, (a: T, b: T) => {
-            const valueA = a[headCell.sortField] as string;
-            const valueB = b[headCell.sortField] as string;
+            const valueA = a[headCell.sortField];
+            const valueB = b[headCell.sortField];
             return isAsc
               ? valueA.localeCompare(valueB)
               : valueB.localeCompare(valueA);
@@ -86,16 +86,16 @@ function EnhancedTable<T>({
           setSortedRows(sortedRows);
         } else {
           const currentSortedRows = stableSort(
-            rows,
+            rows as { [key in string | (keyof T & string)]: string }[],
             getComparator(isAsc ? "desc" : "asc", property)
           );
-          setSortedRows(currentSortedRows);
+          setSortedRows(currentSortedRows as SetStateAction<T[]>);
         }
       }
     }
   };
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
   };
 
@@ -146,10 +146,10 @@ function EnhancedTable<T>({
 
   const visibleRows = useMemo(
     () =>
-      stableSort(sortedRows, getComparator(currentOrder, currentOrderBy)).slice(
-        page * rowsPerPage,
-        page * rowsPerPage + rowsPerPage
-      ),
+      stableSort(
+        sortedRows as { [key in keyof T]: string }[],
+        getComparator(currentOrder, currentOrderBy)
+      ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
     [currentOrder, currentOrderBy, page, rowsPerPage, sortedRows, filters]
   );
 
@@ -161,7 +161,6 @@ function EnhancedTable<T>({
           name={tableName}
           headCells={headCells}
           onFilterChange={() => handleFilterChange}
-          numSelected={selectedRows.length}
         />
         <TableContainer>
           <Table
@@ -220,9 +219,6 @@ function EnhancedTable<T>({
                       );
                     }
                   })}
-                  {actionCell && (
-                    <TableCell align="left">{actionCell(row as T)}</TableCell>
-                  )}
                 </TableRow>
               ))}
               {emptyRows > 0 && (
@@ -246,15 +242,15 @@ function EnhancedTable<T>({
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
+        <CP.Styled.Flex justify="flex-start" padding="0 2rem">
+          <CP.Button onClick={handleSelectClick} size="small" variant="text">
+            {isSelectable ? "disable" : "select"}
+          </CP.Button>
+          {!!selectedRows.length && (
+            <small>{selectedRows.length} selected</small>
+          )}
+        </CP.Styled.Flex>
       </Paper>
-      <div>
-        <IconButton onClick={handleSelectClick} color="primary">
-          {isSelectable ? <ClearAllIcon /> : <SelectAllIcon />}
-        </IconButton>
-        <Typography>
-          {isSelectable ? "Clear Selection" : "Select All"}
-        </Typography>
-      </div>
       <FormControlLabel
         control={<Switch checked={dense} onChange={handleChangeDense} />}
         label="Dense padding"

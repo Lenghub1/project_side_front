@@ -8,7 +8,6 @@ import {
 } from "@/utils/api.util";
 
 const data = JSON.parse(localStorage.getItem("recoil-persist")!);
-console.log(data?.selectedOrganization);
 
 const currentOrganizationId = data?.selectedOrganization;
 

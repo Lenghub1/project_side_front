@@ -12,7 +12,6 @@ interface TableToolbarProp {
   name: string;
   data: object;
   headCells: any[];
-  numSelected: number;
   onFilterChange: (filters: Record<string, string[]>) => void;
 }
 
@@ -20,7 +19,6 @@ const EnhancedTableToolbar: React.FC<TableToolbarProp> = ({
   name,
   data,
   headCells,
-  numSelected,
   onFilterChange,
 }) => {
   const [showFilter, setShowFilter] = useState(false);
@@ -41,7 +39,7 @@ const EnhancedTableToolbar: React.FC<TableToolbarProp> = ({
             {showFilter ? <CloseIcon /> : <FilterIcon />}
           </IconButton>
         </CP.Styled.Flex>
-        {(numSelected || showFilter) && (
+        {showFilter && (
           <Box
             sx={{
               backgroundColor: "whitesmoke",
@@ -55,12 +53,6 @@ const EnhancedTableToolbar: React.FC<TableToolbarProp> = ({
                   headCells={headCells}
                   onFilterChange={onFilterChange}
                 />
-              )}
-
-              {!!numSelected && (
-                <Typography variant="subtitle1">
-                  {numSelected} selected
-                </Typography>
               )}
             </CP.Styled.Flex>
           </Box>
