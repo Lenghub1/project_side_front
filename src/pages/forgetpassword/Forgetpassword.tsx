@@ -1,22 +1,20 @@
-import { useNavigate, useLocation, Outlet } from "react-router-dom";
+import { useNavigate, useLocation, Outlet, Link } from "react-router-dom";
 import useValidatedInput from "@/hooks/useValidatedInput";
 import CP from "@/components";
-import styled from "styled-components";
 import { useEffect, useState } from "react";
-import { Box } from "@mui/material";
 import countries from "@/components/phonePrefix/countries.json";
 import { SyntheticEvent } from "react";
 import { useSnackbar } from "notistack";
 import { authApi } from "@/api/auth";
-import Tab from "@mui/material/Tab";
-import Tabs from "@mui/material/Tabs";
 import useApi from "@/hooks/useApi";
 import { VERIFICATION_TYPE } from "../verifications/OTP";
 import useCancelModal from "@/hooks/useCancelModal";
 import useHistoryPopstate from "@/hooks/usePopState";
-const Flex = styled(CP.Styled.Flex)`
-  overflow: unset;
-`;
+import { removeLeadingZeron } from "@/utils/commonUtil";
+import { Flex } from "../getStarted/GetStarted";
+import SignupMethod from "@/components/signupMethod/SignupMethod";
+import SpaWithImage from "@/components/spaWithImage/SpaWithImage";
+import { Title, FormContainer } from "../companySearch/CompanySearch";
 
 type FindPasswordMethod = "email" | "phone";
 
@@ -26,10 +24,6 @@ const validateEmail = (email: string): string => {
     return "Please enter a valid email address.";
   }
   return "";
-};
-
-const removeLeadingZeron = (phoneNumber: string): string => {
-  return phoneNumber.replace(/^0+/, "");
 };
 
 const ForgetPassword = () => {
@@ -49,7 +43,6 @@ const ForgetPassword = () => {
   const { open, handleCancelConfirm, handleModalOpen, handleCloseModal } =
     useCancelModal();
   const location = useLocation();
-  const activeTabIndex = resetPasswordBy === "email" ? 0 : 1;
   const isForgetPasswordRoute = location.pathname === "/forget-password";
 
   useEffect(() => {
@@ -63,19 +56,6 @@ const ForgetPassword = () => {
   }, []);
 
   useHistoryPopstate(handleModalOpen);
-
-  const handleResetPasswordBy = (event: SyntheticEvent, newValue: number) => {
-    const method = newValue === 0 ? "email" : "phone";
-    if (method === "phone" && email.touched) {
-      email.setTouched(false);
-      if (email.value) email.setValue("");
-    } else if (method === "email" && phone.touched) {
-      phone.setTouched(false);
-
-      if (phone.value) phone.setValue("");
-    }
-    setResetPasswordBy(method);
-  };
 
   const isFormInvalid =
     resetPasswordBy === "phone"
@@ -163,22 +143,12 @@ const ForgetPassword = () => {
   return (
     <>
       {isForgetPasswordRoute ? (
-        <CP.Styled.Wrapper height="100vh">
-          <Flex height="inherit">
-            <CP.Styled.Div
-              style={{
-                minWidth: isMobile ? "396px" : "565px",
-                padding: !isMobile ? "0 1rem" : "0 16px",
-              }}
-            >
-              <Flex
-                items="flex-start"
-                direction="column"
-                style={{
-                  padding: !isMobile ? "0 3rem" : "0px",
-                }}
-              >
-                <CP.Typography
+        <SpaWithImage>
+          {/* <CP.Styled.Wrapper height="100vh"> */}
+          <CP.Styled.Form>
+            <FormContainer>
+              <CP.Styled.Div>
+                {/* <CP.Typography
                   variant="h4"
                   margin="0 0 2rem"
                   style={{
@@ -188,72 +158,24 @@ const ForgetPassword = () => {
                   }}
                 >
                   Password Reset
-                </CP.Typography>
-                <CP.Typography
-                  style={{
-                    marginBottom: "2rem",
-                    fontWeight: "semibold",
-                    textAlign: isMobile ? "start" : "start",
-                    width: "100%",
-                  }}
-                >
-                  {`Enter your ${resetPasswordBy}  below and we\'ll send you password reset ${resetPasswordBy === "email" ? "token" : "OTP"}
-                  .`}
+                </CP.Typography> */}
+                <Title>Password Reset</Title>
+                <CP.Typography padding={"0 0 1rem"}>
+                  {`Enter your ${resetPasswordBy}  below and we\'ll send you password reset ${resetPasswordBy === "email" ? "token" : "OTP"}.`}
                 </CP.Typography>
                 <Flex direction="column" gap="24px" overflow="unset">
-                  <Tabs
-                    sx={{ alignSelf: !isMobile ? "flex-start" : "center" }}
-                    value={activeTabIndex}
-                    onChange={(e, value) => handleResetPasswordBy(e, value)}
-                    aria-label="signup options"
-                  >
-                    <Tab label="With Email" />
-                    <Tab label="With Phone" />
-                  </Tabs>
-                  {resetPasswordBy === "email" ? (
-                    <CP.Input
-                      label="Email"
-                      value={email.value}
-                      onChange={email.onChange}
-                      placeholder="Email"
-                      type="email"
-                      onBlur={email.onBlur}
-                      error={!!email.error}
-                      helperText={<email.HelperText />}
-                      required
-                    />
-                  ) : (
-                    <Flex gap="0.5rem" items="flex-start">
-                      <CP.PhonePrefix
-                        selectedCountry={selectedCountry}
-                        setSelectedCountry={setSelectedCountry}
-                      />
-                      <CP.Input
-                        label="Phone number"
-                        value={phone.value}
-                        type="number"
-                        onChange={phone.onChange}
-                        placeholder="Phone"
-                        onBlur={phone.onBlur}
-                        error={!!phone.error}
-                        helperText={<phone.HelperText />}
-                        required
-                      />
-                    </Flex>
-                  )}
+                  <SignupMethod
+                    email={email}
+                    phone={phone}
+                    selectedCountry={selectedCountry}
+                    setSelectedCountry={setSelectedCountry}
+                    signupMethod={resetPasswordBy}
+                    setSignupMethod={setResetPasswordBy}
+                  />
 
-                  <CP.Styled.Flex width="100%" justify="flex-start">
-                    <CP.Typography
-                      margin="1rem 0"
-                      color="red"
-                      sx={{ cursor: "pointer" }}
-                      onClick={() => {
-                        navigate("/forgot-account");
-                      }}
-                    >
-                      Forget account?
-                    </CP.Typography>
-                  </CP.Styled.Flex>
+                  <CP.Styled.Div>
+                    <Link to={"/forgot-account"}>Forget account?</Link>
+                  </CP.Styled.Div>
                   <Flex width="100%" justify="flex-end" gap="20px">
                     <CP.Button variant="text" onClick={handleModalOpen}>
                       Cancel
@@ -267,27 +189,9 @@ const ForgetPassword = () => {
                     </CP.Button>
                   </Flex>
                 </Flex>
-              </Flex>
-            </CP.Styled.Div>
-            {!isMobile && (
-              <CP.Styled.Div height="100%">
-                <Flex style={{ height: "100%" }}>
-                  <Box
-                    component="img"
-                    src="/random-unsplash.jpg"
-                    alt="Random image"
-                    width={1}
-                    height={"100vh"}
-                    sx={{
-                      width: 1,
-                      height: "100vh",
-                      objectFit: "cover",
-                    }}
-                  />
-                </Flex>
               </CP.Styled.Div>
-            )}
-          </Flex>
+            </FormContainer>
+          </CP.Styled.Form>
           <CP.Modal
             open={open}
             onClose={handleCloseModal}
@@ -303,7 +207,8 @@ const ForgetPassword = () => {
               <CP.Typography> Are you sure to cancel it now?</CP.Typography>
             </CP.Styled.Flex>
           </CP.Modal>
-        </CP.Styled.Wrapper>
+          {/* </CP.Styled.Wrapper> */}
+        </SpaWithImage>
       ) : (
         <Outlet />
       )}

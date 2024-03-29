@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import CP from "@/components";
-import styled from "styled-components";
+
 import { useEffect, useState } from "react";
 import useValidatedInput from "@/hooks/useValidatedInput";
 import { authApi } from "@/api/auth";
@@ -18,11 +18,12 @@ import { FormContainer, Title } from "../companySearch/CompanySearch";
 import SignupMethod from "@/components/signupMethod/SignupMethod";
 import SpaWithImage from "@/components/spaWithImage/SpaWithImage";
 import { validateEmail } from "../signup/Signup";
-import Loading from "@/components/loading/Loading";
 
-const Flex = styled(CP.Styled.Flex)`
-  overflow: unset;
-`;
+import Loading from "@/components/loading/Loading";
+import { VERIFICATION_TYPE } from "../verifications/OTP";
+import { removeLeadingZeron } from "@/utils/commonUtil";
+import { Flex } from "../getStarted/GetStarted";
+
 type SignInMethod = "email" | "phone";
 
 interface LoginResponse {
@@ -88,12 +89,26 @@ const LoginPage = () => {
           "error"
         );
       } else if (error.statusCode === 401) {
-        navigate("/get-started/activate-account", {
-          state: {
-            credential: loginMethod === "email" ? email.value : phone.value,
-            accountMethod: loginMethod,
-          },
-        });
+        if (loginMethod === "email") {
+          navigate("/get-started/activate-account", {
+            state: {
+              credential: email.value,
+              accountMethod: loginMethod,
+            },
+          });
+        } else {
+          navigate("/get-started/verify-phone", {
+            state: {
+              type: VERIFICATION_TYPE.VERIFY_ACCOUNT,
+              phone: `${selectedCountry.dialCode} ${phone.value}`,
+              method: loginMethod,
+              data: {
+                phoneNumber:
+                  selectedCountry.dialCode + removeLeadingZeron(phone.value),
+              },
+            },
+          });
+        }
       } else {
         showMessage("Something went wrong. Please try again.", "error");
       }

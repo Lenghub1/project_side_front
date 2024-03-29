@@ -105,7 +105,7 @@ const OTP = () => {
           navigate("/forget-password/reset-password");
         }, 1500);
       } else if (verification.type === VERIFICATION_TYPE.VERIFY_ACCOUNT) {
-        // navigate to home
+        console.log("VERIFY", verification);
       } else if (verification.type === VERIFICATION_TYPE.VERIFY_2FA) {
         //navigate to home
       }

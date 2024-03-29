@@ -86,25 +86,12 @@ const ForgetPassword = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      if (resetPasswordBy === "phone") {
-        showMessage(
-          `OTP has been sent to ${selectedCountry.dialCode} ${phone.value}`,
-          "success"
-        );
-        setTimeout(() => {
-          navigate("/forget-password/verify-otp", {
-            state: {
-              type: VERIFICATION_TYPE.VERIFY_FORGET_PASSWORD,
-              phone: `${selectedCountry.dialCode} ${phone.value}`,
-            },
-          });
-        }, 1500);
-      } else {
-        showMessage(
-          `Reset password verification link has been sent. Please check your email and verify`,
-          "success"
-        );
-      }
+      showMessage("Password has been successfully reset.", "success");
+      setTimeout(async () => {
+        await logOut();
+        resetTokenState();
+        navigate("/login");
+      }, 1500);
     }
   }, [response, isSuccess]);
 

@@ -55,6 +55,12 @@ const routes: RouteProps[] = [
         element: Pg.AccountVerification,
         protected: false,
       },
+      {
+        name: "phoneActivation",
+        path: "verify-phone",
+        element: Pg.Verification.default.OTP,
+        protected: false,
+      },
     ],
   },
   {

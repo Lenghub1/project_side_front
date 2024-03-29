@@ -1,17 +1,17 @@
-import { useNavigate, useLocation } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import useValidatedInput from "@/hooks/useValidatedInput";
 import useInput from "@/hooks/useInput";
 import CP from "@/components";
 import styled from "styled-components";
-import { useEffect, useState } from "react";
-import { Box } from "@mui/material";
 import { SyntheticEvent } from "react";
 import { useSnackbar } from "notistack";
-import { authApi, testApi } from "@/api/auth";
+import { authApi } from "@/api/auth";
 import { handleApiRequest } from "@/api";
 import { Outlet } from "react-router-dom";
 import useCancelModal from "@/hooks/useCancelModal";
+import useScreenSize from "@/hooks/useScreenSize";
+import SpaWithImage from "@/components/spaWithImage/SpaWithImage";
+import { Title, FormContainer } from "../companySearch/CompanySearch";
 
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -37,24 +37,12 @@ const ForgotAccount = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 428);
+  const { isMobile } = useScreenSize();
   const username = useValidatedInput("", "Username");
   const companyCode = useInput("");
   const { open, handleCancelConfirm, handleModalOpen, handleCloseModal } =
     useCancelModal();
   const isForgotAccountRoute = location.pathname === "/forgot-account";
-  useEffect(() => {
-    console.log("Company code", companyCode);
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 428);
-    };
-    console.log("Window size", window.innerWidth);
-
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [companyCode]);
 
   const isFormIvalid =
     !username.value ||
@@ -111,38 +99,12 @@ const ForgotAccount = () => {
   return (
     <>
       {isForgotAccountRoute ? (
-        <CP.Styled.Wrapper height="100vh">
-          <Flex height="inherit">
-            <CP.Styled.Div
-              minwidth={isMobile ? "396px" : "565px"}
-              padding={!isMobile ? "0 1rem" : "0 16px"}
-            >
-              <Flex
-                items="flex-start"
-                direction="column"
-                style={{
-                  padding: !isMobile ? "0 3rem" : "0px",
-                }}
-              >
-                <CP.Typography
-                  variant="h4"
-                  margin="0 0 2rem"
-                  style={{
-                    fontWeight: "semibold",
-                    textAlign: isMobile ? "center" : "start",
-                    width: "100%",
-                  }}
-                >
-                  Find Account
-                </CP.Typography>
-                <CP.Typography
-                  style={{
-                    marginBottom: "2rem",
-                    fontWeight: "semibold",
-                    textAlign: isMobile ? "start" : "start",
-                    width: "100%",
-                  }}
-                >
+        <SpaWithImage>
+          <CP.Styled.Form>
+            <FormContainer>
+              <CP.Styled.Div>
+                <Title>Password Reset</Title>
+                <CP.Typography padding={"0 0 1rem"}>
                   Enter your username and company code to find your account.
                 </CP.Typography>
                 <Flex direction="column" gap="24px" overflow="unset">
@@ -163,19 +125,10 @@ const ForgotAccount = () => {
                     inputProps={{ maxLength: 6 }}
                   />
 
-                  <CP.Styled.Flex width="100%" justify="flex-start">
-                    <CP.Typography
-                      margin="1rem 0"
-                      color="red"
-                      sx={{ cursor: "pointer" }}
-                      onClick={() => {
-                        navigate("/forget-password");
-                      }}
-                    >
-                      Forget password?
-                    </CP.Typography>
-                  </CP.Styled.Flex>
-                  {/* {companyCode && <h1>{comp}</h1>} */}
+                  <CP.Styled.Div>
+                    <Link to={"/forget-password"}>Forget password?</Link>
+                  </CP.Styled.Div>
+
                   <Flex width="100%" justify="flex-end" gap="20px">
                     <CP.Button variant="text" onClick={handleModalOpen}>
                       Cancel
@@ -189,26 +142,9 @@ const ForgotAccount = () => {
                     </CP.Button>
                   </Flex>
                 </Flex>
-              </Flex>
-            </CP.Styled.Div>
-
-            {!isMobile && (
-              <CP.Styled.Div height="100%">
-                <Flex style={{ height: "100%" }}>
-                  <Box
-                    component="img"
-                    src="/random-unsplash.jpg"
-                    alt="Random image"
-                    sx={{
-                      width: 1,
-                      height: "100vh",
-                      objectFit: "cover",
-                    }}
-                  />
-                </Flex>
               </CP.Styled.Div>
-            )}
-          </Flex>
+            </FormContainer>
+          </CP.Styled.Form>
           <CP.Modal
             open={open}
             onClose={handleCloseModal}
@@ -224,7 +160,7 @@ const ForgotAccount = () => {
               <CP.Typography> Are you sure to cancel it now?</CP.Typography>
             </CP.Styled.Flex>
           </CP.Modal>
-        </CP.Styled.Wrapper>
+        </SpaWithImage>
       ) : (
         <Outlet />
       )}
