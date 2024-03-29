@@ -128,7 +128,7 @@ const SignupPage = () => {
       // enqueueSnackbar("We've sent a verification code to your email.", {
       //   variant: "success",
       // });
-      navigate("/get-started/activate-account", {
+      navigate("/login/activate-account", {
         state: { credential: email.value, accountMethod: signupMethod },
       });
     } else if (isSuccess && signupMethod === "phone") {

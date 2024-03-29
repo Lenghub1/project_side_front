@@ -107,7 +107,6 @@ const OTP = () => {
       } else if (verification.type === VERIFICATION_TYPE.VERIFY_ACCOUNT) {
         console.log("VERIFY", verification);
       } else if (verification.type === VERIFICATION_TYPE.VERIFY_2FA) {
-        //navigate to home
       }
     }
   }, [response, isSuccess]);
@@ -123,9 +122,15 @@ const OTP = () => {
   }, []);
 
   async function resendOTP(): Promise<void> {
-    await handleApiRequest(() =>
-      authApi.forgotPassword(verification.method, verification.data)
-    );
+    if (verification.type === VERIFICATION_TYPE.VERIFY_FORGET_PASSWORD) {
+      await handleApiRequest(() =>
+        authApi.forgotPassword(verification.method, verification.data)
+      );
+    } else if (verification.type === VERIFICATION_TYPE.VERIFY_ACCOUNT) {
+      await handleApiRequest(() =>
+        authApi.resendActivationCode(verification.method, verification.data)
+      );
+    }
   }
 
   function showMessage(message: string, variant: "error" | "success") {
