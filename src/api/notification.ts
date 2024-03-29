@@ -35,4 +35,19 @@ const getNotificationById = async (
   });
 };
 
-export { allNotifications, getNotificationById };
+const updateNotification = async (
+  currentUserId: string,
+  notificationId: string,
+  data: any
+) => {
+  return api.patch(`/notifications/${currentUserId}/${notificationId}`, data, {
+    transformResponse: [
+      (response) => {
+        const data = transformData(response, fieldMapping);
+        return data;
+      },
+    ],
+  });
+};
+
+export { allNotifications, getNotificationById, updateNotification };
