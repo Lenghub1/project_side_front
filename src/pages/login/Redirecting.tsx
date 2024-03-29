@@ -4,12 +4,14 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import CP from "@/components";
 import Store from "@/store";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue, useRecoilState } from "recoil";
 
 const RedirectingPage = () => {
   const navigate = useNavigate();
   const accountType = useRecoilValue(Store.SignUp.accountTypeState);
-  const setAccessToken = useSetRecoilState(Store.User.accessTokenState);
+  const [accessToken, setAccessToken] = useRecoilState(
+    Store.User.accessTokenState
+  );
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.hash.split("?")[1]);
@@ -18,6 +20,8 @@ const RedirectingPage = () => {
     if (paramElement.token) {
       setAccessToken(paramElement.token);
 
+      console.log("ACCCESS TOKEN", accessToken);
+
       setTimeout(() => {
         if (accountType) {
           if (accountType === "employee") {
@@ -25,11 +29,13 @@ const RedirectingPage = () => {
           } else {
             navigate("/login");
           }
+        } else {
+          navigate("/");
         }
       }, 2000);
     }
   }, [navigate]);
-  console.log("Redirecting page");
+
   return (
     <CP.Styled.Flex height="100vh" direction="column">
       <Box sx={{ display: "flex", height: "inheriten" }}>

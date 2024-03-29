@@ -47,6 +47,7 @@ const routes: RouteProps[] = [
         name: "employeeInfo",
         path: "employee-info",
         element: Pg.InformationInput,
+        protected: false,
       },
       {
         name: "accountVerification",
@@ -60,12 +61,6 @@ const routes: RouteProps[] = [
     name: "loginpage",
     path: "/login",
     element: Pg.LoginPage.default.LoginPage,
-    protected: false,
-  },
-  {
-    name: "oauthCallback",
-    path: "/login/callback/:state(state=.*)",
-    element: Pg.LoginPage.default.RedirectingPage,
     protected: false,
   },
   // {
@@ -201,8 +196,8 @@ const routes: RouteProps[] = [
     protected: false,
   },
   {
-    name: "test-redirect",
-    path: "/test-redirect",
+    name: "redirect",
+    path: "/redirect",
     element: Pg.LoginPage.default.RedirectingPage,
     protected: false,
   },

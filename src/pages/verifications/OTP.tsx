@@ -80,6 +80,9 @@ const OTP = () => {
   const verification = location.state;
   const setResetPassword = useSetRecoilState(Store.User.resetPasswordToken);
 
+  const [otp, setOtp] = useState(new Array(6).fill(""));
+  const inputRefs = useRef([]);
+
   useEffect(() => {
     inputs.current[0]?.focus();
   }, []);
@@ -138,77 +141,104 @@ const OTP = () => {
   }
 
   // handle pasting OTP code
-  const handleOnPaste = (e: ClipboardEvent, index: number) => {
-    e.preventDefault();
-    const paste = e.clipboardData.getData("text").split("");
-    let newInputValue = [...arrayValue];
-    let newMaskedValue = [...maskedValue];
-    let currentIndex = index;
-    for (let i = 0; i < paste.length; i++) {
-      if (currentIndex < arrayValue.length) {
-        newInputValue[currentIndex] = paste[i];
-        newMaskedValue[currentIndex] = "*";
-        currentIndex++;
-      }
-    }
-    setArrayValue(newInputValue);
-    setMaskedValue(newMaskedValue);
+  // const handleOnPaste = (e: ClipboardEvent, index: number) => {
+  //   e.preventDefault();
+  //   const paste = e.clipboardData.getData("text").split("");
+  //   let newInputValue = [...arrayValue];
+  //   let newMaskedValue = [...maskedValue];
+  //   let currentIndex = index;
+  //   for (let i = 0; i < paste.length; i++) {
+  //     if (currentIndex < arrayValue.length) {
+  //       newInputValue[currentIndex] = paste[i];
+  //       newMaskedValue[currentIndex] = "*";
+  //       currentIndex++;
+  //     }
+  //   }
+  //   setArrayValue(newInputValue);
+  //   setMaskedValue(newMaskedValue);
 
-    // Focus the next input after pasting
-    const nextIndex = Math.min(index + paste.length, arrayValue.length - 1);
-    inputs.current[nextIndex]?.focus();
+  //   // Focus the next input after pasting
+  //   const nextIndex = Math.min(index + paste.length, arrayValue.length - 1);
+  //   inputs.current[nextIndex]?.focus();
+  // };
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const pasteData = e.clipboardData.getData("text").slice(0, 6);
+    if (/^\d{1,6}$/.test(pasteData)) {
+      // Ensure pasted data is numeric and up to 6 characters
+      const newOtp = [
+        ...pasteData.padEnd(6, " ").split(""),
+        ...Array(6 - pasteData.length).fill(""),
+      ];
+      setOtp(newOtp);
+
+      // Focus the next input after the last pasted character
+      const nextIndex = pasteData.length < 6 ? pasteData.length : 5;
+      inputRefs.current[nextIndex].focus();
+    }
   };
 
   // on change
-  const handleChange = (e: BaseSyntheticEvent, index: number) => {
-    const input = e.target.value;
-    if (!isNaN(input)) {
-      setArrayValue((preValue: (string | number)[]) => {
-        const newArray = [...preValue];
-        newArray[index] = input;
-        return newArray;
-      });
+  // const handleChange = (e: BaseSyntheticEvent, index: number) => {
+  //   const input = e.target.value;
+  //   if (!isNaN(input)) {
+  //     setArrayValue((preValue: (string | number)[]) => {
+  //       const newArray = [...preValue];
+  //       newArray[index] = input;
+  //       return newArray;
+  //     });
 
-      setMaskedValue((prevValue: (string | number)[]) => {
-        const newArray = [...prevValue];
-        newArray[index] = "*";
-        return newArray;
-      });
+  //     setMaskedValue((prevValue: (string | number)[]) => {
+  //       const newArray = [...prevValue];
+  //       newArray[index] = "*";
+  //       return newArray;
+  //     });
 
-      if (input !== "" && index < arrayValue.length - 1) {
-        inputs.current[index + 1]?.focus();
-        inputs.current[index + 1]?.select();
-      }
+  //     if (input !== "" && index < arrayValue.length - 1) {
+  //       inputs.current[index + 1]?.focus();
+  //       inputs.current[index + 1]?.select();
+  //     }
 
-      if (arrayValue.every((value) => value !== "")) {
-        arrayValue.every((value) => {
-          console.log(value);
-        });
-      }
+  //     if (arrayValue.every((value) => value !== "")) {
+  //       arrayValue.every((value) => {
+  //         console.log(value);
+  //       });
+  //     }
+  //   }
+  // };
+  const handleChange = (value: string, index: number) => {
+    if (!/^\d$/.test(value)) return; // Allow only numeric values
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+
+    // Focus next input
+    if (index < 5 && value) {
+      inputRefs.current[index + 1]?.focus();
     }
   };
   //handle on key up
-  const handleKeyUp = (e: KeyboardEvent<HTMLInputElement>, index: number) => {
-    if (e.key === "Backspace" || e.key === "Delete") {
-      setArrayValue((prevValue: (string | number)[]) => {
-        const newArray = [...prevValue];
-        newArray[index] = "";
-        return newArray;
-      });
+  // const handleKeyUp = (e: KeyboardEvent<HTMLInputElement>, index: number) => {
+  //   if (e.key === "Backspace" || e.key === "Delete") {
+  //     setArrayValue((prevValue: (string | number)[]) => {
+  //       const newArray = [...prevValue];
+  //       newArray[index] = "";
+  //       return newArray;
+  //     });
 
-      setMaskedValue((prevValue: (string | number)[]) => {
-        const newArray = [...prevValue];
-        newArray[index] = "";
-        return newArray;
-      });
+  //     setMaskedValue((prevValue: (string | number)[]) => {
+  //       const newArray = [...prevValue];
+  //       newArray[index] = "";
+  //       return newArray;
+  //     });
 
-      if (index > 0) {
-        console.log("MY INDEX", index);
-        inputs.current[index - 1]?.focus();
-        inputs.current[index - 1]?.select();
-      }
-    }
-  };
+  //     if (index > 0) {
+  //       console.log("MY INDEX", index);
+  //       inputs.current[index - 1]?.focus();
+  //       inputs.current[index - 1]?.select();
+  //     }
+  //   }
+  // };
 
   function showMessage(message: string, variant: "error" | "success") {
     enqueueSnackbar(message, {
@@ -291,21 +321,14 @@ const OTP = () => {
                 {maskPhoneNumber(verification.phone).slice(7)}.
               </CP.Typography>
             </Flex>
-            <OTPContainer>
-              {maskedValue.map((value: string | number, index: number) => (
+            <OTPContainer onPaste={handlePaste}>
+              {otp.map((digit, index) => (
                 <OTPInput
-                  key={`index-${index}`}
-                  ref={(el) => (inputs.current[index] = el)}
-                  onChange={(e) => handleChange(e, index)}
-                  onKeyUp={(e) => handleKeyUp(e, index)}
-                  onKeyDown={(e) => handleKeyDown(e, index)}
-                  onPaste={(e) => handleOnPaste(e, index)}
+                  key={index}
+                  value={digit}
+                  onChange={(e) => handleChange(e.target.value, index)}
+                  ref={(el) => (inputRefs.current[index] = el)}
                   maxLength={1}
-                  autoComplete="off"
-                  accessKey={String(index)}
-                  onFocus={(e) => {
-                    e.target.select();
-                  }}
                 />
               ))}
             </OTPContainer>
@@ -331,7 +354,7 @@ const OTP = () => {
                   <CP.Button
                     type="submit"
                     onClick={handleSubmit}
-                    disabled={!isValidInput}
+                    disabled={otp.some((digit) => digit === "")}
                   >
                     Verify
                   </CP.Button>

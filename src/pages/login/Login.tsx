@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import CP from "@/components";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
@@ -43,7 +43,9 @@ const LoginPage = () => {
     dialCode: string;
     flag: string;
   }>(countries[0]);
-  const setAccessToken = useSetRecoilState(Store.User.accessTokenState);
+  const [accessToken, setAccessToken] = useRecoilState(
+    Store.User.accessTokenState
+  );
   const { isMobile } = useScreenSize();
 
   const isFormInvalid =
@@ -69,10 +71,12 @@ const LoginPage = () => {
   useEffect(() => {
     if (isSuccess) {
       const userData = response.data as LoginResponse;
+      console.log("RESPONSE", userData);
       if (userData?.user) {
         setAccessToken(userData.user?.accessToken);
         navigate("/");
       }
+      console.log("asdasdasds", accessToken);
     }
   }, [response, isSuccess]);
 
