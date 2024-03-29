@@ -14,8 +14,7 @@ import useApi from "@/hooks/useApi";
 import { VERIFICATION_TYPE } from "../verifications/OTP";
 import useCancelModal from "@/hooks/useCancelModal";
 import useScreenSize from "@/hooks/useScreenSize";
-import useAuth from "@/hooks/useAuth";
-import { useResetRecoilState } from "recoil";
+import { useResetRecoilState, useRecoilValue } from "recoil";
 import { resetPasswordToken } from "@/store/userStore";
 
 const Flex = styled(CP.Styled.Flex)`
@@ -50,7 +49,7 @@ const ForgetPassword = () => {
     useCancelModal();
   const { enqueueSnackbar } = useSnackbar();
   const { response, error, isError, isSuccess, handleApiRequest } = useApi();
-  const { resetToken } = useAuth();
+  const resetToken = useRecoilValue(resetPasswordToken);
   const resetTokenState = useResetRecoilState(resetPasswordToken);
 
   const isFormInvalid =
