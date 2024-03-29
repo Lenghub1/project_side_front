@@ -47,8 +47,6 @@ const ForgetPassword = () => {
   const { response, isSuccess, error, handleApiRequest } = useApi();
   const { open, handleCancelConfirm, handleModalOpen, handleCloseModal } =
     useCancelModal();
-  const { enqueueSnackbar } = useSnackbar();
-  const { response, error, isError, isSuccess, handleApiRequest } = useApi();
   const resetToken = useRecoilValue(resetPasswordToken);
   const resetTokenState = useResetRecoilState(resetPasswordToken);
 

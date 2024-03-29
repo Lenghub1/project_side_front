@@ -169,7 +169,7 @@ const OTP = () => {
       data = {
         resetToken: otp,
       };
-    } else if (verification.type === VERIFICATION_TYPE.VERIFY_2FA) {
+    } else if (verification.type === VERIFICATION_TYPE.VERIFY_ACCOUNT) {
       data = {
         phoneNumber: verification.phoneNumber,
         code: otp,
@@ -232,8 +232,8 @@ const OTP = () => {
                   Resend
                 </CP.Typography>
               </Flex>
-              <Flex gap={"100px"} width="100%" justify="center">
-                <Flex width="400px" justify="flex-end">
+              <Flex>
+                <Flex gap="0.5rem" justify="center">
                   <CP.Button variant="text" onClick={handleModalOpen}>
                     cancel
                   </CP.Button>
