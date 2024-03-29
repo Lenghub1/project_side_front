@@ -3,7 +3,6 @@ import { handleApiRequest } from "@/api/index";
 import { updateEmployee, deleteEmployee } from "@/api/employee";
 
 const handleAcceptEmployee = async (employmentId: string) => {
-  console.log(employmentId);
   const [response, error] = await handleApiRequest(() =>
     updateEmployee(
       {

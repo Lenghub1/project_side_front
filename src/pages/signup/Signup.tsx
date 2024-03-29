@@ -24,6 +24,8 @@ import SignupMethod from "@/components/signupMethod/SignupMethod";
 import { employeeRegister } from "@/store/organizationStore";
 import { useRecoilState } from "recoil";
 import { OauthComponent } from "@/components/oauth";
+import { VERIFICATION_TYPE } from "../verifications/OTP";
+import { removeLeadingZeron } from "@/utils/commonUtil";
 import Loading from "@/components/loading/Loading";
 
 export const Divider = styled(MuiDivider)`
@@ -128,6 +130,18 @@ const SignupPage = () => {
       // });
       navigate("/login/activate-account", {
         state: { credential: email.value, accountMethod: signupMethod },
+      });
+    } else if (isSuccess && signupMethod === "phone") {
+      navigate("/get-started/verify-phone", {
+        state: {
+          type: VERIFICATION_TYPE.VERIFY_ACCOUNT,
+          phone: `${selectedCountry.dialCode} ${phone.value}`,
+          method: signupMethod,
+          data: {
+            phoneNumber:
+              selectedCountry.dialCode + removeLeadingZeron(phone.value),
+          },
+        },
       });
     }
   }, [isSuccess, signupMethod]);

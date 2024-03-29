@@ -47,28 +47,27 @@ const routes: RouteProps[] = [
         name: "employeeInfo",
         path: "employee-info",
         element: Pg.InformationInput,
+        protected: false,
       },
       {
         name: "accountVerification",
         path: "activate-account",
         element: Pg.AccountVerification,
+        protected: false,
+      },
+      {
+        name: "phoneActivation",
+        path: "verify-phone",
+        element: Pg.Verification.default.OTP,
         protected: false,
       },
     ],
   },
   {
     name: "loginpage",
-    path: "login",
+    path: "/login",
     element: Pg.LoginPage.default.LoginPage,
     protected: false,
-    children: [
-      {
-        name: "accountVerification",
-        path: "activate-account",
-        element: Pg.AccountVerification,
-        protected: false,
-      },
-    ],
   },
   // {
   //   name: "login",
@@ -176,7 +175,6 @@ const routes: RouteProps[] = [
       },
     ],
   },
-
   {
     name: "forgetpassword",
     path: "/forget-password",
@@ -193,6 +191,7 @@ const routes: RouteProps[] = [
         name: "resetPassword",
         path: "reset-password",
         element: Pg.ForgetPassword.default.ResetPassword,
+        protected: false,
       },
     ],
   },
@@ -203,8 +202,8 @@ const routes: RouteProps[] = [
     protected: false,
   },
   {
-    name: "test-redirect",
-    path: "/test-redirect",
+    name: "redirect",
+    path: "/redirect",
     element: Pg.LoginPage.default.RedirectingPage,
     protected: false,
   },

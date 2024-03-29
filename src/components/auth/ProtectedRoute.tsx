@@ -4,6 +4,7 @@ import { useRecoilValue } from "recoil";
 import {
   isAuthenticatedState,
   isSelectedState,
+  isUserFetchedState,
   userRoleState,
   userState,
 } from "@/store/userStore";

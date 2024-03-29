@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import CP from "@/components";
-import styled from "styled-components";
+
 import { useEffect, useState } from "react";
 import useValidatedInput from "@/hooks/useValidatedInput";
 import { authApi } from "@/api/auth";
@@ -19,10 +19,10 @@ import SignupMethod from "@/components/signupMethod/SignupMethod";
 import SpaWithImage from "@/components/spaWithImage/SpaWithImage";
 import { validateEmail } from "../signup/Signup";
 import Loading from "@/components/loading/Loading";
+import { VERIFICATION_TYPE } from "../verifications/OTP";
+import { removeLeadingZeron } from "@/utils/commonUtil";
+import { Flex } from "../getStarted/GetStarted";
 
-const Flex = styled(CP.Styled.Flex)`
-  overflow: unset;
-`;
 type SignInMethod = "email" | "phone";
 
 interface LoginResponse {
@@ -43,7 +43,9 @@ const LoginPage = () => {
     dialCode: string;
     flag: string;
   }>(countries[0]);
-  const setAccessToken = useSetRecoilState(Store.User.accessTokenState);
+  const [accessToken, setAccessToken] = useRecoilState(
+    Store.User.accessTokenState
+  );
   const { isMobile } = useScreenSize();
 
   const isFormInvalid =
@@ -69,10 +71,12 @@ const LoginPage = () => {
   useEffect(() => {
     if (isSuccess) {
       const userData = response.data as LoginResponse;
+      console.log("RESPONSE", userData);
       if (userData?.user) {
         setAccessToken(userData.user?.accessToken);
         navigate("/");
       }
+      console.log("asdasdasds", accessToken);
     }
   }, [response, isSuccess]);
 
@@ -84,21 +88,31 @@ const LoginPage = () => {
           "error"
         );
       } else if (error.statusCode === 401) {
-        navigate("/get-started/activate-account", {
-          state: {
-            credential: loginMethod === "email" ? email.value : phone.value,
-            accountMethod: loginMethod,
-          },
-        });
+        if (loginMethod === "email") {
+          navigate("/get-started/activate-account", {
+            state: {
+              credential: email.value,
+              accountMethod: loginMethod,
+            },
+          });
+        } else {
+          navigate("/get-started/verify-phone", {
+            state: {
+              type: VERIFICATION_TYPE.VERIFY_ACCOUNT,
+              phone: `${selectedCountry.dialCode} ${phone.value}`,
+              method: loginMethod,
+              data: {
+                phoneNumber:
+                  selectedCountry.dialCode + removeLeadingZeron(phone.value),
+              },
+            },
+          });
+        }
       } else {
         showMessage("Something went wrong. Please try again.", "error");
       }
     }
   }, [error]);
-
-  if (isLoading) {
-    return <Loading isLoading={true} />;
-  }
 
   const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
@@ -125,6 +139,10 @@ const LoginPage = () => {
 
     await login(loginMethod, formData);
   };
+
+  if (isLoading) {
+    return <Loading isLoading={isLoading} />;
+  }
 
   return (
     <SpaWithImage>

@@ -58,7 +58,7 @@ export const forgotAccountInformation = atom({
   default: [],
   effects_UNSTABLE: [persistAtom],
 });
-export const resetPasswordToken = atom<Boolean>({
+export const resetPasswordToken = atom<boolean>({
   key: "resetPasswordToken",
   default: false,
   effects_UNSTABLE: [persistAtom],

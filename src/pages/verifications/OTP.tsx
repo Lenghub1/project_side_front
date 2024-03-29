@@ -1,13 +1,4 @@
-import {
-  useEffect,
-  useRef,
-  useState,
-  KeyboardEvent,
-  BaseSyntheticEvent,
-  ClipboardEvent,
-  SyntheticEvent,
-  useCallback,
-} from "react";
+import { useEffect, useState, SyntheticEvent, useCallback } from "react";
 import styled from "styled-components";
 import { useNavigate, useLocation } from "react-router-dom";
 import CP from "@/components";
@@ -17,9 +8,31 @@ import useApi from "@/hooks/useApi";
 import { maskPhoneNumber } from "../forgotAccount/AccountList";
 import useCancelModal from "@/hooks/useCancelModal";
 import useScreenSize from "@/hooks/useScreenSize";
+import { useSetRecoilState } from "recoil";
+import Store from "@/store";
+import { MuiOtpInput } from "mui-one-time-password-input";
+import { Flex } from "../getStarted/GetStarted";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 
-const Flex = styled(CP.Styled.Flex)`
-  overflow: unset;
+const customTheme = createTheme({
+  palette: {
+    primary: {
+      main: "#42a5f5",
+    },
+  },
+});
+const MuiOtpInputStyled = styled(MuiOtpInput)`
+  width: auto;
+  margin-inline: auto;
+  .MuiOtpInput-TextField {
+    width: 40px !important;
+    height: 40px !important;
+    color: secondary;
+    & .MuiInputBase-root {
+      height: 40px !important;
+      font-size: 1.2rem;
+    }
+  }
 `;
 
 const OTPContainer = CP.Styled.Flex;
@@ -52,57 +65,48 @@ export const VERIFICATION_TYPE = {
 const OTP = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isMobile } = useScreenSize();
-  const [arrayValue, setArrayValue] = useState<(string | number)[]>([
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-  ]);
-  const [maskedValue, setMaskedValue] = useState<(string | number)[]>([
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-  ]);
+
+  const { response, isSuccess, error, handleApiRequest } = useApi();
   const { open, handleCancelConfirm, handleModalOpen, handleCloseModal } =
     useCancelModal();
+  const { isMobile } = useScreenSize();
   const { enqueueSnackbar } = useSnackbar();
-  const inputs = useRef<(HTMLInputElement | null)[]>([]);
-  const isValidInput = arrayValue.every((value) => value !== "");
-  const { response, isSuccess, error, handleApiRequest } = useApi();
+
+  const [otp, setOtp] = useState("");
+  const setResetPassword = useSetRecoilState(Store.User.resetPasswordToken);
+
+  const isValidInput = otp.length === 6;
   const verification = location.state;
 
   useEffect(() => {
-    inputs.current[0]?.focus();
-  }, []);
-
-  useEffect(() => {
     if (error) {
-      console.log("ERROR", error);
-      showMessage("ERRROR" + error?.statusCode, "error");
+      showMessage("Incorrect code. Please try again", "error");
     }
   }, [error]);
 
   useEffect(() => {
+    console.log("RESPONSE", response);
+
     if (isSuccess && response) {
+      if (response.status_code === 200) {
+        showMessage(
+          "OTP has been resent. Please check your phone and verify",
+          "success"
+        );
+        return;
+      }
       if (verification.type === VERIFICATION_TYPE.VERIFY_FORGET_PASSWORD) {
         showMessage(
           "OTP code verified successfully. You can now reset your password.",
           "success"
         );
-
+        setResetPassword(true);
         setTimeout(() => {
           navigate("/forget-password/reset-password");
         }, 1500);
       } else if (verification.type === VERIFICATION_TYPE.VERIFY_ACCOUNT) {
-        // navigate to home
+        console.log("VERIFY", verification);
       } else if (verification.type === VERIFICATION_TYPE.VERIFY_2FA) {
-        //navigate to home
       }
     }
   }, [response, isSuccess]);
@@ -117,95 +121,17 @@ const OTP = () => {
     }
   }, []);
 
-  // handle pasting OTP code
-  const handleOnPaste = (e: ClipboardEvent, index: number) => {
-    e.preventDefault();
-    const paste = e.clipboardData.getData("text").split("");
-    let newInputValue = [...arrayValue];
-    let newMaskedValue = [...maskedValue];
-    let currentIndex = index;
-    for (let i = 0; i < paste.length; i++) {
-      if (currentIndex < arrayValue.length) {
-        newInputValue[currentIndex] = paste[i];
-        newMaskedValue[currentIndex] = "*";
-        currentIndex++;
-      }
+  async function resendOTP(): Promise<void> {
+    if (verification.type === VERIFICATION_TYPE.VERIFY_FORGET_PASSWORD) {
+      await handleApiRequest(() =>
+        authApi.forgotPassword(verification.method, verification.data)
+      );
+    } else if (verification.type === VERIFICATION_TYPE.VERIFY_ACCOUNT) {
+      await handleApiRequest(() =>
+        authApi.resendActivationCode(verification.method, verification.data)
+      );
     }
-    setArrayValue(newInputValue);
-    setMaskedValue(newMaskedValue);
-
-    // Focus the next input after pasting
-    const nextIndex = Math.min(index + paste.length, arrayValue.length - 1);
-    inputs.current[nextIndex]?.focus();
-  };
-
-  // handle clicking keyboard event
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    const keyCode = parseInt(e.key);
-    if (
-      e.key !== "Backspace" &&
-      e.key !== "Delete" &&
-      e.key !== "Tab" &&
-      !(e.metaKey && e.key === "v") &&
-      !(keyCode >= 0 && keyCode <= 9)
-    ) {
-      e.preventDefault();
-    }
-  };
-
-  // on change
-  const handleChange = (e: BaseSyntheticEvent, index: number) => {
-    const input = e.target.value;
-    if (!isNaN(input)) {
-      setArrayValue((preValue: (string | number)[]) => {
-        const newArray = [...preValue];
-        newArray[index] = input;
-        return newArray;
-      });
-
-      setMaskedValue((prevValue: (string | number)[]) => {
-        const newArray = [...prevValue];
-        newArray[index] = "*";
-        return newArray;
-      });
-
-      if (
-        input !== "" &&
-        index < arrayValue.length - 1 &&
-        arrayValue[index + 1] === ""
-      ) {
-        inputs.current[index + 1]?.focus();
-      }
-
-      // if the 6 input field, has value, then auto submit to OTP verify
-      console.log("Lenght of array", arrayValue);
-      if (arrayValue.every((value) => value !== "")) {
-        arrayValue.every((value) => {
-          console.log(value);
-        });
-      }
-    }
-  };
-  //handle on key up
-  const handleKeyUp = (e: KeyboardEvent<HTMLInputElement>, index: number) => {
-    if (e.key === "Backspace" || e.key === "Delete") {
-      setArrayValue((prevValue: (string | number)[]) => {
-        const newArray = [...prevValue];
-        newArray[index] = "";
-        return newArray;
-      });
-
-      setMaskedValue((prevValue: (string | number)[]) => {
-        const newArray = [...prevValue];
-        newArray[index] = "";
-        return newArray;
-      });
-
-      if (index > 0) {
-        inputs.current[index - 1]?.focus();
-      }
-    }
-  };
+  }
 
   function showMessage(message: string, variant: "error" | "success") {
     enqueueSnackbar(message, {
@@ -216,6 +142,23 @@ const OTP = () => {
       },
     });
   }
+  const matchIsString = (text: any) => {
+    return typeof text === "string" || text instanceof String;
+  };
+
+  function matchIsNumeric(text: string) {
+    const isNumber = typeof text === "number";
+    const isString = matchIsString(text);
+    return (isNumber || (isString && text !== "")) && !isNaN(Number(text));
+  }
+
+  const validateChar = (value: string, index: number) => {
+    return matchIsNumeric(value);
+  };
+
+  const handleChangeOtp = (newValue: string) => {
+    setOtp(newValue);
+  };
 
   const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
@@ -224,16 +167,16 @@ const OTP = () => {
 
     if (verification.type === VERIFICATION_TYPE.VERIFY_FORGET_PASSWORD) {
       data = {
-        resetToken: arrayValue.join(""),
+        resetToken: otp,
       };
-    } else if (verification.type === VERIFICATION_TYPE.VERIFY_2FA) {
+    } else if (verification.type === VERIFICATION_TYPE.VERIFY_ACCOUNT) {
       data = {
         phoneNumber: verification.phoneNumber,
-        code: arrayValue.join(""),
+        code: otp,
       };
     } else if (verification.type === VERIFICATION_TYPE.VERIFY_2FA) {
       data = {
-        OTP: arrayValue.join(""),
+        OTP: otp,
         credential: verification.credential,
         loginMethod: verification.loginMethod,
       };
@@ -264,21 +207,17 @@ const OTP = () => {
                 {maskPhoneNumber(verification.phone).slice(7)}.
               </CP.Typography>
             </Flex>
-            <OTPContainer>
-              {maskedValue.map((value: string | number, index: number) => (
-                <OTPInput
-                  key={`index-${index}`}
-                  ref={(el) => (inputs.current[index] = el)}
-                  onChange={(e) => handleChange(e, index)}
-                  onKeyUp={(e) => handleKeyUp(e, index)}
-                  onKeyDown={(e) => handleKeyDown(e)}
-                  onPaste={(e) => handleOnPaste(e, index)}
-                  maxLength={1}
-                  autoComplete="off"
-                  accessKey={String(index)}
-                />
-              ))}
-            </OTPContainer>
+            <ThemeProvider theme={customTheme}>
+              <MuiOtpInputStyled
+                gap={1}
+                length={6}
+                value={otp}
+                onChange={handleChangeOtp}
+                TextFieldsProps={{ variant: "outlined" }}
+                sx={{ color: "slateblue" }}
+                validateChar={validateChar}
+              />
+            </ThemeProvider>
             <Flex direction="column" gap="24px" overflow="unset" margin="16px">
               <Flex>
                 <CP.Typography marginRight={1}>
@@ -288,12 +227,13 @@ const OTP = () => {
                   fontWeight="semibold"
                   color={"primary"}
                   sx={{ cursor: "pointer" }}
+                  onClick={() => resendOTP()}
                 >
                   Resend
                 </CP.Typography>
               </Flex>
-              <Flex gap={"100px"} width="100%" justify="center">
-                <Flex width="400px" justify="flex-end">
+              <Flex>
+                <Flex gap="0.5rem" justify="center">
                   <CP.Button variant="text" onClick={handleModalOpen}>
                     cancel
                   </CP.Button>
