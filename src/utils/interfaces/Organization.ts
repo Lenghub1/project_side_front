@@ -6,4 +6,5 @@ export interface Organization {
   employeeCounts?: number;
   createdAt: Date;
   updatedAt: Date;
+  data: any;
 }

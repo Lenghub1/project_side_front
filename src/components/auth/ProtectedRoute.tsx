@@ -22,8 +22,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const userRole = useRecoilValue(userRoleState);
   const user = useRecoilValue(userState);
 
-  console.log("USER: ", user);
-
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }

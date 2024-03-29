@@ -10,11 +10,12 @@ import { useNavigate } from "react-router-dom";
 import { organizationState } from "@/store/organizationStore";
 import { Splide, SplideSlide } from "@splidejs/react-splide"; // Import Splide components
 import "@splidejs/splide/dist/css/themes/splide-default.min.css"; // Import Splide CSS
-
+import { useIsMobile } from "@/utils/isMobile";
 const ScreenJoinOrganization = () => {
   const navigate = useNavigate();
   const [selectedOrg, setSelectedOrg] = useState<string>();
   const [selectOrg, setSelectOrg] = useRecoilState(selectedOrganization);
+  const isMobile = useIsMobile();
   const [organizationData, setOrganizationData] =
     useRecoilState(organizationState);
   const user = useRecoilValue(userState);
@@ -32,16 +33,16 @@ const ScreenJoinOrganization = () => {
         setOrganizationData(response.data || []);
       } else {
       }
-      setLoading(false); // Set loading to false once data fetching is complete
+      setLoading(false);
     };
 
-    setOrganizationData(null); // Reset organization data when component mounts
+    setOrganizationData(null);
 
     const timeout = setTimeout(() => {
       fetchData();
-    }, 2000); // Delay fetching data by 2 seconds
+    }, 2000);
 
-    return () => clearTimeout(timeout); // Cleanup function to clear the timeout if component unmounts
+    return () => clearTimeout(timeout);
   }, [user.id]);
 
   const findOrgIdBySelectedId = (selectedId: string) => {
@@ -59,6 +60,7 @@ const ScreenJoinOrganization = () => {
 
   const handleNavigate = () => {
     findOrgIdBySelectedId(selectedOrg as string);
+
     navigate("/organization");
   };
 
@@ -67,18 +69,26 @@ const ScreenJoinOrganization = () => {
   }
 
   return (
-    <CP.Styled.Flex>
+    <CP.Styled.Flex
+      style={{
+        position: "fixed",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+      }}
+    >
       <CP.Styled.Flex direction="column" gap="20px" padding="20px">
         <CP.Styled.Flex direction="column">
           <CP.Styled.Flex direction="column"></CP.Styled.Flex>
         </CP.Styled.Flex>
         <CP.Styled.Flex direction="column">
           {organizationData && (
-            <CP.Typography variant="h4">CHOOSE</CP.Typography>
+            <CP.Typography variant={isMobile ? "h6" : "h4"}>
+              CHOOSE
+            </CP.Typography>
           )}
 
-          <CP.Typography variant="h4">
-            {" "}
+          <CP.Typography variant={isMobile ? "h5" : "h4"}>
             {organizationData ? "YOUR ORGANIZATIONS" : "ORGANIZATION NOT FOUND"}
           </CP.Typography>
         </CP.Styled.Flex>
@@ -93,9 +103,10 @@ const ScreenJoinOrganization = () => {
               perPage: 1,
               gap: 3,
               pagination: true,
+              arrows: isMobile ? false : true,
               breakpoints: {
                 768: {
-                  perPage: 2,
+                  perPage: 1,
                 },
               },
             }}
@@ -160,19 +171,20 @@ const ScreenJoinOrganization = () => {
           </CP.Styled.Flex>
         )}
       </CP.Styled.Flex>
-
-      <CP.Styled.Div>
-        <Box
-          component="img"
-          src="/random-unsplash.jpg"
-          alt="Random image"
-          sx={{
-            width: 1,
-            height: "100vh",
-            objectFit: "cover",
-          }}
-        ></Box>
-      </CP.Styled.Div>
+      {!isMobile && (
+        <CP.Styled.Div>
+          <Box
+            component="img"
+            src="/random-unsplash.jpg"
+            alt="Random image"
+            sx={{
+              width: 1,
+              height: "100vh",
+              objectFit: "cover",
+            }}
+          ></Box>
+        </CP.Styled.Div>
+      )}
     </CP.Styled.Flex>
   );
 };

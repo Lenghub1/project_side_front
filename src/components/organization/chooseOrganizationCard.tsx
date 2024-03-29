@@ -2,8 +2,7 @@ import CP from "..";
 import styled from "styled-components";
 import CardActionArea from "@mui/material/CardActionArea";
 import CardContent from "@mui/material/CardContent";
-import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
-import PlaceIcon from "@mui/icons-material/Place";
+
 import PersonIcon from "@mui/icons-material/Person";
 interface RoleCardProps {
   id: string;
