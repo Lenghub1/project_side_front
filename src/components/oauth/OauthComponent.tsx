@@ -14,7 +14,7 @@ interface OauthProps {
   alt: string;
   click?: () => void;
 }
-const baseUrl = import.meta.env.VITE_BASE_URL_DEV;
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
