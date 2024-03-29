@@ -24,6 +24,7 @@ import SignupMethod from "@/components/signupMethod/SignupMethod";
 import { employeeRegister } from "@/store/organizationStore";
 import { useRecoilState } from "recoil";
 import { OauthComponent } from "@/components/oauth";
+import Loading from "@/components/loading/Loading";
 
 export const Divider = styled(MuiDivider)`
   width: 100%;
@@ -145,6 +146,8 @@ const SignupPage = () => {
           );
           phone.setError("Phone number already exists.");
         }
+      } else if (error.statusCode === 422) {
+        showError("Please provide valid information.");
       } else {
         showError("Something went wrong. Please try again.");
       }
@@ -186,7 +189,7 @@ const SignupPage = () => {
   };
 
   if (isLoading) {
-    return <h1>Loading</h1>;
+    return <Loading isLoading={true} />;
   }
 
   return (

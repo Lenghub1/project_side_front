@@ -11,6 +11,7 @@ import { organizationState } from "@/store/organizationStore";
 import { Splide, SplideSlide } from "@splidejs/react-splide"; // Import Splide components
 import "@splidejs/splide/dist/css/themes/splide-default.min.css"; // Import Splide CSS
 import { useIsMobile } from "@/utils/isMobile";
+import Loading from "@/components/loading/Loading";
 const ScreenJoinOrganization = () => {
   const navigate = useNavigate();
   const [selectedOrg, setSelectedOrg] = useState<string>();
@@ -65,7 +66,7 @@ const ScreenJoinOrganization = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>; // Render a loading indicator while data is being fetched
+    return <Loading isLoading={loading} />;
   }
 
   return (

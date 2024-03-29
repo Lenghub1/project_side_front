@@ -11,7 +11,7 @@ import {
 import useEnsureAccessToken from "@/hooks/useEnsureAccessToken";
 import { ProtectedRoute, UnprotectedRoute } from "@/components/auth";
 import useAuth from "@/hooks/useAuth";
-
+import Loading from "@/components/loading/Loading";
 const renderRoutes = ({
   routes,
   isUserFetched,
@@ -61,7 +61,7 @@ const AppRoutes = () => {
   const accessToken = useRecoilValue(accessTokenState);
 
   if (!isAccessTokenFetched || !isInterceptorInitialized) {
-    return <div>Loading...</div>;
+    return <Loading isLoading={true} />;
   }
 
   return (

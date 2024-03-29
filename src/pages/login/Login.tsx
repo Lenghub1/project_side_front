@@ -18,6 +18,7 @@ import { FormContainer, Title } from "../companySearch/CompanySearch";
 import SignupMethod from "@/components/signupMethod/SignupMethod";
 import SpaWithImage from "@/components/spaWithImage/SpaWithImage";
 import { validateEmail } from "../signup/Signup";
+import Loading from "@/components/loading/Loading";
 
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -59,7 +60,7 @@ const LoginPage = () => {
       },
     });
   }
-  const { response, error, isSuccess, handleApiRequest } = useApi();
+  const { response, isLoading, error, isSuccess, handleApiRequest } = useApi();
   // function for login api
   async function login(method: string, data: any): Promise<void> {
     await handleApiRequest(() => authApi.testLogin(method, data));
@@ -94,6 +95,10 @@ const LoginPage = () => {
       }
     }
   }, [error]);
+
+  if (isLoading) {
+    return <Loading isLoading={true} />;
+  }
 
   const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
