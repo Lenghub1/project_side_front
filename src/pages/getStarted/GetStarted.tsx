@@ -73,7 +73,6 @@ const GetStarted = () => {
                 variant="contained"
                 disabled={!accountType}
                 onClick={handleOnButtonClick}
-                style={{ maxWidth: 712 }}
               >
                 Continue
               </CP.Button>

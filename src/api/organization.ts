@@ -13,6 +13,7 @@ const myOrganization = async (organizationId: string) => {
     transformResponse: [
       (response) => {
         const data = transformData(response, fieldMapping);
+
         return data;
       },
     ],

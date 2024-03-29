@@ -3,6 +3,7 @@ import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom"; // Import useHistory for navigation
 import { newOrganization } from "@/api/organization";
 import { handleApiRequest } from "@/api";
+import { useIsMobile } from "@/utils/isMobile";
 import {
   Typography,
   Button,
@@ -21,7 +22,7 @@ const ScreenCreateOrganization = () => {
   const [businessType, setBusinessType] = useState("");
   const [companySize, setCompanySize] = useState("");
   const [country, setCountry] = useState("");
-
+  const isMobile = useIsMobile();
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate(); // Initialize useHistory for navigation
 
@@ -86,11 +87,15 @@ const ScreenCreateOrganization = () => {
         transform: "translate(-50%, -50%)",
       }}
     >
-      <Container style={{ width: "760px" }}>
+      <Container style={{ maxWidth: "760px" }}>
         <Box sx={{ p: 4 }}>
-          <Typography variant="h4">Create Organization</Typography>
+          <Typography variant={isMobile ? "h5" : "h4"}>
+            Create Organization
+          </Typography>
           <Box sx={{ mt: 4 }}>
-            <Typography variant="h6">Organization Details</Typography>
+            <Typography variant={isMobile ? "h6" : "h5"}>
+              Organization Details
+            </Typography>
             <TextField
               label="Organization Name"
               variant="outlined"
@@ -148,13 +153,18 @@ const ScreenCreateOrganization = () => {
               </Select>
             </FormControl>
           </Box>
-          <Button
-            variant="contained"
-            onClick={handleCreateOrganization}
-            sx={{ mt: 4 }}
-          >
-            Create Organization
-          </Button>
+          <CP.Styled.Flex justify="flex-end" gap="20px">
+            <CP.Button variant="text" sx={{ mt: 4 }}>
+              Cancel
+            </CP.Button>
+            <CP.Button
+              variant="contained"
+              onClick={handleCreateOrganization}
+              sx={{ mt: 4 }}
+            >
+              Create
+            </CP.Button>
+          </CP.Styled.Flex>
         </Box>
       </Container>
     </CP.Styled.Div>

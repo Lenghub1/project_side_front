@@ -21,6 +21,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const selected = useRecoilValue(isSelectedState);
   const userRole = useRecoilValue(userRoleState);
   const user = useRecoilValue(userState);
+  console.log("im selected", selected);
+
+  console.log("hello", selected);
 
   console.log("USER: ", user);
 
