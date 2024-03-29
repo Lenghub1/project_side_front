@@ -187,8 +187,8 @@ function EnhancedTable<T>({
                   role="checkbox"
                   tabIndex={-1}
                   key={rowIndex}
-                  selected={selectedRows.includes(row)}
-                  onClick={() => isSelectable && handleRowClick(row)}
+                  selected={selectedRows.includes(row as T)}
+                  onClick={() => isSelectable && handleRowClick(row as T)}
                   sx={{
                     cursor: isSelectable ? "pointer" : "default",
                   }}
@@ -196,8 +196,10 @@ function EnhancedTable<T>({
                   {isSelectable && (
                     <TableCell padding="checkbox">
                       <Checkbox
-                        checked={selectedRows.includes(row)}
-                        onChange={() => isSelectable && handleRowClick(row)}
+                        checked={selectedRows.includes(row as T)}
+                        onChange={() =>
+                          isSelectable && handleRowClick(row as T)
+                        }
                       />
                     </TableCell>
                   )}
