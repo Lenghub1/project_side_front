@@ -18,7 +18,6 @@ import { FormContainer, Title } from "../companySearch/CompanySearch";
 import SignupMethod from "@/components/signupMethod/SignupMethod";
 import SpaWithImage from "@/components/spaWithImage/SpaWithImage";
 import { validateEmail } from "../signup/Signup";
-
 import Loading from "@/components/loading/Loading";
 import { VERIFICATION_TYPE } from "../verifications/OTP";
 import { removeLeadingZeron } from "@/utils/commonUtil";
@@ -63,7 +62,7 @@ const LoginPage = () => {
       },
     });
   }
-  const { response, error, isSuccess, handleApiRequest } = useApi();
+  const { response, isLoading, error, isSuccess, handleApiRequest } = useApi();
   // function for login api
   async function login(method: string, data: any): Promise<void> {
     await handleApiRequest(() => authApi.testLogin(method, data));
@@ -140,6 +139,10 @@ const LoginPage = () => {
 
     await login(loginMethod, formData);
   };
+
+  if (isLoading) {
+    return <Loading isLoading={isLoading} />;
+  }
 
   return (
     <SpaWithImage>
