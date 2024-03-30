@@ -1,3 +1,4 @@
+// EnhancedTable.tsx
 import React, { useState } from "react";
 import {
   Container,
@@ -25,18 +26,29 @@ interface ReactCell<T> {
   filterable?: boolean;
 }
 
+interface SortField {
+  field: string;
+  direction: "asc" | "desc";
+}
+
 interface EnhancedTableProps<T> {
-  headCells: any;
+  headCells: any[];
   rows: T[];
   rowCount: number;
   tableName: string;
+  onFilterChange: (sortFields: SortField[]) => void;
+  onRequestSort: (sortFields: SortField[]) => void;
 }
+
+type SortOrder = "asc" | "desc" | "none";
 
 function EnhancedTable<T>({
   headCells,
   rows,
   rowCount,
   tableName,
+  onFilterChange,
+  onRequestSort,
 }: EnhancedTableProps<T>) {
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
@@ -98,6 +110,7 @@ function EnhancedTable<T>({
           data={rows}
           name={tableName}
           headCells={headCells}
+          onFilterChange={onFilterChange}
         />
         <TableContainer>
           <Table
@@ -107,10 +120,7 @@ function EnhancedTable<T>({
           >
             <EnhancedTableHead<T>
               headCells={headCells}
-              isSelectable={isSelectable}
-              onSelectClick={handleSelectClick}
-              numSelected={selectedRows.length}
-              rowCount={rowCount}
+              onRequestSort={onRequestSort}
             />
 
             <TableBody>

@@ -8,6 +8,7 @@ import Box from "@mui/material/Box";
 import TableFilter from "./filter/Filter";
 import CP from "..";
 import { useState } from "react";
+
 interface TableToolbarProp {
   name: string;
   data: object;
@@ -22,6 +23,7 @@ const EnhancedTableToolbar: React.FC<TableToolbarProp> = ({
   onFilterChange,
 }) => {
   const [showFilter, setShowFilter] = useState(false);
+
   return (
     <Toolbar disableGutters>
       <CP.Styled.Flex direction="column" gap="8px">
@@ -35,7 +37,7 @@ const EnhancedTableToolbar: React.FC<TableToolbarProp> = ({
             {name}
           </Typography>
           <SearchDisplay data={data} />
-          <IconButton onClick={() => setShowFilter((pre) => !pre)}>
+          <IconButton onClick={() => setShowFilter((prev) => !prev)}>
             {showFilter ? <CloseIcon /> : <FilterIcon />}
           </IconButton>
         </CP.Styled.Flex>
@@ -47,14 +49,10 @@ const EnhancedTableToolbar: React.FC<TableToolbarProp> = ({
             width="100%"
             padding={1}
           >
-            <CP.Styled.Flex justify="space-between">
-              {showFilter && (
-                <TableFilter
-                  headCells={headCells}
-                  onFilterChange={onFilterChange}
-                />
-              )}
-            </CP.Styled.Flex>
+            <TableFilter
+              headCells={headCells}
+              onFilterChange={onFilterChange}
+            />
           </Box>
         )}
       </CP.Styled.Flex>
