@@ -7,10 +7,6 @@ import {
   combineFields,
 } from "@/utils/api.util";
 
-const data = JSON.parse(localStorage.getItem("recoil-persist")!);
-
-const currentOrganizationId = data?.selectedOrganization;
-
 const fieldMapping = generateFieldMapping({
   id: "id",
   userId: "userId",
@@ -32,7 +28,7 @@ const allWorkplace = async (
 };
 
 const getUserEmployments = async (
-  organizationId: string = currentOrganizationId
+  organizationId: string
 ): Promise<AxiosResponse<Partial<Employement[]>>> => {
   return api.get(`/organizations/${organizationId}/employments/user`, {
     transformResponse: [
@@ -47,7 +43,7 @@ const getUserEmployments = async (
 
 const createEmployee = async (
   data: Object,
-  organizationId: string = currentOrganizationId
+  organizationId: string
 ): Promise<AxiosResponse<Partial<Employement>>> => {
   return api.post(`/organizations/${organizationId}/employments`, data, {
     transformResponse: [
@@ -61,7 +57,7 @@ const createEmployee = async (
 };
 
 const allEmployees = async (
-  organizationId: string = currentOrganizationId
+  organizationId: string
 ): Promise<AxiosResponse<Partial<Employement>[]>> => {
   return api.get(
     `/organizations/${organizationId}/employments?status_ne=pending`,
@@ -78,7 +74,7 @@ const allEmployees = async (
 };
 
 const getAllPendingEmployees = async (
-  organizationId: string = currentOrganizationId
+  organizationId: string
 ): Promise<AxiosResponse<Partial<Employement>>> => {
   return api.get(
     `/organizations/${organizationId}/employments?status_eq=pending`,
@@ -96,7 +92,7 @@ const getAllPendingEmployees = async (
 
 const getEmployeeById = async (
   employmentId: string,
-  organizationId: string = currentOrganizationId
+  organizationId: string
 ): Promise<AxiosResponse<Partial<Employement>>> => {
   return api.get(
     `/organizations/${organizationId}/employments/${employmentId}`,
@@ -115,7 +111,7 @@ const getEmployeeById = async (
 const updateEmployee = async (
   data: Object,
   employmentId: string,
-  organizationId: string = currentOrganizationId
+  organizationId: string
 ): Promise<AxiosResponse<Partial<Employement>>> => {
   return api.patch(
     `/organizations/${organizationId}/employments/${employmentId}`,
@@ -132,10 +128,8 @@ const updateEmployee = async (
   );
 };
 
-const deleteEmployee = async (
-  employmentId: string,
-  organizationId: string = currentOrganizationId
-) => api.delete(`/organizations/${organizationId}/employments/${employmentId}`);
+const deleteEmployee = async (employmentId: string, organizationId: string) =>
+  api.delete(`/organizations/${organizationId}/employments/${employmentId}`);
 
 export {
   allWorkplace,

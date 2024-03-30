@@ -13,6 +13,7 @@ import Error from "../error/Error";
 import { useRecoilValue, useRecoilState } from "recoil";
 import { filteredDataState, dataToFilterState } from "@/store/filterStore";
 import { UserInformationCell } from "./EmployeeTable";
+import { organizationState } from "@/store/organizationStore";
 
 const RenderActionCell = (row: Employement) => {
   const { id } = row;
@@ -35,7 +36,9 @@ const RenderActionCell = (row: Employement) => {
 const EmployeeRegistration = () => {
   const [_, setDataToFilter] = useRecoilState(dataToFilterState);
   const { isFilter, data: filteredData } = useRecoilValue(filteredDataState);
-  const { data, error } = useFetch(getAllPendingEmployees);
+  const organization = useRecoilValue(organizationState);
+  console.log(organization);
+  const { data, error } = useFetch(() => getAllPendingEmployees(organization));
 
   if (error) {
     return <Error status={error.status_code} />;
