@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { TextField, Button, Grid, Container, MenuItem } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import CP from "@/components";
-
 import { patchUser } from "@/api/user";
 import { userState } from "@/store/userStore";
 import { useRecoilState } from "recoil";
@@ -21,14 +20,14 @@ const FillForm = () => {
     role: "",
   });
 
-  const roles = ["Super admin", "Admin", "Employee"]; // Array of roles
+  const roles = ["Super admin", "Admin", "Employee"];
   const userPatch = async () => {
     await handleApiRequest(() => patchUser(user.id, formData));
   };
 
   useEffect(() => {
     if (isSuccess) {
-      enqueueSnackbar("successfully Update Your Personal Information", {
+      enqueueSnackbar("Successfully Update Your Personal Information", {
         variant: "success",
         autoHideDuration: 1500,
       });
@@ -52,7 +51,8 @@ const FillForm = () => {
       console.log(error);
     }
   }, [isSuccess, isError, error]);
-  const handleInputChange = (e: any) => {
+
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -61,7 +61,6 @@ const FillForm = () => {
   };
 
   const handleSubmit = () => {
-    // Validate form data
     if (formData.firstName.trim() === "") {
       enqueueSnackbar("Please enter your first name", {
         variant: "error",
@@ -88,19 +87,19 @@ const FillForm = () => {
   };
 
   return (
-    <Container style={{ width: "768px" }}>
-      <CP.Styled.Div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
+    <Container
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+      }}
+    >
+      <div style={{ maxWidth: "400px", width: "100%" }}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <CP.Styled.Flex>
-              <CP.Typography variant="h5">PERSONAL information</CP.Typography>
+              <CP.Typography variant="h5">PERSONAL INFORMATION</CP.Typography>
             </CP.Styled.Flex>
           </Grid>
           <Grid item xs={12}>
@@ -128,7 +127,7 @@ const FillForm = () => {
           <Grid item xs={12}>
             <TextField
               fullWidth
-              select // Change to select input
+              select
               label="Role"
               variant="outlined"
               placeholder="Select role"
@@ -143,7 +142,6 @@ const FillForm = () => {
               ))}
             </TextField>
           </Grid>
-
           <Grid item xs={12}>
             <Button
               fullWidth
@@ -155,7 +153,7 @@ const FillForm = () => {
             </Button>
           </Grid>
         </Grid>
-      </CP.Styled.Div>
+      </div>
     </Container>
   );
 };
