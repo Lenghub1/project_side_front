@@ -6,6 +6,7 @@ interface UnprotectedRouteProps {
   element: any;
   redirectPath?: string;
 }
+import { employee } from "@/store/employee";
 
 const UnprotectedRoute: React.FC<UnprotectedRouteProps> = ({
   element,
@@ -13,8 +14,10 @@ const UnprotectedRoute: React.FC<UnprotectedRouteProps> = ({
 }) => {
   const isAuthenticated = useRecoilValue(isAuthenticatedState);
   const selected = useRecoilValue(isSelectedState);
+  const employeeStatus = useRecoilValue(employee);
+  const employeedStatus = employeeStatus?.status;
 
-  if (isAuthenticated && selected) {
+  if (isAuthenticated && selected && employeedStatus === "active") {
     return <Navigate to={redirectPath || "/"} replace />;
   }
 

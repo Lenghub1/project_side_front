@@ -8,7 +8,7 @@ import {
   userRoleState,
   userState,
 } from "@/store/userStore";
-
+import { employee } from "@/store/employee";
 interface ProtectedRouteProps {
   element: React.ReactNode;
   allowedRoles?: string[];
@@ -22,6 +22,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const selected = useRecoilValue(isSelectedState);
   const userRole = useRecoilValue(userRoleState);
   const user = useRecoilValue(userState);
+  const employeeStatus = useRecoilValue(employee);
+  console.log(employeeStatus);
+
+  console.log("ming", employeeStatus?.status);
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
@@ -34,7 +38,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   if (!selected) {
     return <Navigate to="/login/choose-organization" replace />;
   }
-
+  if (employeeStatus?.status === "pending") {
+    return <Navigate to="/check-status" replace />;
+  }
   if (allowedRoles && allowedRoles.length > 0) {
     // check if user has required roles
     const hasRequiredRole = allowedRoles.includes(userRole);

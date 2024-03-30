@@ -183,6 +183,12 @@ const routes: RouteProps[] = [
     ],
   },
   {
+    name: "checkStatus",
+    path: "/check-status",
+    element: Pg.CheckStatus.default.CheckStatus,
+    protected: false,
+  },
+  {
     name: "forgetpassword",
     path: "/forget-password",
     element: Pg.ForgetPassword.default.ForgetPassword,

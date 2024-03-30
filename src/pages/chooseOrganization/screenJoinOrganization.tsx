@@ -12,10 +12,12 @@ import { Splide, SplideSlide } from "@splidejs/react-splide"; // Import Splide c
 import "@splidejs/splide/dist/css/themes/splide-default.min.css"; // Import Splide CSS
 import { useIsMobile } from "@/utils/isMobile";
 import Loading from "@/components/loading/Loading";
+import { employee } from "@/store/employee";
 const ScreenJoinOrganization = () => {
   const navigate = useNavigate();
   const [selectedOrg, setSelectedOrg] = useState<string>();
   const [selectOrg, setSelectOrg] = useRecoilState(selectedOrganization);
+  const [employeeData, setEmployeeData] = useRecoilState(employee);
   const isMobile = useIsMobile();
   const [organizationData, setOrganizationData] =
     useRecoilState(organizationState);
@@ -52,6 +54,9 @@ const ScreenJoinOrganization = () => {
     );
     if (selectedOrganization) {
       setSelectOrg(selectedOrganization.orgId);
+      console.log("mee", selectedOrganization);
+
+      setEmployeeData(selectedOrganization);
       return selectedOrganization.orgId;
     } else {
       console.error("Selected organization not found in organizationData");

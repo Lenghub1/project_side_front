@@ -24,7 +24,11 @@ export const employees = atom<Employement[]>({
 
   effects_UNSTABLE: [persistAtom],
 });
-
+export const employee = atom<Employement[]>({
+  key: `employee`,
+  default: undefined,
+  effects_UNSTABLE: [persistAtom],
+});
 export const selectMembers = atom<string[] | null>({
   key: `selectMembers`,
   default: [],
