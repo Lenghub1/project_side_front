@@ -1,14 +1,16 @@
-import CP from "@/components";
+import { useEffect, useState } from "react";
+import { Typography, Stack } from "@mui/material";
+import Avatar from "@mui/material/Avatar";
 import useFetch from "@/hooks/useFetch";
 import { allEmployees } from "@/api/employee";
-import EnhancedTable from "@/components/table/EnhanceTable";
+import EnhancedTable from "@/components/table/EnhanceTable2";
 import { Employement } from "@/utils/interfaces/Employment";
 import Error from "../error/Error";
 import { useRecoilValue, useRecoilState } from "recoil";
 import { filteredDataState, dataToFilterState } from "@/store/filterStore";
-import { useEffect } from "react";
-import { Stack, Typography } from "@mui/material";
-import Avatar from "@mui/material/Avatar";
+import { selectedOrganization } from "@/store/userStore";
+import CP from "@/components";
+import { Filter, Sort } from "@/utils/interfaces/Feature";
 
 export const UserInformationCell = (row: Employement) => {
   return (
@@ -25,26 +27,90 @@ export const UserInformationCell = (row: Employement) => {
 };
 
 const EmployeeTable = () => {
+  const filters = [
+    { field: "status", logicalClause: "ne", targetValue: "pending" },
+  ];
+  const perPage = 20;
+  const page = 1;
+
   const [_, setDataToFilter] = useRecoilState(dataToFilterState);
   const { isFilter, data: filteredData } = useRecoilValue(filteredDataState);
-  const { data, error } = useFetch(allEmployees);
+  const organization = useRecoilValue(selectedOrganization);
+
+  // State to manage the sorting criteria
+  const [sortCriteria, setSortCriteria] = useState<Sort[]>([
+    { field: "position", direction: "asc" },
+  ]);
+
+  // State to manage filters
+  const [appliedFilters, setAppliedFilters] = useState<Filter[]>(filters);
+
+  // Fetch data with sorting criteria and filters
+  const { data, error, refetchData } = useFetch(() =>
+    allEmployees(organization, appliedFilters, sortCriteria, perPage, page)
+  );
+
   if (error) {
     return <Error status={error.status_code} />;
   }
+
   useEffect(() => {
     setDataToFilter(data);
-  }, []);
+  }, [data]);
+
   const displayData = isFilter ? filteredData : data;
+
+  const handleSortRequest = (property: keyof Employement) => {
+    const existingSortIndex = sortCriteria.findIndex(
+      (criteria) => criteria.field === property
+    );
+
+    if (existingSortIndex !== -1) {
+      const updatedCriteria = [...sortCriteria];
+      const currentDirection = updatedCriteria[existingSortIndex].direction;
+
+      // Check the current sorting direction and update accordingly
+      if (currentDirection === "asc") {
+        updatedCriteria[existingSortIndex].direction = "desc";
+      } else if (currentDirection === "desc") {
+        // If sorting direction is descending, remove the sort criteria
+        updatedCriteria.splice(existingSortIndex, 1);
+      }
+
+      setSortCriteria(updatedCriteria);
+    } else {
+      // Property doesn't exist in sort criteria, add it
+      setSortCriteria((prevCriteria) => [
+        ...prevCriteria,
+        { field: property as string, direction: "asc" },
+      ]);
+    }
+  };
+
+  const handleFilterChange = (filters: Filter[]) => {
+    // Convert SortField[] to Filter[] if needed
+    const convertedFilters: Filter[] = filters.map((filter) => ({
+      field: filter.field,
+      logicalClause: filter.logicalClause, // Provide appropriate default values
+      targetValue: filter.targetValue, // Provide appropriate default values
+    }));
+    setAppliedFilters(convertedFilters);
+  };
+
+  // Refetch data when sorting criteria or filters change
+  useEffect(() => {
+    refetchData();
+  }, [sortCriteria, appliedFilters]);
 
   return (
     <CP.Container>
       <EnhancedTable<Employement>
-        orderBy="position"
-        order="asc"
         headCells={headCells}
         rows={displayData || []}
         rowCount={displayData?.length || 0}
         tableName="Employee"
+        onFilterChange={handleFilterChange}
+        onRequestSort={handleSortRequest}
       />
     </CP.Container>
   );
@@ -57,9 +123,11 @@ const headCells = [
     label: "Employee",
     type: "ReactCell",
     element: UserInformationCell,
-    sortable: true,
-    sortFeild: "name", //The sort field and id have to be the same for sorting to work properly
+    sortable: false,
+    filterable: false,
+    sortField: "name",
     id: "name",
+    numeric: false,
   },
   {
     id: "position",
@@ -68,6 +136,7 @@ const headCells = [
     label: "Position",
     filterable: true,
     sortable: true,
+    sortField: "position",
   },
   {
     id: "privilege",
@@ -76,6 +145,7 @@ const headCells = [
     label: "Privilege",
     filterable: true,
     sortable: true,
+    sortField: "privilege",
   },
   {
     id: "status",
