@@ -12,6 +12,7 @@ import { filterSelectionsState } from "@/store/api.feature";
 import { FilterSelection } from "@/utils/interfaces/Feature";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import IconButton from "@mui/material/IconButton";
+import CP from "@/components";
 
 interface TableFilterProps {
   headCells: any[];
@@ -111,6 +112,16 @@ const TableFilter = ({ headCells, onFilterChange }: TableFilterProps) => {
       />
     ));
   }, [filterSections, dataToFilter]);
+  const areAllFiltersFilled = () => {
+    return filterSelections.every(
+      (selection) => selection.values.length > 0 && selection.option
+    );
+  };
+
+  const handleApplyFilter = () => {
+    onFilterChange(filterSelections);
+    setInnerOpen(false);
+  };
 
   return (
     <Box>
@@ -132,15 +143,13 @@ const TableFilter = ({ headCells, onFilterChange }: TableFilterProps) => {
                     label={headCell.label}
                     variant={filterOptions[headCell.id] ? "filled" : "outlined"}
                     color="primary"
-                    size="small"
-                    onClick={(event) => handleAddFilter(headCell.id, event)}
+                    onClick={() => handleAddFilter(headCell.id)}
                   />
                 )
             )}
             <Chip
               label="Clear Filters"
               color="default"
-              size="small"
               onClick={handleClearFilters}
             />
           </Stack>
@@ -149,11 +158,20 @@ const TableFilter = ({ headCells, onFilterChange }: TableFilterProps) => {
 
       <Popper open={innerOpen} anchorEl={anchorEl} placement={placement}>
         <Paper sx={{ padding: 4, maxHeight: "350px", width: "500px" }}>
-          <IconButton aria-label="close" onClick={handleCloseInnerPopper}>
-            <ArrowBackIosIcon fontSize="small" />
-          </IconButton>
+          <Stack gap={2}>
+            <CP.Styled.Flex justify="flex-start">
+              <IconButton aria-label="close" onClick={handleCloseInnerPopper}>
+                <ArrowBackIosIcon fontSize="small" />
+              </IconButton>
+            </CP.Styled.Flex>
 
-          {renderedFilterSections}
+            {renderedFilterSections}
+            {areAllFiltersFilled() && (
+              <CP.Button onClick={handleApplyFilter} size="small">
+                Apply Filter
+              </CP.Button>
+            )}
+          </Stack>
         </Paper>
       </Popper>
     </Box>

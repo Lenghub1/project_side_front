@@ -30,7 +30,7 @@ const FilterOptions: React.FC<FilterOptionsProps> = ({
     <Box sx={{ minWidth: 120 }}>
       <FormControl size="small">
         <Select
-          sx={{ width: "150px" }}
+          sx={{ width: "120px" }}
           value={filterOption}
           onChange={handleChange}
           defaultValue="like"

@@ -1,3 +1,5 @@
+import { Filter, Sort } from "./interfaces/Feature";
+
 type FieldMapping = {
   [key: string]: string | FieldMapping;
 };
@@ -132,9 +134,53 @@ const combineFields = (
   }
 };
 
+const buildFilterParams = (filters: Filter[]) => {
+  return filters
+    .map(({ field, logicalClause, targetValue }) => {
+      return `${field}_${logicalClause}=${targetValue}`;
+    })
+    .join("&");
+};
+
+const buildSortParams = (sorts: Sort[]) => {
+  return sorts
+    .map(({ field, direction }) => {
+      return direction === "asc" ? field : `-${field}`;
+    })
+    .join(",");
+};
+
+const parseFilters = (filters: Filter[]) => {
+  const parsedFilters: { [key: string]: string } = {};
+  filters.forEach(({ field, logicalClause, targetValue }) => {
+    parsedFilters[`${field}_${logicalClause}`] = targetValue;
+  });
+  return parsedFilters;
+};
+
+const buildUrlParams = (
+  filterParams: any,
+  filters: Filter[],
+  sortParams: any,
+  perPage: number,
+  page: number
+) => {
+  const params = new URLSearchParams({
+    ...(filterParams && { ...parseFilters(filters) }), // Pass filters dynamically
+    ...(sortParams && { sort: sortParams }),
+    perpage: perPage.toString(),
+    page: page.toString(),
+  });
+  return params;
+};
+
 export {
   type FieldMapping,
   transformData,
   generateFieldMapping,
   combineFields,
+  buildFilterParams,
+  buildSortParams,
+  buildUrlParams,
+  parseFilters,
 };

@@ -8,6 +8,7 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
 import { filterSelectionsState } from "@/store/api.feature";
 import { useRecoilState } from "recoil";
+import CP from "@/components";
 
 interface SelectFilterValuesProps {
   data: { [key: string]: any }[]; // List of objects
@@ -78,7 +79,6 @@ const SelectFilterValues: React.FC<SelectFilterValuesProps> = ({
       }
     });
   };
-  console.log(filterSelections);
   const handleChipClick = (filterKey: string, value: string) => {
     setFilterSelections((prevFilterSelections) => {
       const existingSelectionIndex = prevFilterSelections.findIndex(
@@ -107,27 +107,32 @@ const SelectFilterValues: React.FC<SelectFilterValuesProps> = ({
     });
   };
   return (
-    <FormControl key={filterKey} size="small" sx={{ maxWidth: "200px" }}>
-      <Select
-        sx={{ maxWidth: "150px" }}
-        multiple
-        name={filterKey}
-        value={
-          filterSelections.find((selection) => selection.key === filterKey)
-            ?.values || []
-        }
-        onChange={(event) => handleChange(event, filterKey)}
-        input={<OutlinedInput label={`${filterKey} Filter`} />}
-        renderValue={(selected) =>
-          selected.length === 0 ? (
-            <em>Placeholder</em>
-          ) : (
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+    <CP.Styled.Div width="200px">
+      <FormControl key={filterKey} size="small" fullWidth>
+        <Select
+          multiple
+          sx={{ height: "40px" }}
+          inputProps={{ "aria-label": "Without label" }}
+          value={
+            filterSelections.find((selection) => selection.key === filterKey)
+              ?.values || []
+          }
+          onChange={(event) => handleChange(event, filterKey)}
+          input={<OutlinedInput label={`${filterKey} Filter`} />}
+          renderValue={(selected) => (
+            <Box
+              sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 0.5,
+              }}
+            >
               {selected.map((value) => (
                 <Chip
                   key={value}
                   label={value}
                   size="small"
+                  color="primary"
                   variant={
                     filterSelections
                       .find((selection) => selection.key === filterKey)
@@ -139,30 +144,30 @@ const SelectFilterValues: React.FC<SelectFilterValuesProps> = ({
                 />
               ))}
             </Box>
-          )
-        }
-        MenuProps={MenuProps}
-      >
-        {data
-          ?.map((item) => item[filterKey])
-          .filter((value, index, self) => self.indexOf(value) === index)
-          .map((uniqueValue) => (
-            <MenuItem
-              key={`${filterKey}-${uniqueValue}`}
-              value={uniqueValue}
-              style={getStyles(
-                uniqueValue,
-                filterSelections.find(
-                  (selection) => selection.key === filterKey
-                )?.values || [],
-                theme
-              )}
-            >
-              {uniqueValue}
-            </MenuItem>
-          ))}
-      </Select>
-    </FormControl>
+          )}
+          MenuProps={MenuProps}
+        >
+          {data
+            ?.map((item) => item[filterKey])
+            .filter((value, index, self) => self.indexOf(value) === index)
+            .map((uniqueValue) => (
+              <MenuItem
+                key={`${filterKey}-${uniqueValue}`}
+                value={uniqueValue}
+                style={getStyles(
+                  uniqueValue,
+                  filterSelections.find(
+                    (selection) => selection.key === filterKey
+                  )?.values || [],
+                  theme
+                )}
+              >
+                {uniqueValue}
+              </MenuItem>
+            ))}
+        </Select>
+      </FormControl>
+    </CP.Styled.Div>
   );
 };
 export default SelectFilterValues;

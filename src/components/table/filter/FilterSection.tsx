@@ -11,7 +11,6 @@ interface FilterSectionProps {
   filterKey: string;
   option: string;
   handleOptionChange: (selectedValue: string) => void;
-  handleValuesSelectChange: (selectedValue: string) => void;
 }
 
 const FilterSection: React.FC<FilterSectionProps> = ({
@@ -19,7 +18,6 @@ const FilterSection: React.FC<FilterSectionProps> = ({
   filterKey,
   option,
   handleOptionChange,
-  handleValuesSelectChange,
 }) => {
   const [filterSelections, setFilterSelections] = useRecoilState(
     filterSelectionsState
@@ -63,7 +61,7 @@ const FilterSection: React.FC<FilterSectionProps> = ({
         disabled
         defaultValue={filterKey}
         size="small"
-        sx={{ maxWidth: "150px" }}
+        sx={{ width: "100px" }}
       />
       <FilterOptions
         data={filterOptions}

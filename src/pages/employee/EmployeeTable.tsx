@@ -10,7 +10,7 @@ import { useRecoilValue, useRecoilState } from "recoil";
 import { filteredDataState, dataToFilterState } from "@/store/filterStore";
 import { selectedOrganization } from "@/store/userStore";
 import CP from "@/components";
-import { Filter, Sort } from "@/utils/interfaces/Feature";
+import { Filter, FilterSelection, Sort } from "@/utils/interfaces/Feature";
 
 export const UserInformationCell = (row: Employement) => {
   return (
@@ -87,13 +87,23 @@ const EmployeeTable = () => {
     }
   };
 
-  const handleFilterChange = (filters: Filter[]) => {
+  const handleFilterChange = (filters: FilterSelection[]) => {
+    console.log(filters);
     // Convert SortField[] to Filter[] if needed
-    const convertedFilters: Filter[] = filters.map((filter) => ({
-      field: filter.field,
-      logicalClause: filter.logicalClause, // Provide appropriate default values
-      targetValue: filter.targetValue, // Provide appropriate default values
-    }));
+    const convertedFilters = filters.map((filter) => {
+      const combinedValues = filter.values
+        .map((value) => {
+          return value;
+        })
+        .join("||");
+      return {
+        field: filter.key,
+        logicalClause: filter.option,
+        targetValue: combinedValues,
+      };
+    });
+
+    console.log(convertedFilters);
     setAppliedFilters(convertedFilters);
   };
 

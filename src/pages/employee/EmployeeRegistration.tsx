@@ -13,7 +13,7 @@ import Error from "../error/Error";
 import { useRecoilValue, useRecoilState } from "recoil";
 import { filteredDataState, dataToFilterState } from "@/store/filterStore";
 import { UserInformationCell } from "./EmployeeTable";
-import { organizationState } from "@/store/organizationStore";
+import { selectedOrganization } from "@/store/userStore";
 
 const RenderActionCell = (row: Employement) => {
   const { id } = row;
@@ -36,8 +36,7 @@ const RenderActionCell = (row: Employement) => {
 const EmployeeRegistration = () => {
   const [_, setDataToFilter] = useRecoilState(dataToFilterState);
   const { isFilter, data: filteredData } = useRecoilValue(filteredDataState);
-  const organization = useRecoilValue(organizationState);
-  console.log(organization);
+  const organization = useRecoilValue(selectedOrganization);
   const { data, error } = useFetch(() => getAllPendingEmployees(organization));
 
   if (error) {
@@ -52,10 +51,8 @@ const EmployeeRegistration = () => {
     <CP.Container>
       <EnhancedTable<Employement>
         headCells={headCells}
-        order="asc"
         rows={displayData || []}
         rowCount={displayData?.length || 0}
-        orderBy="position"
         tableName="Employee Registrations"
       />
     </CP.Container>

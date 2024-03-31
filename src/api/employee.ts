@@ -6,6 +6,9 @@ import {
   transformData,
   generateFieldMapping,
   combineFields,
+  buildFilterParams,
+  buildSortParams,
+  buildUrlParams,
 } from "@/utils/api.util";
 
 const fieldMapping = generateFieldMapping({
@@ -22,36 +25,8 @@ const fieldMapping = generateFieldMapping({
   privilege: "privilege",
 });
 
-const allEmployees = async (
-  organizationId: string,
-  filters: Filter[],
-  sorts: Sort[],
-  perPage: number = 20,
-  page: number = 1
-): Promise<AxiosResponse<Partial<Employement>[]>> => {
-  // Construct filter query string
-  const filterParams = filters
-    .map(({ field, logicalClause, targetValue }) => {
-      return `${field}_${logicalClause}=${targetValue}`;
-    })
-    .join("&");
-
-  // Construct sort query string
-  const sortParams = sorts
-    .map(({ field, direction }) => {
-      return direction === "asc" ? field : `-${field}`;
-    })
-    .join(",");
-
-  // Create URL parameters
-  const params = new URLSearchParams({
-    ...(filterParams && { ...parseFilters(filters) }), // Pass filters dynamically
-    ...(sortParams && { sort: sortParams }),
-    perpage: perPage.toString(),
-    page: page.toString(),
-  });
-
-  return api.get(`/organizations/${organizationId}/employments`, {
+const fetchDataWithTransform = async (url: string, params: URLSearchParams) => {
+  return api.get(url, {
     params,
     transformResponse: [
       (response) => {
@@ -63,13 +38,27 @@ const allEmployees = async (
   });
 };
 
-// Helper function to parse filters dynamically
-const parseFilters = (filters: Filter[]) => {
-  const parsedFilters: { [key: string]: string } = {};
-  filters.forEach(({ field, logicalClause, targetValue }) => {
-    parsedFilters[`${field}_${logicalClause}`] = targetValue;
-  });
-  return parsedFilters;
+const allEmployees = async (
+  organizationId: string,
+  filters: Filter[],
+  sorts: Sort[],
+  perPage: number = 20,
+  page: number = 1
+): Promise<AxiosResponse<Partial<Employement>[]>> => {
+  const filterParams = buildFilterParams(filters);
+  const sortParams = buildSortParams(sorts);
+  const params = buildUrlParams(
+    filterParams,
+    filters,
+    sortParams,
+    perPage,
+    page
+  );
+
+  return fetchDataWithTransform(
+    `/organizations/${organizationId}/employments`,
+    params
+  );
 };
 
 const allWorkplace = async (
@@ -108,19 +97,25 @@ const createEmployee = async (
 };
 
 const getAllPendingEmployees = async (
-  organizationId: string
-): Promise<AxiosResponse<Partial<Employement>>> => {
-  return api.get(
-    `/organizations/${organizationId}/employments?status_eq=pending`,
-    {
-      transformResponse: [
-        (response) => {
-          const data = transformData(response, fieldMapping);
-          const newData = combineFields(data, "firstName", "lastName", "name");
-          return newData;
-        },
-      ],
-    }
+  organizationId: string,
+  filters: Filter[],
+  sorts: Sort[],
+  perPage: number = 20,
+  page: number = 1
+): Promise<AxiosResponse<Partial<Employement>[]>> => {
+  const filterParams = buildFilterParams(filters);
+  const sortParams = buildSortParams(sorts);
+  const params = buildUrlParams(
+    filterParams,
+    filters,
+    sortParams,
+    perPage,
+    page
+  );
+
+  return fetchDataWithTransform(
+    `/organizations/${organizationId}/employments`,
+    params
   );
 };
 
