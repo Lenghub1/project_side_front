@@ -34,6 +34,23 @@ const TableFilter = ({ headCells, onFilterChange }: TableFilterProps) => {
   const [selectedOuterChip, setSelectedOuterChip] = useState<string | null>(
     null
   );
+  const handleOptionChange = (filterKey: string, selectedOption: string) => {
+    setFilterSelections((prevFilterSelections) => {
+      const index = prevFilterSelections.findIndex(
+        (selection) => selection.key === filterKey
+      );
+
+      if (index !== -1) {
+        const updatedSelections = [...prevFilterSelections];
+        updatedSelections[index] = {
+          ...updatedSelections[index],
+          option: selectedOption,
+        };
+        return updatedSelections;
+      }
+      return prevFilterSelections;
+    });
+  };
 
   const handleOuterClick = useCallback(
     (newPlacement: PopperPlacementType) =>
@@ -41,36 +58,27 @@ const TableFilter = ({ headCells, onFilterChange }: TableFilterProps) => {
         setAnchorEl(event.currentTarget);
         setOuterOpen((prev) => placement !== newPlacement || !prev);
         setPlacement(newPlacement);
-        setSelectedOuterChip(null); // Clear selected chip
+        setSelectedOuterChip(null);
       },
     [placement]
   );
 
-  const handleAddFilter = useCallback(
-    (filterKey: string, event: React.MouseEvent<HTMLDivElement>) => {
-      setSelectedOuterChip(filterKey);
-      const exists = filterSelections.some(
-        (selection) => selection.key === filterKey
-      );
+  const handleAddFilter = (filterKey: string) => {
+    const exists = filterSelections.some(
+      (selection) => selection.key === filterKey
+    );
 
-      if (!exists) {
-        setFilterSelections((prevSelections) => [
-          ...prevSelections,
-          { key: filterKey, values: [] },
-        ]);
-      }
+    if (!exists) {
+      setFilterSelections((prevSelections) => [
+        ...prevSelections,
+        { key: filterKey, option: "", values: [] },
+      ]);
+    }
 
-      setFilterOptions((prevOptions) => ({
-        ...prevOptions,
-        [filterKey]: "like",
-      }));
-      setCurrentFilter(filterKey);
-      setOuterOpen(false);
-      setInnerOpen(true);
-    },
-    [filterSelections, setFilterSelections]
-  );
-
+    setCurrentFilter(filterKey);
+    setOuterOpen(false);
+    setInnerOpen(true);
+  };
   const handleCloseInnerPopper = () => {
     setInnerOpen(false);
     setOuterOpen(true);
@@ -78,6 +86,7 @@ const TableFilter = ({ headCells, onFilterChange }: TableFilterProps) => {
 
   const handleClearFilters = useCallback(() => {
     onFilterChange([]);
+    setFilterSelections([]);
     setFilterOptions({});
     setInnerOpen(false);
   }, [onFilterChange]);
@@ -96,6 +105,9 @@ const TableFilter = ({ headCells, onFilterChange }: TableFilterProps) => {
         dataToFilter={dataToFilter}
         filterKey={selection.key}
         option={selection.option}
+        handleOptionChange={(selectedOption) =>
+          handleOptionChange(selection.key, selectedOption)
+        }
       />
     ));
   }, [filterSections, dataToFilter]);
@@ -112,16 +124,19 @@ const TableFilter = ({ headCells, onFilterChange }: TableFilterProps) => {
       <Popper open={outerOpen} anchorEl={anchorEl} placement={placement}>
         <Paper sx={{ padding: 4, maxHeight: "350px", width: "300px" }}>
           <Stack gap="16px" width="100%">
-            {headCells.map((headCell) => (
-              <Chip
-                key={headCell.id.toString()}
-                label={headCell.label}
-                variant={filterOptions[headCell.id] ? "filled" : "outlined"}
-                color="primary"
-                size="small"
-                onClick={(event) => handleAddFilter(headCell.id, event)}
-              />
-            ))}
+            {headCells.map(
+              (headCell) =>
+                headCell.filterable && (
+                  <Chip
+                    key={headCell.id.toString()}
+                    label={headCell.label}
+                    variant={filterOptions[headCell.id] ? "filled" : "outlined"}
+                    color="primary"
+                    size="small"
+                    onClick={(event) => handleAddFilter(headCell.id, event)}
+                  />
+                )
+            )}
             <Chip
               label="Clear Filters"
               color="default"
@@ -133,7 +148,7 @@ const TableFilter = ({ headCells, onFilterChange }: TableFilterProps) => {
       </Popper>
 
       <Popper open={innerOpen} anchorEl={anchorEl} placement={placement}>
-        <Paper sx={{ padding: 4, maxHeight: "350px", width: "300px" }}>
+        <Paper sx={{ padding: 4, maxHeight: "350px", width: "500px" }}>
           <IconButton aria-label="close" onClick={handleCloseInnerPopper}>
             <ArrowBackIosIcon fontSize="small" />
           </IconButton>
