@@ -45,7 +45,7 @@ const TableHeadCell = <T,>({
       {headCell.sortable ? (
         <TableSortLabel
           active={order !== "none"}
-          direction={order}
+          direction={order !== "none" ? order : undefined}
           onClick={createSortHandler}
         >
           {headCell.label}

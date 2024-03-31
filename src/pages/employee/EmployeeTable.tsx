@@ -3,7 +3,7 @@ import { Typography, Stack } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import useFetch from "@/hooks/useFetch";
 import { allEmployees } from "@/api/employee";
-import EnhancedTable from "@/components/table/EnhanceTable2";
+import EnhancedTable from "@/components/table/EnhanceTable";
 import { Employement } from "@/utils/interfaces/Employment";
 import Error from "../error/Error";
 import { useRecoilValue, useRecoilState } from "recoil";
