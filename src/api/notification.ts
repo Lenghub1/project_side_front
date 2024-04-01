@@ -6,12 +6,13 @@ const fieldMapping = generateFieldMapping({
   type: "type",
   toUserId: "touserId",
   fromUerId: "fromUserId",
+  title: "title",
   message: "message",
   isSeen: "isSeen",
 });
 
 const allNotifications = async (currentUserId: string) => {
-  return api.get(`/notifications/${currentUserId}`, {
+  return api.get(`users/${currentUserId}/notifications`, {
     transformResponse: [
       (response) => {
         const data = transformData(response, fieldMapping);
@@ -25,7 +26,7 @@ const getNotificationById = async (
   currentUserId: string,
   notificationId: string
 ) => {
-  return api.get(`/notifications/${currentUserId}/${notificationId}`, {
+  return api.get(`users/${currentUserId}/notifications/${notificationId}`, {
     transformResponse: [
       (response) => {
         const data = transformData(response, fieldMapping);
@@ -40,14 +41,18 @@ const updateNotification = async (
   notificationId: string,
   data: any
 ) => {
-  return api.patch(`/notifications/${currentUserId}/${notificationId}`, data, {
-    transformResponse: [
-      (response) => {
-        const data = transformData(response, fieldMapping);
-        return data;
-      },
-    ],
-  });
+  return api.patch(
+    `users/${currentUserId}/notifications/${notificationId}`,
+    data,
+    {
+      transformResponse: [
+        (response) => {
+          const data = transformData(response, fieldMapping);
+          return data;
+        },
+      ],
+    }
+  );
 };
 
 export { allNotifications, getNotificationById, updateNotification };
