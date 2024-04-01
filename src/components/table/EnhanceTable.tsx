@@ -16,45 +16,33 @@ import {
 import EnhancedTableToolbar from "./Toolbar";
 import EnhancedTableHead from "./TableHead";
 import CP from "..";
-
-interface ReactCell<T> {
-  id: string;
-  label: string;
-  type: "ReactCell";
-  element: (row: T) => React.ReactNode;
-  sortable: boolean;
-  filterable?: boolean;
-}
-
-interface SortField {
-  field: string;
-  direction: "asc" | "desc";
-}
+import { Filter } from "@/utils/interfaces/Feature";
+import { HeadCell } from "@/utils/interfaces/Table";
 
 interface EnhancedTableProps<T> {
-  headCells: any[];
+  headCells: HeadCell<T>[];
   rows: T[];
-  rowCount: number;
   tableName: string;
   pagination: any;
-  onFilterChange: (sortFields: SortField[]) => void;
-  onRequestSort: (sortFields: SortField[]) => void;
+  onFilterChange: (filterFields: Filter[]) => void;
+  onRequestSort: (id: keyof T) => void;
+  onPageChange: (page: number) => void;
+  error: React.ReactNode;
 }
-
-type SortOrder = "asc" | "desc" | "none";
 
 function EnhancedTable<T>({
   headCells,
   rows,
-  rowCount,
   tableName,
   pagination,
   onFilterChange,
   onRequestSort,
+  onPageChange,
+  error,
 }: EnhancedTableProps<T>) {
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selectedRows, setSelectedRows] = useState<T[]>([]);
   const [isSelectable, setIsSelectable] = useState(false);
 
@@ -69,6 +57,15 @@ function EnhancedTable<T>({
     setPage(0);
   };
 
+  const handleNextButtonClick = () => {
+    setPage(page + 1);
+    onPageChange(page + 1);
+  };
+
+  const handlePreviousButtonClick = () => {
+    setPage(page - 1);
+    onPageChange(page - 1);
+  };
   const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDense(event.target.checked);
   };
@@ -106,7 +103,7 @@ function EnhancedTable<T>({
   const endIndex = Math.min(startIndex + rowsPerPage, rows.length);
 
   return (
-    <Container>
+    <Container sx={{ minWidth: "300px" }}>
       <Paper sx={{ mb: 2, padding: "1rem 0" }}>
         <EnhancedTableToolbar
           data={rows}
@@ -116,7 +113,7 @@ function EnhancedTable<T>({
         />
         <TableContainer>
           <Table
-            sx={{ minWidth: 750, textAlign: "start" }}
+            sx={{ width: "100%", textAlign: "start" }}
             aria-labelledby="tableTitle"
             size={dense ? "small" : "medium"}
           >
@@ -126,45 +123,52 @@ function EnhancedTable<T>({
             />
 
             <TableBody>
-              {rows.slice(startIndex, endIndex).map((row, rowIndex) => (
-                <TableRow
-                  hover
-                  role="checkbox"
-                  tabIndex={-1}
-                  key={rowIndex}
-                  selected={selectedRows.includes(row)}
-                  onClick={() => isSelectable && handleRowClick(row)}
-                  sx={{
-                    cursor: isSelectable ? "pointer" : "default",
-                  }}
-                >
-                  {isSelectable && (
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={selectedRows.includes(row)}
-                        onChange={() => isSelectable && handleRowClick(row)}
-                      />
-                    </TableCell>
-                  )}
-                  {headCells.map((cell, cellIndex) => {
-                    const cellValue = row[cell.id];
-
-                    if (cell.type === "ReactCell" && "element" in cell) {
-                      return (
-                        <TableCell key={cellIndex} align="left">
-                          {(cell as ReactCell<T>).element(row)}
-                        </TableCell>
-                      );
-                    } else {
-                      return (
-                        <TableCell key={cellIndex} align="left">
-                          {cellValue}
-                        </TableCell>
-                      );
-                    }
-                  })}
+              {error && (
+                <TableRow>
+                  <TableCell colSpan={headCells.length}>{error}</TableCell>
                 </TableRow>
-              ))}
+              )}
+              {!error &&
+                rows.slice(startIndex, endIndex).map((row, rowIndex) => (
+                  <TableRow
+                    hover
+                    role="checkbox"
+                    tabIndex={-1}
+                    key={rowIndex}
+                    selected={selectedRows.includes(row)}
+                    onClick={() => isSelectable && handleRowClick(row)}
+                    sx={{
+                      cursor: isSelectable ? "pointer" : "default",
+                    }}
+                  >
+                    {isSelectable && (
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          checked={selectedRows.includes(row)}
+                          onChange={() => isSelectable && handleRowClick(row)}
+                        />
+                      </TableCell>
+                    )}
+                    {headCells.map((cell, cellIndex) => {
+                      const cellValue = row[cell.id];
+                      if (cell.visibility) {
+                        if (cell.type === "ReactCell" && cell.element) {
+                          return (
+                            <TableCell key={cellIndex} align="left">
+                              {cell.element(row)}
+                            </TableCell>
+                          );
+                        } else {
+                          return (
+                            <TableCell key={cellIndex} align="left">
+                              {cellValue as React.ReactNode}
+                            </TableCell>
+                          );
+                        }
+                      }
+                    })}
+                  </TableRow>
+                ))}
               {emptyRows > 0 && (
                 <TableRow
                   style={{
@@ -178,13 +182,18 @@ function EnhancedTable<T>({
           </Table>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
           component="div"
           count={pagination?.total_docs}
-          rowsPerPage={pagination?.perpage}
           page={page}
           onPageChange={handleChangePage}
+          rowsPerPage={pagination?.perpage || 10}
           onRowsPerPageChange={handleChangeRowsPerPage}
+          slotProps={{
+            actions: {
+              nextButtonIcon: { onClick: handleNextButtonClick },
+              previousButton: { onClick: handlePreviousButtonClick },
+            },
+          }}
         />
         <CP.Styled.Flex justify="flex-start" padding="0 2rem">
           <CP.Button onClick={handleSelectClick} size="small" variant="text">

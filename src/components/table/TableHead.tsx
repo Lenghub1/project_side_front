@@ -1,14 +1,6 @@
 import { TableCell, TableSortLabel, TableRow, TableHead } from "@mui/material";
 import { useState } from "react";
-
-interface HeadCell<T> {
-  disablePadding: boolean;
-  id: keyof T;
-  label: string;
-  numeric: boolean;
-  filterable?: boolean;
-  sortable?: boolean;
-}
+import { HeadCell } from "@/utils/interfaces/Table";
 
 interface TableHeadCellProps<T> {
   headCell: HeadCell<T>;
@@ -69,13 +61,17 @@ function EnhancedTableHead<T>({
   return (
     <TableHead>
       <TableRow>
-        {headCells.map((headCell) => (
-          <TableHeadCell
-            key={headCell.id as string}
-            headCell={headCell}
-            onRequestSort={onRequestSort}
-          />
-        ))}
+        {headCells.map((headCell) => {
+          return (
+            headCell.visibility && (
+              <TableHeadCell
+                key={headCell.id as string}
+                headCell={headCell}
+                onRequestSort={onRequestSort}
+              />
+            )
+          );
+        })}
       </TableRow>
     </TableHead>
   );

@@ -8,12 +8,12 @@ import Box from "@mui/material/Box";
 import TableFilter from "./filter/Filter";
 import CP from "..";
 import { useState } from "react";
-
+import { Filter } from "@/utils/interfaces/Feature";
 interface TableToolbarProp {
   name: string;
   data: object;
   headCells: any[];
-  onFilterChange: (filters: Record<string, string[]>) => void;
+  onFilterChange: (filters: Filter[]) => void;
 }
 
 const EnhancedTableToolbar: React.FC<TableToolbarProp> = ({
