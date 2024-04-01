@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { authApi } from "@/api/auth";
 import useApi from "@/hooks/useApi";
 import { useSnackbar } from "notistack";
+import useCooldownTimer from "@/hooks/useCooldownTimer";
 
 const AccountVerification = () => {
   const navigate = useNavigate();
@@ -18,8 +19,7 @@ const AccountVerification = () => {
   const { isSuccess, isError, error, handleApiRequest, resetState } = useApi();
   const credential = location.state?.credential;
   const accountMethod = location.state?.accountMethod;
-  const [isCooldown, setIsCooldown] = useState(false);
-  const [timeoutId, setTimeoutId] = useState<any>(null);
+  const { isCooldown, cooldownTime, startCooldown } = useCooldownTimer(30);
 
   useEffect(() => {
     if (!accountMethod && !credential) {
@@ -27,24 +27,12 @@ const AccountVerification = () => {
     }
   }, [credential, accountMethod]);
 
-  useEffect(() => {
-    // clear timeout on component unmount
-    return () => {
-      if (timeoutId !== null) {
-        clearTimeout(timeoutId);
-      }
-    };
-  }, [timeoutId]);
-
   const handleCodeResending = async (event: React.FormEvent) => {
     event.preventDefault();
     resetState();
     const data = accountMethod === "email" && { email: credential };
 
-    setIsCooldown(true);
-    // set cooldown time (e.g., 30 seconds)
-    const id = setTimeout(() => setIsCooldown(false), 30000);
-    setTimeoutId(id);
+    startCooldown();
 
     await handleApiRequest(() =>
       authApi.resendActivationCode(accountMethod, data)
@@ -80,7 +68,7 @@ const AccountVerification = () => {
                 type="submit"
                 onClick={handleCodeResending}
               >
-                Resend
+                {isCooldown ? `Resend (${cooldownTime})` : "Resend"}
               </CP.Button>
             </Flex>
           </Flex>
