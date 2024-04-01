@@ -14,13 +14,14 @@ import { useLocation } from "react-router-dom";
 import { selectedOrganization } from "@/store/userStore";
 import { useRecoilValue } from "recoil";
 
+import useScreenSize from "@/hooks/useScreenSize";
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
 `;
 
 const OverviewOrganization = () => {
   const navigate = useNavigate();
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 456);
+  const { isMobile } = useScreenSize();
   const location = useLocation();
 
   const organizationData = useRecoilValue(organization) as any;
@@ -29,17 +30,6 @@ const OverviewOrganization = () => {
     []
   ) as any;
   const isViewOrganization = location.pathname === "/organization";
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
 
   const createBranch = () => {
     navigate("/organization/createBranch");

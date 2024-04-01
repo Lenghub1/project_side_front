@@ -32,7 +32,6 @@ export const selectEmployee = selector({
   key: "selectEmployee",
   get: ({ get }) => {
     const organization = get(selectedOrganization);
-    console.log("hi", organization);
 
     return organization.id;
   },
