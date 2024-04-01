@@ -12,9 +12,11 @@ import { BranchDetailCard } from "../../branch/branchDetail";
 import { Outlet } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { selectedOrganization } from "@/store/userStore";
-import { useRecoilValue } from "recoil";
-import { Error } from "@/pages/error";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { organization } from "@/store/organizationStore";
+
 import useApi from "@/hooks/useApi";
+import { ErrorStatus } from "@/store/error";
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
 `;
@@ -30,8 +32,10 @@ const OverviewOrganization = () => {
     error,
     handleApiRequest: apiHook,
   } = useApi();
-
-  const [organizationData, setOrganizationData] = useState({}) as any;
+  const [errorStatus, setErrorStatus] = useRecoilState(ErrorStatus);
+  const [organizationData, setOrganizationData] = useRecoilState(
+    organization
+  ) as any;
   const selected = useRecoilValue(selectedOrganization);
   const [organizationBranchData, setOrganizationBranchData] = useState(
     []
@@ -52,35 +56,39 @@ const OverviewOrganization = () => {
   const createBranch = () => {
     navigate("/organization/createBranch");
   };
+  if (selected) {
+    const myOrganizationData = async () => {
+      await apiHook(() => myOrganization(selected));
+    };
 
-  const myOrganizationData = async () => {
-    await apiHook(() => myOrganization(selected));
-  };
+    useEffect(() => {
+      if (isSuccess) {
+        setOrganizationData(data);
+      }
+    }, [isSuccess, isError, error]);
 
-  useEffect(() => {
-    if (isSuccess) {
-      setOrganizationData(data);
+    const myOrganizationBranchData = async () => {
+      const [response, error] = await handleApiRequest(() =>
+        myBranch(selected)
+      );
+
+      if (response) {
+        setOrganizationBranchData(response.data);
+      } else {
+      }
+    };
+
+    React.useEffect(() => {
+      myOrganizationData();
+      myOrganizationBranchData();
+    }, []);
+    if (isError && error) {
+      console.log("hello", isError, error.statusCode);
+      localStorage.removeItem("recoil-persist");
+      setErrorStatus(error);
     }
-  }, [isSuccess, isError, error]);
-
-  const myOrganizationBranchData = async () => {
-    const [response, error] = await handleApiRequest(() => myBranch(selected));
-
-    if (response) {
-      setOrganizationBranchData(response.data);
-    } else {
-    }
-  };
-
-  React.useEffect(() => {
-    myOrganizationData();
-    myOrganizationBranchData();
-  }, []);
-  if (isError && error) {
-    console.log("hello", isError, error.statusCode);
-    localStorage.removeItem("recoil-persist");
-    return <Error status={error.statusCode!} message={error.message!} />;
   }
+
   return (
     <CP.Styled.Wrapper overflow="auto">
       {isViewOrganization ? (

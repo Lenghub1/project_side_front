@@ -76,7 +76,7 @@ export const isSelectedState = selector({
   key: "isSelectedState",
   get: ({ get }) => {
     const organization = get(selectedOrganization);
-    return organization !== "";
+    return { isSelected: organization !== "", organization };
   },
 });
 

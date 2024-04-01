@@ -1,7 +1,7 @@
-import { atom } from "recoil";
+import { atom, selector } from "recoil";
 import { Employement } from "@/utils/interfaces/Employment";
 import { recoilPersist } from "recoil-persist";
-
+import { selectedOrganization } from "./userStore";
 const { persistAtom } = recoilPersist();
 
 export const allEmployees = atom<Employement[] | undefined>({
@@ -27,7 +27,15 @@ export const employees = atom<Employement[]>({
 export const employee = atom<Employement[]>({
   key: `employee`,
   default: undefined,
-  effects_UNSTABLE: [persistAtom],
+});
+export const selectEmployee = selector({
+  key: "selectEmployee",
+  get: ({ get }) => {
+    const organization = get(selectedOrganization);
+    console.log("hi", organization);
+
+    return organization.id;
+  },
 });
 export const selectMembers = atom<string[] | null>({
   key: `selectMembers`,

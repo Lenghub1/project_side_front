@@ -17,7 +17,7 @@ const UnprotectedRoute: React.FC<UnprotectedRouteProps> = ({
   const employeeStatus = useRecoilValue(employee);
   const employeedStatus = employeeStatus?.status;
 
-  if (isAuthenticated && selected && employeedStatus === "active") {
+  if (isAuthenticated && selected.isSelected && employeedStatus === "active") {
     return <Navigate to={redirectPath || "/"} replace />;
   }
 

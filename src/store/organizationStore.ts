@@ -6,7 +6,10 @@ const { persistAtom } = recoilPersist();
 export const organizationState = atom<any>({
   key: "organizationState",
   default: undefined,
-  effects_UNSTABLE: [persistAtom],
+});
+export const organization = atom<any>({
+  key: "organization",
+  default: undefined,
 });
 export const searchResultState = atom<Organization>({
   key: "searchOrganizationState",

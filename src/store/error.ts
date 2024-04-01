@@ -8,3 +8,8 @@ export const oauthErrorState = atom<boolean>({
   default: false,
   effects_UNSTABLE: [persistAtom],
 });
+
+export const ErrorStatus = atom<any>({
+  key: `ErrorStatus`,
+  default: undefined,
+});
