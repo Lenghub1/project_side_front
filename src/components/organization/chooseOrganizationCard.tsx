@@ -10,8 +10,6 @@ interface RoleCardProps {
   isActive: boolean;
   title: string;
   description: string;
-  location: Number;
-  employee: Number;
 }
 
 const Typography = styled(CP.Typography)`
@@ -24,8 +22,6 @@ const ChooseOrganizationCard = ({
   isActive,
   title,
   description,
-  location,
-  employee,
 }: RoleCardProps) => {
   const handleCardClick = () => {
     setActiveOrgId(isActive ? undefined : id);

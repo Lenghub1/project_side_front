@@ -42,7 +42,7 @@ const FillForm = () => {
         lastName: "",
         role: "",
       });
-      navigate("/login/choose-organization");
+      navigate("/organization");
     } else if (isError) {
       enqueueSnackbar(error?.message, {
         variant: "error",
@@ -52,7 +52,7 @@ const FillForm = () => {
     }
   }, [isSuccess, isError, error]);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,

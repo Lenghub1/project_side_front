@@ -7,6 +7,10 @@ export const organizationState = atom<any>({
   key: "organizationState",
   default: undefined,
 });
+export const organization = atom<any>({
+  key: "organization",
+  default: undefined,
+});
 export const searchResultState = atom<Organization>({
   key: "searchOrganizationState",
   default: undefined,

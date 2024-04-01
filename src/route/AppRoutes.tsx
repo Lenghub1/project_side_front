@@ -12,6 +12,7 @@ import useEnsureAccessToken from "@/hooks/useEnsureAccessToken";
 import { ProtectedRoute, UnprotectedRoute } from "@/components/auth";
 import useAuth from "@/hooks/useAuth";
 import Loading from "@/components/loading/Loading";
+
 const renderRoutes = ({
   routes,
   isUserFetched,

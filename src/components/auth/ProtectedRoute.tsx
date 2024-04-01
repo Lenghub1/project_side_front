@@ -1,13 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import React from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-import {
-  isAuthenticatedState,
-  isSelectedState,
-  isUserFetchedState,
-  userRoleState,
-  userState,
-} from "@/store/userStore";
+
+import { isAuthenticatedState, userRoleState } from "@/store/userStore";
 
 interface ProtectedRouteProps {
   element: React.ReactNode;
@@ -19,28 +14,16 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   allowedRoles,
 }) => {
   const isAuthenticated = useRecoilValue(isAuthenticatedState);
-  const selected = useRecoilValue(isSelectedState);
   const userRole = useRecoilValue(userRoleState);
-  const user = useRecoilValue(userState);
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
-  if (!user.firstName || !user.lastName) {
-    return <Navigate to="/fillForm" replace />;
-  }
-
-  if (!selected) {
-    return <Navigate to="/login/choose-organization" replace />;
-  }
-
   if (allowedRoles && allowedRoles.length > 0) {
-    // check if user has required roles
     const hasRequiredRole = allowedRoles.includes(userRole);
 
     if (!hasRequiredRole) {
-      // redirect to unauthorized page if user doesn't have required role
       return <Navigate to="/unauthorized" replace />;
     }
   }
