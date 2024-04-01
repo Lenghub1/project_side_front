@@ -3,7 +3,7 @@ import axios, { AxiosResponse } from "axios";
 import ApiError from "@/utils/apiError";
 
 type UseApiReturnType<T> = {
-  response: T | null;
+  response: ApiResponse | null;
   isLoading: boolean;
   isSuccess: boolean;
   isError: boolean;
@@ -12,8 +12,28 @@ type UseApiReturnType<T> = {
   resetState: () => void;
 };
 
+interface ApiResponse {
+  status_code: number;
+  message: string;
+  dev_message: string;
+  query?: {
+    where?: string;
+    where_value?: string;
+    order_by?: string;
+    desc?: boolean;
+    group_by?: string;
+  };
+  pagination?: {
+    page: number;
+    perpage: number;
+    total_pages: number;
+  };
+  data: any[] | any;
+  errors?: Object[];
+}
+
 function useApi<T>(): UseApiReturnType<T> {
-  const [response, setResponse] = useState<T | null>(null);
+  const [response, setResponse] = useState<ApiResponse | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
@@ -30,7 +50,7 @@ function useApi<T>(): UseApiReturnType<T> {
       const response = await request();
       console.log("###### RES ###########", response);
       setIsSuccess(true);
-      setResponse(response.data);
+      setResponse(response.data as ApiResponse);
     } catch (error) {
       setIsError(true);
       if (axios.isAxiosError(error)) {

@@ -1,5 +1,5 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { Link, useNavigate, Outlet, useLocation } from "react-router-dom";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import CP from "@/components";
 
 import { useEffect, useState } from "react";
@@ -25,13 +25,10 @@ import { Flex } from "../getStarted/GetStarted";
 
 type SignInMethod = "email" | "phone";
 
-interface LoginResponse {
-  user: {
-    accessToken: string;
-  };
-}
 const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isLoginPage = location.pathname === "/login";
   const { enqueueSnackbar } = useSnackbar();
   const [loginMethod, setLoginMethod] = useState<SignInMethod>("email");
   const email = useValidatedInput("", "Email", validateEmail);
@@ -43,9 +40,7 @@ const LoginPage = () => {
     dialCode: string;
     flag: string;
   }>(countries[0]);
-  const [accessToken, setAccessToken] = useRecoilState(
-    Store.User.accessTokenState
-  );
+  const setAccessToken = useSetRecoilState(Store.User.accessTokenState);
   const { isMobile } = useScreenSize();
 
   const isFormInvalid =
@@ -70,13 +65,22 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      const userData = response.data as LoginResponse;
-      console.log("RESPONSE", userData);
+      const userData = response?.data;
+      if (response?.status_code === 202) {
+        if (loginMethod === "email")
+          navigate("/login/verify-2fa", {
+            state: {
+              type: VERIFICATION_TYPE.VERIFY_2FA,
+              email: email.value,
+              loginMethod: loginMethod,
+              credential: email.value,
+            },
+          });
+      }
       if (userData?.user) {
         setAccessToken(userData.user?.accessToken);
         navigate("/");
       }
-      console.log("asdasdasds", accessToken);
     }
   }, [response, isSuccess]);
 
@@ -146,66 +150,74 @@ const LoginPage = () => {
 
   return (
     <SpaWithImage>
-      <CP.Styled.Form>
-        <FormContainer>
-          <CP.Styled.Div>
-            <CP.Typography
-              variant="h5"
-              width={"100%"}
-              marginBottom={"1rem"}
-              textAlign={"start"}
-            >
-              Welcome back
-            </CP.Typography>
-            <Title>Login</Title>
-            <Flex direction="column" gap="1.5rem">
-              <SignupMethod
-                email={email}
-                phone={phone}
-                selectedCountry={selectedCountry}
-                setSelectedCountry={setSelectedCountry}
-                signupMethod={loginMethod}
-                setSignupMethod={setLoginMethod}
-              />
-
-              <CP.Input
-                label="Password"
-                type={isPassword ? "text" : "password"}
-                value={password.value}
-                onChange={password.onChange}
-                onBlur={password.onBlur}
-                error={!!password.error}
-                helperText={<password.HelperText />}
-                required
-                InputProps={{
-                  endAdornment: (
-                    <IconButton onClick={() => setIsPassword((prev) => !prev)}>
-                      {isPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                  ),
-                }}
-              />
-              <CP.Styled.Div>
-                <Link to={"/forget-password"}>Forget password?</Link>
-              </CP.Styled.Div>
-              <OauthComponent margin="0" />
-              <CP.Button
-                fullWidth
-                type="submit"
-                onClick={handleSubmit}
-                disabled={isFormInvalid}
+      {isLoginPage ? (
+        <CP.Styled.Form>
+          <FormContainer>
+            <CP.Styled.Div>
+              <CP.Typography
+                variant="h5"
+                width={"100%"}
+                marginBottom={"1rem"}
+                textAlign={"start"}
               >
-                Login
-              </CP.Button>
-
-              <CP.Typography align={isMobile ? "center" : "left"}>
-                Don't have an account? <Link to={"/get-started"}>Signup</Link>
+                Welcome back
               </CP.Typography>
-              <CP.Button variant="text">Login Using Face Recognition</CP.Button>
-            </Flex>
-          </CP.Styled.Div>
-        </FormContainer>
-      </CP.Styled.Form>
+              <Title>Login</Title>
+              <Flex direction="column" gap="1.5rem">
+                <SignupMethod
+                  email={email}
+                  phone={phone}
+                  selectedCountry={selectedCountry}
+                  setSelectedCountry={setSelectedCountry}
+                  signupMethod={loginMethod}
+                  setSignupMethod={setLoginMethod}
+                />
+
+                <CP.Input
+                  label="Password"
+                  type={isPassword ? "text" : "password"}
+                  value={password.value}
+                  onChange={password.onChange}
+                  onBlur={password.onBlur}
+                  error={!!password.error}
+                  helperText={<password.HelperText />}
+                  required
+                  InputProps={{
+                    endAdornment: (
+                      <IconButton
+                        onClick={() => setIsPassword((prev) => !prev)}
+                      >
+                        {isPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    ),
+                  }}
+                />
+                <CP.Styled.Div>
+                  <Link to={"/forget-password"}>Forget password?</Link>
+                </CP.Styled.Div>
+                <OauthComponent margin="0" />
+                <CP.Button
+                  fullWidth
+                  type="submit"
+                  onClick={handleSubmit}
+                  disabled={isFormInvalid}
+                >
+                  Login
+                </CP.Button>
+
+                <CP.Typography align={isMobile ? "center" : "left"}>
+                  Don't have an account? <Link to={"/get-started"}>Signup</Link>
+                </CP.Typography>
+                <CP.Button variant="text">
+                  Login Using Face Recognition
+                </CP.Button>
+              </Flex>
+            </CP.Styled.Div>
+          </FormContainer>
+        </CP.Styled.Form>
+      ) : (
+        <Outlet />
+      )}
     </SpaWithImage>
   );
 };

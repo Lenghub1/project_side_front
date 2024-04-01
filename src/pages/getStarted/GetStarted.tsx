@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import CP from "@/components";
 import { RoleCard } from "@/components/roleCard";
 import styled from "styled-components";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Box } from "@mui/material";
 import useScreenSize from "@/hooks/useScreenSize";
 import { AlreadyHaveAccountLink } from "../companySearch/CompanySearch";
 import SpaWithImage, {
@@ -20,7 +19,7 @@ const GetStarted = () => {
   const [accountType, setAccountType] = useState<
     "employer" | "employee" | null
   >(null);
-  const { isMobile, isTablet } = useScreenSize();
+  const { isMobile } = useScreenSize();
 
   const isGetStartedRoute = location.pathname === "/get-started";
 
