@@ -3,53 +3,20 @@ import TextField from "@mui/material/TextField";
 import FilterOptions from "./FilterOptions";
 import SelectFilterValues from "./SelectFilterValues";
 import CP from "@/components";
-import { useRecoilState } from "recoil";
-import { filterSelectionsState } from "@/store/api.feature";
 
 interface FilterSectionProps {
   dataToFilter: any[];
-  filterKey: string;
-  option: string;
+  filterField: string;
+  filterClause: string;
   handleOptionChange: (selectedValue: string) => void;
 }
 
 const FilterSection: React.FC<FilterSectionProps> = ({
   dataToFilter,
-  filterKey,
-  option,
+  filterField,
+  filterClause,
   handleOptionChange,
 }) => {
-  const [filterSelections, setFilterSelections] = useRecoilState(
-    filterSelectionsState
-  );
-
-  const handleChange = (selectedValues: string[]) => {
-    setFilterSelections((prevFilterSelections) => {
-      const existingSelectionIndex = prevFilterSelections.findIndex(
-        (selection) => selection.key === filterKey
-      );
-
-      if (existingSelectionIndex !== -1) {
-        // If there's an existing selection for the current filterKey
-        const existingSelection = prevFilterSelections[existingSelectionIndex];
-        const updatedSelection = {
-          ...existingSelection,
-          option: option,
-          values: selectedValues,
-        };
-        const updatedFilterSelections = [...prevFilterSelections];
-        updatedFilterSelections[existingSelectionIndex] = updatedSelection;
-        return updatedFilterSelections;
-      } else {
-        // If there's no existing selection for the current filterKey
-        return [
-          ...prevFilterSelections,
-          { key: filterKey, option: option, values: selectedValues },
-        ];
-      }
-    });
-  };
-
   return (
     <CP.Styled.Flex
       items="flex-start"
@@ -59,7 +26,7 @@ const FilterSection: React.FC<FilterSectionProps> = ({
     >
       <TextField
         disabled
-        defaultValue={filterKey}
+        defaultValue={filterField}
         size="small"
         sx={{ width: "100px" }}
       />
@@ -69,8 +36,8 @@ const FilterSection: React.FC<FilterSectionProps> = ({
       />
       <SelectFilterValues
         data={dataToFilter}
-        filterKey={filterKey}
-        filterOption={option}
+        filterField={filterField}
+        logicalClause={filterClause}
       />
     </CP.Styled.Flex>
   );

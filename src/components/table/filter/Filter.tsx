@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
 import Popper, { PopperPlacementType } from "@mui/material/Popper";
@@ -9,14 +9,14 @@ import { dataToFilterState } from "@/store/filterStore";
 import AddIcon from "@mui/icons-material/Add";
 import FilterSection from "./FilterSection";
 import { filterSelectionsState } from "@/store/api.feature";
-import { FilterSelection } from "@/utils/interfaces/Feature";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import IconButton from "@mui/material/IconButton";
 import CP from "@/components";
-
+import SnackBar from "@/components/snackBar/SnackBar";
+import { Filter } from "@/utils/interfaces/Feature";
 interface TableFilterProps {
   headCells: any[];
-  onFilterChange: (filters: FilterSelection[]) => void;
+  onFilterChange: (filters: Filter[]) => void;
 }
 
 const TableFilter = ({ headCells, onFilterChange }: TableFilterProps) => {
@@ -31,22 +31,25 @@ const TableFilter = ({ headCells, onFilterChange }: TableFilterProps) => {
     filterSelectionsState
   );
   const dataToFilter = useRecoilValue(dataToFilterState);
-  const [currentFilter, setCurrentFilter] = useState<string | undefined>();
-  const [selectedOuterChip, setSelectedOuterChip] = useState<string | null>(
-    null
-  );
-  const handleOptionChange = (filterKey: string, selectedOption: string) => {
+  const [, setCurrentFilter] = useState<string | undefined>();
+  const [, setSelectedOuterChip] = useState<string | null>(null);
+  const [openSnackBar, setOpenSnackBar] = useState(false);
+
+  const handleOptionChanging = (filterKey: string, selectedOption: string) => {
+    console.log(filterKey);
+    console.log(selectedOption);
     setFilterSelections((prevFilterSelections) => {
       const index = prevFilterSelections.findIndex(
-        (selection) => selection.key === filterKey
+        (selection) => selection.field === filterKey
       );
 
       if (index !== -1) {
         const updatedSelections = [...prevFilterSelections];
         updatedSelections[index] = {
           ...updatedSelections[index],
-          option: selectedOption,
+          logicalClause: selectedOption,
         };
+
         return updatedSelections;
       }
       return prevFilterSelections;
@@ -66,13 +69,13 @@ const TableFilter = ({ headCells, onFilterChange }: TableFilterProps) => {
 
   const handleAddFilter = (filterKey: string) => {
     const exists = filterSelections.some(
-      (selection) => selection.key === filterKey
+      (selection) => selection.field === filterKey
     );
 
     if (!exists) {
       setFilterSelections((prevSelections) => [
         ...prevSelections,
-        { key: filterKey, option: "", values: [] },
+        { field: filterKey, logicalClause: "", values: [] },
       ]);
     }
 
@@ -93,38 +96,44 @@ const TableFilter = ({ headCells, onFilterChange }: TableFilterProps) => {
   }, [onFilterChange]);
 
   const filterSections = useMemo(() => {
-    return filterSelections.map((selection) => ({
-      key: selection.key,
-      option: filterOptions[selection.key] || "",
+    return filterSelections.map((selection: Filter) => ({
+      field: selection.field,
+      logicalClause: filterOptions[selection.field] || "",
     }));
   }, [filterSelections, filterOptions]);
 
   const renderedFilterSections = useMemo(() => {
     return filterSections.map((selection) => (
       <FilterSection
-        key={selection.key}
+        key={selection.field}
         dataToFilter={dataToFilter}
-        filterKey={selection.key}
-        option={selection.option}
+        filterField={selection.field}
+        filterClause={selection.logicalClause}
         handleOptionChange={(selectedOption) =>
-          handleOptionChange(selection.key, selectedOption)
+          handleOptionChanging(selection.field, selectedOption)
         }
       />
     ));
   }, [filterSections, dataToFilter]);
   const areAllFiltersFilled = () => {
+    console.log(filterSelections);
     return filterSelections.every(
-      (selection) => selection.values.length > 0 && selection.option
+      (selection) => selection.values!.length > 0 && selection.logicalClause
     );
   };
 
   const handleApplyFilter = () => {
     onFilterChange(filterSelections);
+    setOpenSnackBar(true);
     setInnerOpen(false);
   };
 
+  useEffect(() => {
+    console.log(openSnackBar);
+  }, [openSnackBar]);
   return (
     <Box>
+      <SnackBar open={openSnackBar} message="Filter had been applied" />
       <Chip
         label="Add Filter"
         key="NewFilter"

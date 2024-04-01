@@ -9,11 +9,12 @@ import Chip from "@mui/material/Chip";
 import { filterSelectionsState } from "@/store/api.feature";
 import { useRecoilState } from "recoil";
 import CP from "@/components";
+import { Filter } from "@/utils/interfaces/Feature";
 
 interface SelectFilterValuesProps {
-  data: { [key: string]: any }[]; // List of objects
-  filterKey: string; // Keys to use as the filter values
-  filterOption: string; // Filter option like "like", "eq", etc.
+  data: { [field: string]: any }[];
+  filterField: string;
+  logicalClause: string;
 }
 
 const ITEM_HEIGHT = 48;
@@ -38,8 +39,8 @@ function getStyles(name: string, selectedValues: string[], theme: Theme) {
 
 const SelectFilterValues: React.FC<SelectFilterValuesProps> = ({
   data,
-  filterKey,
-  filterOption,
+  filterField,
+  logicalClause,
 }) => {
   const theme = useTheme();
   const [filterSelections, setFilterSelections] = useRecoilState(
@@ -48,41 +49,45 @@ const SelectFilterValues: React.FC<SelectFilterValuesProps> = ({
 
   const handleChange = (
     event: SelectChangeEvent<string[]>,
-    filterKey: string
+    filterField: string
   ) => {
     const updatedValues = event.target.value;
 
-    setFilterSelections((prevFilterSelections) => {
+    setFilterSelections((prevFilterSelections: Filter[]) => {
       const existingSelectionIndex = prevFilterSelections.findIndex(
-        (selection) => selection.key === filterKey
+        (selection) => selection.field === filterField
       );
 
       if (existingSelectionIndex !== -1) {
-        // If there's an existing selection for the current filterKey
+        // If there's an existing selection for the current filterField
         const existingSelection = prevFilterSelections[existingSelectionIndex];
         const updatedSelection = {
           ...existingSelection,
-          option: filterOption,
+          logicalClause: logicalClause,
           values: Array.from(
-            new Set([...existingSelection.values, ...updatedValues])
+            new Set([...existingSelection.values!, ...updatedValues])
           ),
         };
         const updatedFilterSelections = [...prevFilterSelections];
         updatedFilterSelections[existingSelectionIndex] = updatedSelection;
         return updatedFilterSelections;
       } else {
-        // If there's no existing selection for the current filterKey
+        // If there's no existing selection for the current filterField
         return [
           ...prevFilterSelections,
-          { key: filterKey, option: filterOption, values: updatedValues },
+          {
+            field: filterField,
+            logicalClause: logicalClause,
+            values: updatedValues,
+          },
         ];
       }
     });
   };
-  const handleChipClick = (filterKey: string, value: string) => {
-    setFilterSelections((prevFilterSelections) => {
+  const handleChipClick = (filterField: string, value: string) => {
+    setFilterSelections((prevFilterSelections: Filter[]) => {
       const existingSelectionIndex = prevFilterSelections.findIndex(
-        (selection) => selection.key === filterKey
+        (selection) => selection.field === filterField
       );
 
       if (existingSelectionIndex !== -1) {
@@ -102,23 +107,27 @@ const SelectFilterValues: React.FC<SelectFilterValuesProps> = ({
         return updatedFilterSelections;
       } else {
         // Add new filter selection
-        return [...prevFilterSelections, { key: filterKey, values: [value] }];
+        return [
+          ...prevFilterSelections,
+          { field: filterField, values: [value] },
+        ];
       }
     });
   };
   return (
     <CP.Styled.Div width="200px">
-      <FormControl key={filterKey} size="small" fullWidth>
+      <FormControl key={filterField} size="small" fullWidth>
         <Select
           multiple
           sx={{ height: "40px" }}
           inputProps={{ "aria-label": "Without label" }}
           value={
-            filterSelections.find((selection) => selection.key === filterKey)
-              ?.values || []
+            filterSelections.find(
+              (selection) => selection.field === filterField
+            )?.values || []
           }
-          onChange={(event) => handleChange(event, filterKey)}
-          input={<OutlinedInput label={`${filterKey} Filter`} />}
+          onChange={(event) => handleChange(event, filterField)}
+          input={<OutlinedInput label={`${filterField} Filter`} />}
           renderValue={(selected) => (
             <Box
               sx={{
@@ -135,12 +144,12 @@ const SelectFilterValues: React.FC<SelectFilterValuesProps> = ({
                   color="primary"
                   variant={
                     filterSelections
-                      .find((selection) => selection.key === filterKey)
+                      .find((selection) => selection.field === filterField)
                       ?.values?.includes(value)
                       ? "filled"
                       : "outlined"
                   }
-                  onClick={() => handleChipClick(filterKey, value)}
+                  onClick={() => handleChipClick(filterField, value)}
                 />
               ))}
             </Box>
@@ -148,16 +157,16 @@ const SelectFilterValues: React.FC<SelectFilterValuesProps> = ({
           MenuProps={MenuProps}
         >
           {data
-            ?.map((item) => item[filterKey])
+            ?.map((item) => item[filterField])
             .filter((value, index, self) => self.indexOf(value) === index)
             .map((uniqueValue) => (
               <MenuItem
-                key={`${filterKey}-${uniqueValue}`}
+                key={`${filterField}-${uniqueValue}`}
                 value={uniqueValue}
                 style={getStyles(
                   uniqueValue,
                   filterSelections.find(
-                    (selection) => selection.key === filterKey
+                    (selection) => selection.field === filterField
                   )?.values || [],
                   theme
                 )}

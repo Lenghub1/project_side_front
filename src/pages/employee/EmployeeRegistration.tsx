@@ -38,7 +38,7 @@ const EmployeeRegistration = () => {
   const filters = [
     { field: "status", logicalClause: "eq", targetValue: "pending" },
   ];
-  const perPage = 20;
+  const perPage = 10;
   const page = 1;
 
   const [_, setDataToFilter] = useRecoilState(dataToFilterState);
@@ -69,10 +69,11 @@ const EmployeeRegistration = () => {
   }
 
   useEffect(() => {
-    setDataToFilter(data);
+    setDataToFilter(data?.docs);
+    console.log(data);
   }, [data]);
 
-  const displayData = isFilter ? filteredData : data;
+  const displayData = isFilter ? filteredData : data?.docs;
 
   const handleSortRequest = (property: keyof Employement) => {
     const existingSortIndex = sortCriteria.findIndex(
@@ -133,6 +134,7 @@ const EmployeeRegistration = () => {
         rows={displayData || []}
         rowCount={displayData?.length || 0}
         tableName="Employee"
+        pagination={data?.pagination}
         onFilterChange={handleFilterChange}
         onRequestSort={handleSortRequest}
       />

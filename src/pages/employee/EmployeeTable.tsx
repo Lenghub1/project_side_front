@@ -30,7 +30,7 @@ const EmployeeTable = () => {
   const filters = [
     { field: "status", logicalClause: "ne", targetValue: "pending" },
   ];
-  const perPage = 20;
+  const perPage = 10;
   const page = 1;
 
   const [_, setDataToFilter] = useRecoilState(dataToFilterState);
@@ -55,10 +55,10 @@ const EmployeeTable = () => {
   }
 
   useEffect(() => {
-    setDataToFilter(data);
+    setDataToFilter(data?.docs);
   }, [data]);
 
-  const displayData = isFilter ? filteredData : data;
+  const displayData = isFilter ? filteredData : data?.docs;
 
   const handleSortRequest = (property: keyof Employement) => {
     const existingSortIndex = sortCriteria.findIndex(
@@ -119,6 +119,7 @@ const EmployeeTable = () => {
         rows={displayData || []}
         rowCount={displayData?.length || 0}
         tableName="Employee"
+        pagination={data?.pagination}
         onFilterChange={handleFilterChange}
         onRequestSort={handleSortRequest}
       />

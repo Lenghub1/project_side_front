@@ -31,8 +31,13 @@ const fetchDataWithTransform = async (url: string, params: URLSearchParams) => {
     transformResponse: [
       (response) => {
         const data = transformData(response, fieldMapping);
-        const newData = combineFields(data, "firstName", "lastName", "name");
-        return newData;
+        const newData = combineFields(
+          data?.docs,
+          "firstName",
+          "lastName",
+          "name"
+        );
+        return { docs: newData, pagination: data.pagination };
       },
     ],
   });
@@ -42,7 +47,7 @@ const allEmployees = async (
   organizationId: string,
   filters: Filter[],
   sorts: Sort[],
-  perPage: number = 20,
+  perPage: number = 10,
   page: number = 1
 ): Promise<AxiosResponse<Partial<Employement>[]>> => {
   const filterParams = buildFilterParams(filters);

@@ -94,9 +94,11 @@ const transformData = (response: any, fieldMapping: FieldMapping): any => {
   };
 
   if (Array.isArray(data.data)) {
-    return data.data.map((responseData: any) =>
+    const docs = data.data.map((responseData: any) =>
       mapData(responseData, fieldMapping)
     );
+    const response = { docs: docs, pagination: data?.pagination };
+    return response;
   } else {
     return mapData(data, fieldMapping);
   }

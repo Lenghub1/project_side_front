@@ -36,6 +36,7 @@ interface EnhancedTableProps<T> {
   rows: T[];
   rowCount: number;
   tableName: string;
+  pagination: any;
   onFilterChange: (sortFields: SortField[]) => void;
   onRequestSort: (sortFields: SortField[]) => void;
 }
@@ -47,6 +48,7 @@ function EnhancedTable<T>({
   rows,
   rowCount,
   tableName,
+  pagination,
   onFilterChange,
   onRequestSort,
 }: EnhancedTableProps<T>) {
@@ -178,8 +180,8 @@ function EnhancedTable<T>({
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rowCount}
-          rowsPerPage={rowsPerPage}
+          count={pagination?.total_docs}
+          rowsPerPage={pagination?.perpage}
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
