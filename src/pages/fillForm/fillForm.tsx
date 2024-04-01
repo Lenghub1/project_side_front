@@ -42,7 +42,7 @@ const FillForm = () => {
         lastName: "",
         role: "",
       });
-      navigate("/login/choose-organization");
+      navigate("/organization");
     } else if (isError) {
       enqueueSnackbar(error?.message, {
         variant: "error",
