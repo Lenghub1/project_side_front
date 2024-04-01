@@ -75,6 +75,10 @@ const resendActivationCode = async (method: string, data: any) => {
   return api.post(`/auth/resend/${method}/activation`, data);
 };
 
+const resendTwoFactorCode = async (method: string, data: any) => {
+  return api.post(`/auth/resend/${method}/2FA`, data);
+};
+
 const facebookSignIn = async (data: any) => {
   return api.post("/auth/facebook/signin", data);
 };
@@ -96,6 +100,7 @@ const authApi = {
   verifyEmail,
   clearResetToken,
   resendActivationCode,
+  resendTwoFactorCode,
   signupAsEmployee,
   facebookSignIn,
 };

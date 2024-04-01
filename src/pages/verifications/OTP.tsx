@@ -13,6 +13,7 @@ import Store from "@/store";
 import { MuiOtpInput } from "mui-one-time-password-input";
 import { Flex } from "../getStarted/GetStarted";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import useCooldownTimer from "@/hooks/useCooldownTimer";
 
 const customTheme = createTheme({
   palette: {
@@ -71,6 +72,7 @@ const OTP = () => {
     useCancelModal();
   const { isMobile } = useScreenSize();
   const { enqueueSnackbar } = useSnackbar();
+  const { isCooldown, cooldownTime, startCooldown } = useCooldownTimer(30);
 
   const [otp, setOtp] = useState("");
   const setResetPassword = useSetRecoilState(Store.User.resetPasswordToken);
@@ -79,8 +81,6 @@ const OTP = () => {
   const isValidInput = otp.length === 6;
   const verification = location.state;
 
-  console.log(location.state);
-
   useEffect(() => {
     if (error) {
       showMessage("Incorrect code. Please try again", "error");
@@ -88,8 +88,6 @@ const OTP = () => {
   }, [error]);
 
   useEffect(() => {
-    console.log("RESPONSE", response);
-
     if (isSuccess && response) {
       if (response.status_code === 200) {
         showMessage(
@@ -127,6 +125,7 @@ const OTP = () => {
   }, []);
 
   async function resendOTP(): Promise<void> {
+    startCooldown();
     if (verification.type === VERIFICATION_TYPE.VERIFY_FORGET_PASSWORD) {
       await handleApiRequest(() =>
         authApi.forgotPassword(verification.method, verification.data)
@@ -135,6 +134,13 @@ const OTP = () => {
       await handleApiRequest(() =>
         authApi.resendActivationCode(verification.method, verification.data)
       );
+    } else if (verification.type === VERIFICATION_TYPE.VERIFY_2FA) {
+      console.log(verification);
+      const data =
+        verification.loginMethod === "email"
+          ? { email: verification.credential }
+          : { phoneNumber: verification.credential };
+      authApi.resendTwoFactorCode(verification.loginMethod, data);
     }
   }
 
@@ -193,18 +199,22 @@ const OTP = () => {
   return (
     <CP.Styled.Wrapper height="100vh">
       <Flex height="inherit">
-        <CP.Styled.Div padding={!isMobile ? "0" : "0 16px"}>
+        <CP.Styled.Div padding={!isMobile ? "0" : "0 1rem"}>
           <Flex items="flex-start" direction="column">
             <CP.Typography
               variant="h4"
-              margin="0 0 2rem"
+              margin="0 0 1rem"
               textAlign="center"
               width={"100%"}
             >
               OTP Verification
             </CP.Typography>
             <Flex direction="column">
-              <CP.Typography fontWeight="semibold" textAlign="center">
+              <CP.Typography
+                fontWeight="semibold"
+                textAlign="center"
+                gutterBottom
+              >
                 Enter the verification code we just sent to your
               </CP.Typography>
 
@@ -237,14 +247,21 @@ const OTP = () => {
                 <CP.Typography marginRight={1}>
                   Didn't receive code?{" "}
                 </CP.Typography>
-                <CP.Typography
+                {/* <CP.Typography
                   fontWeight="semibold"
                   color={"primary"}
                   sx={{ cursor: "pointer" }}
                   onClick={() => resendOTP()}
                 >
                   Resend
-                </CP.Typography>
+                </CP.Typography> */}
+                <CP.Button
+                  onClick={() => resendOTP()}
+                  disabled={isCooldown}
+                  variant="text"
+                >
+                  {isCooldown ? `Resend (${cooldownTime})` : "Resend"}
+                </CP.Button>
               </Flex>
               <Flex>
                 <Flex gap="0.5rem" justify="center">

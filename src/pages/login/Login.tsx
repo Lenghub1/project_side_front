@@ -1,5 +1,5 @@
 import { Link, useNavigate, Outlet, useLocation } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import CP from "@/components";
 
 import { useEffect, useState } from "react";
@@ -25,11 +25,6 @@ import { Flex } from "../getStarted/GetStarted";
 
 type SignInMethod = "email" | "phone";
 
-interface LoginResponse {
-  user: {
-    accessToken: string;
-  };
-}
 const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -45,9 +40,7 @@ const LoginPage = () => {
     dialCode: string;
     flag: string;
   }>(countries[0]);
-  const [accessToken, setAccessToken] = useRecoilState(
-    Store.User.accessTokenState
-  );
+  const setAccessToken = useSetRecoilState(Store.User.accessTokenState);
   const { isMobile } = useScreenSize();
 
   const isFormInvalid =
