@@ -94,25 +94,25 @@ const routes: RouteProps[] = [
     name: "chooseOrganization",
     path: "login/choose-organization",
     element: Pg.choose.default.ScreenChooseOrganization,
-    protected: false,
+    protected: true,
   },
   {
     name: "fillForm",
     path: "fillForm",
     element: Pg.FillForm.default.FillForm,
-    protected: false,
+    protected: true,
   },
   {
     name: "joinOrganization",
     path: "join-organization",
     element: Pg.choose.default.ScreenJoinOrganization,
-    protected: false,
+    protected: true,
   },
   {
     name: "joinOrganization",
     path: "create-organization",
     element: Pg.choose.default.ScreenCreateOrganization,
-    protected: false,
+    protected: true,
   },
   {
     name: "home",
@@ -120,32 +120,6 @@ const routes: RouteProps[] = [
     element: Pg.HomePage,
     protected: true,
     children: [
-      {
-        name: "employee",
-        path: "employee",
-        element: Pg.Employee.default.Employee,
-        protected: true,
-        children: [
-          {
-            name: "employee-management",
-            path: "",
-            element: Pg.Employee.default.EmployeeTable,
-            protected: true,
-          },
-          {
-            name: "create-new-employee",
-            path: "create",
-            element: Pg.Employee.default.CreateEmployee,
-            protected: true,
-          },
-          {
-            name: "employee-registrations",
-            path: "registration",
-            element: Pg.Employee.default.EmployeeRegistration,
-            protected: true,
-          },
-        ],
-      },
       {
         name: "organization",
         path: "organization",
@@ -180,13 +154,39 @@ const routes: RouteProps[] = [
           },
         ],
       },
+      {
+        name: "employee",
+        path: "employee",
+        element: Pg.Employee.default.Employee,
+        protected: true,
+        children: [
+          {
+            name: "employee-management",
+            path: "",
+            element: Pg.Employee.default.EmployeeTable,
+            protected: true,
+          },
+          {
+            name: "create-new-employee",
+            path: "create",
+            element: Pg.Employee.default.CreateEmployee,
+            protected: true,
+          },
+          {
+            name: "employee-registrations",
+            path: "registration",
+            element: Pg.Employee.default.EmployeeRegistration,
+            protected: true,
+          },
+        ],
+      },
     ],
   },
   {
     name: "checkStatus",
     path: "/check-status",
     element: Pg.CheckStatus.default.CheckStatus,
-    protected: false,
+    protected: true,
   },
   {
     name: "forgetpassword",
