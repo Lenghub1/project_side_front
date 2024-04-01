@@ -14,7 +14,8 @@ import { useRecoilValue, useRecoilState } from "recoil";
 import { filteredDataState, dataToFilterState } from "@/store/filterStore";
 import { UserInformationCell } from "./EmployeeTable";
 import { selectedOrganization } from "@/store/userStore";
-import { Sort, Filter, FilterSelection } from "@/utils/interfaces/Feature";
+import { Sort, Filter } from "@/utils/interfaces/Feature";
+import useScreenSize from "@/hooks/useScreenSize";
 
 const RenderActionCell = (row: Employement) => {
   const { id } = row;
@@ -40,10 +41,14 @@ const EmployeeRegistration = () => {
   ];
   const perPage = 10;
   const page = 1;
-
+  const { isMobile, isTablet } = useScreenSize();
+  const initialHeadCells = generateHeadCells(isMobile, isTablet);
+  const [headCells, setHeadCells] = useState(initialHeadCells);
   const [_, setDataToFilter] = useRecoilState(dataToFilterState);
   const { isFilter, data: filteredData } = useRecoilValue(filteredDataState);
   const organization = useRecoilValue(selectedOrganization);
+  const [errorComponent, setErrorComponent] = useState<React.ReactNode>();
+  const [notFoundComponent, setNotFoundComponent] = useState<React.ReactNode>();
 
   // State to manage the sorting criteria
   const [sortCriteria, setSortCriteria] = useState<Sort[]>([
@@ -63,10 +68,10 @@ const EmployeeRegistration = () => {
       page
     )
   );
-
-  if (error) {
-    return <Error status={error.status_code} />;
-  }
+  useEffect(() => {
+    const newHeadCells = generateHeadCells(isMobile, isTablet);
+    setHeadCells(newHeadCells);
+  }, [isMobile, isTablet]);
 
   useEffect(() => {
     setDataToFilter(data?.docs);
@@ -102,18 +107,18 @@ const EmployeeRegistration = () => {
     }
   };
 
-  const handleFilterChange = (filters: FilterSelection[]) => {
+  const handleFilterChange = (filters: Filter[]) => {
     console.log(filters);
     // Convert SortField[] to Filter[] if needed
     const convertedFilters = filters.map((filter) => {
-      const combinedValues = filter.values
-        .map((value) => {
+      const combinedValues = filter
+        .values!.map((value) => {
           return value;
         })
         .join("||");
       return {
-        field: filter.key,
-        logicalClause: filter.option,
+        field: filter.field,
+        logicalClause: filter.logicalClause,
         targetValue: combinedValues,
       };
     });
@@ -127,14 +132,26 @@ const EmployeeRegistration = () => {
     refetchData();
   }, [sortCriteria, appliedFilters]);
 
+  useEffect(() => {
+    if (error) {
+      if (error.statusCode === 404) {
+        setNotFoundComponent(<Error status={error.statusCode} />);
+      } else {
+        setErrorComponent(<Error status={error.statusCode} />);
+      }
+    }
+  }, [error]);
+  if (errorComponent) {
+    return errorComponent;
+  }
   return (
     <CP.Container>
       <EnhancedTable<Employement>
         headCells={headCells}
         rows={displayData || []}
-        rowCount={displayData?.length || 0}
         tableName="Employee"
         pagination={data?.pagination}
+        error={notFoundComponent}
         onFilterChange={handleFilterChange}
         onRequestSort={handleSortRequest}
       />
@@ -144,7 +161,7 @@ const EmployeeRegistration = () => {
 
 export default EmployeeRegistration;
 
-const headCells = [
+const generateHeadCells = (isMobile: boolean, isTablet: boolean) => [
   {
     id: "name",
     label: "Employee",
@@ -152,6 +169,7 @@ const headCells = [
     element: UserInformationCell,
     sortable: true,
     sortFeild: "name",
+    visibility: true,
   },
   {
     id: "position",
@@ -160,6 +178,7 @@ const headCells = [
     label: "Position",
     filterable: true,
     sortable: true,
+    visibility: !isMobile && !isTablet,
   },
   {
     id: "privilege",
@@ -168,6 +187,7 @@ const headCells = [
     label: "Privilege",
     filterable: true,
     sortable: true,
+    visibility: !isMobile && !isTablet,
   },
   {
     id: "status",
@@ -175,11 +195,13 @@ const headCells = [
     disablePadding: false,
     label: "Status",
     filterable: true,
+    visibility: !isMobile && !isTablet,
   },
   {
     id: "action",
     type: "ReactCell",
     label: "Action",
     element: RenderActionCell,
+    visibility: !isMobile || isTablet,
   },
 ];

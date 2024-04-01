@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Typography, Stack } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import useFetch from "@/hooks/useFetch";
@@ -7,10 +7,11 @@ import EnhancedTable from "@/components/table/EnhanceTable";
 import { Employement } from "@/utils/interfaces/Employment";
 import Error from "../error/Error";
 import { useRecoilValue, useRecoilState } from "recoil";
-import { filteredDataState, dataToFilterState } from "@/store/filterStore";
 import { selectedOrganization } from "@/store/userStore";
 import CP from "@/components";
-import { Filter, FilterSelection, Sort } from "@/utils/interfaces/Feature";
+import { Filter, Sort } from "@/utils/interfaces/Feature";
+import useScreenSize from "@/hooks/useScreenSize";
+import { dataToFilterState } from "@/store/filterStore";
 
 export const UserInformationCell = (row: Employement) => {
   return (
@@ -27,20 +28,22 @@ export const UserInformationCell = (row: Employement) => {
 };
 
 const EmployeeTable = () => {
-  const filters = [
+  const filters: Filter[] = [
     { field: "status", logicalClause: "ne", targetValue: "pending" },
   ];
-  const perPage = 10;
-  const page = 1;
 
   const [_, setDataToFilter] = useRecoilState(dataToFilterState);
-  const { isFilter, data: filteredData } = useRecoilValue(filteredDataState);
+  const { isMobile, isTablet } = useScreenSize();
+  const initialHeadCells = generateHeadCells(isMobile, isTablet);
+  const [headCells, setHeadCells] = useState(initialHeadCells);
   const organization = useRecoilValue(selectedOrganization);
-
-  // State to manage the sorting criteria
+  const [errorComponent, setErrorComponent] = useState<React.ReactNode>();
+  const [notFoundComponent, setNotFoundComponent] = useState<React.ReactNode>();
   const [sortCriteria, setSortCriteria] = useState<Sort[]>([
     { field: "position", direction: "asc" },
   ]);
+  const [page, setPage] = useState(1);
+  const [perPage] = useState(10);
 
   // State to manage filters
   const [appliedFilters, setAppliedFilters] = useState<Filter[]>(filters);
@@ -50,15 +53,10 @@ const EmployeeTable = () => {
     allEmployees(organization, appliedFilters, sortCriteria, perPage, page)
   );
 
-  if (error) {
-    return <Error status={error.status_code} />;
-  }
-
-  useEffect(() => {
-    setDataToFilter(data?.docs);
-  }, [data]);
-
-  const displayData = isFilter ? filteredData : data?.docs;
+  const handlePageChange = (page: number) => {
+    setPage(page + 1);
+    console.log(page);
+  };
 
   const handleSortRequest = (property: keyof Employement) => {
     const existingSortIndex = sortCriteria.findIndex(
@@ -87,18 +85,16 @@ const EmployeeTable = () => {
     }
   };
 
-  const handleFilterChange = (filters: FilterSelection[]) => {
-    console.log(filters);
-    // Convert SortField[] to Filter[] if needed
+  const handleFilterChange = (filters: Filter[]) => {
     const convertedFilters = filters.map((filter) => {
-      const combinedValues = filter.values
-        .map((value) => {
+      const combinedValues = filter
+        .values!.map((value) => {
           return value;
         })
         .join("||");
       return {
-        field: filter.key,
-        logicalClause: filter.option,
+        field: filter.field,
+        logicalClause: filter.logicalClause,
         targetValue: combinedValues,
       };
     });
@@ -106,22 +102,44 @@ const EmployeeTable = () => {
     console.log(convertedFilters);
     setAppliedFilters(convertedFilters);
   };
+  useEffect(() => {
+    setDataToFilter(data?.docs);
+    console.log(data);
+  }, [data]);
+
+  useEffect(() => {
+    const newHeadCells = generateHeadCells(isMobile, isTablet);
+    setHeadCells(newHeadCells);
+  }, [isMobile, isTablet]);
 
   // Refetch data when sorting criteria or filters change
   useEffect(() => {
     refetchData();
-  }, [sortCriteria, appliedFilters]);
+  }, [sortCriteria, appliedFilters, page]);
 
+  useEffect(() => {
+    if (error) {
+      if (error.statusCode === 404) {
+        setNotFoundComponent(<Error status={error.statusCode} />);
+      } else {
+        setErrorComponent(<Error status={error.statusCode} />);
+      }
+    }
+  }, [error]);
+  if (errorComponent) {
+    return errorComponent;
+  }
   return (
     <CP.Container>
       <EnhancedTable<Employement>
         headCells={headCells}
-        rows={displayData || []}
-        rowCount={displayData?.length || 0}
+        rows={data?.docs || []}
         tableName="Employee"
-        pagination={data?.pagination}
+        pagination={data?.pagination || undefined}
+        error={notFoundComponent}
         onFilterChange={handleFilterChange}
         onRequestSort={handleSortRequest}
+        onPageChange={handlePageChange}
       />
     </CP.Container>
   );
@@ -129,7 +147,7 @@ const EmployeeTable = () => {
 
 export default EmployeeTable;
 
-const headCells = [
+const generateHeadCells = (isMobile: boolean, isTablet: boolean) => [
   {
     label: "Employee",
     type: "ReactCell",
@@ -139,6 +157,7 @@ const headCells = [
     sortField: "name",
     id: "name",
     numeric: false,
+    visibility: true,
   },
   {
     id: "position",
@@ -148,6 +167,7 @@ const headCells = [
     filterable: true,
     sortable: true,
     sortField: "position",
+    visibility: !isMobile || isTablet,
   },
   {
     id: "privilege",
@@ -157,6 +177,7 @@ const headCells = [
     filterable: true,
     sortable: true,
     sortField: "privilege",
+    visibility: !isMobile && !isTablet,
   },
   {
     id: "status",
@@ -164,5 +185,6 @@ const headCells = [
     disablePadding: false,
     label: "Status",
     filterable: false,
+    visibility: !isMobile && !isTablet,
   },
 ];

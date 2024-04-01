@@ -1,7 +1,7 @@
 import { atom } from "recoil";
-import { FilterSelection } from "@/utils/interfaces/Feature";
+import { Filter } from "@/utils/interfaces/Feature";
 
-export const filterSelectionsState = atom<FilterSelection[]>({
+export const filterSelectionsState = atom<Filter[]>({
   key: "filterSelectionsState",
   default: [],
 });
