@@ -74,9 +74,12 @@ const OTP = () => {
 
   const [otp, setOtp] = useState("");
   const setResetPassword = useSetRecoilState(Store.User.resetPasswordToken);
+  const setAccessToken = useSetRecoilState(Store.User.accessTokenState);
 
   const isValidInput = otp.length === 6;
   const verification = location.state;
+
+  console.log(location.state);
 
   useEffect(() => {
     if (error) {
@@ -107,6 +110,8 @@ const OTP = () => {
       } else if (verification.type === VERIFICATION_TYPE.VERIFY_ACCOUNT) {
         console.log("VERIFY", verification);
       } else if (verification.type === VERIFICATION_TYPE.VERIFY_2FA) {
+        setAccessToken(response.data.accessToken);
+        navigate("/login/choose-organization");
       }
     }
   }, [response, isSuccess]);
@@ -202,10 +207,19 @@ const OTP = () => {
               <CP.Typography fontWeight="semibold" textAlign="center">
                 Enter the verification code we just sent to your
               </CP.Typography>
-              <CP.Typography marginBottom={"2rem"}>
-                phone number{verification.phone.slice(0, 7)}
-                {maskPhoneNumber(verification.phone).slice(7)}.
-              </CP.Typography>
+
+              {verification.phone ? (
+                <CP.Typography marginBottom={"2rem"}>
+                  phone number{verification.phone.slice(0, 7)}
+                  {maskPhoneNumber(verification.phone).slice(7)}.
+                </CP.Typography>
+              ) : (
+                verification.email && (
+                  <CP.Typography marginBottom={"2rem"}>
+                    email "{verification.email}"
+                  </CP.Typography>
+                )
+              )}
             </Flex>
             <ThemeProvider theme={customTheme}>
               <MuiOtpInputStyled

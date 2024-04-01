@@ -68,6 +68,13 @@ const routes: RouteProps[] = [
     path: "/login",
     element: Pg.LoginPage.default.LoginPage,
     protected: false,
+    children: [
+      {
+        name: "verify2FA",
+        path: "verify-2fa",
+        element: Pg.Verification.default.OTP,
+      },
+    ],
   },
   // {
   //   name: "login",

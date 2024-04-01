@@ -52,12 +52,6 @@ const passwordCriteria = {
   // containsSpecialCharacter: true,
 };
 
-interface LoginResponse {
-  user: {
-    accessToken: string;
-  };
-}
-
 const SignupPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -128,7 +122,7 @@ const SignupPage = () => {
       // enqueueSnackbar("We've sent a verification code to your email.", {
       //   variant: "success",
       // });
-      navigate("/login/activate-account", {
+      navigate("/get-started/activate-account", {
         state: { credential: email.value, accountMethod: signupMethod },
       });
     } else if (isSuccess && signupMethod === "phone") {
