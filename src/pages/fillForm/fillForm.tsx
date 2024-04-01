@@ -52,7 +52,7 @@ const FillForm = () => {
     }
   }, [isSuccess, isError, error]);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,

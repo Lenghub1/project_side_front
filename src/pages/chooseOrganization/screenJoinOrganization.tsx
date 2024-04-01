@@ -33,7 +33,7 @@ const ScreenJoinOrganization = () => {
       );
 
       if (response) {
-        setOrganizationData(response.data || []);
+        setOrganizationData(response.data);
       } else {
       }
       setLoading(false);

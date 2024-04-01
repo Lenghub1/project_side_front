@@ -5,16 +5,14 @@ import { handleApiRequest } from "@/api";
 import { myBranch } from "@/api/branch";
 import styled from "styled-components";
 import { Divider } from "@mui/material";
-import { myOrganization } from "@/api/organization";
+import { organization } from "@/store/organizationStore";
 import React from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { BranchDetailCard } from "../../branch/branchDetail";
 import { Outlet } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { selectedOrganization } from "@/store/userStore";
 import { useRecoilValue } from "recoil";
-import { Error } from "@/pages/error";
-import useApi from "@/hooks/useApi";
 
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
@@ -24,15 +22,8 @@ const OverviewOrganization = () => {
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 456);
   const location = useLocation();
-  const {
-    response: data,
-    isSuccess,
-    isError,
-    error,
-    handleApiRequest: apiHook,
-  } = useApi();
 
-  const [organizationData, setOrganizationData] = useState({}) as any;
+  const organizationData = useRecoilValue(organization) as any;
   const selected = useRecoilValue(selectedOrganization);
   const [organizationBranchData, setOrganizationBranchData] = useState(
     []
@@ -40,7 +31,7 @@ const OverviewOrganization = () => {
   const isViewOrganization = location.pathname === "/organization";
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 456);
+      setIsMobile(window.innerWidth <= 768);
     };
 
     window.addEventListener("resize", handleResize);
@@ -54,16 +45,6 @@ const OverviewOrganization = () => {
     navigate("/organization/createBranch");
   };
 
-  const myOrganizationData = async () => {
-    await apiHook(() => myOrganization(selected));
-  };
-
-  useEffect(() => {
-    if (isSuccess) {
-      setOrganizationData(data);
-    }
-  }, [isSuccess, isError, error]);
-
   const myOrganizationBranchData = async () => {
     const [response, error] = await handleApiRequest(() => myBranch(selected));
 
@@ -74,14 +55,8 @@ const OverviewOrganization = () => {
   };
 
   React.useEffect(() => {
-    myOrganizationData();
     myOrganizationBranchData();
   }, []);
-  if (isError && error) {
-    console.log("hello", isError, error.statusCode);
-    localStorage.removeItem("recoil-persist");
-    return <Error status={error.statusCode!} message={error.message!} />;
-  }
 
   return (
     <CP.Styled.Wrapper overflow="auto">

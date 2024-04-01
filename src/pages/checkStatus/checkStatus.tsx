@@ -1,8 +1,14 @@
 import { Container } from "@mui/material";
-
+import { selectedOrganization } from "@/store/userStore";
 import CP from "@/components";
+import { useRecoilValue } from "recoil";
+import { Navigate } from "react-router-dom";
 
 const CheckStatus = () => {
+  const selected = useRecoilValue(selectedOrganization);
+  if (!selected) {
+    return <Navigate to={"/login/choose-organization"} replace />;
+  }
   return (
     <Container
       style={{

@@ -13,4 +13,5 @@ export interface Employement {
   email: string;
   phoneNumber: string;
   users: any;
+  data: any;
 }

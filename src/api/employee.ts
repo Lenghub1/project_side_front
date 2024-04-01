@@ -24,7 +24,7 @@ const fieldMapping = generateFieldMapping({
 
 const allWorkplace = async (
   userId: string
-): Promise<AxiosResponse<Partial<Employement>[]>> => {
+): Promise<AxiosResponse<Partial<Employement>>> => {
   return api.get(`/organizations/self-workplace/${userId}`, {});
 };
 
