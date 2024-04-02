@@ -18,7 +18,9 @@ import EnhancedTableHead from "./TableHead";
 import CP from "..";
 import { Filter } from "@/utils/interfaces/Feature";
 import { HeadCell } from "@/utils/interfaces/Table";
-
+import { selectMembers } from "@/store/employee";
+import { useRecoilState } from "recoil";
+import { BranchData } from "@/utils/interfaces/Branch";
 interface EnhancedTableProps<T> {
   headCells: HeadCell<T>[];
   rows: T[];
@@ -28,6 +30,9 @@ interface EnhancedTableProps<T> {
   onRequestSort: (id: keyof T) => void;
   onPageChange: (page: number) => void;
   error: React.ReactNode;
+  selected: any;
+  branchData: BranchData;
+  setBranchData: any;
 }
 
 function EnhancedTable<T>({
@@ -39,13 +44,17 @@ function EnhancedTable<T>({
   onRequestSort,
   onPageChange,
   error,
+  selected,
+  setBranchData,
+  branchData,
 }: EnhancedTableProps<T>) {
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [selectedRows, setSelectedRows] = useState<T[]>([]);
-  const [isSelectable, setIsSelectable] = useState(false);
 
+  const [isSelectable, setIsSelectable] = useState(selected);
+  const [memberSelected, setMemberSelected] = useRecoilState(selectMembers);
+  const [selectedRows, setSelectedRows] = useState<any>(memberSelected);
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
   };
@@ -70,8 +79,10 @@ function EnhancedTable<T>({
     setDense(event.target.checked);
   };
 
-  const handleRowClick = (row: T) => {
-    const selectedIndex = selectedRows.indexOf(row);
+  const handleRowClick = (row: any) => {
+    const selectedIndex = selectedRows.findIndex(
+      (selectedRow: any) => selectedRow.id === row.id
+    );
     let newSelected: T[] = [];
 
     if (selectedIndex === -1) {
@@ -88,10 +99,17 @@ function EnhancedTable<T>({
     }
 
     setSelectedRows(newSelected);
+    setMemberSelected(newSelected as any);
+    const updatedBranchData = {
+      ...branchData,
+      member: newSelected,
+    };
+    setBranchData(updatedBranchData);
   };
 
   const handleSelectClick = () => {
-    setIsSelectable((prev) => !prev);
+    setIsSelectable((prev: any) => !prev);
+    setMemberSelected([]);
     setSelectedRows([]);
   };
 
@@ -124,13 +142,15 @@ function EnhancedTable<T>({
                 </TableRow>
               )}
               {!error &&
-                rows.map((row, rowIndex) => (
+                rows.map((row: any, rowIndex) => (
                   <TableRow
                     hover
                     role="checkbox"
                     tabIndex={-1}
                     key={rowIndex}
-                    selected={selectedRows.includes(row)}
+                    selected={selectedRows.some(
+                      (selectedRow: any) => selectedRow.id === row.id
+                    )}
                     onClick={() => isSelectable && handleRowClick(row)}
                     sx={{
                       cursor: isSelectable ? "pointer" : "default",
@@ -139,7 +159,9 @@ function EnhancedTable<T>({
                     {isSelectable && (
                       <TableCell padding="checkbox">
                         <Checkbox
-                          checked={selectedRows.includes(row)}
+                          checked={selectedRows.some(
+                            (selectedRow: any) => selectedRow.id === row.id
+                          )}
                           onChange={() => isSelectable && handleRowClick(row)}
                         />
                       </TableCell>

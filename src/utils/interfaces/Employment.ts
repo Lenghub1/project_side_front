@@ -16,6 +16,6 @@ export interface Employement {
   workLocation: string;
   email: string;
   phoneNumber: string;
-  users: any;
+  user: any;
   data: any;
 }

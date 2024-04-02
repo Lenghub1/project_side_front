@@ -7,12 +7,13 @@ import AddMember from "./addMember";
 import { useSnackbar } from "notistack";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { selectMembers } from "@/store/employee";
-import { allEmployees } from "@/api/employee";
+import { manager } from "@/api/employee";
 import { createBranch } from "@/api/branch";
 import { handleApiRequest } from "@/api";
 import { useNavigate } from "react-router-dom";
 import { selectedOrganization } from "@/store/userStore";
 import { BranchData } from "@/utils/interfaces/Branch";
+import EmployeeTable from "../employee/EmployeeTable";
 export interface AddMemberProps {
   branchData: BranchData | any;
   setBranchData: React.Dispatch<React.SetStateAction<BranchData>>;
@@ -39,11 +40,11 @@ const CreateBranch: React.FC = () => {
   const [managers, setManagers] = React.useState<any>([]);
   const newPendingEmployees = async () => {
     const [response, error] = await handleApiRequest(() =>
-      allEmployees(organization)
+      manager(organization)
     );
 
     if (response) {
-      setManagers(response);
+      setManagers(response?.data.data);
     }
     if (error) {
       return error;
@@ -132,6 +133,7 @@ const CreateBranch: React.FC = () => {
     newPendingEmployees();
     clearSelection();
   }, []);
+
   return (
     <Container style={{ padding: "50px" }}>
       <Stepper activeStep={step} alternativeLabel>
@@ -161,7 +163,11 @@ const CreateBranch: React.FC = () => {
         />
       )}
       {step === 1 && (
-        <AddMember branchData={branchData} setBranchData={setBranchData} />
+        <EmployeeTable
+          selected={true}
+          branchData={branchData}
+          setBranchData={setBranchData}
+        />
       )}
       {step === 2 && (
         <ConfirmationCreateBranch branchData={branchData} manager={managers} />

@@ -12,6 +12,7 @@ import CP from "@/components";
 import { Filter, Sort } from "@/utils/interfaces/Feature";
 import useScreenSize from "@/hooks/useScreenSize";
 import { dataToFilterState } from "@/store/filterStore";
+import { BranchData } from "@/utils/interfaces/Branch";
 
 export const UserInformationCell = (row: Employement) => {
   return (
@@ -27,7 +28,15 @@ export const UserInformationCell = (row: Employement) => {
   );
 };
 
-const EmployeeTable = () => {
+const EmployeeTable = ({
+  selected,
+  branchData,
+  setBranchData,
+}: {
+  selected: any;
+  branchData: BranchData;
+  setBranchData: any;
+}) => {
   const filters: Filter[] = [
     { field: "status", logicalClause: "ne", targetValue: "pending" },
   ];
@@ -128,6 +137,7 @@ const EmployeeTable = () => {
   if (errorComponent) {
     return errorComponent;
   }
+
   return (
     <CP.Container>
       <EnhancedTable<Employement>
@@ -139,6 +149,9 @@ const EmployeeTable = () => {
         onFilterChange={handleFilterChange}
         onRequestSort={handleSortRequest}
         onPageChange={handlePageChange}
+        selected={selected}
+        branchData={branchData}
+        setBranchData={setBranchData}
       />
     </CP.Container>
   );

@@ -65,7 +65,11 @@ const allEmployees = async (
     params
   );
 };
-
+const manager = async (
+  organizationId: string
+): Promise<AxiosResponse<Partial<Employement>>> => {
+  return api.get(`/organizations/${organizationId}/employments?position=owner`);
+};
 const allWorkplace = async (
   userId: string
 ): Promise<AxiosResponse<Partial<Employement>>> => {
@@ -174,4 +178,5 @@ export {
   deleteEmployee,
   getAllPendingEmployees,
   getUserEmployments,
+  manager,
 };
