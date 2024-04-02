@@ -1,5 +1,5 @@
 import { Link, useNavigate, Outlet, useLocation } from "react-router-dom";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import CP from "@/components";
 
 import { useEffect, useState } from "react";
@@ -67,7 +67,7 @@ const LoginPage = () => {
     if (isSuccess) {
       const userData = response?.data;
       if (response?.status_code === 202) {
-        if (loginMethod === "email")
+        if (loginMethod === "email") {
           navigate("/login/verify-2fa", {
             state: {
               type: VERIFICATION_TYPE.VERIFY_2FA,
@@ -76,6 +76,17 @@ const LoginPage = () => {
               credential: email.value,
             },
           });
+        } else if (loginMethod === "phone") {
+          navigate("/login/verify-2fa", {
+            state: {
+              type: VERIFICATION_TYPE.VERIFY_2FA,
+              phoneNumber: `${selectedCountry.dialCode} ${removeLeadingZeron(phone.value)}`,
+              loginMethod: "phoneNumber",
+              credential:
+                selectedCountry.dialCode + removeLeadingZeron(phone.value),
+            },
+          });
+        }
       }
       if (userData?.user) {
         setAccessToken(userData.user?.accessToken);
@@ -103,7 +114,7 @@ const LoginPage = () => {
           navigate("/get-started/verify-phone", {
             state: {
               type: VERIFICATION_TYPE.VERIFY_ACCOUNT,
-              phone: `${selectedCountry.dialCode} ${phone.value}`,
+              phoneNumber: `${selectedCountry.dialCode} ${removeLeadingZeron(phone.value)}`,
               method: loginMethod,
               data: {
                 phoneNumber:

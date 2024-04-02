@@ -129,7 +129,7 @@ const SignupPage = () => {
       navigate("/get-started/verify-phone", {
         state: {
           type: VERIFICATION_TYPE.VERIFY_ACCOUNT,
-          phone: `${selectedCountry.dialCode} ${phone.value}`,
+          phoneNumber: `${selectedCountry.dialCode} ${removeLeadingZeron(phone.value)}`,
           method: signupMethod,
           data: {
             phoneNumber:

@@ -105,9 +105,10 @@ const OTP = () => {
         setTimeout(() => {
           navigate("/forget-password/reset-password");
         }, 1500);
-      } else if (verification.type === VERIFICATION_TYPE.VERIFY_ACCOUNT) {
-        console.log("VERIFY", verification);
-      } else if (verification.type === VERIFICATION_TYPE.VERIFY_2FA) {
+      } else if (
+        verification.type === VERIFICATION_TYPE.VERIFY_ACCOUNT ||
+        verification.type === VERIFICATION_TYPE.VERIFY_2FA
+      ) {
         setAccessToken(response.data.accessToken);
         navigate("/login/choose-organization");
       }
@@ -125,6 +126,7 @@ const OTP = () => {
   }, []);
 
   async function resendOTP(): Promise<void> {
+    setOtp("");
     startCooldown();
     if (verification.type === VERIFICATION_TYPE.VERIFY_FORGET_PASSWORD) {
       await handleApiRequest(() =>
@@ -182,9 +184,10 @@ const OTP = () => {
       };
     } else if (verification.type === VERIFICATION_TYPE.VERIFY_ACCOUNT) {
       data = {
-        phoneNumber: verification.phoneNumber,
+        phoneNumber: verification.data.phoneNumber,
         code: otp,
       };
+      console.log(data);
     } else if (verification.type === VERIFICATION_TYPE.VERIFY_2FA) {
       data = {
         OTP: otp,
