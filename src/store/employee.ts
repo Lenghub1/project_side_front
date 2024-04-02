@@ -24,9 +24,14 @@ export const employees = atom<Employement[]>({
 
   effects_UNSTABLE: [persistAtom],
 });
-export const employee = atom<Employement>({
+export const employee = atom<any>({
+  key: `employees`,
+  default: undefined,
+});
+export const employeeId = atom<string>({
   key: `employee`,
   default: undefined,
+  effects_UNSTABLE: [persistAtom],
 });
 export const selectEmployee = selector({
   key: "selectEmployee",
@@ -36,13 +41,7 @@ export const selectEmployee = selector({
     return organization.id;
   },
 });
-export const selectEmployeeData = selector({
-  key: "selectEmployeeData",
-  get: ({ get }) => {
-    const employeeData = get(employee);
-    return employeeData;
-  },
-});
+
 export const selectMembers = atom<string[] | null>({
   key: `selectMembers`,
   default: [],
