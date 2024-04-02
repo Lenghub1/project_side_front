@@ -56,7 +56,7 @@ const EmployeeTable = ({
     { field: "position", direction: "asc" },
   ]);
   const [page, setPage] = useState(1);
-  const [perPage] = useState(10);
+  const [perPage, setPerPage] = useState(10);
 
   // State to manage filters
   const [appliedFilters, setAppliedFilters] = useState<Filter[]>(filters);
@@ -70,6 +70,11 @@ const EmployeeTable = ({
     setPage(page + 1);
   };
 
+  const handleRowsPerPageChange = (rowsPerPage: number) => {
+    setPerPage(rowsPerPage);
+    setPage(1);
+    console.log(rowsPerPage);
+  };
   const handleSortRequest = (property: keyof Employment) => {
     const existingSortIndex = sortCriteria.findIndex(
       (criteria) => criteria.field === property
@@ -125,7 +130,7 @@ const EmployeeTable = ({
   // Refetch data when sorting criteria or filters change
   useEffect(() => {
     refetchData();
-  }, [sortCriteria, appliedFilters, page]);
+  }, [sortCriteria, appliedFilters, perPage, page]);
 
   useEffect(() => {
     if (error) {
@@ -154,6 +159,7 @@ const EmployeeTable = ({
         selected={selected}
         branchData={branchData}
         setBranchData={setBranchData}
+        onRowsPerPageChange={handleRowsPerPageChange}
       />
     </CP.Container>
   );

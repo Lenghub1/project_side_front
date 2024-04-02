@@ -29,6 +29,7 @@ interface EnhancedTableProps<T> {
   onFilterChange: (filterFields: Filter[]) => void;
   onRequestSort: (id: keyof T) => void;
   onPageChange: (page: number) => void;
+  onRowsPerPageChange: (rowPerPageChange: number) => void;
   onActionCallback?: (data: any, error: any) => void;
   error: React.ReactNode;
   selected: any;
@@ -44,6 +45,7 @@ function EnhancedTable<T>({
   onFilterChange,
   onRequestSort,
   onPageChange,
+  onRowsPerPageChange,
   onActionCallback,
   error,
   selected,
@@ -58,6 +60,7 @@ function EnhancedTable<T>({
   const [memberSelected, setMemberSelected] = useRecoilState(selectMembers);
   const [selectedRows, setSelectedRows] = useState<any>(memberSelected);
   const handleChangePage = (_: unknown, newPage: number) => {
+    console.log(newPage);
     setPage(newPage);
   };
 
@@ -65,6 +68,8 @@ function EnhancedTable<T>({
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
+    console.log(rowsPerPage);
+    onRowsPerPageChange(parseInt(event.target.value, 10));
     setPage(0);
   };
 
@@ -134,6 +139,7 @@ function EnhancedTable<T>({
           >
             <EnhancedTableHead<T>
               headCells={headCells}
+              isSelectable={isSelectable}
               onRequestSort={onRequestSort}
             />
 
@@ -207,6 +213,7 @@ function EnhancedTable<T>({
         </TableContainer>
         <TablePagination
           component="div"
+          rowsPerPageOptions={[5, 10, 20]}
           count={pagination?.total_docs || 0}
           page={page}
           onPageChange={handleChangePage}
