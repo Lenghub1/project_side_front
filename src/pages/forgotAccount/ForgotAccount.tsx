@@ -3,47 +3,33 @@ import useValidatedInput from "@/hooks/useValidatedInput";
 import useInput from "@/hooks/useInput";
 import CP from "@/components";
 import styled from "styled-components";
-import { SyntheticEvent } from "react";
+import { SyntheticEvent, useEffect } from "react";
 import { useSnackbar } from "notistack";
 import { authApi } from "@/api/auth";
-import { handleApiRequest } from "@/api";
 import { Outlet } from "react-router-dom";
 import useCancelModal from "@/hooks/useCancelModal";
-import useScreenSize from "@/hooks/useScreenSize";
 import SpaWithImage from "@/components/spaWithImage/SpaWithImage";
 import { Title, FormContainer } from "../companySearch/CompanySearch";
-
+import useApi from "@/hooks/useApi";
+import { forgotAccountInformation } from "@/store/userStore";
+import { useSetRecoilState } from "recoil";
+import Loading from "@/components/loading/Loading";
 const Flex = styled(CP.Styled.Flex)`
   overflow: unset;
 `;
-
-export const Typography = ({ children, screen }: any) => {
-  return (
-    <CP.Typography
-      variant="h4"
-      margin="0 0 2rem"
-      style={{
-        fontWeight: "semibold",
-        textAlign: screen ? "center" : "start",
-        width: "100%",
-      }}
-    >
-      {children}
-    </CP.Typography>
-  );
-};
 
 const ForgotAccount = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const { isMobile } = useScreenSize();
   const username = useValidatedInput("", "Username");
   const companyCode = useInput("");
   const { open, handleCancelConfirm, handleModalOpen, handleCloseModal } =
     useCancelModal();
   const isForgotAccountRoute = location.pathname === "/forgot-account";
-
+  const { isError, isLoading, response, error, isSuccess, handleApiRequest } =
+    useApi();
+  const setInformation = useSetRecoilState(forgotAccountInformation);
   const isFormIvalid =
     !username.value ||
     !!username.error ||
@@ -52,7 +38,7 @@ const ForgotAccount = () => {
         variant: "error",
         anchorOrigin: {
           vertical: "bottom", // or 'bottom'
-          horizontal: isMobile ? "center" : "left", // or 'left', 'center'
+          horizontal: "left", // or 'left', 'center'
         },
       });
     };
@@ -66,20 +52,23 @@ const ForgotAccount = () => {
       },
     });
   }
-
-  async function forgotAccount(data: any): Promise<void> {
-    const [response, error] = await handleApiRequest(() =>
-      authApi.findForgotAccount(data)
-    );
-
-    if (error) {
+  useEffect(() => {
+    if (isError) {
       showMessage("Not results exist. Please try again!", "error");
     }
+  }, [error]);
 
-    if (response.status_code === 200) {
-      // set state
-      navigate("/forgot-account/informations");
+  useEffect(() => {
+    if (isSuccess && response) {
+      setInformation(response.data);
+      setTimeout(() => {
+        navigate("/forgot-account/informations");
+      }, 1500);
     }
+  }, [response, isSuccess]);
+
+  async function forgotAccount(data: any): Promise<void> {
+    await handleApiRequest(() => authApi.findForgotAccount(data));
   }
 
   const handleSubmit = async (event: SyntheticEvent) => {
@@ -95,7 +84,9 @@ const ForgotAccount = () => {
   };
 
   const isInvalid = !username.value && !!username.setError;
-
+  if (isLoading) {
+    return setTimeout(() => <Loading isLoading={isLoading} />, 1500);
+  }
   return (
     <>
       {isForgotAccountRoute ? (
@@ -103,7 +94,7 @@ const ForgotAccount = () => {
           <CP.Styled.Form>
             <FormContainer>
               <CP.Styled.Div>
-                <Title>Password Reset</Title>
+                <Title>Forgot Account</Title>
                 <CP.Typography padding={"0 0 1rem"}>
                   Enter your username and company code to find your account.
                 </CP.Typography>
