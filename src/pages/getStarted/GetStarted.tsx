@@ -67,11 +67,12 @@ const GetStarted = () => {
 
             <Flex padding="0 1rem">
               <CP.Button
+                fullWidth
                 size="large"
                 variant="contained"
                 disabled={!accountType}
                 onClick={handleOnButtonClick}
-                style={{ minWidth: 712 }}
+                style={{ maxWidth: 712 }}
               >
                 Continue
               </CP.Button>
