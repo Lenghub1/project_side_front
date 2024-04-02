@@ -4,10 +4,10 @@ import CP from "..";
 import TelegramLoginButton from "./TelegramLoginButton";
 import FacebookLoginButton from "./FacebookLoginButton";
 import { authApi } from "@/api/auth";
-import SnackbarMessage from "../showMessage";
 import { oauthErrorState } from "@/store/error";
 import { useRecoilState } from "recoil";
 import { useEffect } from "react";
+import { useSnackbar } from "notistack";
 
 interface OauthProps {
   src: string;
@@ -47,10 +47,16 @@ export const OauthBox = ({ src, alt, click }: OauthProps) => {
 };
 
 const OuauthComponent = ({ margin }: { margin?: string }) => {
-  const [oauthError, setOauthError] = useRecoilState(oauthErrorState);
-  useEffect(() => {
-    setOauthError(false);
-  }, [oauthError]);
+  const { enqueueSnackbar } = useSnackbar();
+  function showMessage(message: string, variant: "error" | "success") {
+    enqueueSnackbar(message, {
+      variant: variant,
+      anchorOrigin: {
+        vertical: "bottom",
+        horizontal: "left",
+      },
+    });
+  }
   const handleTelegramData = async (user: any) => {
     await authApi
       .telegramOauth(user)
@@ -59,8 +65,8 @@ const OuauthComponent = ({ margin }: { margin?: string }) => {
           window.location.href = res.data.url;
         }
       })
-      .catch((e) => {
-        setOauthError(true);
+      .catch(() => {
+        showMessage("Authorization failed", "error");
       });
   };
   return (
@@ -77,12 +83,6 @@ const OuauthComponent = ({ margin }: { margin?: string }) => {
         onAuthCallback={handleTelegramData}
         botUsername="riem_app_bot"
       />
-      {oauthError && (
-        <SnackbarMessage
-          message="Something went wrong. Please try again."
-          variant="error"
-        />
-      )}
     </Flex>
   );
 };
