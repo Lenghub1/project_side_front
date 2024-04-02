@@ -1,12 +1,12 @@
 import { api } from "./index";
 
 const myBranch = async (organizationId: string) => {
-  const data = await api.get(`/organizations/${organizationId}/branchs`);
+  const data = await api.get(`/organizations/${organizationId}/branches`);
   return data;
 };
 const createBranch = async (organizationId: string, data: any) => {
   const create_branch = await api.post(
-    `/organizations/${organizationId}/branchs`,
+    `/organizations/${organizationId}/branches`,
     data
   );
   return create_branch;
@@ -17,7 +17,7 @@ const modifyBranch = async (
   data: any
 ) => {
   const response = await api.patch(
-    `/organizations/${organizationId}/branchs/${branchId}`,
+    `/organizations/${organizationId}/branches/${branchId}`,
     data
   );
   return response;

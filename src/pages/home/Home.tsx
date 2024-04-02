@@ -64,6 +64,7 @@ const HomePage = () => {
   if (employeeData?.status === "pending") {
     return <Navigate to={"/check-status"} replace />;
   }
+
   return (
     <AfterLoginTemplate>
       <CP.Styled.Wrapper overflow="scroll">
