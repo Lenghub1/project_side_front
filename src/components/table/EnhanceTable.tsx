@@ -29,6 +29,7 @@ interface EnhancedTableProps<T> {
   onFilterChange: (filterFields: Filter[]) => void;
   onRequestSort: (id: keyof T) => void;
   onPageChange: (page: number) => void;
+  onActionCallback?: (data: any, error: any) => void;
   error: React.ReactNode;
   selected: any;
   branchData: BranchData;
@@ -43,6 +44,7 @@ function EnhancedTable<T>({
   onFilterChange,
   onRequestSort,
   onPageChange,
+  onActionCallback,
   error,
   selected,
   setBranchData,
@@ -172,7 +174,12 @@ function EnhancedTable<T>({
                         if (cell.type === "ReactCell" && cell.element) {
                           return (
                             <TableCell key={cellIndex} align="left">
-                              {cell.element(row)}
+                              <cell.element
+                                row={row}
+                                {...(onActionCallback && {
+                                  onActionCallback,
+                                })}
+                              />
                             </TableCell>
                           );
                         } else {

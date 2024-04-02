@@ -7,5 +7,8 @@ export interface HeadCell<T> {
   sortable?: boolean;
   visibility: boolean;
   disablePadding?: boolean;
-  element?: (row: T) => React.ReactNode;
+  element?: React.ComponentType<{
+    row: T;
+    onActionCallback?: (data: any, error: any) => void;
+  }>;
 }
