@@ -10,7 +10,6 @@ import { Error } from "@/pages/error";
 const TopBar = () => {
   const user = useRecoilValue(userState);
   const [isNew, setIsNew] = useState(false);
-  console.log(user);
   const { data, error, refetchData } = useFetch(() =>
     allNotifications(user?.id)
   );
@@ -19,7 +18,6 @@ const TopBar = () => {
   }
 
   useEffect(() => {
-    console.log(data);
     setIsNew(data?.docs.length);
   }, [data, isNew]);
 

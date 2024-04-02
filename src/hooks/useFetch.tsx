@@ -14,7 +14,6 @@ const useFetch = (apiRequest: () => Promise<any>) => {
   const fetchData = async () => {
     const [response, err] = await handleApiRequest(() => apiRequest());
     if (response) {
-      console.log(response);
       setData(response);
       setError(null);
     } else {

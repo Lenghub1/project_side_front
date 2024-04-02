@@ -46,9 +46,7 @@ function useApi<T>(): UseApiReturnType<T> {
     setIsError(false);
     setError(null);
     try {
-      console.log("###### RES ###########");
       const response = await request();
-      console.log("###### RES ###########", response);
       setIsSuccess(true);
       setResponse(response.data as ApiResponse);
     } catch (error) {
