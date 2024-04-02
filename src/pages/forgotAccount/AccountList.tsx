@@ -68,7 +68,15 @@ export default function AlignItemsList() {
             <CP.Typography>
               Please click to see the credential information.
             </CP.Typography>
-            <List sx={{ width: "100%", maxWidth: 360 }}>
+            <List
+              sx={{
+                width: "100%",
+                maxWidth: 360,
+                minHeight: "358px",
+                maxHeight: "calc(100vh - 720px)",
+                overflowY: "auto",
+              }}
+            >
               {users.map((user, index) => (
                 <Paper
                   variant="outlined"

@@ -31,7 +31,6 @@ const ForgetPassword = () => {
   const { enqueueSnackbar } = useSnackbar();
   const email = useValidatedInput("", "Email", validateEmail);
   const phone = useValidatedInput("", "Phone");
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 428);
   const [selectedCountry, setSelectedCountry] = useState<{
     name: string;
     dialCode: string;
@@ -39,21 +38,11 @@ const ForgetPassword = () => {
   }>(countries[0]);
   const [resetPasswordBy, setResetPasswordBy] =
     useState<FindPasswordMethod>("email");
-  const { response, isSuccess, error, handleApiRequest } = useApi();
+  const { response, isSuccess, isLoading, error, handleApiRequest } = useApi();
   const { open, handleCancelConfirm, handleModalOpen, handleCloseModal } =
     useCancelModal();
   const location = useLocation();
   const isForgetPasswordRoute = location.pathname === "/forget-password";
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 428);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
 
   useHistoryPopstate(handleModalOpen);
 
@@ -66,8 +55,8 @@ const ForgetPassword = () => {
     enqueueSnackbar(message, {
       variant: variant,
       anchorOrigin: {
-        vertical: "bottom", // or 'bottom'
-        horizontal: "left", // or 'left', 'center'
+        vertical: "bottom",
+        horizontal: "left",
       },
     });
   }
@@ -140,6 +129,7 @@ const ForgetPassword = () => {
 
     await forgetPassword(resetPasswordBy, formData);
   };
+
   return (
     <>
       {isForgetPasswordRoute ? (
@@ -148,17 +138,6 @@ const ForgetPassword = () => {
           <CP.Styled.Form>
             <FormContainer>
               <CP.Styled.Div>
-                {/* <CP.Typography
-                  variant="h4"
-                  margin="0 0 2rem"
-                  style={{
-                    fontWeight: "semibold",
-                    textAlign: isMobile ? "center" : "start",
-                    width: "100%",
-                  }}
-                >
-                  Password Reset
-                </CP.Typography> */}
                 <Title>Password Reset</Title>
                 <CP.Typography padding={"0 0 1rem"}>
                   {`Enter your ${resetPasswordBy}  below and we\'ll send you password reset ${resetPasswordBy === "email" ? "token" : "OTP"}.`}

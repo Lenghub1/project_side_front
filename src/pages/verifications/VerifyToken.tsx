@@ -87,7 +87,7 @@ const VerifyToken = () => {
         setResetPasswordToken(true);
         setTimeout(() => {
           navigate("/forget-password/reset-password");
-        });
+        }, 1500);
       } else if (params.verificationType === VERIFICATION_TYPE.VERIFY_ACCOUNT) {
         navigate("/");
       }

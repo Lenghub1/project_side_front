@@ -61,9 +61,8 @@ const ForgotAccount = () => {
   useEffect(() => {
     if (isSuccess && response) {
       setInformation(response.data);
-      setTimeout(() => {
-        navigate("/forgot-account/informations");
-      }, 1500);
+
+      navigate("/forgot-account/informations");
     }
   }, [response, isSuccess]);
 
@@ -85,7 +84,7 @@ const ForgotAccount = () => {
 
   const isInvalid = !username.value && !!username.setError;
   if (isLoading) {
-    return setTimeout(() => <Loading isLoading={isLoading} />, 1500);
+    return <Loading isLoading={isLoading} />;
   }
   return (
     <>
