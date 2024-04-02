@@ -104,7 +104,6 @@ const EmployeeTable = () => {
   };
   useEffect(() => {
     setDataToFilter(data?.docs);
-    console.log(data);
   }, [data]);
 
   useEffect(() => {

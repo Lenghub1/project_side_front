@@ -31,7 +31,6 @@ const useScreenSize = () => {
 
   useEffect(() => {
     const handleResize = debounce(() => {
-      console.log("Hello");
       setScreenSize(window.innerWidth);
     }, 100);
 

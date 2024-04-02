@@ -45,11 +45,9 @@ const HomePage = () => {
   }, []);
 
   if (isError && error) {
-    console.log("hello", isError, error.statusCode);
     localStorage.removeItem("recoil-persist");
     return <Error status={error.statusCode!} message={error.message!} />;
   }
-  console.log(organizationData?.status);
 
   if (employeeData?.status === "pending") {
     return <Navigate to={"/check-status"} replace />;

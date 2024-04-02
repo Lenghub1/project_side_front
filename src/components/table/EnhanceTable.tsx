@@ -95,12 +95,7 @@ function EnhancedTable<T>({
     setSelectedRows([]);
   };
 
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-
-  // Calculate the starting index and ending index for the current page
-  const startIndex = page * rowsPerPage;
-  const endIndex = Math.min(startIndex + rowsPerPage, rows.length);
+  const emptyRows = page > 0 ? Math.max(0, rowsPerPage - rows.length) : 0;
 
   return (
     <Container sx={{ minWidth: "300px" }}>
@@ -129,7 +124,7 @@ function EnhancedTable<T>({
                 </TableRow>
               )}
               {!error &&
-                rows.slice(startIndex, endIndex).map((row, rowIndex) => (
+                rows.map((row, rowIndex) => (
                   <TableRow
                     hover
                     role="checkbox"
