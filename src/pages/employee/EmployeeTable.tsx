@@ -4,7 +4,7 @@ import Avatar from "@mui/material/Avatar";
 import useFetch from "@/hooks/useFetch";
 import { allEmployees } from "@/api/employee";
 import EnhancedTable from "@/components/table/EnhanceTable";
-import { Employement } from "@/utils/interfaces/Employment";
+import { Employment } from "@/utils/interfaces/Employment";
 import Error from "../error/Error";
 import { useRecoilValue, useRecoilState } from "recoil";
 import { selectedOrganization } from "@/store/userStore";
@@ -14,7 +14,11 @@ import useScreenSize from "@/hooks/useScreenSize";
 import { dataToFilterState } from "@/store/filterStore";
 import { BranchData } from "@/utils/interfaces/Branch";
 
-export const UserInformationCell = (row: Employement) => {
+interface UserInformationCellprops {
+  row: Employment;
+  onActionCallback?: (data: any, error: any) => void;
+}
+export const UserInformationCell = ({ row }: UserInformationCellprops) => {
   return (
     <CP.Styled.Flex gap="8px" justify="flex-start">
       <Avatar src="https://avatar.iran.liara.run/public" />
@@ -67,7 +71,7 @@ const EmployeeTable = ({
     console.log(page);
   };
 
-  const handleSortRequest = (property: keyof Employement) => {
+  const handleSortRequest = (property: keyof Employment) => {
     const existingSortIndex = sortCriteria.findIndex(
       (criteria) => criteria.field === property
     );
@@ -140,7 +144,7 @@ const EmployeeTable = ({
 
   return (
     <CP.Container>
-      <EnhancedTable<Employement>
+      <EnhancedTable<Employment>
         headCells={headCells}
         rows={data?.docs || []}
         tableName="Employee"

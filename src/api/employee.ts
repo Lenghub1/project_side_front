@@ -1,7 +1,7 @@
 import { api } from ".";
 import { AxiosResponse } from "axios";
 import { Filter, Sort } from "@/utils/interfaces/Feature";
-import { Employement } from "@/utils/interfaces/Employment";
+import { Employment } from "@/utils/interfaces/Employment";
 import {
   transformData,
   generateFieldMapping,
@@ -23,6 +23,7 @@ const fieldMapping = generateFieldMapping({
   position: "position",
   status: "status",
   privilege: "privilege",
+  orgId: "orgId",
 });
 
 const fetchDataWithTransform = async (url: string, params: URLSearchParams) => {
@@ -49,7 +50,7 @@ const allEmployees = async (
   sorts: Sort[],
   perPage: number = 10,
   page: number = 1
-): Promise<AxiosResponse<Partial<Employement>[]>> => {
+): Promise<AxiosResponse<Partial<Employment>[]>> => {
   const filterParams = buildFilterParams(filters);
   const sortParams = buildSortParams(sorts);
   const params = buildUrlParams(
@@ -74,13 +75,13 @@ const manager = async (
 };
 const allWorkplace = async (
   userId: string
-): Promise<AxiosResponse<Partial<Employement>>> => {
+): Promise<AxiosResponse<Partial<Employment>>> => {
   return api.get(`/organizations/self-workplace/${userId}`, {});
 };
 
 const getUserEmployments = async (
   organizationId: string
-): Promise<AxiosResponse<Partial<Employement[]>>> => {
+): Promise<AxiosResponse<Partial<Employment[]>>> => {
   return api.get(`/organizations/${organizationId}/employments/user`, {
     transformResponse: [
       (response) => {
@@ -95,7 +96,7 @@ const getUserEmployments = async (
 const createEmployee = async (
   data: Object,
   organizationId: string
-): Promise<AxiosResponse<Partial<Employement>>> => {
+): Promise<AxiosResponse<Partial<Employment>>> => {
   return api.post(`/organizations/${organizationId}/employments`, data, {
     transformResponse: [
       (response) => {
@@ -113,7 +114,7 @@ const getAllPendingEmployees = async (
   sorts: Sort[],
   perPage: number = 20,
   page: number = 1
-): Promise<AxiosResponse<Partial<Employement>[]>> => {
+): Promise<AxiosResponse<Partial<Employment>[]>> => {
   const filterParams = buildFilterParams(filters);
   const sortParams = buildSortParams(sorts);
   const params = buildUrlParams(
@@ -133,7 +134,7 @@ const getAllPendingEmployees = async (
 const getEmployeeById = async (
   employmentId: string,
   organizationId: string
-): Promise<AxiosResponse<Partial<Employement>>> => {
+): Promise<AxiosResponse<Partial<Employment>>> => {
   return api.get(
     `/organizations/${organizationId}/employments/${employmentId}`,
     {
@@ -152,7 +153,7 @@ const updateEmployee = async (
   data: Object,
   employmentId: string,
   organizationId: string
-): Promise<AxiosResponse<Partial<Employement>>> => {
+): Promise<AxiosResponse<Partial<Employment>>> => {
   return api.patch(
     `/organizations/${organizationId}/employments/${employmentId}`,
     data,
