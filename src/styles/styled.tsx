@@ -88,15 +88,21 @@ export const InputWrapper = styled.div`
 
   & .MuiTextField-root {
     width: 100%;
-    // & .MuiInputBase-root {
-    //   width: 100%;
-    //   & .MuiInputBase-input {
-    //     padding: 12px 8px;
-    //   }
-    // }
+
+    & .MuiInputBase-root {
+      width: 100%;
+
+      & input[type="number"] {
+        /* Hide spinner */
+        &::-webkit-inner-spin-button,
+        &::-webkit-outer-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+      }
+    }
   }
 `;
-
 export const RadioWrapper = styled.div<DivProps>`
   width: 100%;
   & .MuiFormGroup-root {

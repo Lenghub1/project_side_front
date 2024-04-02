@@ -2,6 +2,7 @@ import { useEffect, FC, useState } from "react";
 import { OauthBox } from "./OauthComponent";
 import { OauthProps } from "@/utils/interfaces/Oauth";
 import { authApi } from "@/api/auth";
+import { useSnackbar } from "notistack";
 
 declare global {
   interface Window {
@@ -20,7 +21,6 @@ const facebookObject: OauthProps = {
 };
 
 const loadFacebookSDK = (appId: string): Promise<void> => {
-  console.log("CLICK me");
   return new Promise((resolve) => {
     window.fbAsyncInit = function () {
       window.FB.init({
@@ -46,12 +46,22 @@ const loadFacebookSDK = (appId: string): Promise<void> => {
 
 const FacebookLoginButton: FC<FacebookLoginButtonProps> = ({ appId }) => {
   const [sdkLoaded, setSdkLoaded] = useState(false);
-
+  const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
     loadFacebookSDK(appId).then(() => {
       setSdkLoaded(true);
     });
   }, [appId]);
+
+  function showMessage(message: string, variant: "error" | "success") {
+    enqueueSnackbar(message, {
+      variant: variant,
+      anchorOrigin: {
+        vertical: "bottom",
+        horizontal: "left",
+      },
+    });
+  }
 
   const handleFacebookSignIn = async (user: any) => {
     await authApi.facebookSignIn(user).then((res: any) => {
@@ -61,16 +71,17 @@ const FacebookLoginButton: FC<FacebookLoginButtonProps> = ({ appId }) => {
     });
   };
 
-  const handleUserInformation = async () => {
+  const handleUserInformation = async (accessToken: string) => {
     window.FB.api(
       "/me",
-      { fields: "id,name,last_name,first_name,gender,birthday" },
+      {
+        fields: "id,name,last_name,first_name,gender,birthday",
+        access_token: accessToken,
+      },
       async function (response: any) {
         if (!response || response.error) {
-          console.error("Error fetching user information:", response.error);
+          showMessage("Failed to login facebook", "error");
         } else {
-          //post data to backend
-          console.log("Sending data to backend", response);
           await handleFacebookSignIn({ ...response });
         }
       }
@@ -81,19 +92,16 @@ const FacebookLoginButton: FC<FacebookLoginButtonProps> = ({ appId }) => {
       window.FB.login(
         (response: any) => {
           if (response.authResponse) {
-            handleUserInformation().catch((error) => {
-              console.error("Error fetching user information:", error);
-            });
+            const accessToken = response.authResponse.accessToken;
+            handleUserInformation(accessToken);
           } else {
-            console.error("User cancelled login or did not fully authorize.");
+            showMessage("Authorization faild", "error");
           }
         },
         { scope: "email,public_profile" }
       );
     } else {
-      console.error(
-        "The Facebook SDK has not been initialized or is not yet loaded."
-      );
+      showMessage("Something went wrong!", "error");
     }
   };
 
