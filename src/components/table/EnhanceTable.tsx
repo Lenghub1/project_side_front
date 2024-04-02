@@ -60,7 +60,6 @@ function EnhancedTable<T>({
   const [memberSelected, setMemberSelected] = useRecoilState(selectMembers);
   const [selectedRows, setSelectedRows] = useState<any>(memberSelected);
   const handleChangePage = (_: unknown, newPage: number) => {
-    console.log(newPage);
     setPage(newPage);
   };
 
@@ -68,7 +67,6 @@ function EnhancedTable<T>({
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    console.log(rowsPerPage);
     onRowsPerPageChange(parseInt(event.target.value, 10));
     setPage(0);
   };

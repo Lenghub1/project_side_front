@@ -14,9 +14,15 @@ import { useRecoilValue, useRecoilState } from "recoil";
 import { filteredDataState, dataToFilterState } from "@/store/filterStore";
 import { UserInformationCell } from "./EmployeeTable";
 import { selectedOrganization } from "@/store/userStore";
-import { Sort, Filter } from "@/utils/interfaces/Feature";
+import {
+  Sort,
+  Filter,
+  APIFeatureLocation,
+  APIFeature,
+} from "@/utils/interfaces/Feature";
 import useScreenSize from "@/hooks/useScreenSize";
-
+import { useLocation } from "react-router-dom";
+import { apiFeatureState } from "@/store/api.feature";
 interface RenderActionCellProps {
   row: Employment;
   onActionCallback: (data: any, error: any) => void;
@@ -51,6 +57,7 @@ const EmployeeRegistration = () => {
   const filters = [
     { field: "status", logicalClause: "eq", targetValue: "pending" },
   ];
+  const location = useLocation();
   const perPage = 10;
   const page = 1;
   const { isMobile, isTablet } = useScreenSize();
@@ -58,6 +65,8 @@ const EmployeeRegistration = () => {
   const [headCells, setHeadCells] = useState(initialHeadCells);
   const [_, setDataToFilter] = useRecoilState(dataToFilterState);
   const { isFilter, data: filteredData } = useRecoilValue(filteredDataState);
+  const [currentAPIFeatureState, setAPIFeatureState] =
+    useRecoilState(apiFeatureState);
   const organization = useRecoilValue(selectedOrganization);
   const [updatedData, setUpdatedData] = useState();
   const [errorComponent, setErrorComponent] = useState<React.ReactNode>();
@@ -147,6 +156,17 @@ const EmployeeRegistration = () => {
   // Refetch data when sorting criteria or filters change
   useEffect(() => {
     refetchData();
+    const appliedAPIFeature: APIFeature = {
+      filters: appliedFilters,
+      sorts: sortCriteria,
+      perPage: perPage,
+      page: page,
+    };
+    const apiFeatureLoaction: APIFeatureLocation = {
+      apiFeature: appliedAPIFeature,
+      route: location.pathname,
+    };
+    console.log(apiFeatureLoaction);
   }, [sortCriteria, appliedFilters, updatedData]);
 
   useEffect(() => {

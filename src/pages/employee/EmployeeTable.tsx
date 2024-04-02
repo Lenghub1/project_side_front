@@ -13,6 +13,7 @@ import { Filter, Sort } from "@/utils/interfaces/Feature";
 import useScreenSize from "@/hooks/useScreenSize";
 import { dataToFilterState } from "@/store/filterStore";
 import { BranchData } from "@/utils/interfaces/Branch";
+import { useLocation } from "react-router-dom";
 
 interface UserInformationCellprops {
   row: Employment;
@@ -44,7 +45,8 @@ const EmployeeTable = ({
   const filters: Filter[] = [
     { field: "status", logicalClause: "ne", targetValue: "pending" },
   ];
-
+  const location = useLocation();
+  console.log(location);
   const [_, setDataToFilter] = useRecoilState(dataToFilterState);
   const { isMobile, isTablet } = useScreenSize();
   const initialHeadCells = generateHeadCells(isMobile, isTablet);
