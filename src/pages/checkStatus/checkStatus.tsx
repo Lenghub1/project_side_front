@@ -1,19 +1,37 @@
 import { Container } from "@mui/material";
-import { employee } from "@/store/employee";
+import { employeeId } from "@/store/employee";
 import { selectedOrganization } from "@/store/userStore";
 import CP from "@/components";
 import { useRecoilValue } from "recoil";
 import { Navigate } from "react-router-dom";
-
+import { handleApiRequest } from "@/api";
+import { getEmployeeById } from "@/api/employee";
+import { Error } from "@/pages/error";
+import { useEffect, useState } from "react";
 const CheckStatus = () => {
   const selected = useRecoilValue(selectedOrganization);
-  const employeeData = useRecoilValue(employee);
+  const employeeData = useRecoilValue(employeeId);
+  const [employee, setEmployee] = useState<any>();
   if (!selected) {
     return <Navigate to={"/login/choose-organization"} replace />;
   }
-  if (employeeData.status === "active") {
-    return <Navigate to={"/organization"} replace />;
+  const employeeStatus = async () => {
+    const [response, error] = await handleApiRequest(() =>
+      getEmployeeById(employeeData, selected)
+    );
+    if (response) {
+      setEmployee(response);
+    } else if (error) {
+      return <Error status={error.statusCode!} message={error.message!} />;
+    }
+  };
+  useEffect(() => {
+    employeeStatus();
+  }, []);
+  if (employee?.status === "active") {
+    return <Navigate to={"/"} replace />;
   }
+  console.log(employee);
 
   return (
     <Container

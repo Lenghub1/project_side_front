@@ -9,14 +9,12 @@ interface UnprotectedRouteProps {
 
 const UnprotectedRoute: React.FC<UnprotectedRouteProps> = ({
   element,
-  redirectPath = "/login/choose-organization",
+  redirectPath = "/",
 }) => {
   const isAuthenticated = useRecoilValue(isAuthenticatedState);
 
   if (isAuthenticated) {
-    return (
-      <Navigate to={redirectPath || "/login/choose-organization"} replace />
-    );
+    return <Navigate to={redirectPath || "/"} replace />;
   }
 
   return element;

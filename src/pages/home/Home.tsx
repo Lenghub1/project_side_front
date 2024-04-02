@@ -27,7 +27,8 @@ const HomePage = () => {
   const selected = useRecoilValue(selectedOrganization);
   const employeedId = useRecoilValue(employeeId);
   const user = useRecoilValue(userState);
-  if (user.firstName === null || !user.lastName === null) {
+
+  if (user.firstName === null || user.lastName === null) {
     return <Navigate to={"/fillForm"} replace />;
   }
   if (!selected) {
@@ -67,7 +68,7 @@ const HomePage = () => {
 
   return (
     <AfterLoginTemplate>
-      <CP.Styled.Wrapper overflow="scroll">
+      <CP.Styled.Wrapper overflow="auto">
         <Outlet />
       </CP.Styled.Wrapper>
     </AfterLoginTemplate>
