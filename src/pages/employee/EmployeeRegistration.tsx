@@ -75,7 +75,6 @@ const EmployeeRegistration = () => {
 
   useEffect(() => {
     setDataToFilter(data?.docs);
-    console.log(data);
   }, [data]);
 
   const displayData = isFilter ? filteredData : data?.docs;
@@ -108,7 +107,6 @@ const EmployeeRegistration = () => {
   };
 
   const handleFilterChange = (filters: Filter[]) => {
-    console.log(filters);
     // Convert SortField[] to Filter[] if needed
     const convertedFilters = filters.map((filter) => {
       const combinedValues = filter
@@ -123,7 +121,6 @@ const EmployeeRegistration = () => {
       };
     });
 
-    console.log(convertedFilters);
     setAppliedFilters(convertedFilters);
   };
 

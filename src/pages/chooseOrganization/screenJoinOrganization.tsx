@@ -54,7 +54,6 @@ const ScreenJoinOrganization = () => {
     );
     if (selectedOrganization) {
       setSelectOrg(selectedOrganization.orgId);
-      console.log("mee", selectedOrganization);
 
       setEmployeeData(selectedOrganization);
       return selectedOrganization.orgId;

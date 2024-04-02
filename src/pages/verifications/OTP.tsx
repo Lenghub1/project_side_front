@@ -137,7 +137,6 @@ const OTP = () => {
         authApi.resendActivationCode(verification.method, verification.data)
       );
     } else if (verification.type === VERIFICATION_TYPE.VERIFY_2FA) {
-      console.log(verification);
       const data =
         verification.loginMethod === "email"
           ? { email: verification.credential }
@@ -187,7 +186,6 @@ const OTP = () => {
         phoneNumber: verification.data.phoneNumber,
         code: otp,
       };
-      console.log(data);
     } else if (verification.type === VERIFICATION_TYPE.VERIFY_2FA) {
       data = {
         OTP: otp,

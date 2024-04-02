@@ -69,7 +69,6 @@ export const CancelSignupButton = ({
   };
 
   const handleCancel = () => {
-    console.log("Close modal");
     closeModal();
   };
 

@@ -5,18 +5,14 @@ import MapComponent from "@/components/map/Map";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import { Outlet } from "react-router-dom";
-import { newOrganization } from "@/api/organization";
-import { handleApiRequest } from "@/api";
 import FormControl from "@mui/material/FormControl";
 
 const NewOrganization = () => {
   const handleOnSubmit = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
     const orgData = document.querySelector("#org_form");
-    console.log(orgData);
     const submitData = new FormData(orgData as HTMLFormElement);
     // const data = await handleApiRequest(() => newOrganization(submitData));
-    console.log(submitData);
   };
   return (
     <CP.Container>
