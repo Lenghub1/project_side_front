@@ -68,7 +68,6 @@ const EmployeeTable = ({
 
   const handlePageChange = (page: number) => {
     setPage(page + 1);
-    console.log(page);
   };
 
   const handleSortRequest = (property: keyof Employment) => {
@@ -112,7 +111,6 @@ const EmployeeTable = ({
       };
     });
 
-    console.log(convertedFilters);
     setAppliedFilters(convertedFilters);
   };
   useEffect(() => {

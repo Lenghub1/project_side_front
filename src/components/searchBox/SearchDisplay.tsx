@@ -14,9 +14,7 @@ const SearchDisplay = ({ data }) => {
     setShowSearch((previous) => !previous);
   };
 
-  const handleSearchClick = () => {
-    console.log("Sending request to backend with search value:", searchValue);
-  };
+  const handleSearchClick = () => {};
 
   const handleCancelClick = () => {
     setSearchValue("");

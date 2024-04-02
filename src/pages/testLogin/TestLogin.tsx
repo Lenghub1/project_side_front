@@ -90,12 +90,8 @@ const TestLoginPage = () => {
 
   useEffect(() => {
     const userData = response?.data as LoginResponse;
-    console.log("I am here 1");
 
     if (userData?.user) {
-      console.log("I am here 2");
-      console.log(userData.user);
-
       setAccessToken(userData.user?.accessToken);
       navigate("/organization");
     }
@@ -145,7 +141,6 @@ const TestLoginPage = () => {
 
     await login(loginMethod, formData);
   };
-  console.log("MY ACCESS TOKEN", accessToken);
 
   return (
     <CP.Styled.Wrapper height="100vh" padding="0">

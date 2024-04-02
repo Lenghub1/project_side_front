@@ -36,8 +36,6 @@ const TableFilter = ({ headCells, onFilterChange }: TableFilterProps) => {
   const [openSnackBar, setOpenSnackBar] = useState(false);
 
   const handleOptionChanging = (filterKey: string, selectedOption: string) => {
-    console.log(filterKey);
-    console.log(selectedOption);
     setFilterSelections((prevFilterSelections) => {
       const index = prevFilterSelections.findIndex(
         (selection) => selection.field === filterKey

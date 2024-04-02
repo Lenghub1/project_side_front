@@ -142,7 +142,6 @@ const EmployeeRegistration = () => {
     if (error) {
       setErrorComponent(<Error status={error.status_code} />);
     }
-    console.log(data, error);
   };
 
   // Refetch data when sorting criteria or filters change

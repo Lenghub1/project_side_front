@@ -34,9 +34,7 @@ export default function TablePaginate({
     setPage(page + 1);
   };
 
-  useEffect(() => {
-    console.log(totalResults);
-  }, [totalResults, rowsPerPage]);
+  useEffect(() => {}, [totalResults, rowsPerPage]);
 
   const totalPages = Math.ceil(totalResults / rowsPerPage);
 

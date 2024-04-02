@@ -24,7 +24,6 @@ const handleRejectEmployee = async (
   organizationId: string,
   callback: (data: any, error: any) => void
 ) => {
-  console.log(employmentId);
   const [response, error] = await handleApiRequest(() =>
     deleteEmployee(employmentId, organizationId)
   );
