@@ -1,41 +1,30 @@
-import {
-  TableCell,
-  TableSortLabel,
-  Box,
-  TableHead,
-  TableRow,
-  TextField,
-} from "@mui/material";
-import { visuallyHidden } from "@mui/utils";
-
-type Order = "asc" | "desc";
-
-export interface HeadCell<T> {
-  disablePadding: boolean;
-  id: keyof T;
-  label: string;
-  numeric: boolean;
-  filterable?: boolean;
-}
+import { TableCell, TableSortLabel, TableRow, TableHead } from "@mui/material";
+import { useState } from "react";
+import { HeadCell } from "@/utils/interfaces/Table";
 
 interface TableHeadCellProps<T> {
   headCell: HeadCell<T>;
-  order: Order;
-  orderBy: keyof T;
-  onRequestSort: (property: keyof T) => void;
-  // onFilterChange: (
-  //   property: keyof T
-  // ) => (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onRequestSort: (id: keyof T) => void;
 }
+
+type SortOrder = "asc" | "desc" | "none";
 
 const TableHeadCell = <T,>({
   headCell,
-  order,
-  orderBy,
   onRequestSort,
-  // onFilterChange,
 }: TableHeadCellProps<T>) => {
+  const [order, setOrder] = useState<SortOrder>("none");
+
   const createSortHandler = () => {
+    let newOrder: SortOrder;
+    if (order === "none") {
+      newOrder = "asc";
+    } else if (order === "asc") {
+      newOrder = "desc";
+    } else {
+      newOrder = "none";
+    }
+    setOrder(newOrder);
     onRequestSort(headCell.id);
   };
 
@@ -44,57 +33,48 @@ const TableHeadCell = <T,>({
       key={headCell.id as string}
       align={headCell.numeric ? "right" : "left"}
       padding={headCell.disablePadding ? "none" : "normal"}
-      sortDirection={orderBy === headCell.id ? order : false}
     >
-      <TableSortLabel
-        active={orderBy === headCell.id}
-        direction={orderBy === headCell.id ? order : "asc"}
-        onClick={createSortHandler}
-      >
-        {headCell.label}
-        {orderBy === headCell.id ? (
-          <Box component="span" sx={visuallyHidden}>
-            {order === "desc" ? "sorted descending" : "sorted ascending"}
-          </Box>
-        ) : null}
-      </TableSortLabel>
+      {headCell.sortable ? (
+        <TableSortLabel
+          active={order !== "none"}
+          direction={order !== "none" ? order : undefined}
+          onClick={createSortHandler}
+        >
+          {headCell.label}
+        </TableSortLabel>
+      ) : (
+        <span>{headCell.label}</span>
+      )}
     </TableCell>
   );
 };
 
 interface EnhancedTableHeadProps<T> {
   headCells: HeadCell<T>[];
-  order: Order;
-  orderBy: keyof T;
-  onRequestSort: (property: keyof T) => void;
-  onFilterChange: (
-    property: keyof T
-  ) => (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onRequestSort: (id: keyof T) => void;
 }
 
-const EnhancedTableHead = <T,>({
+function EnhancedTableHead<T>({
   headCells,
-  order,
-  orderBy,
   onRequestSort,
-  onFilterChange,
-}: EnhancedTableHeadProps<T>) => {
+}: EnhancedTableHeadProps<T>) {
   return (
     <TableHead>
       <TableRow>
-        {headCells.map((headCell) => (
-          <TableHeadCell
-            key={headCell.id as string}
-            headCell={headCell}
-            order={order}
-            orderBy={orderBy}
-            onRequestSort={onRequestSort}
-            // onFilterChange={onFilterChange}
-          />
-        ))}
+        {headCells.map((headCell) => {
+          return (
+            headCell.visibility && (
+              <TableHeadCell
+                key={headCell.id as string}
+                headCell={headCell}
+                onRequestSort={onRequestSort}
+              />
+            )
+          );
+        })}
       </TableRow>
     </TableHead>
   );
-};
+}
 
 export default EnhancedTableHead;

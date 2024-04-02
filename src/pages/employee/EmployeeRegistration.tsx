@@ -1,11 +1,8 @@
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 import CP from "@/components";
-import EnhancedTable from "@/components/table/Table";
+import EnhancedTable from "@/components/table/EnhanceTable";
 import Button from "@/components/button";
-import Badge from "@mui/material/Badge";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import { getAllPendingEmployees } from "@/api/employee";
-import { HeadCell } from "@/components/table/TableHead";
 import { Employement } from "@/utils/interfaces/Employment";
 import {
   handleAcceptEmployee,
@@ -15,13 +12,23 @@ import useFetch from "@/hooks/useFetch";
 import Error from "../error/Error";
 import { useRecoilValue, useRecoilState } from "recoil";
 import { filteredDataState, dataToFilterState } from "@/store/filterStore";
+import { UserInformationCell } from "./EmployeeTable";
+import { selectedOrganization } from "@/store/userStore";
+import { Sort, Filter } from "@/utils/interfaces/Feature";
+import useScreenSize from "@/hooks/useScreenSize";
 
 const RenderActionCell = (row: Employement) => {
   const { id } = row;
   return (
     <CP.Styled.Flex gap="8px" justify="flex-start">
-      <Button onClick={() => handleAcceptEmployee(id)}>Accept</Button>
-      <Button color="accent" onClick={() => handleRejectEmployee(id)}>
+      <Button onClick={() => handleAcceptEmployee(id)} size="small">
+        Accept
+      </Button>
+      <Button
+        color="accent"
+        onClick={() => handleRejectEmployee(id)}
+        size="small"
+      >
         Reject
       </Button>
     </CP.Styled.Flex>
@@ -29,44 +36,124 @@ const RenderActionCell = (row: Employement) => {
 };
 
 const EmployeeRegistration = () => {
-  const [dataToFilter, setDataToFilter] = useRecoilState(dataToFilterState);
+  const filters = [
+    { field: "status", logicalClause: "eq", targetValue: "pending" },
+  ];
+  const perPage = 10;
+  const page = 1;
+  const { isMobile, isTablet } = useScreenSize();
+  const initialHeadCells = generateHeadCells(isMobile, isTablet);
+  const [headCells, setHeadCells] = useState(initialHeadCells);
+  const [_, setDataToFilter] = useRecoilState(dataToFilterState);
   const { isFilter, data: filteredData } = useRecoilValue(filteredDataState);
-  const { data, error } = useFetch(getAllPendingEmployees);
-  const [notifiactionCount, setNotifiactionCount] = React.useState<number>(0);
+  const organization = useRecoilValue(selectedOrganization);
+  const [errorComponent, setErrorComponent] = useState<React.ReactNode>();
+  const [notFoundComponent, setNotFoundComponent] = useState<React.ReactNode>();
 
-  if (error) {
-    return <Error status={error.status_code} />;
-  }
+  // State to manage the sorting criteria
+  const [sortCriteria, setSortCriteria] = useState<Sort[]>([
+    { field: "position", direction: "asc" },
+  ]);
+
+  // State to manage filters
+  const [appliedFilters, setAppliedFilters] = useState<Filter[]>(filters);
+
+  // Fetch data with sorting criteria and filters
+  const { data, error, refetchData } = useFetch(() =>
+    getAllPendingEmployees(
+      organization,
+      appliedFilters,
+      sortCriteria,
+      perPage,
+      page
+    )
+  );
   useEffect(() => {
-    setDataToFilter(data);
-  }, []);
+    const newHeadCells = generateHeadCells(isMobile, isTablet);
+    setHeadCells(newHeadCells);
+  }, [isMobile, isTablet]);
 
-  const displayData = isFilter ? filteredData : data;
+  useEffect(() => {
+    setDataToFilter(data?.docs);
+    console.log(data);
+  }, [data]);
+
+  const displayData = isFilter ? filteredData : data?.docs;
+
+  const handleSortRequest = (property: keyof Employement) => {
+    const existingSortIndex = sortCriteria.findIndex(
+      (criteria) => criteria.field === property
+    );
+
+    if (existingSortIndex !== -1) {
+      const updatedCriteria = [...sortCriteria];
+      const currentDirection = updatedCriteria[existingSortIndex].direction;
+
+      // Check the current sorting direction and update accordingly
+      if (currentDirection === "asc") {
+        updatedCriteria[existingSortIndex].direction = "desc";
+      } else if (currentDirection === "desc") {
+        // If sorting direction is descending, remove the sort criteria
+        updatedCriteria.splice(existingSortIndex, 1);
+      }
+
+      setSortCriteria(updatedCriteria);
+    } else {
+      // Property doesn't exist in sort criteria, add it
+      setSortCriteria((prevCriteria) => [
+        ...prevCriteria,
+        { field: property as string, direction: "asc" },
+      ]);
+    }
+  };
+
+  const handleFilterChange = (filters: Filter[]) => {
+    console.log(filters);
+    // Convert SortField[] to Filter[] if needed
+    const convertedFilters = filters.map((filter) => {
+      const combinedValues = filter
+        .values!.map((value) => {
+          return value;
+        })
+        .join("||");
+      return {
+        field: filter.field,
+        logicalClause: filter.logicalClause,
+        targetValue: combinedValues,
+      };
+    });
+
+    console.log(convertedFilters);
+    setAppliedFilters(convertedFilters);
+  };
+
+  // Refetch data when sorting criteria or filters change
+  useEffect(() => {
+    refetchData();
+  }, [sortCriteria, appliedFilters]);
+
+  useEffect(() => {
+    if (error) {
+      if (error.statusCode === 404) {
+        setNotFoundComponent(<Error status={error.statusCode} />);
+      } else {
+        setErrorComponent(<Error status={error.statusCode} />);
+      }
+    }
+  }, [error]);
+  if (errorComponent) {
+    return errorComponent;
+  }
   return (
     <CP.Container>
-      <CP.Container>
-        <CP.Styled.Flex justify="flex-end">
-          <Badge
-            badgeContent={notifiactionCount}
-            sx={{
-              color: (theme) => {
-                return theme.palette.text.primary;
-              },
-            }}
-          >
-            <NotificationsIcon />
-          </Badge>
-        </CP.Styled.Flex>
-      </CP.Container>
-
       <EnhancedTable<Employement>
         headCells={headCells}
-        order="asc"
         rows={displayData || []}
-        orderBy="name"
-        rowCount={displayData?.length || 0}
-        tableName="Employee Registrations"
-        actionCell={RenderActionCell}
+        tableName="Employee"
+        pagination={data?.pagination}
+        error={notFoundComponent}
+        onFilterChange={handleFilterChange}
+        onRequestSort={handleSortRequest}
       />
     </CP.Container>
   );
@@ -74,26 +161,33 @@ const EmployeeRegistration = () => {
 
 export default EmployeeRegistration;
 
-const headCells: HeadCell<Employement>[] = [
+const generateHeadCells = (isMobile: boolean, isTablet: boolean) => [
   {
     id: "name",
-    numeric: false,
-    disablePadding: false,
     label: "Employee",
-    filterable: true,
+    type: "ReactCell",
+    element: UserInformationCell,
+    sortable: true,
+    sortFeild: "name",
+    visibility: true,
   },
   {
     id: "position",
     numeric: false,
     disablePadding: false,
     label: "Position",
+    filterable: true,
+    sortable: true,
+    visibility: !isMobile && !isTablet,
   },
   {
     id: "privilege",
     numeric: false,
     disablePadding: false,
-    label: "Priviledges",
+    label: "Privilege",
     filterable: true,
+    sortable: true,
+    visibility: !isMobile && !isTablet,
   },
   {
     id: "status",
@@ -101,5 +195,13 @@ const headCells: HeadCell<Employement>[] = [
     disablePadding: false,
     label: "Status",
     filterable: true,
+    visibility: !isMobile && !isTablet,
+  },
+  {
+    id: "action",
+    type: "ReactCell",
+    label: "Action",
+    element: RenderActionCell,
+    visibility: !isMobile || isTablet,
   },
 ];

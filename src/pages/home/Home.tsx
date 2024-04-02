@@ -56,7 +56,7 @@ const HomePage = () => {
   }
   return (
     <AfterLoginTemplate>
-      <CP.Styled.Wrapper>
+      <CP.Styled.Wrapper overflow="scroll">
         <Outlet />
       </CP.Styled.Wrapper>
     </AfterLoginTemplate>

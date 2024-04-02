@@ -1,187 +1,188 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
-import FilterIcon from "@mui/icons-material/FilterList";
-import CloseIcon from "@mui/icons-material/Close";
 import Chip from "@mui/material/Chip";
 import Popper, { PopperPlacementType } from "@mui/material/Popper";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { dataToFilterState, filteredDataState } from "@/store/filterStore";
-
+import { dataToFilterState } from "@/store/filterStore";
+import AddIcon from "@mui/icons-material/Add";
+import FilterSection from "./FilterSection";
+import { filterSelectionsState } from "@/store/api.feature";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import IconButton from "@mui/material/IconButton";
+import CP from "@/components";
+import SnackBar from "@/components/snackBar/SnackBar";
+import { Filter } from "@/utils/interfaces/Feature";
 interface TableFilterProps {
   headCells: any[];
-  onFilterChange: (filters: Record<string, string[]>) => void;
+  onFilterChange: (filters: Filter[]) => void;
 }
 
 const TableFilter = ({ headCells, onFilterChange }: TableFilterProps) => {
   const [outerOpen, setOuterOpen] = useState(false);
   const [innerOpen, setInnerOpen] = useState(false);
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null); // Use a single anchor element for both poppers
   const [placement, setPlacement] = useState<PopperPlacementType>();
-  const [selectedFilters, setSelectedFilters] = useState<
-    Record<string, string[]>
-  >({});
-  const [currentFilter, setCurrentFilter] = useState<string | undefined>();
-  const [_, setFilteredData] = useRecoilState(filteredDataState);
+  const [filterOptions, setFilterOptions] = useState<Record<string, string>>(
+    {}
+  );
+  const [filterSelections, setFilterSelections] = useRecoilState(
+    filterSelectionsState
+  );
   const dataToFilter = useRecoilValue(dataToFilterState);
+  const [, setCurrentFilter] = useState<string | undefined>();
+  const [, setSelectedOuterChip] = useState<string | null>(null);
+  const [openSnackBar, setOpenSnackBar] = useState(false);
 
-  const handleOuterClick =
-    (newPlacement: PopperPlacementType) =>
-    (event: React.MouseEvent<HTMLButtonElement>) => {
-      setAnchorEl(event.currentTarget);
-      setOuterOpen((prev) => placement !== newPlacement || !prev);
-      setPlacement(newPlacement);
-      if (innerOpen) {
-        setInnerOpen(false);
-      }
-    };
+  const handleOptionChanging = (filterKey: string, selectedOption: string) => {
+    console.log(filterKey);
+    console.log(selectedOption);
+    setFilterSelections((prevFilterSelections) => {
+      const index = prevFilterSelections.findIndex(
+        (selection) => selection.field === filterKey
+      );
 
-  const handleChipClick = (chipId: string) => {
-    const updatedFilters = { ...selectedFilters };
-    if (updatedFilters[chipId]) {
-      delete updatedFilters[chipId];
-      if (Object.keys(updatedFilters).length === 0) {
-        setFilteredData({ isFilter: false, data: dataToFilter });
+      if (index !== -1) {
+        const updatedSelections = [...prevFilterSelections];
+        updatedSelections[index] = {
+          ...updatedSelections[index],
+          logicalClause: selectedOption,
+        };
+
+        return updatedSelections;
       }
-    } else {
-      setCurrentFilter(chipId);
-      updatedFilters[chipId] = [];
-    }
-    const keys = Object.keys(updatedFilters);
-    keys.forEach((key) => {
-      if (updatedFilters[key].length === 0) delete updatedFilters[key];
+      return prevFilterSelections;
     });
-    setSelectedFilters(updatedFilters);
+  };
+
+  const handleOuterClick = useCallback(
+    (newPlacement: PopperPlacementType) =>
+      (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+        setOuterOpen((prev) => placement !== newPlacement || !prev);
+        setPlacement(newPlacement);
+        setSelectedOuterChip(null);
+      },
+    [placement]
+  );
+
+  const handleAddFilter = (filterKey: string) => {
+    const exists = filterSelections.some(
+      (selection) => selection.field === filterKey
+    );
+
+    if (!exists) {
+      setFilterSelections((prevSelections) => [
+        ...prevSelections,
+        { field: filterKey, logicalClause: "", values: [] },
+      ]);
+    }
+
+    setCurrentFilter(filterKey);
     setOuterOpen(false);
     setInnerOpen(true);
   };
-
-  const handleValueClick = (chipId: string, value: string) => {
-    const updatedFilters = { ...selectedFilters };
-    if (!updatedFilters[chipId]) {
-      updatedFilters[chipId] = [];
-    }
-    const index = updatedFilters[chipId].indexOf(value);
-    if (index !== -1) {
-      updatedFilters[chipId].splice(index, 1);
-    } else {
-      updatedFilters[chipId].push(value);
-    }
-    setSelectedFilters(updatedFilters);
-    onFilterChange(updatedFilters);
-    const filteredData = dataToFilter?.filter((item) =>
-      Object.entries(updatedFilters).every(([key, value]) => {
-        const itemValue = item[key].toString();
-        const filterValues = value.map((val) => val.toString());
-        if (filterValues.length === 0) {
-          return true;
-        } else if (filterValues.length === 1) {
-          return filterValues.includes(itemValue);
-        } else {
-          return filterValues.some((filterValue) => filterValue === itemValue);
-        }
-      })
-    );
-    setFilteredData({ isFilter: true, data: filteredData });
-  };
-
   const handleCloseInnerPopper = () => {
     setInnerOpen(false);
     setOuterOpen(true);
   };
 
-  const handleClearFilters = () => {
-    setSelectedFilters({});
-    onFilterChange({});
-    const filterState = { isFilter: false, data: _ };
-    setFilteredData(filterState);
+  const handleClearFilters = useCallback(() => {
+    onFilterChange([]);
+    setFilterSelections([]);
+    setFilterOptions({});
+    setInnerOpen(false);
+  }, [onFilterChange]);
+
+  const filterSections = useMemo(() => {
+    return filterSelections.map((selection: Filter) => ({
+      field: selection.field,
+      logicalClause: filterOptions[selection.field] || "",
+    }));
+  }, [filterSelections, filterOptions]);
+
+  const renderedFilterSections = useMemo(() => {
+    return filterSections.map((selection) => (
+      <FilterSection
+        key={selection.field}
+        dataToFilter={dataToFilter}
+        filterField={selection.field}
+        filterClause={selection.logicalClause}
+        handleOptionChange={(selectedOption) =>
+          handleOptionChanging(selection.field, selectedOption)
+        }
+      />
+    ));
+  }, [filterSections, dataToFilter]);
+  const areAllFiltersFilled = () => {
+    console.log(filterSelections);
+    return filterSelections.every(
+      (selection) => selection.values!.length > 0 && selection.logicalClause
+    );
   };
 
+  const handleApplyFilter = () => {
+    onFilterChange(filterSelections);
+    setOpenSnackBar(true);
+    setInnerOpen(false);
+  };
+
+  useEffect(() => {
+    console.log(openSnackBar);
+  }, [openSnackBar]);
   return (
     <Box>
-      <IconButton onClick={handleOuterClick("bottom-start")}>
-        {outerOpen ? <CloseIcon /> : <FilterIcon />}
-      </IconButton>
-      {outerOpen && (
-        <Popper open={outerOpen} anchorEl={anchorEl} placement={placement}>
-          <Paper
-            sx={{
-              padding: 4,
-              maxHeight: "350px",
-              width: "300px",
-              overflowY: "scroll",
-            }}
-          >
-            <Stack gap="16px" width="100%">
-              {headCells.map((headCell) => (
-                <Chip
-                  key={headCell.id.toString()}
-                  label={headCell.label}
-                  variant={selectedFilters[headCell.id] ? "filled" : "outlined"}
-                  color="primary"
-                  size="small"
-                  icon={
-                    selectedFilters[headCell.id] ? (
-                      <CloseIcon />
-                    ) : (
-                      <FilterIcon />
-                    )
-                  }
-                  onClick={() => handleChipClick(headCell.id)}
-                />
-              ))}
-              <Chip
-                label="Clear Filters"
-                color="default"
-                size="small"
-                onClick={handleClearFilters}
-              />
-            </Stack>
-          </Paper>
-        </Popper>
-      )}
-      {innerOpen && currentFilter && (
-        <Popper open={innerOpen} anchorEl={anchorEl} placement={placement}>
-          <Paper
-            sx={{
-              padding: 4,
-              maxHeight: "350px",
-              width: "300px",
-              overflowY: "scroll",
-            }}
-          >
-            <Stack gap="16px" alignItems="flex-start">
+      <SnackBar open={openSnackBar} message="Filter had been applied" />
+      <Chip
+        label="Add Filter"
+        key="NewFilter"
+        icon={<AddIcon />}
+        onClick={handleOuterClick("bottom-start")}
+      />
+
+      <Popper open={outerOpen} anchorEl={anchorEl} placement={placement}>
+        <Paper sx={{ padding: 4, maxHeight: "350px", width: "300px" }}>
+          <Stack gap="16px" width="100%">
+            {headCells.map(
+              (headCell) =>
+                headCell.filterable && (
+                  <Chip
+                    key={headCell.id.toString()}
+                    label={headCell.label}
+                    variant={filterOptions[headCell.id] ? "filled" : "outlined"}
+                    color="primary"
+                    onClick={() => handleAddFilter(headCell.id)}
+                  />
+                )
+            )}
+            <Chip
+              label="Clear Filters"
+              color="default"
+              onClick={handleClearFilters}
+            />
+          </Stack>
+        </Paper>
+      </Popper>
+
+      <Popper open={innerOpen} anchorEl={anchorEl} placement={placement}>
+        <Paper sx={{ padding: 4, maxHeight: "350px", width: "500px" }}>
+          <Stack gap={2}>
+            <CP.Styled.Flex justify="flex-start">
               <IconButton aria-label="close" onClick={handleCloseInnerPopper}>
                 <ArrowBackIosIcon fontSize="small" />
               </IconButton>
-              <Stack gap="8px" width="100%">
-                {dataToFilter
-                  ?.map((item) => item[currentFilter].toString())
-                  .filter((value, index, self) => self.indexOf(value) === index)
-                  .map((uniqueValue) => (
-                    <Chip
-                      key={`${currentFilter}-${uniqueValue}`}
-                      label={uniqueValue}
-                      variant={
-                        selectedFilters[currentFilter]?.includes(uniqueValue)
-                          ? "filled"
-                          : "outlined"
-                      }
-                      color="primary"
-                      size="small"
-                      onClick={() =>
-                        handleValueClick(currentFilter, uniqueValue)
-                      }
-                    />
-                  ))}
-              </Stack>
-            </Stack>
-          </Paper>
-        </Popper>
-      )}
+            </CP.Styled.Flex>
+
+            {renderedFilterSections}
+            {areAllFiltersFilled() && (
+              <CP.Button onClick={handleApplyFilter} size="small">
+                Apply Filter
+              </CP.Button>
+            )}
+          </Stack>
+        </Paper>
+      </Popper>
     </Box>
   );
 };
