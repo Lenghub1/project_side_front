@@ -13,7 +13,7 @@ const ConfirmationCreateBranch = ({ branchData, manager }: Props) => {
 
   const managersName = manager
     .filter((item) => item.userId === branchData.managerId)
-    .map((item) => `${item.name}`);
+    .map((item) => `${item.user.firstName} ${item.user.lastName}`);
 
   return (
     <CP.Styled.Flex
