@@ -77,17 +77,6 @@ const SignupMethod = ({
             onBlur={phone.onBlur}
             error={!!phone.error}
             helperText={<phone.HelperText />}
-            InputProps={{
-              inputProps: {
-                inputMode: "numeric",
-                pattern: "[0-9]*",
-                style: {
-                  // Inline style for hiding spinners
-                  WebkitAppearance: "none",
-                  margin: "0",
-                },
-              },
-            }}
             required
           />
         </Flex>
