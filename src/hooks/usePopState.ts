@@ -6,15 +6,11 @@ const useHistoryPopstate = (callback: () => void) => {
 
   useEffect(() => {
     const handlePopstate = () => {
-      console.log("Popstate event detected.");
       callback();
     };
-    console.log("Chnaging location");
     window.addEventListener("popstate", handlePopstate);
-    console.log("Chnaging location2");
 
     return () => {
-      console.log("Removing popstate event listener.");
       window.removeEventListener("popstate", handlePopstate);
     };
   }, [callback, location.pathname]);

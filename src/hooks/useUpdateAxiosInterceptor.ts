@@ -32,8 +32,6 @@ const useUpdateAxiosInterceptor = () => {
   );
   const setInterceptorInitialized = useSetRecoilState(axiosInterceptorState);
 
-  console.log("Setting axios");
-
   useEffect(() => {
     const requestInterceptor = api.interceptors.request.use(
       /**
@@ -90,7 +88,6 @@ const useUpdateAxiosInterceptor = () => {
     };
   }, [accessToken]);
 
-  console.log("Setting up axios completed");
   return null;
 };
 

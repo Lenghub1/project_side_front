@@ -17,7 +17,6 @@ const useFetch = (apiRequest: () => Promise<any>) => {
       setData(response);
       setError(null);
     } else {
-      console.log(err);
       setData(null);
       setError(err);
     }

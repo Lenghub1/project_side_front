@@ -20,8 +20,6 @@ const RedirectingPage = () => {
     if (paramElement.token) {
       setAccessToken(paramElement.token);
 
-      console.log("ACCCESS TOKEN", accessToken);
-
       setTimeout(() => {
         if (accountType) {
           if (accountType === "employee") {

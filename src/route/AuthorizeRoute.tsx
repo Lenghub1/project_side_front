@@ -12,7 +12,6 @@ interface AuthorizedRouteProps {
 const AuthorizedRoute: React.FC<AuthorizedRouteProps> = ({ adminOnly }) => {
   const navigate = useNavigate();
   const user = useRecoilValue(userState);
-  console.log(user);
   if (!user) {
     // Redirect to login if user is not authenticated
     navigate("/login");
