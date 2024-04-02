@@ -18,12 +18,7 @@ const FilterSection: React.FC<FilterSectionProps> = ({
   handleOptionChange,
 }) => {
   return (
-    <CP.Styled.Flex
-      items="flex-start"
-      gap="8px"
-      width="100%"
-      justify="flex-start"
-    >
+    <CP.Styled.Flex gap="8px" width="100%" justify="flex-start">
       <TextField
         disabled
         defaultValue={filterField}

@@ -10,7 +10,7 @@ import { Error } from "@/pages/error";
 import useApi from "@/hooks/useApi";
 import { organization } from "@/store/organizationStore";
 import { useRecoilState } from "recoil";
-import { employeeId, employee } from "@/store/employee";
+import { employeeId, employeeInfo } from "@/store/employee";
 import { myOrganization } from "@/api/organization";
 import { handleApiRequest } from "@/api";
 import Loading from "@/components/loading/Loading";
@@ -25,7 +25,7 @@ const HomePage = () => {
     isLoading,
   } = useApi();
   const [organizationData, setOrganizationData] = useRecoilState(organization);
-  const [employeeData, setEmployeeData] = useRecoilState(employee);
+  const [employeeData, setEmployeeData] = useRecoilState(employeeInfo);
   const selected = useRecoilValue(selectedOrganization);
   const employeedId = useRecoilValue(employeeId);
   const user = useRecoilValue(userState);

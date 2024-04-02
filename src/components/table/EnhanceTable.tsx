@@ -200,14 +200,14 @@ function EnhancedTable<T>({
         </TableContainer>
         <TablePagination
           component="div"
-          count={pagination?.total_docs}
+          count={pagination?.total_docs || 0}
           page={page}
           onPageChange={handleChangePage}
           rowsPerPage={pagination?.perpage || 10}
           onRowsPerPageChange={handleChangeRowsPerPage}
           slotProps={{
             actions: {
-              nextButtonIcon: { onClick: handleNextButtonClick },
+              nextButton: { onClick: handleNextButtonClick },
               previousButton: { onClick: handlePreviousButtonClick },
             },
           }}

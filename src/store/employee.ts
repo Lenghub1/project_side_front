@@ -21,13 +21,9 @@ export const employeeFeatureData = atom<Employement[] | undefined>({
 
 export const employees = atom<Employement[]>({
   key: `employees`,
-
   effects_UNSTABLE: [persistAtom],
 });
-export const employee = atom<any>({
-  key: `employees`,
-  default: undefined,
-});
+
 export const employeeId = atom<string>({
   key: `employee`,
   default: undefined,
