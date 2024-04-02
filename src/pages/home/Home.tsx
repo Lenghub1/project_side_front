@@ -10,9 +10,10 @@ import { Error } from "@/pages/error";
 import useApi from "@/hooks/useApi";
 import { organization } from "@/store/organizationStore";
 import { useRecoilState } from "recoil";
-import { selectEmployeeData } from "@/store/employee";
+import { employeeId, employee } from "@/store/employee";
 import { myOrganization } from "@/api/organization";
-
+import { handleApiRequest } from "@/api";
+import { getEmployeeById } from "@/api/employee";
 const HomePage = () => {
   const {
     response: data,
@@ -22,10 +23,12 @@ const HomePage = () => {
     handleApiRequest: apiHook,
   } = useApi();
   const [organizationData, setOrganizationData] = useRecoilState(organization);
+  const [employeeData, setEmployeeData] = useRecoilState(employee);
   const selected = useRecoilValue(selectedOrganization);
-  const employeeData = useRecoilValue(selectEmployeeData);
+  const employeedId = useRecoilValue(employeeId);
   const user = useRecoilValue(userState);
-  if (user.firstName === null || !user.lastName === null) {
+
+  if (user.firstName === null || user.lastName === null) {
     return <Navigate to={"/fillForm"} replace />;
   }
   if (!selected) {
@@ -33,6 +36,15 @@ const HomePage = () => {
   }
   const myOrganizationData = async () => {
     await apiHook(() => myOrganization(selected));
+  };
+  const myEmployeeData = async () => {
+    const [response, error] = await handleApiRequest(() =>
+      getEmployeeById(employeedId, selected)
+    );
+
+    if (response) {
+      setEmployeeData(response);
+    }
   };
   React.useEffect(() => {
     if (isSuccess) {
@@ -42,6 +54,7 @@ const HomePage = () => {
 
   React.useEffect(() => {
     myOrganizationData();
+    myEmployeeData();
   }, []);
 
   if (isError && error) {
@@ -52,9 +65,10 @@ const HomePage = () => {
   if (employeeData?.status === "pending") {
     return <Navigate to={"/check-status"} replace />;
   }
+
   return (
     <AfterLoginTemplate>
-      <CP.Styled.Wrapper overflow="scroll">
+      <CP.Styled.Wrapper overflow="auto">
         <Outlet />
       </CP.Styled.Wrapper>
     </AfterLoginTemplate>
