@@ -52,6 +52,7 @@ const ForgotAccount = () => {
       },
     });
   }
+
   useEffect(() => {
     if (isError) {
       showMessage("Not results exist. Please try again!", "error");
@@ -61,8 +62,18 @@ const ForgotAccount = () => {
   useEffect(() => {
     if (isSuccess && response) {
       setInformation(response.data);
-
-      navigate("/forgot-account/informations");
+      showMessage(
+        `${response.data.length} result${response.data.length > 1 ? "s were" : " was"}  found`,
+        "success"
+      );
+      if (response.data.length > 1) {
+        setTimeout(() => {
+          navigate("/forgot-account/informations");
+        }, 1500);
+      }
+      setTimeout(() => {
+        navigate("/forgot-account/informations/0");
+      }, 1500);
     }
   }, [response, isSuccess]);
 
@@ -82,7 +93,8 @@ const ForgotAccount = () => {
     await forgotAccount(data);
   };
 
-  const isInvalid = !username.value && !!username.setError;
+  const isInvalid =
+    (!username.value && !!username.setError) || !companyCode.value;
   if (isLoading) {
     return <Loading isLoading={isLoading} />;
   }
@@ -111,8 +123,8 @@ const ForgotAccount = () => {
                     label="Company code"
                     value={companyCode.value}
                     onChange={companyCode.onChange}
-                    required
                     inputProps={{ maxLength: 6 }}
+                    required
                   />
 
                   <CP.Styled.Div>

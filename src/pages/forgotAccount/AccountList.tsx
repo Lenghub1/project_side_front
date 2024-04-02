@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import { Title } from "../companySearch/CompanySearch";
 import { useRecoilState } from "recoil";
 import theme from "@/theme/ligthTheme";
+import useScreenSize from "@/hooks/useScreenSize";
 export const maskPhoneNumber = (phoneNumber: string): string => {
   return phoneNumber.replace(/.(?=.{2})/g, "*"); // Masks all but the last 4 digits
 };
@@ -65,15 +66,14 @@ export default function AlignItemsList() {
             margin="0 1rem"
           >
             <Title> Found Accounts </Title>
-            <CP.Typography>
+            <CP.Typography marginBottom={1}>
               Please click to see the credential information.
             </CP.Typography>
             <List
               sx={{
                 width: "100%",
-                maxWidth: 360,
-                minHeight: "358px",
-                maxHeight: "calc(100vh - 720px)",
+
+                maxHeight: "calc(100vh - 500px)",
                 overflowY: "auto",
               }}
             >
