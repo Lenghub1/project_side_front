@@ -1,34 +1,35 @@
-// import { socket } from "@/socket";
 import { handleApiRequest } from "@/api/index";
 import { updateEmployee, deleteEmployee } from "@/api/employee";
 
-const handleAcceptEmployee = async (employmentId: string) => {
+const handleAcceptEmployee = async (
+  employmentId: string,
+  organizationId: string,
+  callback: (data: any, error: any) => void
+) => {
   const [response, error] = await handleApiRequest(() =>
     updateEmployee(
       {
         status: "active",
       },
-      employmentId
+      employmentId,
+      organizationId
     )
   );
-  if (error) {
-    alert(error.message);
-  } else {
-    // socket.emit("acceptEmployee", response);
-  }
+
+  callback(response, error);
 };
 
-const handleRejectEmployee = async (employmentId: string) => {
+const handleRejectEmployee = async (
+  employmentId: string,
+  organizationId: string,
+  callback: (data: any, error: any) => void
+) => {
   console.log(employmentId);
   const [response, error] = await handleApiRequest(() =>
-    deleteEmployee(employmentId)
+    deleteEmployee(employmentId, organizationId)
   );
-  if (error) {
-    alert(error.message);
-  } else {
-    console.log(response);
-    // socket.emit("rejectEmployee", { employmentId });
-  }
+
+  callback(response, error);
 };
 
 export { handleAcceptEmployee, handleRejectEmployee };
