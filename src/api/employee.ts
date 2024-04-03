@@ -68,7 +68,9 @@ const allEmployees = async (
 const manager = async (
   organizationId: string
 ): Promise<AxiosResponse<Partial<Employement>>> => {
-  return api.get(`/organizations/${organizationId}/employments?position=owner`);
+  return api.get(
+    `/organizations/${organizationId}/employments?privilege=super-admin&privilege=admin&privilege=maintainer&status=active`
+  );
 };
 const allWorkplace = async (
   userId: string

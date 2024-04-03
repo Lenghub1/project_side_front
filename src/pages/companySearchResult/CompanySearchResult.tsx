@@ -9,10 +9,11 @@ import {
 import Box from "@mui/material/Box";
 import { useRecoilState } from "recoil";
 import { employeeRegister } from "@/store/organizationStore";
-import { handleApiRequest } from "@/api";
+import { Error } from "@/pages/error";
+import Loading from "@/components/loading/Loading";
 import { codeOrganization } from "@/api/organization";
 import { useEffect, useState } from "react";
-
+import useApi from "@/hooks/useApi";
 interface RegisterAsEmployee {
   orgId: string;
   email: string;
@@ -22,21 +23,15 @@ interface RegisterAsEmployee {
 
 const CompanySearchResult = () => {
   const navigate = useNavigate();
+  const { response, isLoading, isSuccess, isError, error, handleApiRequest } =
+    useApi();
   const [searchResult, setSearchResult] = useState<any>();
   const [regisgerAsEmployee, setRegisterAsEmployee] =
     useRecoilState<RegisterAsEmployee>(employeeRegister);
 
   const { companyId } = useParams<string>() || undefined;
   const getCompanyCode = async () => {
-    const [response, error] = await handleApiRequest(() =>
-      codeOrganization(companyId as string)
-    );
-
-    if (response) {
-      setSearchResult(response);
-    }
-    if (error) {
-    }
+    await handleApiRequest(() => codeOrganization(companyId as string));
   };
 
   const handleContinueClick = () => {
@@ -51,7 +46,17 @@ const CompanySearchResult = () => {
   useEffect(() => {
     getCompanyCode();
   }, []);
-
+  useEffect(() => {
+    if (response) {
+      setSearchResult(response);
+    }
+  }, [isSuccess, response]);
+  if (isError && error) {
+    return <Error status={error.statusCode!} message={error.message!} />;
+  }
+  if (isLoading) {
+    return <Loading isLoading={true} />;
+  }
   return (
     <>
       <FormContainer>
