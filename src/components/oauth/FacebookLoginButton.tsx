@@ -95,7 +95,7 @@ const FacebookLoginButton: FC<FacebookLoginButtonProps> = ({ appId }) => {
             const accessToken = response.authResponse.accessToken;
             handleUserInformation(accessToken);
           } else {
-            showMessage("Authorization faild", "error");
+            showMessage("Authorization failed", "error");
           }
         },
         { scope: "email,public_profile" }
