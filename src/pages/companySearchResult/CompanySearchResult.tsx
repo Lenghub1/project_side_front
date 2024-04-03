@@ -52,7 +52,14 @@ const CompanySearchResult = () => {
     }
   }, [isSuccess, response]);
   if (isError && error) {
-    return <Error status={error.statusCode!} message={error.message!} />;
+    return (
+      <Flex direction="column">
+        <Error status={error.statusCode!} message={error.message!} />
+        <CP.Button onClick={() => navigate(-1)} variant="outlined">
+          Return
+        </CP.Button>
+      </Flex>
+    );
   }
   if (isLoading) {
     return <Loading isLoading={true} />;

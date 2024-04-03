@@ -209,6 +209,7 @@ const SignupPage = () => {
       };
     }
     await signup(signupMethod, formData);
+    localStorage.removeItem("recoil-persist");
   };
 
   if (isLoading) {
