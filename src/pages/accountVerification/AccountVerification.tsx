@@ -46,6 +46,9 @@ const AccountVerification = () => {
       });
     } else if (isError) {
       enqueueSnackbar(error?.message, { variant: "error" });
+      if (error?.statusCode === 409) {
+        navigate("/login");
+      }
     }
   }, [isSuccess, isError]);
 
