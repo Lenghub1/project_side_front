@@ -13,7 +13,9 @@ export const api = axios.create({
 
 // logging request for debugging purposes
 api.interceptors.request.use((request) => {
-  console.log("Starting Request", JSON.stringify(request, null, 2));
+  if (import.meta.env.NODE_ENV !== "production") {
+    console.log("Starting Request", JSON.stringify(request, null, 2));
+  }
   return request;
 });
 
