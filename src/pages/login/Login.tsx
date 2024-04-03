@@ -22,6 +22,7 @@ import Loading from "@/components/loading/Loading";
 import { VERIFICATION_TYPE } from "../verifications/OTP";
 import { removeLeadingZeron } from "@/utils/commonUtil";
 import { Flex } from "../getStarted/GetStarted";
+import useUrlParams from "@/hooks/useGetParams";
 
 type SignInMethod = "email" | "phone";
 
@@ -42,6 +43,7 @@ const LoginPage = () => {
   }>(countries[0]);
   const setAccessToken = useSetRecoilState(Store.User.accessTokenState);
   const { isMobile } = useScreenSize();
+  const params = useUrlParams();
 
   const isFormInvalid =
     (loginMethod === "phone"
@@ -53,7 +55,7 @@ const LoginPage = () => {
       variant: variant,
       anchorOrigin: {
         vertical: "bottom",
-        horizontal: isMobile ? "center" : "left",
+        horizontal: "left",
       },
     });
   }
@@ -62,7 +64,18 @@ const LoginPage = () => {
   async function login(method: string, data: any): Promise<void> {
     await handleApiRequest(() => authApi.testLogin(method, data));
   }
-
+  useEffect(() => {
+    if (params?.error) {
+      showMessage("Authorization failed", "error");
+      setTimeout(() => {
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname + "#/login"
+        );
+      }, 1500);
+    }
+  }, [params]);
   useEffect(() => {
     if (isSuccess) {
       const userData = response?.data;
