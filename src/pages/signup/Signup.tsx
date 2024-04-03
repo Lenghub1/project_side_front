@@ -52,14 +52,22 @@ const passwordCriteria = {
   // containsSpecialCharacter: true,
 };
 
+export const validateName = (name: string): string => {
+  const nameRegex = /^[A-Za-z]+$/;
+  if (!nameRegex.test(name)) {
+    return "Name must contain only letters without spaces or special characters.";
+  }
+  return "";
+};
+
 const SignupPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const isJoinCompany = location.pathname === "/get-started/join-company";
   const accountType: AccountType = isJoinCompany ? "employee" : "employer";
   const { enqueueSnackbar } = useSnackbar();
-  const firstName = useValidatedInput("", "First Name");
-  const lastName = useValidatedInput("", "Last Name");
+  const firstName = useValidatedInput("", "First Name", validateName);
+  const lastName = useValidatedInput("", "Last Name", validateName);
   const [signupMethod, setSignupMethod] = useState<SignupMethod>("email");
   const email = useValidatedInput("", "Email", validateEmail);
   const RegisterAsEmployee = useRecoilState(employeeRegister);
@@ -119,21 +127,19 @@ const SignupPage = () => {
 
   useEffect(() => {
     if (isSuccess && signupMethod === "email") {
-      // enqueueSnackbar("We've sent a verification code to your email.", {
-      //   variant: "success",
-      // });
       navigate("/get-started/activate-account", {
         state: { credential: email.value, accountMethod: signupMethod },
       });
     } else if (isSuccess && signupMethod === "phone") {
+      const formattedPhone =
+        selectedCountry.dialCode + removeLeadingZeron(phone.value);
       navigate("/get-started/verify-phone", {
         state: {
           type: VERIFICATION_TYPE.VERIFY_ACCOUNT,
-          phoneNumber: `${selectedCountry.dialCode} ${removeLeadingZeron(phone.value)}`,
+          phoneNumber: formattedPhone,
           method: signupMethod,
           data: {
-            phoneNumber:
-              selectedCountry.dialCode + removeLeadingZeron(phone.value),
+            phoneNumber: formattedPhone,
           },
         },
       });
