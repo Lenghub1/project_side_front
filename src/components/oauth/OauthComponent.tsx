@@ -1,13 +1,9 @@
 import { Box } from "@mui/material";
-import styled from "styled-components";
-import CP from "..";
 import TelegramLoginButton from "./TelegramLoginButton";
 import FacebookLoginButton from "./FacebookLoginButton";
 import { authApi } from "@/api/auth";
-import { oauthErrorState } from "@/store/error";
-import { useRecoilState } from "recoil";
-import { useEffect } from "react";
 import { useSnackbar } from "notistack";
+import { Flex } from "@/pages/getStarted/GetStarted";
 
 interface OauthProps {
   src: string;
@@ -15,10 +11,6 @@ interface OauthProps {
   click?: () => void;
 }
 const baseUrl = import.meta.env.VITE_BASE_URL;
-
-const Flex = styled(CP.Styled.Flex)`
-  overflow: unset;
-`;
 
 const googleObject: OauthProps = {
   src: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/2048px-Google_%22G%22_logo.svg.png",
@@ -81,7 +73,7 @@ const OuauthComponent = ({ margin }: { margin?: string }) => {
 
       <TelegramLoginButton
         onAuthCallback={handleTelegramData}
-        botUsername="riem_app_bot"
+        botUsername={import.meta.env.VITE_TEELGRAM_BOT}
       />
     </Flex>
   );
