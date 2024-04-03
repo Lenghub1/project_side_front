@@ -48,7 +48,7 @@ const CompanySearchResult = () => {
   }, []);
   useEffect(() => {
     if (response) {
-      setSearchResult(response.data.data);
+      setSearchResult(response);
     }
   }, [isSuccess, response]);
   if (isError && error) {
