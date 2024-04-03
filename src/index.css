@@ -6,6 +6,8 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  height: 100%;
+  overflow: scroll;
 }
 
 * {
@@ -19,8 +21,8 @@ body {
   display: flex;
   place-items: center;
   min-width: 320px;
-  min-height: 100vh;
-  overflow: auto;
+  /* height: 100vh;
+  overflow: auto; */
 }
 
 *::-webkit-scrollbar {
