@@ -64,7 +64,6 @@ const OuauthComponent = ({ margin }: { margin?: string }) => {
   return (
     <Flex width="100%" gap="40px" margin={margin || "1rem 0"}>
       <FacebookLoginButton appId={import.meta.env.VITE_FACEBOOK_APP_ID} />
-
       <OauthBox
         src={googleObject.src}
         alt={googleObject.alt}
@@ -73,7 +72,7 @@ const OuauthComponent = ({ margin }: { margin?: string }) => {
 
       <TelegramLoginButton
         onAuthCallback={handleTelegramData}
-        botUsername={import.meta.env.VITE_TEELGRAM_BOT}
+        botUsername={import.meta.env.VITE_TELEGRAM_BOT}
       />
     </Flex>
   );

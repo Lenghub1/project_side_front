@@ -52,13 +52,13 @@ const LoginPage = () => {
     enqueueSnackbar(message, {
       variant: variant,
       anchorOrigin: {
-        vertical: "bottom", // or 'bottom'
-        horizontal: isMobile ? "center" : "left", // or 'left', 'center'
+        vertical: "bottom",
+        horizontal: isMobile ? "center" : "left",
       },
     });
   }
   const { response, isLoading, error, isSuccess, handleApiRequest } = useApi();
-  // function for login api
+
   async function login(method: string, data: any): Promise<void> {
     await handleApiRequest(() => authApi.testLogin(method, data));
   }

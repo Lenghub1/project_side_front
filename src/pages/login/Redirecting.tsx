@@ -4,14 +4,12 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import CP from "@/components";
 import Store from "@/store";
-import { useRecoilValue, useRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 const RedirectingPage = () => {
   const navigate = useNavigate();
   const accountType = useRecoilValue(Store.SignUp.accountTypeState);
-  const [accessToken, setAccessToken] = useRecoilState(
-    Store.User.accessTokenState
-  );
+  const setAccessToken = useSetRecoilState(Store.User.accessTokenState);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.hash.split("?")[1]);
