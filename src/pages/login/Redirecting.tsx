@@ -5,16 +5,17 @@ import Box from "@mui/material/Box";
 import CP from "@/components";
 import Store from "@/store";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import useUrlParams from "@/hooks/useGetParams";
 
 const RedirectingPage = () => {
   const navigate = useNavigate();
   const accountType = useRecoilValue(Store.SignUp.accountTypeState);
   const setAccessToken = useSetRecoilState(Store.User.accessTokenState);
-  const params = useUrlParams();
   useEffect(() => {
-    if (params?.token) {
-      setAccessToken(params?.token);
+    const urlParams = new URLSearchParams(window.location.hash.split("?")[1]);
+    const paramElement = Object.fromEntries(urlParams.entries());
+
+    if (paramElement.token) {
+      setAccessToken(paramElement.token);
 
       setTimeout(() => {
         if (accountType) {
