@@ -1,7 +1,7 @@
 import CP from "@/components";
 import MuiDivider from "@mui/material/Divider";
 import styled from "styled-components";
-import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { authApi } from "@/api/auth";
 import useValidatedInput from "@/hooks/useValidatedInput";
 import useCriteriaValidator from "@/hooks/useCriteriaInput.tsx";
@@ -60,6 +60,15 @@ export const validateName = (name: string): string => {
   return "";
 };
 
+export const validatePhoneNumber = (phoneNumber: string): string => {
+  const phoneRegex = /^[1-9]\d{5,13}$/;
+
+  if (!phoneRegex.test(phoneNumber)) {
+    return "Please enter a valid phone number.";
+  }
+  return "";
+};
+
 const SignupPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -71,7 +80,7 @@ const SignupPage = () => {
   const [signupMethod, setSignupMethod] = useState<SignupMethod>("email");
   const email = useValidatedInput("", "Email", validateEmail);
   const RegisterAsEmployee = useRecoilState(employeeRegister);
-  const phone = useValidatedInput("", "Phone");
+  const phone = useValidatedInput("", "Phone", validatePhoneNumber);
   const password = useCriteriaValidator("", passwordCriteria);
   const confirmPassword = useMatchInput(password.value, "", "Confirm Password");
   const [passwordIsVisible, setPasswordIsVisible] = useState(false);
@@ -302,8 +311,8 @@ const SignupPage = () => {
             </Flex>
             <CP.Typography variant="subtitle2" align="center">
               By signing up, you agree to our{" "}
-              <NavLink to="#">Terms of Service</NavLink> &{" "}
-              <NavLink to="#">Privacy Policy</NavLink>
+              <Link to="#">Terms of Service</Link> &{" "}
+              <Link to="#">Privacy Policy</Link>
             </CP.Typography>
           </Flex>
         </CP.Styled.Div>
