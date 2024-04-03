@@ -22,7 +22,7 @@ import {
 } from "../companySearch/CompanySearch";
 import SignupMethod from "@/components/signupMethod/SignupMethod";
 import { employeeRegister } from "@/store/organizationStore";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { OauthComponent } from "@/components/oauth";
 import { VERIFICATION_TYPE } from "../verifications/OTP";
 import { removeLeadingZeron } from "@/utils/commonUtil";
@@ -79,7 +79,7 @@ const SignupPage = () => {
   const lastName = useValidatedInput("", "Last Name", validateName);
   const [signupMethod, setSignupMethod] = useState<SignupMethod>("email");
   const email = useValidatedInput("", "Email", validateEmail);
-  const RegisterAsEmployee = useRecoilState(employeeRegister);
+  const RegisterAsEmployee = useRecoilValue(employeeRegister);
   const phone = useValidatedInput("", "Phone", validatePhoneNumber);
   const password = useCriteriaValidator("", passwordCriteria);
   const confirmPassword = useMatchInput(password.value, "", "Confirm Password");
@@ -139,6 +139,8 @@ const SignupPage = () => {
       navigate("/get-started/activate-account", {
         state: { credential: email.value, accountMethod: signupMethod },
       });
+
+      localStorage.removeItem("recoil-persist");
     } else if (isSuccess && signupMethod === "phone") {
       const formattedPhone =
         selectedCountry.dialCode + removeLeadingZeron(phone.value);
@@ -154,6 +156,7 @@ const SignupPage = () => {
       });
     }
   }, [isSuccess, signupMethod]);
+  console.log(RegisterAsEmployee);
 
   useEffect(() => {
     if (error) {
@@ -205,11 +208,12 @@ const SignupPage = () => {
     if (isJoinCompany) {
       formData = {
         ...formData,
-        orgId: RegisterAsEmployee[0].id,
+        orgId: RegisterAsEmployee.id,
+        ownerId: RegisterAsEmployee.ownerId,
+        organizationName: RegisterAsEmployee.name,
       };
     }
     await signup(signupMethod, formData);
-    localStorage.removeItem("recoil-persist");
   };
 
   if (isLoading) {
