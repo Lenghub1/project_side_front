@@ -1,7 +1,7 @@
 import CP from "@/components";
 import MuiDivider from "@mui/material/Divider";
 import styled from "styled-components";
-import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { authApi } from "@/api/auth";
 import useValidatedInput from "@/hooks/useValidatedInput";
 import useCriteriaValidator from "@/hooks/useCriteriaInput.tsx";
@@ -52,18 +52,35 @@ const passwordCriteria = {
   // containsSpecialCharacter: true,
 };
 
+export const validateName = (name: string): string => {
+  const nameRegex = /^[A-Za-z]+$/;
+  if (!nameRegex.test(name)) {
+    return "Name must contain only letters without spaces or special characters.";
+  }
+  return "";
+};
+
+export const validatePhoneNumber = (phoneNumber: string): string => {
+  const phoneRegex = /^[1-9]\d{5,13}$/;
+
+  if (!phoneRegex.test(phoneNumber)) {
+    return "Please enter a valid phone number.";
+  }
+  return "";
+};
+
 const SignupPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const isJoinCompany = location.pathname === "/get-started/join-company";
   const accountType: AccountType = isJoinCompany ? "employee" : "employer";
   const { enqueueSnackbar } = useSnackbar();
-  const firstName = useValidatedInput("", "First Name");
-  const lastName = useValidatedInput("", "Last Name");
+  const firstName = useValidatedInput("", "First Name", validateName);
+  const lastName = useValidatedInput("", "Last Name", validateName);
   const [signupMethod, setSignupMethod] = useState<SignupMethod>("email");
   const email = useValidatedInput("", "Email", validateEmail);
   const RegisterAsEmployee = useRecoilState(employeeRegister);
-  const phone = useValidatedInput("", "Phone");
+  const phone = useValidatedInput("", "Phone", validatePhoneNumber);
   const password = useCriteriaValidator("", passwordCriteria);
   const confirmPassword = useMatchInput(password.value, "", "Confirm Password");
   const [passwordIsVisible, setPasswordIsVisible] = useState(false);
@@ -119,21 +136,19 @@ const SignupPage = () => {
 
   useEffect(() => {
     if (isSuccess && signupMethod === "email") {
-      // enqueueSnackbar("We've sent a verification code to your email.", {
-      //   variant: "success",
-      // });
       navigate("/get-started/activate-account", {
         state: { credential: email.value, accountMethod: signupMethod },
       });
     } else if (isSuccess && signupMethod === "phone") {
+      const formattedPhone =
+        selectedCountry.dialCode + removeLeadingZeron(phone.value);
       navigate("/get-started/verify-phone", {
         state: {
           type: VERIFICATION_TYPE.VERIFY_ACCOUNT,
-          phoneNumber: `${selectedCountry.dialCode} ${removeLeadingZeron(phone.value)}`,
+          phoneNumber: formattedPhone,
           method: signupMethod,
           data: {
-            phoneNumber:
-              selectedCountry.dialCode + removeLeadingZeron(phone.value),
+            phoneNumber: formattedPhone,
           },
         },
       });
@@ -194,6 +209,7 @@ const SignupPage = () => {
       };
     }
     await signup(signupMethod, formData);
+    localStorage.removeItem("recoil-persist");
   };
 
   if (isLoading) {
@@ -296,8 +312,8 @@ const SignupPage = () => {
             </Flex>
             <CP.Typography variant="subtitle2" align="center">
               By signing up, you agree to our{" "}
-              <NavLink to="#">Terms of Service</NavLink> &{" "}
-              <NavLink to="#">Privacy Policy</NavLink>
+              <Link to="#">Terms of Service</Link> &{" "}
+              <Link to="#">Privacy Policy</Link>
             </CP.Typography>
           </Flex>
         </CP.Styled.Div>

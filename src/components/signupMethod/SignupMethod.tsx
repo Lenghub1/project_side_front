@@ -1,5 +1,5 @@
 // SignupMethodComponent.tsx
-import React, { useState, SyntheticEvent } from "react";
+import React, { SyntheticEvent } from "react";
 import { Tab, Tabs } from "@mui/material";
 import CP from "..";
 import { Flex } from "@/pages/getStarted/GetStarted";
