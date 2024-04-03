@@ -4,7 +4,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import CP from "@/components";
 import Store from "@/store";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { authApi } from "@/api/auth";
 import { VERIFICATION_TYPE } from "./OTP";
 import { useSnackbar } from "notistack";
@@ -19,7 +19,7 @@ const VerifyToken = () => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const location = useLocation();
-  const [_, setAccessToken] = useRecoilState(Store.User.accessTokenState);
+  const setAccessToken = useSetRecoilState(Store.User.accessTokenState);
   const [__, setResetPasswordToken] = useRecoilState(
     Store.User.resetPasswordToken
   );
@@ -89,7 +89,8 @@ const VerifyToken = () => {
           navigate("/forget-password/reset-password");
         }, 1500);
       } else if (params.verificationType === VERIFICATION_TYPE.VERIFY_ACCOUNT) {
-        navigate("/");
+        setAccessToken(response?.data.accessToken);
+        navigate("/login/choose-organization");
       }
     }
   }, [isSuccess, response]);
