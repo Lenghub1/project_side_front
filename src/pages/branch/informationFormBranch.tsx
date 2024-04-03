@@ -25,7 +25,6 @@ const InformationBranch = ({
     };
     setBranchData(updatedBranchData);
   };
-  console.log(managers, "my");
 
   return (
     <CP.Styled.Div style={{ marginTop: "20px" }}>
