@@ -4,7 +4,7 @@ import Avatar from "@mui/material/Avatar";
 import useFetch from "@/hooks/useFetch";
 import { allEmployees } from "@/api/employee";
 import EnhancedTable from "@/components/table/EnhanceTable";
-import { Employement } from "@/utils/interfaces/Employment";
+import { Employment } from "@/utils/interfaces/Employment";
 import Error from "../error/Error";
 import { useRecoilValue, useRecoilState } from "recoil";
 import { selectedOrganization } from "@/store/userStore";
@@ -13,8 +13,13 @@ import { Filter, Sort } from "@/utils/interfaces/Feature";
 import useScreenSize from "@/hooks/useScreenSize";
 import { dataToFilterState } from "@/store/filterStore";
 import { BranchData } from "@/utils/interfaces/Branch";
+import { useLocation } from "react-router-dom";
 
-export const UserInformationCell = (row: Employement) => {
+interface UserInformationCellprops {
+  row: Employment;
+  onActionCallback?: (data: any, error: any) => void;
+}
+export const UserInformationCell = ({ row }: UserInformationCellprops) => {
   return (
     <CP.Styled.Flex gap="8px" justify="flex-start">
       <Avatar src="https://avatar.iran.liara.run/public" />
@@ -40,7 +45,8 @@ const EmployeeTable = ({
   const filters: Filter[] = [
     { field: "status", logicalClause: "ne", targetValue: "pending" },
   ];
-
+  const location = useLocation();
+  console.log(location);
   const [_, setDataToFilter] = useRecoilState(dataToFilterState);
   const { isMobile, isTablet } = useScreenSize();
   const initialHeadCells = generateHeadCells(isMobile, isTablet);
@@ -52,7 +58,7 @@ const EmployeeTable = ({
     { field: "position", direction: "asc" },
   ]);
   const [page, setPage] = useState(1);
-  const [perPage] = useState(10);
+  const [perPage, setPerPage] = useState(10);
 
   // State to manage filters
   const [appliedFilters, setAppliedFilters] = useState<Filter[]>(filters);
@@ -64,10 +70,14 @@ const EmployeeTable = ({
 
   const handlePageChange = (page: number) => {
     setPage(page + 1);
-    console.log(page);
   };
 
-  const handleSortRequest = (property: keyof Employement) => {
+  const handleRowsPerPageChange = (rowsPerPage: number) => {
+    setPerPage(rowsPerPage);
+    setPage(1);
+    console.log(rowsPerPage);
+  };
+  const handleSortRequest = (property: keyof Employment) => {
     const existingSortIndex = sortCriteria.findIndex(
       (criteria) => criteria.field === property
     );
@@ -108,7 +118,6 @@ const EmployeeTable = ({
       };
     });
 
-    console.log(convertedFilters);
     setAppliedFilters(convertedFilters);
   };
   useEffect(() => {
@@ -123,7 +132,7 @@ const EmployeeTable = ({
   // Refetch data when sorting criteria or filters change
   useEffect(() => {
     refetchData();
-  }, [sortCriteria, appliedFilters, page]);
+  }, [sortCriteria, appliedFilters, perPage, page]);
 
   useEffect(() => {
     if (error) {
@@ -140,7 +149,7 @@ const EmployeeTable = ({
 
   return (
     <CP.Container>
-      <EnhancedTable<Employement>
+      <EnhancedTable<Employment>
         headCells={headCells}
         rows={data?.docs || []}
         tableName="Employee"
@@ -152,6 +161,7 @@ const EmployeeTable = ({
         selected={selected}
         branchData={branchData}
         setBranchData={setBranchData}
+        onRowsPerPageChange={handleRowsPerPageChange}
       />
     </CP.Container>
   );

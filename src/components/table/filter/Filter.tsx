@@ -36,8 +36,6 @@ const TableFilter = ({ headCells, onFilterChange }: TableFilterProps) => {
   const [openSnackBar, setOpenSnackBar] = useState(false);
 
   const handleOptionChanging = (filterKey: string, selectedOption: string) => {
-    console.log(filterKey);
-    console.log(selectedOption);
     setFilterSelections((prevFilterSelections) => {
       const index = prevFilterSelections.findIndex(
         (selection) => selection.field === filterKey
@@ -116,7 +114,6 @@ const TableFilter = ({ headCells, onFilterChange }: TableFilterProps) => {
     ));
   }, [filterSections, dataToFilter]);
   const areAllFiltersFilled = () => {
-    console.log(filterSelections);
     return filterSelections.every(
       (selection) => selection.values!.length > 0 && selection.logicalClause
     );
@@ -128,9 +125,7 @@ const TableFilter = ({ headCells, onFilterChange }: TableFilterProps) => {
     setInnerOpen(false);
   };
 
-  useEffect(() => {
-    console.log(openSnackBar);
-  }, [openSnackBar]);
+  useEffect(() => {}, [openSnackBar]);
   return (
     <Box>
       <SnackBar open={openSnackBar} message="Filter had been applied" />

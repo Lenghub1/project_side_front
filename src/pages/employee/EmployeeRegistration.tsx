@@ -3,7 +3,7 @@ import CP from "@/components";
 import EnhancedTable from "@/components/table/EnhanceTable";
 import Button from "@/components/button";
 import { getAllPendingEmployees } from "@/api/employee";
-import { Employement } from "@/utils/interfaces/Employment";
+import { Employment } from "@/utils/interfaces/Employment";
 import {
   handleAcceptEmployee,
   handleRejectEmployee,
@@ -14,21 +14,39 @@ import { useRecoilValue, useRecoilState } from "recoil";
 import { filteredDataState, dataToFilterState } from "@/store/filterStore";
 import { UserInformationCell } from "./EmployeeTable";
 import { selectedOrganization } from "@/store/userStore";
-import { Sort, Filter } from "@/utils/interfaces/Feature";
+import {
+  Sort,
+  Filter,
+  APIFeatureLocation,
+  APIFeature,
+} from "@/utils/interfaces/Feature";
 import useScreenSize from "@/hooks/useScreenSize";
+import { useLocation } from "react-router-dom";
+import { apiFeatureState } from "@/store/api.feature";
+interface RenderActionCellProps {
+  row: Employment;
+  onActionCallback: (data: any, error: any) => void;
+}
 
-const RenderActionCell = (row: Employement) => {
-  const { id } = row;
+const RenderActionCell = ({ row, onActionCallback }: RenderActionCellProps) => {
+  const handleAccept = async () => {
+    await handleAcceptEmployee(row.id, row.orgId, (data, error) => {
+      onActionCallback(data, error);
+    });
+  };
+
+  const handleReject = async () => {
+    await handleRejectEmployee(row.id, row.orgId, (data, error) => {
+      onActionCallback(data, error);
+    });
+  };
+
   return (
     <CP.Styled.Flex gap="8px" justify="flex-start">
-      <Button onClick={() => handleAcceptEmployee(id)} size="small">
+      <Button onClick={handleAccept} size="small">
         Accept
       </Button>
-      <Button
-        color="accent"
-        onClick={() => handleRejectEmployee(id)}
-        size="small"
-      >
+      <Button color="accent" onClick={handleReject} size="small">
         Reject
       </Button>
     </CP.Styled.Flex>
@@ -39,6 +57,7 @@ const EmployeeRegistration = () => {
   const filters = [
     { field: "status", logicalClause: "eq", targetValue: "pending" },
   ];
+  const location = useLocation();
   const perPage = 10;
   const page = 1;
   const { isMobile, isTablet } = useScreenSize();
@@ -46,7 +65,10 @@ const EmployeeRegistration = () => {
   const [headCells, setHeadCells] = useState(initialHeadCells);
   const [_, setDataToFilter] = useRecoilState(dataToFilterState);
   const { isFilter, data: filteredData } = useRecoilValue(filteredDataState);
+  const [currentAPIFeatureState, setAPIFeatureState] =
+    useRecoilState(apiFeatureState);
   const organization = useRecoilValue(selectedOrganization);
+  const [updatedData, setUpdatedData] = useState();
   const [errorComponent, setErrorComponent] = useState<React.ReactNode>();
   const [notFoundComponent, setNotFoundComponent] = useState<React.ReactNode>();
 
@@ -79,7 +101,7 @@ const EmployeeRegistration = () => {
 
   const displayData = isFilter ? filteredData : data?.docs;
 
-  const handleSortRequest = (property: keyof Employement) => {
+  const handleSortRequest = (property: keyof Employment) => {
     const existingSortIndex = sortCriteria.findIndex(
       (criteria) => criteria.field === property
     );
@@ -124,10 +146,28 @@ const EmployeeRegistration = () => {
     setAppliedFilters(convertedFilters);
   };
 
+  const handleActionCallback = (data: any, error: any) => {
+    setUpdatedData(data);
+    if (error) {
+      setErrorComponent(<Error status={error.status_code} />);
+    }
+  };
+
   // Refetch data when sorting criteria or filters change
   useEffect(() => {
     refetchData();
-  }, [sortCriteria, appliedFilters]);
+    const appliedAPIFeature: APIFeature = {
+      filters: appliedFilters,
+      sorts: sortCriteria,
+      perPage: perPage,
+      page: page,
+    };
+    const apiFeatureLoaction: APIFeatureLocation = {
+      apiFeature: appliedAPIFeature,
+      route: location.pathname,
+    };
+    console.log(apiFeatureLoaction);
+  }, [sortCriteria, appliedFilters, updatedData]);
 
   useEffect(() => {
     if (error) {
@@ -143,7 +183,7 @@ const EmployeeRegistration = () => {
   }
   return (
     <CP.Container>
-      <EnhancedTable<Employement>
+      <EnhancedTable<Employment>
         headCells={headCells}
         rows={displayData || []}
         tableName="Employee"
@@ -151,6 +191,7 @@ const EmployeeRegistration = () => {
         error={notFoundComponent}
         onFilterChange={handleFilterChange}
         onRequestSort={handleSortRequest}
+        onActionCallback={handleActionCallback}
       />
     </CP.Container>
   );

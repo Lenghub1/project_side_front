@@ -29,6 +29,8 @@ interface EnhancedTableProps<T> {
   onFilterChange: (filterFields: Filter[]) => void;
   onRequestSort: (id: keyof T) => void;
   onPageChange: (page: number) => void;
+  onRowsPerPageChange: (rowPerPageChange: number) => void;
+  onActionCallback?: (data: any, error: any) => void;
   error: React.ReactNode;
   selected: any;
   branchData: BranchData;
@@ -43,6 +45,8 @@ function EnhancedTable<T>({
   onFilterChange,
   onRequestSort,
   onPageChange,
+  onRowsPerPageChange,
+  onActionCallback,
   error,
   selected,
   setBranchData,
@@ -63,6 +67,7 @@ function EnhancedTable<T>({
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
+    onRowsPerPageChange(parseInt(event.target.value, 10));
     setPage(0);
   };
 
@@ -132,6 +137,7 @@ function EnhancedTable<T>({
           >
             <EnhancedTableHead<T>
               headCells={headCells}
+              isSelectable={isSelectable}
               onRequestSort={onRequestSort}
             />
 
@@ -172,7 +178,12 @@ function EnhancedTable<T>({
                         if (cell.type === "ReactCell" && cell.element) {
                           return (
                             <TableCell key={cellIndex} align="left">
-                              {cell.element(row)}
+                              <cell.element
+                                row={row}
+                                {...(onActionCallback && {
+                                  onActionCallback,
+                                })}
+                              />
                             </TableCell>
                           );
                         } else {
@@ -200,14 +211,15 @@ function EnhancedTable<T>({
         </TableContainer>
         <TablePagination
           component="div"
-          count={pagination?.total_docs}
+          rowsPerPageOptions={[5, 10, 20]}
+          count={pagination?.total_docs || 0}
           page={page}
           onPageChange={handleChangePage}
           rowsPerPage={pagination?.perpage || 10}
           onRowsPerPageChange={handleChangeRowsPerPage}
           slotProps={{
             actions: {
-              nextButtonIcon: { onClick: handleNextButtonClick },
+              nextButton: { onClick: handleNextButtonClick },
               previousButton: { onClick: handlePreviousButtonClick },
             },
           }}

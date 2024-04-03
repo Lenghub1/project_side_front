@@ -2,7 +2,7 @@ export interface UserContact {
   email: string;
   phone: string;
 }
-export interface Employement {
+export interface Employment {
   id: string;
   userId: string;
   name: string;
@@ -14,8 +14,6 @@ export interface Employement {
   status: string;
   privilege: string;
   workLocation: string;
-  email: string;
-  phoneNumber: string;
-  user: any;
-  data: any;
+  orgId: string;
+  user: UserContact;
 }

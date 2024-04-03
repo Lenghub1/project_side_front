@@ -1,7 +1,7 @@
 import { TableCell, TableSortLabel, TableRow, TableHead } from "@mui/material";
 import { useState } from "react";
 import { HeadCell } from "@/utils/interfaces/Table";
-
+import Checkbox from "@mui/material/Checkbox";
 interface TableHeadCellProps<T> {
   headCell: HeadCell<T>;
   onRequestSort: (id: keyof T) => void;
@@ -51,16 +51,23 @@ const TableHeadCell = <T,>({
 
 interface EnhancedTableHeadProps<T> {
   headCells: HeadCell<T>[];
+  isSelectable: boolean;
   onRequestSort: (id: keyof T) => void;
 }
 
 function EnhancedTableHead<T>({
   headCells,
+  isSelectable,
   onRequestSort,
 }: EnhancedTableHeadProps<T>) {
   return (
     <TableHead>
       <TableRow>
+        {isSelectable && (
+          <TableCell padding="checkbox">
+            <Checkbox disabled />
+          </TableCell>
+        )}
         {headCells.map((headCell) => {
           return (
             headCell.visibility && (
