@@ -158,7 +158,7 @@ const LoginPage = () => {
   if (isLoading) {
     return <Loading isLoading={isLoading} />;
   }
-
+  localStorage.removeItem("recoil-persist");
   return (
     <SpaWithImage>
       {isLoginPage ? (
