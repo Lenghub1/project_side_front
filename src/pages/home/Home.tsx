@@ -13,6 +13,7 @@ import { useRecoilState } from "recoil";
 import { employeeId, employee } from "@/store/employee";
 import { myOrganization } from "@/api/organization";
 import { handleApiRequest } from "@/api";
+import Loading from "@/components/loading/Loading";
 import { getEmployeeById } from "@/api/employee";
 const HomePage = () => {
   const {
@@ -21,6 +22,7 @@ const HomePage = () => {
     isError,
     error,
     handleApiRequest: apiHook,
+    isLoading,
   } = useApi();
   const [organizationData, setOrganizationData] = useRecoilState(organization);
   const [employeeData, setEmployeeData] = useRecoilState(employee);
@@ -66,6 +68,9 @@ const HomePage = () => {
     return <Navigate to={"/check-status"} replace />;
   }
 
+  if (isLoading) {
+    return <Loading isLoading={isLoading} />;
+  }
   return (
     <AfterLoginTemplate>
       <CP.Styled.Wrapper overflow="auto">

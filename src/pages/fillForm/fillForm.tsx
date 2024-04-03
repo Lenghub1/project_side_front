@@ -7,10 +7,10 @@ import { patchUser } from "@/api/user";
 import { userState } from "@/store/userStore";
 import { useRecoilState } from "recoil";
 import useApi from "@/hooks/useApi";
-
+import Loading from "@/components/loading/Loading";
 const FillForm = () => {
   const navigate = useNavigate();
-  const { isSuccess, isError, error, handleApiRequest } = useApi();
+  const { isSuccess, isError, error, handleApiRequest, isLoading } = useApi();
 
   const { enqueueSnackbar } = useSnackbar();
   const [user, setUser] = useRecoilState(userState);
@@ -85,7 +85,9 @@ const FillForm = () => {
 
     userPatch();
   };
-
+  if (isLoading) {
+    return <Loading isLoading={isLoading} />;
+  }
   return (
     <Container
       style={{
