@@ -3,6 +3,8 @@ stages:
 
 sonarqube:
   stage: analysis
+  tags:
+    - vue-admin
   image: ahgora/gitlab-sonar-scanner
   variables:
     SONAR_URL: https://sonar-dev.clp.kr
