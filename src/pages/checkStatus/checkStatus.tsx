@@ -4,11 +4,16 @@ import { selectedOrganization } from "@/store/userStore";
 import CP from "@/components";
 import { useRecoilValue } from "recoil";
 import { Navigate } from "react-router-dom";
-import { handleApiRequest } from "@/api";
+
 import { getEmployeeById } from "@/api/employee";
 import { Error } from "@/pages/error";
 import { useEffect, useState } from "react";
+import useApi from "@/hooks/useApi";
+import Loading from "@/components/loading/Loading";
 const CheckStatus = () => {
+  const { response, isLoading, isSuccess, isError, error, handleApiRequest } =
+    useApi();
+
   const selected = useRecoilValue(selectedOrganization);
   const employeeData = useRecoilValue(employeeId);
   const [employee, setEmployee] = useState<any>();
@@ -16,22 +21,28 @@ const CheckStatus = () => {
     return <Navigate to={"/login/choose-organization"} replace />;
   }
   const employeeStatus = async () => {
-    const [response, error] = await handleApiRequest(() =>
-      getEmployeeById(employeeData, selected)
-    );
-    if (response) {
-      setEmployee(response);
-    } else if (error) {
-      return <Error status={error.statusCode!} message={error.message!} />;
-    }
+    await handleApiRequest(() => getEmployeeById(employeeData, selected));
   };
   useEffect(() => {
     employeeStatus();
   }, []);
+
+  useEffect(() => {
+    if (response) {
+      setEmployee(response);
+    }
+  }, [isSuccess, response]);
+
+  if (isError && error) {
+    return <Error status={error.statusCode!} message={error.message!} />;
+  }
   if (employee?.status === "active") {
     return <Navigate to={"/"} replace />;
   }
-  console.log(employee);
+
+  if (isLoading) {
+    return <Loading isLoading={isLoading} />;
+  }
 
   return (
     <Container

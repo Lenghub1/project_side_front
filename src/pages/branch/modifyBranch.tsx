@@ -5,7 +5,7 @@ import { selectBranch } from "@/store/branch";
 import MapComponent from "@/components/map/Map";
 import { TextField, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { allEmployees } from "@/api/employee";
+import { manager } from "@/api/employee";
 import { handleApiRequest } from "@/api";
 import { organizationLocation } from "@/api/location";
 import { modifyBranch } from "@/api/branch";
@@ -29,11 +29,9 @@ const ModifyBranch: React.FC = () => {
     name: selectedBranch.name,
   }) as any;
   const managerRequest = async () => {
-    const [response, error] = await handleApiRequest(() =>
-      allEmployees(selected)
-    );
+    const [response, error] = await handleApiRequest(() => manager(selected));
     if (response) {
-      setManagers(response);
+      setManagers(response.data.data);
     } else {
     }
   };
@@ -95,7 +93,7 @@ const ModifyBranch: React.FC = () => {
       >
         {managers.map((manager: any) => (
           <MenuItem key={manager.id} value={manager.id}>
-            {manager.name}
+            {manager.user.firstName} {manager.user.lastName}
           </MenuItem>
         ))}
       </TextField>
