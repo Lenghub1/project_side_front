@@ -41,7 +41,13 @@ const SpaWithImage = ({ children }: SpaWithImageProps) => {
 
   return (
     <Flex>
-      <ScrollableWrapper>{children}</ScrollableWrapper>
+      <>
+        {isMobile || isTablet ? (
+          <>{children}</>
+        ) : (
+          <ScrollableWrapper>{children}</ScrollableWrapper>
+        )}
+      </>
       <CP.Styled.Div
         style={{
           display: isMobile || isTablet ? "none" : "block",
