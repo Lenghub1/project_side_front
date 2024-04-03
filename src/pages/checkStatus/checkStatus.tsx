@@ -3,7 +3,7 @@ import { employeeId } from "@/store/employee";
 import { selectedOrganization } from "@/store/userStore";
 import CP from "@/components";
 import { useRecoilValue } from "recoil";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 import { getEmployeeById } from "@/api/employee";
 import { Error } from "@/pages/error";
@@ -13,7 +13,7 @@ import Loading from "@/components/loading/Loading";
 const CheckStatus = () => {
   const { response, isLoading, isSuccess, isError, error, handleApiRequest } =
     useApi();
-
+  const navigate = useNavigate();
   const selected = useRecoilValue(selectedOrganization);
   const employeeData = useRecoilValue(employeeId);
   const [employee, setEmployee] = useState<any>();
@@ -43,7 +43,9 @@ const CheckStatus = () => {
   if (isLoading) {
     return <Loading isLoading={isLoading} />;
   }
-
+  const handleNavigate = () => {
+    navigate("/login/choose-organization");
+  };
   return (
     <Container
       style={{
@@ -61,13 +63,11 @@ const CheckStatus = () => {
           under review. We appreciate your patience and will notify you at the
           contact information you provided once a decision has been made.
         </CP.Typography>
-        <img
-          style={{ width: "300px", height: "300px" }}
-          src="/waiting.svg"
-        ></img>
+        <img style={{ width: "300px", height: "300px" }} src="/drink.gif"></img>
         <CP.Styled.Flex gap="20px">
-          <CP.Button variant="text">Cancel Request</CP.Button>
-          <CP.Button>HomePage</CP.Button>
+          <CP.Button onClick={handleNavigate}>
+            Choose Other Organization
+          </CP.Button>
         </CP.Styled.Flex>
       </CP.Styled.Flex>
     </Container>
