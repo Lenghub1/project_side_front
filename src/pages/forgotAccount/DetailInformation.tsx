@@ -19,7 +19,6 @@ export default function DetailInformation() {
 
   useEffect(() => {
     if (id && !data[id]) {
-      console.log("Data", data[id]);
       setData([]);
       navigate("/forgot-account");
     }

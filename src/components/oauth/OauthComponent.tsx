@@ -1,13 +1,9 @@
 import { Box } from "@mui/material";
-import styled from "styled-components";
-import CP from "..";
 import TelegramLoginButton from "./TelegramLoginButton";
 import FacebookLoginButton from "./FacebookLoginButton";
 import { authApi } from "@/api/auth";
-import SnackbarMessage from "../showMessage";
-import { oauthErrorState } from "@/store/error";
-import { useRecoilState } from "recoil";
-import { useEffect } from "react";
+import { useSnackbar } from "notistack";
+import { Flex } from "@/pages/getStarted/GetStarted";
 
 interface OauthProps {
   src: string;
@@ -15,10 +11,6 @@ interface OauthProps {
   click?: () => void;
 }
 const baseUrl = import.meta.env.VITE_BASE_URL;
-
-const Flex = styled(CP.Styled.Flex)`
-  overflow: unset;
-`;
 
 const googleObject: OauthProps = {
   src: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/2048px-Google_%22G%22_logo.svg.png",
@@ -47,10 +39,16 @@ export const OauthBox = ({ src, alt, click }: OauthProps) => {
 };
 
 const OuauthComponent = ({ margin }: { margin?: string }) => {
-  const [oauthError, setOauthError] = useRecoilState(oauthErrorState);
-  useEffect(() => {
-    setOauthError(false);
-  }, [oauthError]);
+  const { enqueueSnackbar } = useSnackbar();
+  function showMessage(message: string, variant: "error" | "success") {
+    enqueueSnackbar(message, {
+      variant: variant,
+      anchorOrigin: {
+        vertical: "bottom",
+        horizontal: "left",
+      },
+    });
+  }
   const handleTelegramData = async (user: any) => {
     await authApi
       .telegramOauth(user)
@@ -59,14 +57,13 @@ const OuauthComponent = ({ margin }: { margin?: string }) => {
           window.location.href = res.data.url;
         }
       })
-      .catch((e) => {
-        setOauthError(true);
+      .catch(() => {
+        showMessage("Authorization failed", "error");
       });
   };
   return (
     <Flex width="100%" gap="40px" margin={margin || "1rem 0"}>
       <FacebookLoginButton appId={import.meta.env.VITE_FACEBOOK_APP_ID} />
-
       <OauthBox
         src={googleObject.src}
         alt={googleObject.alt}
@@ -75,14 +72,8 @@ const OuauthComponent = ({ margin }: { margin?: string }) => {
 
       <TelegramLoginButton
         onAuthCallback={handleTelegramData}
-        botUsername="riem_app_bot"
+        botUsername={import.meta.env.VITE_TELEGRAM_BOT}
       />
-      {oauthError && (
-        <SnackbarMessage
-          message="Something went wrong. Please try again."
-          variant="error"
-        />
-      )}
     </Flex>
   );
 };
