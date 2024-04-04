@@ -18,11 +18,15 @@
 
 body {
   margin: 0;
-  display: flex;
   place-items: center;
   min-width: 320px;
+  /* display: flex; */
   /* height: 100vh;
   overflow: auto; */
+}
+
+a {
+  color: #f03c3c;
 }
 
 *::-webkit-scrollbar {

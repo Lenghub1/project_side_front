@@ -41,8 +41,8 @@ const GetStarted = () => {
             </CP.Typography>
             <CP.Typography variant="subtitle1">Choose your role</CP.Typography>
           </CP.Styled.Flex>
-          <Flex direction="column" gap="2rem" padding="auto">
-            <Flex
+          <CP.Styled.Flex direction="column" gap="2rem" padding="auto">
+            <CP.Styled.Flex
               direction={isMobile ? "column" : "row"}
               gap="2rem"
               padding="0 1rem"
@@ -63,9 +63,9 @@ const GetStarted = () => {
                 title="I am an employer"
                 description="Create a new organization to manage time & attendance for your team"
               />
-            </Flex>
+            </CP.Styled.Flex>
 
-            <Flex padding="0 1rem">
+            <CP.Styled.Flex padding="0 1rem">
               <CP.Button
                 fullWidth
                 size="large"
@@ -76,9 +76,9 @@ const GetStarted = () => {
               >
                 Continue
               </CP.Button>
-            </Flex>
+            </CP.Styled.Flex>
             <AlreadyHaveAccountLink />
-          </Flex>
+          </CP.Styled.Flex>
         </ScrollableWrapper>
       ) : (
         <SpaWithImage>

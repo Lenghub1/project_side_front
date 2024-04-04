@@ -227,7 +227,7 @@ const SignupPage = () => {
           <Title>Create a new account</Title>
           <Flex direction="column" gap="1.5rem">
             {accountType === "employer" && (
-              <Flex gap=".5rem" items="flex-start">
+              <CP.Styled.Flex gap=".5rem" items="flex-start">
                 <CP.Input
                   label="First name"
                   value={firstName.value}
@@ -246,7 +246,7 @@ const SignupPage = () => {
                   helperText={<lastName.HelperText />}
                   required
                 />
-              </Flex>
+              </CP.Styled.Flex>
             )}
             <SignupMethod
               email={email}
@@ -304,7 +304,7 @@ const SignupPage = () => {
 
             <Divider></Divider>
             <OauthComponent margin="0" />
-            <Flex gap="1rem">
+            <CP.Styled.Flex gap="1rem">
               <CancelSignupButton />
               <CP.Button
                 disabled={isFormInvalid}
@@ -313,7 +313,7 @@ const SignupPage = () => {
               >
                 Signup
               </CP.Button>
-            </Flex>
+            </CP.Styled.Flex>
             <CP.Typography variant="subtitle2" align="center">
               By signing up, you agree to our{" "}
               <Link to="#">Terms of Service</Link> &{" "}
@@ -322,10 +322,10 @@ const SignupPage = () => {
           </Flex>
         </CP.Styled.Div>
       </FormContainer>
-      <Flex direction="column" margin="1rem 0 0" gap="1rem">
+      <CP.Styled.Flex direction="column" margin="1rem 0 0" gap="1rem">
         <Divider></Divider>
         <AlreadyHaveAccountLink />
-      </Flex>
+      </CP.Styled.Flex>
     </CP.Styled.Form>
   );
 };
