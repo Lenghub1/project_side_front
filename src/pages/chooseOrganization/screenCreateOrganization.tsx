@@ -16,6 +16,8 @@ import {
   InputLabel,
 } from "@mui/material";
 import CP from "@/components";
+import countryData from "./countryData.json";
+import industryData from "./industryData.json";
 
 const ScreenCreateOrganization = () => {
   const [organizationName, setOrganizationName] = useState("");
@@ -38,9 +40,9 @@ const ScreenCreateOrganization = () => {
     setCountry(event.target.value);
   };
 
-  const businessTypes = ["Type 1", "Type 2", "Type 3", "Type 4"];
+  const businessTypes = industryData;
   const companySizes = ["1-25", "26-50", "51-100"];
-  const countries = ["USA", "UK", "Canada"];
+  const countries = countryData;
 
   const createOrganization = async (data: any) => {
     const [response, error] = await handleApiRequest(() =>
@@ -113,9 +115,9 @@ const ScreenCreateOrganization = () => {
                 label="Business Type"
                 onChange={handleBusinessTypeChange}
               >
-                {businessTypes.map((type) => (
-                  <MenuItem key={type} value={type}>
-                    {type}
+                {businessTypes.map((data) => (
+                  <MenuItem key={data.type} value={data.type}>
+                    {data.type}
                   </MenuItem>
                 ))}
               </Select>
@@ -146,8 +148,11 @@ const ScreenCreateOrganization = () => {
                 onChange={handleCountryChange}
               >
                 {countries.map((country) => (
-                  <MenuItem key={country} value={country}>
-                    {country}
+                  <MenuItem
+                    key={`${country.name}-${country.code}`}
+                    value={country.name}
+                  >
+                    {country.name}
                   </MenuItem>
                 ))}
               </Select>

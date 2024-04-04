@@ -5,7 +5,7 @@ import TopBar from "./TopBar";
 import SideBar from "./SideBar";
 import { useIsMobile } from "@/utils/isMobile";
 const Container = styled.div`
-  height: 100vh;
+  height: 100svh;
 `;
 const BodyWrapper = styled.div`
   display: flex;
@@ -14,6 +14,8 @@ const BodyWrapper = styled.div`
 `;
 const Body = styled.div`
   flex-grow: 1;
+  width: 100%;
+  height: 100%;
 `;
 
 const Template = ({ children }: ReactNodeProps) => {

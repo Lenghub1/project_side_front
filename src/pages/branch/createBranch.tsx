@@ -31,7 +31,7 @@ const CreateBranch: React.FC = () => {
     locationId: "",
     locationName: "",
     addressLine: "",
-    pinPoint: {},
+    pinPoint: { type: "Point", coordinates: [11, 118] },
     geoFencing: 10,
     member: [],
   });

@@ -80,7 +80,7 @@ const ModifyBranch: React.FC = () => {
   }, []);
 
   return (
-    <CP.Styled.Wrapper>
+    <>
       <MapComponent />
 
       <TextField
@@ -118,13 +118,18 @@ const ModifyBranch: React.FC = () => {
         onChange={handleNameChange}
         style={{ marginTop: "20px" }}
       ></TextField>
-      <CP.Styled.Flex margin="20px 0" justify="flex-end" gap="20px">
+      <CP.Styled.Flex
+        margin="20px 0"
+        justify="flex-end"
+        gap="20px"
+        style={{ paddingBottom: "56px" }}
+      >
         <CP.Button onClick={handleCancelModify} variant="text">
           CANCEL
         </CP.Button>
         <CP.Button onClick={handleModifyBranch}>CONFIRM</CP.Button>
       </CP.Styled.Flex>
-    </CP.Styled.Wrapper>
+    </>
   );
 };
 

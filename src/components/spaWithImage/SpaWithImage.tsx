@@ -12,7 +12,7 @@ interface ScrollableWrapperProps {
 export const ScrollableWrapper = ({ children }: ScrollableWrapperProps) => {
   return (
     <CP.Styled.Flex padding="0 1rem" height="100svh" overflow="auto">
-      <CP.Styled.Div padding="1rem 0 3rem" margin="auto 0">
+      <CP.Styled.Div padding="1rem 0" margin="auto 0">
         {children}
       </CP.Styled.Div>
     </CP.Styled.Flex>
