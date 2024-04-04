@@ -1,19 +1,17 @@
 import { useEffect, useState, SyntheticEvent, useCallback } from "react";
-import styled from "styled-components";
 import { useNavigate, useLocation } from "react-router-dom";
 import CP from "@/components";
 import { authApi } from "@/api/auth";
-import { useSnackbar } from "notistack";
 import useApi from "@/hooks/useApi";
 import { maskPhoneNumber } from "../forgotAccount/AccountList";
 import useCancelModal from "@/hooks/useCancelModal";
 import useScreenSize from "@/hooks/useScreenSize";
 import { useSetRecoilState } from "recoil";
 import Store from "@/store";
-import { MuiOtpInput } from "mui-one-time-password-input";
 import { Flex } from "../getStarted/GetStarted";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import useCooldownTimer from "@/hooks/useCooldownTimer";
+import useMessageDisplay from "@/hooks/useMessageDisplay";
 
 const customTheme = createTheme({
   palette: {
@@ -22,19 +20,6 @@ const customTheme = createTheme({
     },
   },
 });
-const MuiOtpInputStyled = styled(MuiOtpInput)`
-  width: auto;
-  margin-inline: auto;
-  .MuiOtpInput-TextField {
-    width: 40px !important;
-    height: 40px !important;
-    color: secondary;
-    & .MuiInputBase-root {
-      height: 40px !important;
-      font-size: 1.2rem;
-    }
-  }
-`;
 
 interface VERIFY_DATA {
   resetToken?: string;
@@ -59,19 +44,20 @@ const OTP = () => {
   const { open, handleCancelConfirm, handleModalOpen, handleCloseModal } =
     useCancelModal();
   const { isMobile } = useScreenSize();
-  const { enqueueSnackbar } = useSnackbar();
   const { isCooldown, cooldownTime, startCooldown } = useCooldownTimer(30);
-
+  const showMessage = useMessageDisplay();
   const [otp, setOtp] = useState("");
   const setResetPassword = useSetRecoilState(Store.User.resetPasswordToken);
   const setAccessToken = useSetRecoilState(Store.User.accessTokenState);
-
+  const [isError, setError] = useState<boolean>();
   const isValidInput = otp.length === 6;
+
   const verification = location.state;
 
   useEffect(() => {
     if (error) {
       showMessage("Incorrect code. Please try again", "error");
+      setError(true);
     }
   }, [error]);
 
@@ -103,6 +89,13 @@ const OTP = () => {
     }
   }, [response, isSuccess]);
 
+  useEffect(() => {
+    if (otp.length === 6) {
+      console.log("INPUT", isValidInput);
+      submitOtp();
+    }
+  }, [otp.length === 6]);
+
   const verifyOTP = useCallback(async (data: any): Promise<void> => {
     if (verification.type === VERIFICATION_TYPE.VERIFY_FORGET_PASSWORD) {
       await handleApiRequest(() => authApi.verifyForgetPasswordToken(data));
@@ -115,6 +108,7 @@ const OTP = () => {
 
   async function resendOTP(): Promise<void> {
     setOtp("");
+    setError(false);
     startCooldown();
     if (verification.type === VERIFICATION_TYPE.VERIFY_FORGET_PASSWORD) {
       await handleApiRequest(() =>
@@ -133,15 +127,6 @@ const OTP = () => {
     }
   }
 
-  function showMessage(message: string, variant: "error" | "success") {
-    enqueueSnackbar(message, {
-      variant: variant,
-      anchorOrigin: {
-        vertical: "bottom", // or 'bottom'
-        horizontal: "left", // or 'left', 'center'
-      },
-    });
-  }
   const matchIsString = (text: any) => {
     return typeof text === "string" || text instanceof String;
   };
@@ -152,17 +137,8 @@ const OTP = () => {
     return (isNumber || (isString && text !== "")) && !isNaN(Number(text));
   }
 
-  const validateChar = (value: string, index: number) => {
-    return matchIsNumeric(value);
-  };
-
-  const handleChangeOtp = (newValue: string) => {
-    setOtp(newValue);
-  };
-
-  const handleSubmit = async (event: SyntheticEvent) => {
-    event.preventDefault();
-
+  const submitOtp = async () => {
+    setError(false);
     let data = {} as VERIFY_DATA;
 
     if (verification.type === VERIFICATION_TYPE.VERIFY_FORGET_PASSWORD) {
@@ -182,94 +158,129 @@ const OTP = () => {
       };
     }
 
-    await verifyOTP(data);
+    if (!isError && isValidInput) {
+      await verifyOTP(data);
+    }
+  };
+
+  const validateChar = (value: string, index: number) => {
+    return matchIsNumeric(value);
+  };
+
+  const handleChangeOtp = async (newValue: string) => {
+    setError(false);
+    setOtp(newValue);
+  };
+
+  const handleSubmit = async (event: SyntheticEvent) => {
+    event.preventDefault();
+    if (isValidInput) {
+      submitOtp();
+    }
   };
 
   return (
     <CP.Styled.Wrapper height="100vh">
-      <Flex height="inherit">
-        <CP.Styled.Div padding={!isMobile ? "0" : "0 1rem"}>
-          <Flex items="flex-start" direction="column">
-            <CP.Typography
-              variant="h4"
-              margin="0 0 1rem"
-              textAlign="center"
-              width={"100%"}
-            >
-              OTP Verification
-            </CP.Typography>
-            <Flex direction="column">
+      <CP.Styled.Form>
+        <Flex height="inherit">
+          <CP.Styled.Div padding={!isMobile ? "0" : "0 1rem"}>
+            <Flex items="flex-start" direction="column">
               <CP.Typography
-                fontWeight="semibold"
+                variant="h4"
+                margin="0 0 1rem"
                 textAlign="center"
-                gutterBottom
+                width={"100%"}
               >
-                Enter the verification code we just sent to your
+                OTP Verification
               </CP.Typography>
-
-              {verification.phone ? (
-                <CP.Typography marginBottom={"2rem"}>
-                  phone number{verification.phone.slice(0, 7)}
-                  {maskPhoneNumber(verification.phone).slice(7)}.
-                </CP.Typography>
-              ) : (
-                verification.email && (
-                  <CP.Typography marginBottom={"2rem"}>
-                    email "{verification.email}"
-                  </CP.Typography>
-                )
-              )}
-            </Flex>
-            <ThemeProvider theme={customTheme}>
-              <MuiOtpInputStyled
-                gap={1}
-                length={6}
-                value={otp}
-                onChange={handleChangeOtp}
-                TextFieldsProps={{ variant: "outlined" }}
-                sx={{ color: "slateblue" }}
-                validateChar={validateChar}
-              />
-            </ThemeProvider>
-            <Flex direction="column" gap="24px" overflow="unset" margin="16px">
-              <Flex>
-                <CP.Typography marginRight={1}>
-                  Didn't receive code?{" "}
-                </CP.Typography>
-                {/* <CP.Typography
+              <Flex direction="column">
+                <CP.Typography
                   fontWeight="semibold"
-                  color={"primary"}
-                  sx={{ cursor: "pointer" }}
-                  onClick={() => resendOTP()}
+                  textAlign="center"
+                  gutterBottom
                 >
-                  Resend
-                </CP.Typography> */}
-                <CP.Button
-                  onClick={() => resendOTP()}
-                  disabled={isCooldown}
-                  variant="text"
-                >
-                  {isCooldown ? `Resend (${cooldownTime})` : "Resend"}
-                </CP.Button>
+                  Enter the verification code we just sent to your
+                </CP.Typography>
+
+                {verification.phone ? (
+                  <CP.Typography marginBottom={"2rem"}>
+                    phone number{verification.phone.slice(0, 7)}
+                    {maskPhoneNumber(verification.phone).slice(7)}.
+                  </CP.Typography>
+                ) : (
+                  verification.email && (
+                    <CP.Typography marginBottom={"2rem"}>
+                      email "{verification.email}"
+                    </CP.Typography>
+                  )
+                )}
               </Flex>
-              <Flex>
-                <Flex gap="0.5rem" justify="center">
-                  <CP.Button variant="text" onClick={handleModalOpen}>
-                    cancel
-                  </CP.Button>
+              <ThemeProvider theme={customTheme}>
+                <CP.OTPComponent
+                  setError={setError}
+                  gap={1}
+                  length={6}
+                  inputWidth="40px"
+                  inputHeight="40px"
+                  value={otp}
+                  onChange={handleChangeOtp}
+                  TextFieldsProps={{
+                    variant: "outlined",
+                    error: isError,
+                  }}
+                  validateChar={validateChar}
+                  autoFocus
+                />
+                {/* <MuiOtpInputStyled
+                  gap={1}
+                  length={6}
+                  value={otp}
+                  onChange={handleChangeOtp}
+                  TextFieldsProps={{
+                    variant: "outlined",
+                    error: isError,
+                  }}
+                  validateChar={validateChar}
+                  autoFocus
+                /> */}
+              </ThemeProvider>
+              <Flex
+                direction="column"
+                gap="24px"
+                overflow="unset"
+                margin="16px"
+              >
+                <Flex>
+                  <CP.Typography marginRight={1}>
+                    Didn't receive code?{" "}
+                  </CP.Typography>
                   <CP.Button
-                    type="submit"
-                    onClick={handleSubmit}
-                    disabled={!isValidInput}
+                    onClick={() => resendOTP()}
+                    disabled={isCooldown}
+                    variant="text"
                   >
-                    Verify
+                    {isCooldown ? `Resend (${cooldownTime})` : "Resend"}
                   </CP.Button>
+                </Flex>
+                <Flex>
+                  <Flex gap="0.5rem" justify="center">
+                    <CP.Button variant="text" onClick={handleModalOpen}>
+                      cancel
+                    </CP.Button>
+                    <CP.Button
+                      type="submit"
+                      onClick={handleSubmit}
+                      disabled={!isValidInput}
+                    >
+                      Verify
+                    </CP.Button>
+                  </Flex>
                 </Flex>
               </Flex>
             </Flex>
-          </Flex>
-        </CP.Styled.Div>
-      </Flex>
+          </CP.Styled.Div>
+        </Flex>
+      </CP.Styled.Form>
       <CP.Modal
         open={open}
         onClose={handleCloseModal}
