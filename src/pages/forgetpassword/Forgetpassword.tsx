@@ -4,7 +4,6 @@ import CP from "@/components";
 import { useEffect, useState } from "react";
 import countries from "@/components/phonePrefix/countries.json";
 import { SyntheticEvent } from "react";
-import { useSnackbar } from "notistack";
 import { authApi } from "@/api/auth";
 import useApi from "@/hooks/useApi";
 import { VERIFICATION_TYPE } from "../verifications/OTP";
@@ -15,20 +14,13 @@ import { Flex } from "../getStarted/GetStarted";
 import SignupMethod from "@/components/signupMethod/SignupMethod";
 import SpaWithImage from "@/components/spaWithImage/SpaWithImage";
 import { Title, FormContainer } from "../companySearch/CompanySearch";
+import useMessageDisplay from "@/hooks/useMessageDisplay";
+import { validateEmail } from "../signup/Signup";
 
 type FindPasswordMethod = "email" | "phone";
 
-const validateEmail = (email: string): string => {
-  const emailRegex = /^\S+@\S+\.\S+$/;
-  if (!emailRegex.test(email)) {
-    return "Please enter a valid email address.";
-  }
-  return "";
-};
-
 const ForgetPassword = () => {
   const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
   const email = useValidatedInput("", "Email", validateEmail);
   const phone = useValidatedInput("", "Phone");
   const [selectedCountry, setSelectedCountry] = useState<{
@@ -38,9 +30,10 @@ const ForgetPassword = () => {
   }>(countries[0]);
   const [resetPasswordBy, setResetPasswordBy] =
     useState<FindPasswordMethod>("email");
-  const { response, isSuccess, isLoading, error, handleApiRequest } = useApi();
+  const { response, isSuccess, error, handleApiRequest } = useApi();
   const { open, handleCancelConfirm, handleModalOpen, handleCloseModal } =
     useCancelModal();
+  const showMessage = useMessageDisplay();
   const location = useLocation();
   const isForgetPasswordRoute = location.pathname === "/forget-password";
 
@@ -50,16 +43,6 @@ const ForgetPassword = () => {
     resetPasswordBy === "phone"
       ? !phone.value || !!phone.error
       : !email.value || !!email.error;
-
-  function showMessage(message: string, variant: "error" | "success") {
-    enqueueSnackbar(message, {
-      variant: variant,
-      anchorOrigin: {
-        vertical: "bottom",
-        horizontal: "left",
-      },
-    });
-  }
 
   async function forgetPassword(method: string, data: any): Promise<void> {
     await handleApiRequest(() => authApi.forgotPassword(method, data));
@@ -134,7 +117,6 @@ const ForgetPassword = () => {
     <>
       {isForgetPasswordRoute ? (
         <SpaWithImage>
-          {/* <CP.Styled.Wrapper height="100vh"> */}
           <CP.Styled.Form>
             <FormContainer>
               <CP.Styled.Div>
@@ -186,7 +168,6 @@ const ForgetPassword = () => {
               <CP.Typography> Are you sure to cancel it now?</CP.Typography>
             </CP.Styled.Flex>
           </CP.Modal>
-          {/* </CP.Styled.Wrapper> */}
         </SpaWithImage>
       ) : (
         <Outlet />

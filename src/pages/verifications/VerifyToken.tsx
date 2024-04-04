@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import CP from "@/components";
@@ -9,6 +9,7 @@ import { authApi } from "@/api/auth";
 import { VERIFICATION_TYPE } from "./OTP";
 import { useSnackbar } from "notistack";
 import useApi from "@/hooks/useApi";
+import useMessageDisplay from "@/hooks/useMessageDisplay";
 
 interface ElementType {
   token: string;
@@ -18,7 +19,6 @@ interface ElementType {
 const VerifyToken = () => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const location = useLocation();
   const setAccessToken = useSetRecoilState(Store.User.accessTokenState);
   const [__, setResetPasswordToken] = useRecoilState(
     Store.User.resetPasswordToken
@@ -27,15 +27,7 @@ const VerifyToken = () => {
     token: "",
     verificationType: "",
   });
-  function showMessage(message: string, variant: "error" | "success") {
-    enqueueSnackbar(message, {
-      variant: variant,
-      anchorOrigin: {
-        vertical: "bottom", // or 'bottom'
-        horizontal: "left", // or 'left', 'center'
-      },
-    });
-  }
+  const showMessage = useMessageDisplay();
   const { response, isError, isSuccess, handleApiRequest } = useApi();
 
   const verifyForgetPasswordToken = useCallback(

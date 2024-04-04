@@ -36,18 +36,6 @@ const MuiOtpInputStyled = styled(MuiOtpInput)`
   }
 `;
 
-const OTPContainer = CP.Styled.Flex;
-
-const OTPInput = styled.input`
-  width: 40px;
-  height: 40px;
-  margin: 0 5px;
-  text-align: center;
-  font-size: 1.2rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-`;
-
 interface VERIFY_DATA {
   resetToken?: string;
   phoneNumber?: string;

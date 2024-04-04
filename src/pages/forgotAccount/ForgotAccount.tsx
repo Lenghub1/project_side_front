@@ -2,9 +2,7 @@ import { useNavigate, useLocation, Link } from "react-router-dom";
 import useValidatedInput from "@/hooks/useValidatedInput";
 import useInput from "@/hooks/useInput";
 import CP from "@/components";
-import styled from "styled-components";
 import { SyntheticEvent, useEffect } from "react";
-import { useSnackbar } from "notistack";
 import { authApi } from "@/api/auth";
 import { Outlet } from "react-router-dom";
 import useCancelModal from "@/hooks/useCancelModal";
@@ -14,14 +12,12 @@ import useApi from "@/hooks/useApi";
 import { forgotAccountInformation } from "@/store/userStore";
 import { useSetRecoilState } from "recoil";
 import Loading from "@/components/loading/Loading";
-const Flex = styled(CP.Styled.Flex)`
-  overflow: unset;
-`;
+import useMessageDisplay from "@/hooks/useMessageDisplay";
+import { Flex } from "../getStarted/GetStarted";
 
 const ForgotAccount = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
   const username = useValidatedInput("", "Username");
   const companyCode = useInput("");
   const { open, handleCancelConfirm, handleModalOpen, handleCloseModal } =
@@ -30,28 +26,7 @@ const ForgotAccount = () => {
   const { isError, isLoading, response, error, isSuccess, handleApiRequest } =
     useApi();
   const setInformation = useSetRecoilState(forgotAccountInformation);
-  const isFormIvalid =
-    !username.value ||
-    !!username.error ||
-    function showError(message: string) {
-      enqueueSnackbar(message, {
-        variant: "error",
-        anchorOrigin: {
-          vertical: "bottom", // or 'bottom'
-          horizontal: "left", // or 'left', 'center'
-        },
-      });
-    };
-
-  function showMessage(message: string, variant: "error" | "success") {
-    enqueueSnackbar(message, {
-      variant: variant,
-      anchorOrigin: {
-        vertical: "bottom", // or 'bottom'
-        horizontal: "left", // or 'left', 'center'
-      },
-    });
-  }
+  const showMessage = useMessageDisplay();
 
   useEffect(() => {
     if (isError) {

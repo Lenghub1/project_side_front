@@ -1,13 +1,11 @@
 import { Link, useNavigate, Outlet, useLocation } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import CP from "@/components";
-
 import { useEffect, useState } from "react";
 import useValidatedInput from "@/hooks/useValidatedInput";
 import { authApi } from "@/api/auth";
 import { SyntheticEvent } from "react";
 import countries from "@/components/phonePrefix/countries.json";
-import { useSnackbar } from "notistack";
 import { IconButton } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import Store from "@/store";
@@ -23,6 +21,7 @@ import { VERIFICATION_TYPE } from "../verifications/OTP";
 import { removeLeadingZeron } from "@/utils/commonUtil";
 import { Flex } from "../getStarted/GetStarted";
 import useUrlParams from "@/hooks/useGetParams";
+import useMessageDisplay from "@/hooks/useMessageDisplay";
 
 type SignInMethod = "email" | "phone";
 
@@ -30,7 +29,6 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isLoginPage = location.pathname === "/login";
-  const { enqueueSnackbar } = useSnackbar();
   const [loginMethod, setLoginMethod] = useState<SignInMethod>("email");
   const email = useValidatedInput("", "Email", validateEmail);
   const phone = useValidatedInput("", "Phone");
@@ -44,26 +42,13 @@ const LoginPage = () => {
   const setAccessToken = useSetRecoilState(Store.User.accessTokenState);
   const { isMobile } = useScreenSize();
   const params = useUrlParams();
-
+  const showMessage = useMessageDisplay();
+  const { response, isLoading, error, isSuccess, handleApiRequest } = useApi();
   const isFormInvalid =
     (loginMethod === "phone"
       ? !phone.value || !!phone.error
       : !email.value || !!email.error) || !password.value;
 
-  function showMessage(message: string, variant: "error" | "success") {
-    enqueueSnackbar(message, {
-      variant: variant,
-      anchorOrigin: {
-        vertical: "bottom",
-        horizontal: "left",
-      },
-    });
-  }
-  const { response, isLoading, error, isSuccess, handleApiRequest } = useApi();
-
-  async function login(method: string, data: any): Promise<void> {
-    await handleApiRequest(() => authApi.testLogin(method, data));
-  }
   useEffect(() => {
     if (params?.error) {
       showMessage("Authorization failed", "error");
@@ -141,6 +126,10 @@ const LoginPage = () => {
       }
     }
   }, [error]);
+
+  async function login(method: string, data: any): Promise<void> {
+    await handleApiRequest(() => authApi.testLogin(method, data));
+  }
 
   const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
