@@ -10,6 +10,7 @@ import { handleApiRequest } from "@/api";
 import { organizationLocation } from "@/api/location";
 import { modifyBranch } from "@/api/branch";
 import { selectedOrganization } from "@/store/userStore";
+
 interface Data {
   locationId: string;
   managerId: string;

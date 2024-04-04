@@ -2,7 +2,7 @@ import CP from "@/components";
 import MapComponent from "@/components/map/Map";
 import { BranchData } from "@/utils/interfaces/Branch";
 import { Avatar } from "@mui/material";
-
+import { useIsMobile } from "@/utils/isMobile";
 interface Props {
   branchData: BranchData;
   manager: any[];
@@ -10,7 +10,7 @@ interface Props {
 
 const ConfirmationCreateBranch = ({ branchData, manager }: Props) => {
   const { member } = branchData;
-
+  const isMobile = useIsMobile();
   const managersName = manager
     .filter((item) => item.userId === branchData.managerId)
     .map((item) => `${item.user.firstName} ${item.user.lastName}`);
@@ -42,14 +42,20 @@ const ConfirmationCreateBranch = ({ branchData, manager }: Props) => {
           <CP.Typography color={"grey"}>
             {member.length} Employees
           </CP.Typography>
-          <CP.Styled.Flex justify="flex-start" width="50%">
+          <CP.Styled.Flex
+            justify="flex-start"
+            gap="20px"
+            width={isMobile ? "100%" : "50%"}
+          >
             <CP.Styled.Div>
-              <CP.Typography color={"grey"}>Branch Manager</CP.Typography>
-              <CP.Typography color={"grey"} marginTop={"20px"}>
-                Branch Location
+              <CP.Typography color={"grey"}>
+                {isMobile ? "Manager" : "Branch Manager"}
               </CP.Typography>
               <CP.Typography color={"grey"} marginTop={"20px"}>
-                GeoFencing Range
+                {isMobile ? "Location" : "Branch Location"}
+              </CP.Typography>
+              <CP.Typography color={"grey"} marginTop={"20px"}>
+                {isMobile ? "Range" : "GeoFencing Range"}
               </CP.Typography>
             </CP.Styled.Div>
             <CP.Styled.Div>

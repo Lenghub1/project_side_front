@@ -2,7 +2,7 @@ import CP from "@/components";
 import MapComponent from "@/components/map/Map";
 import { Slider, TextField, MenuItem } from "@mui/material";
 import React, { useState } from "react";
-
+import { useIsMobile } from "@/utils/isMobile";
 const InformationBranch = ({
   branchData,
   handleInputChange,
@@ -11,7 +11,7 @@ const InformationBranch = ({
 }: any) => {
   const [sliderValue, setSliderValue] = useState(branchData.geoFencing);
   const pinPoint = { type: "Point", coordinates: [40, 60] };
-
+  const isMobile = useIsMobile();
   const handleSliderChange = (
     event: Event,
     value: number | number[],
@@ -39,7 +39,9 @@ const InformationBranch = ({
         items="flex-start"
       >
         <CP.Styled.Flex>
-          <CP.Typography width={"25%"}>Branch Name</CP.Typography>
+          <CP.Typography width={"25%"}>
+            {isMobile ? "name" : "Branch Name"}
+          </CP.Typography>
           <TextField
             label="Name"
             type="text"
@@ -52,7 +54,10 @@ const InformationBranch = ({
           />
         </CP.Styled.Flex>
         <CP.Styled.Flex>
-          <CP.Typography width={"25%"}>Manager Name</CP.Typography>
+          <CP.Typography width={"25%"}>
+            {" "}
+            {isMobile ? "Manager" : "Manager Name"}
+          </CP.Typography>
           {/* Replace TextField with a select dropdown */}
           <TextField
             select
@@ -73,7 +78,9 @@ const InformationBranch = ({
           </TextField>
         </CP.Styled.Flex>
         <CP.Styled.Flex>
-          <CP.Typography width={"25%"}>Address Line</CP.Typography>
+          <CP.Typography width={"25%"}>
+            {isMobile ? "Address" : "Address Line"}
+          </CP.Typography>
           <TextField
             label="Address Line"
             type="text"

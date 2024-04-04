@@ -134,7 +134,7 @@ const CreateBranch: React.FC = () => {
   }, []);
 
   return (
-    <Container style={{ padding: "50px" }}>
+    <Container style={{ paddingBottom: "50px" }}>
       <Stepper activeStep={step} alternativeLabel>
         <Step key={0}>
           <StepLabel>Information</StepLabel>
@@ -178,6 +178,7 @@ const CreateBranch: React.FC = () => {
           alignItems: "flex-end",
           gap: "20px",
           marginTop: "20px",
+          padding: 0,
         }}
       >
         {step > 0 && (
