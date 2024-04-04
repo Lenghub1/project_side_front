@@ -18,8 +18,6 @@ const FillForm = () => {
 
   const { enqueueSnackbar } = useSnackbar();
   const [user, setUser] = useRecoilState(userState);
-  console.log("USEREER", user);
-  console.log("EMPOYEE E", registerEmployee);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
