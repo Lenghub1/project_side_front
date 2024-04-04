@@ -1,7 +1,9 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-import { isAuthenticatedState } from "@/store/userStore";
+import { isAuthenticatedState, resetPasswordToken } from "@/store/userStore";
+import { useLocation } from "react-router-dom";
+
 interface UnprotectedRouteProps {
   element: any;
   redirectPath?: string;
@@ -12,8 +14,12 @@ const UnprotectedRoute: React.FC<UnprotectedRouteProps> = ({
   redirectPath = "/",
 }) => {
   const isAuthenticated = useRecoilValue(isAuthenticatedState);
+  const location = useLocation();
 
-  if (isAuthenticated) {
+  const isResetPasswordRoute = location.pathname.startsWith("/verify-token");
+  const isResetPassword = useRecoilValue(resetPasswordToken);
+
+  if (isAuthenticated && !isResetPasswordRoute && !isResetPassword) {
     return <Navigate to={redirectPath || "/"} replace />;
   }
 
