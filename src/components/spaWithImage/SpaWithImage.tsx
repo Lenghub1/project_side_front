@@ -11,7 +11,7 @@ interface ScrollableWrapperProps {
 
 export const ScrollableWrapper = ({ children }: ScrollableWrapperProps) => {
   return (
-    <CP.Styled.Flex padding="0 1rem" height="100vh" overflow="auto">
+    <CP.Styled.Flex padding="0 1rem" height="100svh" overflow="auto">
       <CP.Styled.Div padding="1rem 0 3rem" margin="auto 0">
         {children}
       </CP.Styled.Div>
@@ -54,7 +54,7 @@ const SpaWithImage = ({ children }: SpaWithImageProps) => {
             alt="Dynamic image based on route"
             sx={{
               width: 1,
-              height: "100vh",
+              height: "100svh",
               objectFit: "cover",
             }}
           />
