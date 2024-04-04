@@ -41,7 +41,7 @@ const ResetPassword = () => {
   const { open, handleCancelConfirm, handleModalOpen, handleCloseModal } =
     useCancelModal();
   const { enqueueSnackbar } = useSnackbar();
-  const { response, error, isError, isSuccess, handleApiRequest } = useApi();
+  const { response, isError, isSuccess, handleApiRequest } = useApi();
   const resetTokenState = useResetRecoilState(resetPasswordToken);
   const resetToken = useRecoilValue(resetPasswordToken);
 
@@ -60,11 +60,7 @@ const ResetPassword = () => {
       },
     });
   }
-  const token = location.state;
 
-  async function logOut() {
-    await handleApiRequest(() => authApi.clearResetToken());
-  }
   useEffect(() => {
     if (!resetToken) {
       navigate("/login");
@@ -88,6 +84,10 @@ const ResetPassword = () => {
     }
   }, [isSuccess, response]);
 
+  async function logOut() {
+    await handleApiRequest(() => authApi.clearResetToken());
+    await handleApiRequest(() => authApi.logout());
+  }
   async function resetPassword(newPassword: string) {
     await handleApiRequest(() => authApi.resetPassword(newPassword));
   }

@@ -5,12 +5,16 @@ import { useNavigate } from "react-router-dom";
 import CP from "@/components";
 import { patchUser } from "@/api/user";
 import { userState } from "@/store/userStore";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useResetRecoilState } from "recoil";
 import useApi from "@/hooks/useApi";
 import Loading from "@/components/loading/Loading";
+import { employeeRegister } from "@/store/organizationStore";
+import { authApi } from "@/api/auth";
 const FillForm = () => {
   const navigate = useNavigate();
   const { isSuccess, isError, error, handleApiRequest, isLoading } = useApi();
+  const registerEmployee = useRecoilState(employeeRegister);
+  const resetRegisterState = useResetRecoilState(employeeRegister);
 
   const { enqueueSnackbar } = useSnackbar();
   const [user, setUser] = useRecoilState(userState);
@@ -23,6 +27,16 @@ const FillForm = () => {
   const roles = ["Super admin", "Admin", "Employee"];
   const userPatch = async () => {
     await handleApiRequest(() => patchUser(user.id, formData));
+    if (registerEmployee) {
+      await handleApiRequest(() =>
+        authApi.signupAsEmployee({
+          orgId: registerEmployee[0].id,
+          ownerId: registerEmployee[0].ownerId,
+          userId: user.id,
+          socialId: user.socialId,
+        })
+      );
+    }
   };
 
   useEffect(() => {
@@ -42,6 +56,7 @@ const FillForm = () => {
         lastName: "",
         role: "",
       });
+      resetRegisterState();
       navigate("/organization");
     } else if (isError) {
       enqueueSnackbar(error?.message, {
