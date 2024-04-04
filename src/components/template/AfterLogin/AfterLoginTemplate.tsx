@@ -4,6 +4,7 @@ import { ReactNodeProps } from "@/@type/common";
 import TopBar from "./TopBar";
 import SideBar from "./SideBar";
 import { useIsMobile } from "@/utils/isMobile";
+import GlobalStyles from "@/styles/globalStyle";
 const Container = styled.div`
   height: 100svh;
 `;
@@ -22,6 +23,7 @@ const Template = ({ children }: ReactNodeProps) => {
   const isMobile = useIsMobile();
   return (
     <Container>
+      <GlobalStyles />
       <TopBar />
       <BodyWrapper>
         {!isMobile && <SideBar />}

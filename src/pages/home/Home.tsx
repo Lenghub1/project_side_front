@@ -15,7 +15,6 @@ import { myOrganization } from "@/api/organization";
 import { handleApiRequest } from "@/api";
 import Loading from "@/components/loading/Loading";
 import { getEmployeeById } from "@/api/employee";
-import GlobalStyles from "@/styles/globalStyle";
 const HomePage = () => {
   const {
     response: data,
@@ -74,7 +73,6 @@ const HomePage = () => {
   }
   return (
     <AfterLoginTemplate>
-      <GlobalStyles />
       <CP.Styled.Wrapper overflow="auto">
         <Outlet />
       </CP.Styled.Wrapper>
