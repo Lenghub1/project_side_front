@@ -55,6 +55,7 @@ export const Flex = styled(Div)`
   align-items: ${({ items }) => (items ? items : "center")};
   justify-content: ${({ justify }) => (justify ? justify : "center")};
   width: ${({ width }) => (width ? width : "100%")};
+  padding: ${({ padding }) => (padding ? padding : "0")};
 `;
 
 export const Top = styled(Flex)`
