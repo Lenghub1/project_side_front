@@ -17,13 +17,9 @@ const UnprotectedRoute: React.FC<UnprotectedRouteProps> = ({
   const location = useLocation();
 
   const isResetPasswordRoute = location.pathname.startsWith("/verify-token");
-  const isRedirecting = location.pathname.startsWith("/redirect");
   const isResetPassword = useRecoilValue(resetPasswordToken);
 
-  if (
-    (isAuthenticated && !isResetPasswordRoute && !isResetPassword) ||
-    (isAuthenticated && !isRedirecting)
-  ) {
+  if (isAuthenticated && !isResetPasswordRoute && !isResetPassword) {
     return <Navigate to={redirectPath || "/"} replace />;
   }
 
