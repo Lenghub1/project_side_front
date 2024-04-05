@@ -1,8 +1,10 @@
 import { createGlobalStyle } from "styled-components";
 
 const GlobalStyles = createGlobalStyle`
-div {
-    overflow : hidden;
+body {
+    width : 100%;
+    height : 100svh;
+    overflow: hidden;
 
     #root {
         width : inherit;
