@@ -47,6 +47,7 @@ const ForgotAccount = () => {
         setTimeout(() => {
           navigate("/forgot-account/informations");
         }, 1500);
+        return;
       }
       setTimeout(() => {
         navigate("/forgot-account/informations/0");

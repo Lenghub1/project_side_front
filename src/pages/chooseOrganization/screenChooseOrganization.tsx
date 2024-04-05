@@ -5,13 +5,38 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/utils/isMobile";
 import { ScrollableWrapper } from "@/components/spaWithImage/SpaWithImage";
+import { useRecoilValue } from "recoil";
+import { employeeRegister } from "@/store/organizationStore";
+import useApi from "@/hooks/useApi";
+import { authApi } from "@/api/auth";
+import { userState } from "@/store/userStore";
 const ScreenChooseOrganization = () => {
   const navigate = useNavigate();
   const [typeSelected, setTypeSelected] = useState<"Join" | "Create" | null>(
     null
   );
+  const registerEmployee = useRecoilValue(employeeRegister);
+  const user = useRecoilValue(userState);
   const isMobile = useIsMobile();
+  const { handleApiRequest } = useApi();
+
+  const createOauthEmployemnt = async () => {
+    await handleApiRequest(() =>
+      authApi.signupAsEmployee({
+        orgId: registerEmployee[0].id,
+        ownerId: registerEmployee[0].ownerId,
+        userId: user.id,
+        socialId: user.socialId,
+      })
+    );
+  };
   const handleNextClick = () => {
+    if (registerEmployee) {
+      console.log("EMPYEEE", registerEmployee);
+      console.log("USER", user);
+      return;
+      createOauthEmployemnt();
+    }
     if (typeSelected === "Join") {
       navigate("/join-organization");
     } else {
