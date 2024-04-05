@@ -10,6 +10,7 @@ import useApi from "@/hooks/useApi";
 import Loading from "@/components/loading/Loading";
 import { employeeRegister } from "@/store/organizationStore";
 import { authApi } from "@/api/auth";
+
 const FillForm = () => {
   const navigate = useNavigate();
   const { isSuccess, isError, error, handleApiRequest, isLoading } = useApi();
@@ -69,6 +70,11 @@ const FillForm = () => {
 
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
+
+    if (name === "firstName" || name === "lastName") {
+      if (/\s/.test(value) || /\d/.test(value)) {
+      }
+    }
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -100,9 +106,11 @@ const FillForm = () => {
 
     userPatch();
   };
+
   if (isLoading) {
     return <Loading isLoading={isLoading} />;
   }
+
   return (
     <Container
       style={{
