@@ -46,7 +46,17 @@ const RoleCard = ({
         sx={{ color: isActive ? "primary.main" : "text.primary" }}
       >
         <CP.Styled.Div padding={isMobile ? "1rem" : "1.5rem"}>
-          <CardMedia component="img" alt={title} height="auto" image={image} />
+          <CardMedia
+            component="img"
+            alt={title}
+            height="auto"
+            image={image}
+            sx={{
+              pointerEvents: "none",
+              userSelect: "none",
+            }}
+            onContextMenu={(e) => e.preventDefault()}
+          />
           <CardContent>
             <Typography
               variant={isMobile ? "h6" : "h5"}

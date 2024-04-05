@@ -61,7 +61,7 @@ export const validateName = (name: string): string => {
 };
 
 export const validatePhoneNumber = (phoneNumber: string): string => {
-  const phoneRegex = /^[1-9]\d{5,13}$/;
+  const phoneRegex = /^[0-9]\d{5,13}$/;
 
   if (!phoneRegex.test(phoneNumber)) {
     return "Please enter a valid phone number.";
@@ -227,7 +227,7 @@ const SignupPage = () => {
           <Title>Create a new account</Title>
           <Flex direction="column" gap="1.5rem">
             {accountType === "employer" && (
-              <CP.Styled.Flex gap=".5rem" items="flex-start">
+              <Flex gap=".5rem" items="flex-start">
                 <CP.Input
                   label="First name"
                   value={firstName.value}
@@ -246,7 +246,7 @@ const SignupPage = () => {
                   helperText={<lastName.HelperText />}
                   required
                 />
-              </CP.Styled.Flex>
+              </Flex>
             )}
             <SignupMethod
               email={email}

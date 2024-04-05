@@ -55,15 +55,14 @@ const SpaWithImage = ({ children }: SpaWithImageProps) => {
       >
         <Flex height="100%">
           <Box
-            component="img"
-            src={imageSrc}
-            alt="Dynamic image based on route"
             sx={{
               width: 1,
               height: "100svh",
-              objectFit: "cover",
+              backgroundImage: `url(${imageSrc})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
             }}
-          />
+          ></Box>
         </Flex>
       </CP.Styled.Div>
     </Flex>

@@ -23,8 +23,8 @@ const Template = ({ children }: ReactNodeProps) => {
   const isMobile = useIsMobile();
   return (
     <Container>
-      <GlobalStyles />
       <TopBar />
+      <GlobalStyles />
       <BodyWrapper>
         {!isMobile && <SideBar />}
         <Body>{children}</Body>
