@@ -156,7 +156,6 @@ const SignupPage = () => {
       });
     }
   }, [isSuccess, signupMethod]);
-  console.log(RegisterAsEmployee);
 
   useEffect(() => {
     if (error) {

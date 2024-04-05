@@ -1,4 +1,4 @@
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import CP from "@/components";
 import styled from "styled-components";
 import { useEffect, useState } from "react";

@@ -12,6 +12,7 @@ import { Flex } from "../getStarted/GetStarted";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import useCooldownTimer from "@/hooks/useCooldownTimer";
 import useMessageDisplay from "@/hooks/useMessageDisplay";
+import Loading from "@/components/loading/Loading";
 
 const customTheme = createTheme({
   palette: {
@@ -40,7 +41,7 @@ const OTP = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { response, isSuccess, error, handleApiRequest } = useApi();
+  const { response, isLoading, isSuccess, error, handleApiRequest } = useApi();
   const { open, handleCancelConfirm, handleModalOpen, handleCloseModal } =
     useCancelModal();
   const { isMobile } = useScreenSize();
@@ -91,7 +92,6 @@ const OTP = () => {
 
   useEffect(() => {
     if (otp.length === 6) {
-      console.log("INPUT", isValidInput);
       submitOtp();
     }
   }, [otp.length === 6]);
@@ -172,12 +172,9 @@ const OTP = () => {
     setOtp(newValue);
   };
 
-  const handleSubmit = async (event: SyntheticEvent) => {
-    event.preventDefault();
-    if (isValidInput) {
-      submitOtp();
-    }
-  };
+  if (isLoading) {
+    <Loading isLoading={isLoading} />;
+  }
 
   return (
     <CP.Styled.Wrapper height="100vh">
@@ -227,22 +224,11 @@ const OTP = () => {
                   TextFieldsProps={{
                     variant: "outlined",
                     error: isError,
+                    type: "tel",
                   }}
                   validateChar={validateChar}
                   autoFocus
                 />
-                {/* <MuiOtpInputStyled
-                  gap={1}
-                  length={6}
-                  value={otp}
-                  onChange={handleChangeOtp}
-                  TextFieldsProps={{
-                    variant: "outlined",
-                    error: isError,
-                  }}
-                  validateChar={validateChar}
-                  autoFocus
-                /> */}
               </ThemeProvider>
               <Flex
                 direction="column"
@@ -266,13 +252,6 @@ const OTP = () => {
                   <Flex gap="0.5rem" justify="center">
                     <CP.Button variant="text" onClick={handleModalOpen}>
                       cancel
-                    </CP.Button>
-                    <CP.Button
-                      type="submit"
-                      onClick={handleSubmit}
-                      disabled={!isValidInput}
-                    >
-                      Verify
                     </CP.Button>
                   </Flex>
                 </Flex>

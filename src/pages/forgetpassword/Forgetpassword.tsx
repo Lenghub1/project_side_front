@@ -15,14 +15,14 @@ import SignupMethod from "@/components/signupMethod/SignupMethod";
 import SpaWithImage from "@/components/spaWithImage/SpaWithImage";
 import { Title, FormContainer } from "../companySearch/CompanySearch";
 import useMessageDisplay from "@/hooks/useMessageDisplay";
-import { validateEmail } from "../signup/Signup";
+import { validateEmail, validatePhoneNumber } from "../signup/Signup";
 
 type FindPasswordMethod = "email" | "phone";
 
 const ForgetPassword = () => {
   const navigate = useNavigate();
   const email = useValidatedInput("", "Email", validateEmail);
-  const phone = useValidatedInput("", "Phone");
+  const phone = useValidatedInput("", "Phone", validatePhoneNumber);
   const [selectedCountry, setSelectedCountry] = useState<{
     name: string;
     dialCode: string;
