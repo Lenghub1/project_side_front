@@ -67,6 +67,7 @@ const AccountVerification = () => {
             <Flex gap="1rem" justify="center">
               <CancelSignupButton />
               <CP.Button
+                variant="text"
                 disabled={isCooldown}
                 type="submit"
                 onClick={handleCodeResending}
