@@ -11,11 +11,13 @@ import { Outlet } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { selectedOrganization } from "@/store/userStore";
 import { useRecoilValue } from "recoil";
-
+import useApi from "@/hooks/useApi";
+import Loading from "@/components/loading/Loading";
 const OverviewOrganization = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
+  const { response, isLoading, isSuccess, isError, error, handleApiRequest } =
+    useApi();
   const organizationData = useRecoilValue(organization) as any;
   const selected = useRecoilValue(selectedOrganization);
   const [organizationBranchData, setOrganizationBranchData] = useState(
@@ -28,18 +30,19 @@ const OverviewOrganization = () => {
   };
 
   const myOrganizationBranchData = async () => {
-    const [response, error] = await handleApiRequest(() => myBranch(selected));
-
+    await handleApiRequest(() => myBranch(selected));
+  };
+  useEffect(() => {
     if (response) {
       setOrganizationBranchData(response.data);
-    } else {
     }
-  };
-
+  }, [isSuccess, response]);
   React.useEffect(() => {
     myOrganizationBranchData();
-  }, []);
-
+  }, [location]);
+  if (isLoading) {
+    <Loading isLoading={isLoading} />;
+  }
   return (
     <>
       {isViewOrganization ? (

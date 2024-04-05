@@ -7,7 +7,7 @@ import { useSnackbar } from "notistack";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { selectMembers } from "@/store/employee";
 import { manager } from "@/api/employee";
-import { createBranch } from "@/api/branch";
+import { createBranch, myBranch } from "@/api/branch";
 import { handleApiRequest } from "@/api";
 import { useNavigate } from "react-router-dom";
 import { selectedOrganization } from "@/store/userStore";
@@ -49,7 +49,9 @@ const CreateBranch: React.FC = () => {
       return error;
     }
   };
-
+  const handleBranch = async () => {
+    await handleApiRequest(() => myBranch(organization));
+  };
   const requestCreateBranch = async () => {
     const [response, error] = await handleApiRequest(() =>
       createBranch(organization, branchData)
@@ -68,6 +70,7 @@ const CreateBranch: React.FC = () => {
         geoFencing: 10,
         member: [],
       });
+
       navigate("/organization"); // Set step back to 1
     }
   };

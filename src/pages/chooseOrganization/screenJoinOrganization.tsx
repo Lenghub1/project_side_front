@@ -12,7 +12,9 @@ import { Splide, SplideSlide } from "@splidejs/react-splide"; // Import Splide c
 import "@splidejs/splide/dist/css/themes/splide-default.min.css"; // Import Splide CSS
 import { useIsMobile } from "@/utils/isMobile";
 import Loading from "@/components/loading/Loading";
+import Modal from "@/components/modal";
 import { employeeId } from "@/store/employee";
+
 const ScreenJoinOrganization = () => {
   const navigate = useNavigate();
   const [selectedOrg, setSelectedOrg] = useState<string>();
@@ -24,6 +26,7 @@ const ScreenJoinOrganization = () => {
   const user = useRecoilValue(userState);
 
   const [loading, setLoading] = useState(true);
+  const [showCancelModal, setShowCancelModal] = useState(false); // State to control the visibility of the cancel modal
 
   useEffect(() => {
     const fetchData = async () => {
@@ -69,10 +72,21 @@ const ScreenJoinOrganization = () => {
     navigate("/organization");
   };
 
+  const handleCancel = () => {
+    setShowCancelModal(true); // Show the cancel modal when the "Cancel" button is clicked
+  };
+
+  const handleCloseCancelModal = () => {
+    setShowCancelModal(false); // Close the cancel modal
+  };
+
+  const handleConfirmCancel = () => {
+    navigate("/login/choose-organization");
+  };
+
   if (loading) {
     return <Loading isLoading={loading} />;
   }
-
   return (
     <CP.Styled.Flex
       style={{
@@ -82,6 +96,17 @@ const ScreenJoinOrganization = () => {
         transform: "translate(-50%, -50%)",
       }}
     >
+      <Modal
+        open={showCancelModal}
+        onClose={handleCloseCancelModal}
+        type="confirm"
+        onCancel={handleCloseCancelModal}
+        onOk={handleConfirmCancel}
+        cancelText="No"
+        okText="Yes"
+      >
+        Are you sure you want to cancel?
+      </Modal>
       <CP.Styled.Flex direction="column" gap="20px" padding="20px">
         <CP.Styled.Flex direction="column">
           <CP.Styled.Flex direction="column"></CP.Styled.Flex>
@@ -166,7 +191,9 @@ const ScreenJoinOrganization = () => {
             justify="flex-end"
             style={{ marginTop: "20px" }}
           >
-            <CP.Button variant="text">CANCEL</CP.Button>
+            <CP.Button variant="text" onClick={handleCancel}>
+              CANCEL
+            </CP.Button>
 
             {selectedOrg ? (
               <CP.Button onClick={handleNavigate}>NEXT</CP.Button>
