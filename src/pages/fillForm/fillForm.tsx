@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { TextField, Button, Grid, Container, MenuItem } from "@mui/material";
+import { Button, Grid, Container, MenuItem } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import CP from "@/components";
@@ -10,7 +10,9 @@ import useApi from "@/hooks/useApi";
 import Loading from "@/components/loading/Loading";
 import { employeeRegister } from "@/store/organizationStore";
 import { authApi } from "@/api/auth";
-
+import { validateName } from "../signup/Signup";
+import useValidatedInput from "@/hooks/useValidatedInput";
+import { Error } from "@/pages/error";
 const FillForm = () => {
   const navigate = useNavigate();
   const { isSuccess, isError, error, handleApiRequest, isLoading } = useApi();
@@ -19,13 +21,15 @@ const FillForm = () => {
 
   const { enqueueSnackbar } = useSnackbar();
   const [user, setUser] = useRecoilState(userState);
+
+  const firstName = useValidatedInput("", "First Name", validateName);
+  const lastName = useValidatedInput("", "Last Name", validateName);
+  const roles = ["Super admin", "Admin", "Employee"];
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    role: "",
   });
 
-  const roles = ["Super admin", "Admin", "Employee"];
   const userPatch = async () => {
     await handleApiRequest(() => patchUser(user.id, formData));
     if (registerEmployee) {
@@ -39,7 +43,9 @@ const FillForm = () => {
       );
     }
   };
-
+  useEffect(() => {
+    setFormData({ firstName: firstName.value, lastName: lastName.value });
+  }, [firstName.value, lastName.value]);
   useEffect(() => {
     if (isSuccess) {
       enqueueSnackbar("Successfully Update Your Personal Information", {
@@ -52,12 +58,7 @@ const FillForm = () => {
         firstName: formData.firstName,
         lastName: formData.lastName,
       });
-      setFormData({
-        firstName: "",
-        lastName: "",
-        role: "",
-      });
-      resetRegisterState();
+
       navigate("/organization");
     } else if (isError) {
       enqueueSnackbar(error?.message, {
@@ -68,47 +69,15 @@ const FillForm = () => {
     }
   }, [isSuccess, isError, error]);
 
-  const handleInputChange = (e: any) => {
-    const { name, value } = e.target;
-
-    if (name === "firstName" || name === "lastName") {
-      if (/\s/.test(value) || /\d/.test(value)) {
-      }
-    }
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
   const handleSubmit = () => {
-    if (formData.firstName.trim() === "") {
-      enqueueSnackbar("Please enter your first name", {
-        variant: "error",
-        autoHideDuration: 1500,
-      });
-      return;
-    }
-    if (formData.lastName.trim() === "") {
-      enqueueSnackbar("Please enter your last name", {
-        variant: "error",
-        autoHideDuration: 1500,
-      });
-      return;
-    }
-    if (formData.role === "") {
-      enqueueSnackbar("Please select a role", {
-        variant: "error",
-        autoHideDuration: 1500,
-      });
-      return;
-    }
-
     userPatch();
   };
 
   if (isLoading) {
     return <Loading isLoading={isLoading} />;
+  }
+  if (isError && error) {
+    return <Error status={error.statusCode!} message={error.message!} />;
   }
 
   return (
@@ -128,51 +97,38 @@ const FillForm = () => {
             </CP.Styled.Flex>
           </Grid>
           <Grid item xs={12}>
-            <TextField
+            <CP.Input
               fullWidth
               label="First Name"
-              variant="outlined"
-              placeholder="Enter your first name"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleInputChange}
+              value={firstName.value}
+              onChange={firstName.onChange}
+              error={!!firstName.error}
+              helperText={<firstName.HelperText />}
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
+            <CP.Input
               fullWidth
               label="Last Name"
-              variant="outlined"
-              placeholder="Enter your last name"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleInputChange}
+              value={lastName.value}
+              onChange={lastName.onChange}
+              error={!!lastName.error}
+              helperText={<lastName.HelperText />}
             />
           </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              select
-              label="Role"
-              variant="outlined"
-              placeholder="Select role"
-              name="role"
-              value={formData.role}
-              onChange={handleInputChange}
-            >
-              {roles.map((role) => (
-                <MenuItem key={role} value={role}>
-                  {role}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Grid>
+
           <Grid item xs={12}>
             <Button
               fullWidth
               variant="contained"
               color="primary"
               onClick={handleSubmit}
+              disabled={
+                !firstName.value ||
+                !lastName.value ||
+                !!firstName.error ||
+                !!lastName.error
+              }
             >
               Submit
             </Button>
