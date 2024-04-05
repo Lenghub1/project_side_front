@@ -58,7 +58,7 @@ export default function DetailInformation() {
               </CP.Typography>
             )}
 
-            <Button
+            <CP.Button
               fullWidth
               variant="contained"
               color="primary"
@@ -67,7 +67,7 @@ export default function DetailInformation() {
               onClick={handleToLogin}
             >
               Login
-            </Button>
+            </CP.Button>
           </CP.Styled.Flex>
         </CP.Styled.Flex>
       )}

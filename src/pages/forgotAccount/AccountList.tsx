@@ -11,7 +11,6 @@ import { useEffect } from "react";
 import { Title } from "../companySearch/CompanySearch";
 import { useRecoilState } from "recoil";
 import theme from "@/theme/ligthTheme";
-import useScreenSize from "@/hooks/useScreenSize";
 export const maskPhoneNumber = (phoneNumber: string): string => {
   return phoneNumber.replace(/.(?=.{2})/g, "*"); // Masks all but the last 4 digits
 };
@@ -77,7 +76,7 @@ export default function AlignItemsList() {
                 overflowY: "auto",
               }}
             >
-              {users.map((user, index) => (
+              {users.map((user: any, index: number) => (
                 <Paper
                   variant="outlined"
                   key={index}
@@ -85,9 +84,9 @@ export default function AlignItemsList() {
                     marginBottom: "10px",
                     "&:hover": {
                       cursor: "pointer",
-                      borderColor: theme.palette.primary.main, // Set border color on hover
-                      borderWidth: "1px", // Set border width on hover
-                      borderStyle: "solid", // Set border style on hover
+                      borderColor: theme.palette.primary.main,
+                      borderWidth: "1px",
+                      borderStyle: "solid",
                     },
                   }}
                   onClick={() =>

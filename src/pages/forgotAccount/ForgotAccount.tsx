@@ -2,9 +2,7 @@ import { useNavigate, useLocation, Link } from "react-router-dom";
 import useValidatedInput from "@/hooks/useValidatedInput";
 import useInput from "@/hooks/useInput";
 import CP from "@/components";
-import styled from "styled-components";
 import { SyntheticEvent, useEffect } from "react";
-import { useSnackbar } from "notistack";
 import { authApi } from "@/api/auth";
 import { Outlet } from "react-router-dom";
 import useCancelModal from "@/hooks/useCancelModal";
@@ -14,15 +12,15 @@ import useApi from "@/hooks/useApi";
 import { forgotAccountInformation } from "@/store/userStore";
 import { useSetRecoilState } from "recoil";
 import Loading from "@/components/loading/Loading";
-const Flex = styled(CP.Styled.Flex)`
-  overflow: unset;
-`;
+import useMessageDisplay from "@/hooks/useMessageDisplay";
+import { validateName } from "../signup/Signup";
+import { Flex } from "../getStarted/GetStarted";
 
 const ForgotAccount = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
-  const username = useValidatedInput("", "Username");
+  const firstName = useValidatedInput("", "First name", validateName);
+  const lastName = useValidatedInput("", "Last name", validateName);
   const companyCode = useInput("");
   const { open, handleCancelConfirm, handleModalOpen, handleCloseModal } =
     useCancelModal();
@@ -30,28 +28,7 @@ const ForgotAccount = () => {
   const { isError, isLoading, response, error, isSuccess, handleApiRequest } =
     useApi();
   const setInformation = useSetRecoilState(forgotAccountInformation);
-  const isFormIvalid =
-    !username.value ||
-    !!username.error ||
-    function showError(message: string) {
-      enqueueSnackbar(message, {
-        variant: "error",
-        anchorOrigin: {
-          vertical: "bottom", // or 'bottom'
-          horizontal: "left", // or 'left', 'center'
-        },
-      });
-    };
-
-  function showMessage(message: string, variant: "error" | "success") {
-    enqueueSnackbar(message, {
-      variant: variant,
-      anchorOrigin: {
-        vertical: "bottom", // or 'bottom'
-        horizontal: "left", // or 'left', 'center'
-      },
-    });
-  }
+  const showMessage = useMessageDisplay();
 
   useEffect(() => {
     if (isError) {
@@ -70,6 +47,7 @@ const ForgotAccount = () => {
         setTimeout(() => {
           navigate("/forgot-account/informations");
         }, 1500);
+        return;
       }
       setTimeout(() => {
         navigate("/forgot-account/informations/0");
@@ -84,17 +62,18 @@ const ForgotAccount = () => {
   const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
 
-    const fullName = username.value.split(" ").filter(Boolean);
     let data = {
-      firstName: fullName[0],
-      lastName: fullName[1],
+      firstName: firstName.value,
+      lastName: lastName.value,
       orgId: companyCode.value,
     };
     await forgotAccount(data);
   };
 
   const isInvalid =
-    (!username.value && !!username.setError) || !companyCode.value;
+    (!firstName.value && !!firstName.setError) ||
+    (!lastName.value && !!lastName.setError) ||
+    !companyCode.value;
   if (isLoading) {
     return <Loading isLoading={isLoading} />;
   }
@@ -111,12 +90,21 @@ const ForgotAccount = () => {
                 </CP.Typography>
                 <Flex direction="column" gap="24px" overflow="unset">
                   <CP.Input
-                    label="Username"
-                    value={username.value}
-                    onChange={username.onChange}
-                    onBlur={username.onBlur}
-                    error={!!username.error}
-                    helperText={<username.HelperText />}
+                    label="First name"
+                    value={firstName.value}
+                    onChange={firstName.onChange}
+                    onBlur={firstName.onBlur}
+                    error={!!firstName.error}
+                    helperText={<firstName.HelperText />}
+                    required
+                  />
+                  <CP.Input
+                    label="Last name"
+                    value={lastName.value}
+                    onChange={lastName.onChange}
+                    onBlur={lastName.onBlur}
+                    error={!!lastName.error}
+                    helperText={<firstName.HelperText />}
                     required
                   />
                   <CP.Input
@@ -126,6 +114,17 @@ const ForgotAccount = () => {
                     inputProps={{ maxLength: 6 }}
                     required
                   />
+
+                  <CP.Styled.Div width="100%">
+                    <CP.Typography
+                      color="textSecondary"
+                      fontSize="0.875rem"
+                      textAlign="start"
+                    >
+                      If you don't know your company code, please contact your
+                      employer or HR department.
+                    </CP.Typography>
+                  </CP.Styled.Div>
 
                   <CP.Styled.Div>
                     <Link to={"/forget-password"}>Forget password?</Link>

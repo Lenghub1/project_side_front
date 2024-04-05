@@ -9,6 +9,7 @@ import Typography from "./typography";
 import PhonePrefix from "./phonePrefix";
 import Container from "./container";
 import SnackbarMessage from "./showMessage";
+import { OTPComponent } from "./otp";
 
 import * as Layout from "./layout";
 import * as Styled from "../styles/styled";
@@ -26,6 +27,7 @@ const CP = {
   PhonePrefix,
   Container,
   SnackbarMessage,
+  OTPComponent,
 };
 
 export type { ButtonProps };
