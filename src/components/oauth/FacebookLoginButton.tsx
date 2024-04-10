@@ -98,7 +98,7 @@ const FacebookLoginButton: FC<FacebookLoginButtonProps> = ({ appId }) => {
             showMessage("Authorization failed", "error");
           }
         },
-        { scope: "email,public_profile" }
+        { scope: "public_profile" }
       );
     } else {
       showMessage("Something went wrong!", "error");
