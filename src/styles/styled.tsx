@@ -9,7 +9,12 @@ type DivProps = {
   bg?: string;
   overflow?: "auto" | "hidden" | "unset" | "initial";
   direction?: "row" | "column";
-  justify?: "center" | "space-between" | "flex-end" | "flex-start";
+  justify?:
+    | "center"
+    | "space-between"
+    | "flex-end"
+    | "flex-start"
+    | "space-evenly";
   items?: "center" | "space-between" | "flex-end" | "flex-start";
   gap?: string;
   flex?: number;
