@@ -15,6 +15,7 @@ import { myOrganization } from "@/api/organization";
 import { handleApiRequest } from "@/api";
 import Loading from "@/components/loading/Loading";
 import { getEmployeeById } from "@/api/employee";
+import { connectWithSocketServer } from "@/socket/socketConnection";
 const HomePage = () => {
   const {
     response: data,
@@ -45,12 +46,14 @@ const HomePage = () => {
     );
 
     if (response) {
-      setEmployeeData(response);
+      setEmployeeData(response as any);
     }
   };
   React.useEffect(() => {
     if (isSuccess) {
       setOrganizationData(data);
+      const dataDetail = { user, data };
+      connectWithSocketServer(dataDetail);
     }
   }, [isSuccess, isError, error]);
 

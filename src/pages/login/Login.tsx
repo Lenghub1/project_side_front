@@ -88,6 +88,8 @@ const LoginPage = () => {
       }
       if (userData?.user) {
         setAccessToken(userData.user?.accessToken);
+        console.log("helllo");
+
         navigate("/");
       }
     }
